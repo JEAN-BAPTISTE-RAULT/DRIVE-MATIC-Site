@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="DRIVE-MATIC">
+  <description>Standards de code Drupal (Drupal + DrupalPractice) pour le code custom du projet.</description>
+
+  <!-- Perimetre : racine du projet, code tiers exclu. Sur un projet vide,
+       aucun fichier ne matche -> phpcs sort en succes. -->
+  <file>.</file>
+
+  <exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>*/node_modules/*</exclude-pattern>
+  <exclude-pattern>*/dist/*</exclude-pattern>
+  <exclude-pattern>*/web/core/*</exclude-pattern>
+  <exclude-pattern>*/web/libraries/*</exclude-pattern>
+  <exclude-pattern>*/web/modules/contrib/*</exclude-pattern>
+  <exclude-pattern>*/web/themes/contrib/*</exclude-pattern>
+  <exclude-pattern>*.min.css</exclude-pattern>
+  <exclude-pattern>*.min.js</exclude-pattern>
+
+  <!-- Extensions inspectees (code custom Drupal). -->
+  <arg name="extensions" value="php,module,inc,install,profile,theme,twig"/>
+  <arg name="colors"/>
+  <arg value="sp"/>
+
+  <rule ref="Drupal"/>
+  <rule ref="DrupalPractice"/>
+</ruleset>

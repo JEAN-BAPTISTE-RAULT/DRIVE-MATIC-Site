@@ -1,0 +1,16 @@
+# Dependances / genere
+node_modules/
+vendor/
+dist/
+web/core/
+web/libraries/
+web/modules/contrib/
+web/themes/contrib/
+*.min.js
+*.min.css
+
+# Documentation en prose (Markdown) — geree a la main, pas reformatee par Prettier
+*.md
+
+# Config XML sans plugin dedie
+*.xml

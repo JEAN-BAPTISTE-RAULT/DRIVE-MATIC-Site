@@ -1,0 +1,30 @@
+# === Agent IA (fichiers locaux) ===
+CLAUDE.local.md
+.claude/settings.local.json
+
+# === Editeurs ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Node ===
+node_modules/
+
+# === PHP / Composer ===
+vendor/
+
+# === Drupal (secrets & runtime) ===
+settings.local.php
+sites/*/settings.local.php
+web/sites/*/settings.local.php
+web/sites/*/files/
+.env
+
+# === Tests / temporaires ===
+tmp/
+test-results/

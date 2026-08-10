@@ -1,0 +1,14 @@
+{
+  "extends": ["stylelint-config-standard-scss"],
+  "ignoreFiles": [
+    "node_modules/**",
+    "vendor/**",
+    "dist/**",
+    "web/core/**",
+    "web/libraries/**",
+    "web/modules/contrib/**",
+    "web/themes/contrib/**",
+    "**/*.min.css"
+  ],
+  "rules": {}
+}

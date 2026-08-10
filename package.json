@@ -1,0 +1,25 @@
+{
+  "name": "drive-matic-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DRIVE-MATIC — site corporate de detail d'equipements automobiles (grand public + acces partenaire authentifie).",
+  "license": "UNLICENSED",
+  "scripts": {
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:php",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint \"**/*.scss\" --allow-empty-input",
+    "lint:php": "composer --working-dir=. lint",
+    "lint:fix": "eslint . --fix && stylelint \"**/*.scss\" --allow-empty-input --fix && composer --working-dir=. lint:fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "echo \"⚠  Aucun test configure — voir docs/PRD.md (strategie de test)\" && exit 0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "eslint": "^9.9.0",
+    "globals": "^15.9.0",
+    "prettier": "^3.3.0",
+    "stylelint": "^16.8.0",
+    "stylelint-config-standard-scss": "^13.1.0"
+  }
+}
