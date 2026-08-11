@@ -18,11 +18,11 @@ Definir le modele de contenu editorial (types, champs, entites, taxonomie, mappi
 2. ✅ `product` sans champ catégorie (contenu 100% manuel).
 3. ✅ Vocabulaire unifié sur `categories`.
 4. ✅ `news` : date = dernière modification (`changed`).
-5. ⏳ `legals` : indexable+sitemap (actuel) **ou** noindex+hors sitemap — à choisir.
+5. ✅ `legals` : indexable, dans le sitemap, sans metatags.
 
 ## Statut
 - [x] Perimetre valide (editorial ; partenaire/devis a part)
 - [x] Modele fourni et acte (model.md + ADR-002)
 - [x] Repercussion sur ADR-001/library.md (conventions liens/fichier)
 - [x] MAJ PRD §5
-- [x] Points a confirmer tranches (sauf `legals`, mineur)
+- [x] Tous les points tranches — etude terminee

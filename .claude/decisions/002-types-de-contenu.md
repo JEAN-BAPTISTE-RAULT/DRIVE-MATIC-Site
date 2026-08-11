@@ -40,4 +40,4 @@ Cet ADR **precise ADR-001** sur deux conventions transverses :
 - **Vues** : `faq` (BEF par `categories`), `brands` (alpha), `all_news` (paginee 10/page) + les vues home `news_home` / `brands_home` (ADR-001) → declarer les list cache tags.
 - **Images sans crop** : `contact`, `brand` s'ajoutent aux paragraphes concernes → entree pour l'etude images.
 - **PRD** : §5 (modele de donnees) et F4-F9 pointent vers ce modele.
-- **Reste a trancher** : `legals` en *indexable + sitemap* (actuel) ou *`noindex` + hors sitemap* (cf. model.md).
+- `legals` : **indexable, dans le sitemap, sans metatags** (tranche).

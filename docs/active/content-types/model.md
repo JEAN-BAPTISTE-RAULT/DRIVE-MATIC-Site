@@ -87,7 +87,5 @@ Module **Metatag** : par type de node, mapper **body → meta description** et *
 2. ✅ **Vocabulaire unifié sur `categories`** (l'incohérence `faq_categories` des specs est écartée).
 3. ✅ **`product` sans champ catégorie** : tout le contenu de la page est saisi manuellement, la distinction auto-école/PMR ne nécessite pas de champ.
 4. ✅ **`news`** : date affichée = **dernière modification** (`changed`).
+5. ✅ **`legals`** : **indexable, dans le sitemap, sans metatags** (le meta title vient du titre du node).
 6. **Webforms** (`contact`, `partner`) : contenu défini plus tard (chantier séparé, cohérent avec F10/F11).
-
-### Reste à trancher
-5. **`legals`** : soit *indexable + dans le sitemap, sans metatags* (version actuelle), soit *`noindex` + exclu du sitemap*. À choisir.
