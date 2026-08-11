@@ -56,7 +56,8 @@
 
 - **Éléments imbriqués** : champs de reference `entity_reference_revisions` (module Paragraphs) ; les types « Élément » sont exclus du placement direct en contenu.
 - **Vidéo** : les paragraphes video stockent un **thumbnail cropable 16:9** + un **lien embed** ; valider/allowlister les providers (YouTube/Dailymotion/Vimeo) pour eviter l'injection d'iframe arbitraire.
-- **Liens** : `lien` = champ Link ; `lien de téléchargement` = fichier/media (afficher nom/format/poids, calcul auto — cf. specs).
+- **Liens** (precise par [ADR-002](../../../.claude/decisions/002-types-de-contenu.md)) : `lien` = champ **Link** pouvant etre **interne** (reference node) ou **externe**, avec **cible au choix de l'admin** (onglet courant / nouvel onglet).
+- **« lien de téléchargement »** = en réalite un champ **fichier** : afficher en front un lien de telechargement avec **nom + format + poids** (calcul auto) uniquement si le champ est renseigne. Distinct de la convention « lien » ci-dessus.
 - **Slideshow** : comportement front (JS vanilla, accessible clavier RGAA AA) ; degrade en liste si un seul item.
 - **Vues** : `news_home` et `brands_home` embarquent une vue Drupal (content types `news` / `brand`) — declarer les list cache tags.
 - **SDC** : Bloc composé = SDC parent qui compose une liste de SDC « Élément ».
