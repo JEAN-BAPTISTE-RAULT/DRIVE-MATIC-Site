@@ -469,3 +469,4 @@ Livrables a produire et acter (README/ADR) **avant** la production des templates
    - la regle d'**optimisation WebP** appliquee a chaque image importee ;
    - l'organisation de la **media-library reutilisable** (stockage, nommage, reutilisation).
 2. **Mise en place du socle SDC** (cf. decision #10) : structure des composants, conventions de props/slots, fondations globales (reset, tokens, typographie), avant la production des templates.
+3. **Etude de rationalisation des Paragraphes** (cf. F1) : les modeles decrits dans les specs ne sont pas tous necessaires et imposent parfois des contraintes techniques non justifiees. Recouper chaque modele avec les **maquettes validees** (verite visuelle) pour ne retenir que l'utile, ecarter le superflu, **puis optimiser** la bibliotheque (mutualisation, variantes via props plutot que duplication, mapping vers SDC). Livrable a acter (ADR/README) avant la production des paragraphes.
