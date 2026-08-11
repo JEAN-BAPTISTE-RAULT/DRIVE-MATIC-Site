@@ -61,7 +61,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Resultat attendu** : Une page publiee composee de blocs conformes aux maquettes, sans intervention CSS.
 
 **Criteres d'acceptation** :
-- [ ] Les modeles suivants sont disponibles : informations generales ; image a droite / texte a gauche ; image a gauche / texte a droite ; image a gauche fond gris ; texte centre ; texte large (avec lien + telechargement optionnels) ; image centree (legende) ; video centree (YouTube/Dailymotion/Vimeo, legende) ; image 100 % largeur ; 3 blocs centres (chiffre + legende) ; histoire ; FAQ (accordeon).
+- [ ] Les modeles de paragraphes disponibles sont ceux de la **bibliotheque validee** (27 paragraphes, dont des paires Bloc/Element), issue du recoupement specs ↔ maquettes — voir [ADR-001](../.claude/decisions/001-bibliotheque-paragraphes.md) et `docs/active/paragraphs/library.md`.
 - [ ] Les CTA selectionnables sont : Demander un devis, Nous contacter, Lire la suite, En savoir plus, Configurez votre vehicule, Marques partenaires.
 - [ ] Les textes riches sont edites via CK Editor ; images et documents proviennent de la mediatheque Drupal.
 - [ ] Pour tout document telechargeable, le CMS calcule et affiche automatiquement nom, format et poids.
@@ -463,7 +463,7 @@ Perimetre livre en **une seule version (V1)** couvrant l'ensemble des features.
 Livrables a produire et acter (README/ADR) **avant** la production des templates :
 
 1. **Etude prealable de gestion des images** (cf. decision #11), etablissant :
-   - les **ratios de crop** utilisables sur le site ;
+   - les **ratios de crop** (definis par la bibliotheque de paragraphes — ADR-001 : **1:1, 16:9, 12:5**, + cas « sans crop » a largeur fixe) → declinaisons responsive a produire ;
    - la **liste des images cropables en back-office** a l'import ;
    - les **image styles** a appliquer + leurs **declinaisons responsive**, en accord avec la **liste des breakpoints** du site (definie en section 6) ;
    - la regle d'**optimisation WebP** appliquee a chaque image importee ;

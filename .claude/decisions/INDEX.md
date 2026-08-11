@@ -5,6 +5,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 
 | # | Titre | Statut | Date |
 |---|---|---|---|
+| [ADR-001](001-bibliotheque-paragraphes.md) | Bibliotheque de Paragraphes | Accepte | 2026-08-11 |
 
 ## Quand creer un ADR
 
