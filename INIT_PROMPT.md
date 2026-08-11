@@ -14,11 +14,11 @@ Le dossier contient deja la structure de documentation et les skills Claude Code
 
 ### Contexte du projet
 
-**Nom** : [NOM DU PROJET]
-**One-liner** : [Une phrase : quoi, pour qui, quel probleme]
-**Stack technique** : [Ex: Google Apps Script + HTML Service, ou Next.js + PostgreSQL, ou Python FastAPI, etc.]
-**Contraintes** : [Ex: pas de npm runtime, pas de framework frontend, limite de 6min d'execution, etc.]
-**Utilisateurs** : [Ex: ~700 managers internes, ou API publique, ou backoffice admin, etc.]
+**Nom** : DRIVE-MATIC
+**One-liner** : Site corporate de détail d’équipements automobiles à destination du grand public avec accès partenaire authentifié
+**Stack technique** : Drupal - Twig - Vanilla JS - SCSS
+**Contraintes** : Aucune
+**Utilisateurs** : Site public + une centaine de partenaires
 
 ### Ce que je veux que tu fasses
 

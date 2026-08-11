@@ -116,10 +116,15 @@ Le formatage (indentation, guillemets, longueur de ligne) est gere par le linter
 - Utiliser `once('<id>', selector, context)` pour ne lier un handler qu'une seule fois (evite le double-binding lors des rechargements AJAX).
 - Passer les donnees serveur -> client via `drupalSettings`, jamais en dur dans le JS ; ne jamais y exposer de donnee sensible.
 
-**SCSS**
+**SCSS / SDC**
 
-- Architecture SMACSS (base / layout / component / state / theme) et nommage de classes en BEM (`.block__element--modifier`).
-- Pas de couleurs/tailles en dur repetees : utiliser des variables SCSS ou des custom properties CSS.
+- Tout composant front est un **SDC** (Single Directory Component) : Twig + CSS (+ JS) co-localises et scopes dans le dossier du composant. Rien hors SDC, hormis les **fondations globales** (reset, tokens/variables, typographie).
+- Nommage **BEM** (`.block__element--modifier`) a l'interieur de chaque composant.
+- Pas de couleurs/tailles en dur : utiliser les tokens (variables SCSS / custom properties).
+
+**Media / images**
+
+- Toute image passe par la **media-library** et un **image style defini** (responsive, aligne sur les breakpoints du site), sortie **WebP**. Jamais de dimension/crop en dur ni de `<img>` hors image styles. Reference : etude images (docs/PRD.md §7).
 
 ### Regles metier critiques
 
@@ -140,6 +145,8 @@ Les decisions architecturales posterieures au PRD sont dans `.claude/decisions/`
 - **Committer des secrets** : `settings.php`/`settings.local.php`, cles API, identifiants de base ou tokens ne sont jamais versionnes (utiliser variables d'environnement / fichiers ignores).
 - **Executer une commande destructrice sur une base de donnees** (`drush sql:drop`, `drush sql:cli` avec DROP/TRUNCATE, `hook_update_N` destructif) sans confirmation explicite de l'utilisateur.
 - **Neutraliser une protection de securite** : desactiver l'auto-echappement Twig, le CSRF, le Flood control ou la sanitation d'entrees pour "faire marcher" une fonctionnalite.
+- **Placer du CSS ou du Twig hors d'un SDC** (hors fondations globales) : casse l'isolation et la reutilisabilite des composants.
+- **Contourner le pipeline images** : crops/dimensions en dur, `<img>` hors media-library / image styles, ou sortie non-WebP.
 
 ### Securite du code
 

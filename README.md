@@ -8,7 +8,7 @@ Site corporate de detail d'equipements automobiles a destination du grand public
 
 | Couche | Technologie |
 |--------|-------------|
-| CMS / backend | Drupal (PHP 8.3) |
+| CMS / backend | Drupal 11 (PHP 8.3, MariaDB 10.11) |
 | Templating | Twig |
 | JavaScript | Vanilla JS (comportements Drupal) |
 | Styles | SCSS (architecture SMACSS + nommage BEM) |
