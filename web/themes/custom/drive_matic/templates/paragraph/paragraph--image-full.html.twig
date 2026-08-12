@@ -1,0 +1,10 @@
+{#
+  Liaison paragraphe `image_full` -> SDC `drive_matic:image-full`.
+  Image renderable en slot (média responsive au ratio 12:5) ; titre en prop, CTA en slot.
+#}
+{% embed 'drive_matic:image-full' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+  {% block actions %}{{ content.field_link }}{% endblock %}
+{% endembed %}

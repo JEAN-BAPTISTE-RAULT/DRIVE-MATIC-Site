@@ -1,0 +1,18 @@
+{#
+  SDC « Bloc :: Image 100% ».
+  Prop : title. Slots (via embed/block) : image (bannière 12:5), actions (CTA).
+  Titre et CTA superposés sur un voile sombre (contraste AA).
+#}
+<div class="image-full">
+  <div class="image-full__media">{{ block('image') }}</div>
+  {% if title or block('actions') is not empty %}
+    <div class="image-full__overlay">
+      {% if title %}
+        <h2 class="image-full__title">{{ title }}</h2>
+      {% endif %}
+      {% if block('actions') is not empty %}
+        <div class="image-full__actions">{{ block('actions') }}</div>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

@@ -1,0 +1,33 @@
+.image-full {
+  position: relative;
+}
+.image-full__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.image-full__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: rgba(26, 26, 26, 0.45);
+  text-align: center;
+}
+.image-full__title {
+  max-width: 40ch;
+  color: var(--dm-color-white);
+}
+.image-full__actions a {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-title);
+  text-decoration: none;
+}

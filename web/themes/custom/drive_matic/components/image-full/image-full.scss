@@ -1,0 +1,42 @@
+// SDC « Bloc :: Image 100% » — CSS scopé (BEM), consomme les tokens globaux.
+
+.image-full {
+  position: relative;
+
+  &__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  // Voile + texte superposés (uniquement si titre ou CTA présents).
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 2rem;
+
+    // Scrim pour le contraste AA du texte blanc.
+    background: rgb(26 26 26 / 45%);
+    text-align: center;
+  }
+
+  &__title {
+    max-width: 40ch;
+    color: var(--dm-color-white);
+  }
+
+  &__actions a {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    background: var(--dm-color-red);
+    color: var(--dm-color-white);
+    font-family: var(--dm-font-title);
+    text-decoration: none;
+  }
+}

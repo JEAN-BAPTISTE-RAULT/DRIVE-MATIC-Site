@@ -1,0 +1,24 @@
+uuid: a7e6c260-2eb4-4ebf-9394-fcdd81cf60a6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_image
+    - media.type.image
+    - paragraphs.paragraphs_type.image_full
+id: paragraph.image_full.field_image
+field_name: field_image
+entity_type: paragraph
+bundle: image_full
+label: Image
+description: 'Image pleine largeur recadrée au format 12:5 (crop à l’import).'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+field_type: entity_reference

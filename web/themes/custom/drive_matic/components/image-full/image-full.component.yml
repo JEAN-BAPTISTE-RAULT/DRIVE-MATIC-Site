@@ -1,0 +1,14 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Image 100%'
+status: stable
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Titre
+slots:
+  image:
+    title: Image (média responsive 12:5)
+  actions:
+    title: Actions (lien / CTA)

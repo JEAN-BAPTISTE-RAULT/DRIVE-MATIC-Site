@@ -1,0 +1,39 @@
+uuid: ee482bcc-c89b-40f8-acb1-127307c0a7ce
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.image_full.field_image
+    - field.field.paragraph.image_full.field_link
+    - field.field.paragraph.image_full.field_title
+    - paragraphs.paragraphs_type.image_full
+  module:
+    - link
+id: paragraph.image_full.default
+targetEntityType: paragraph
+bundle: image_full
+mode: default
+content:
+  field_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: ratio_12_5
+      link: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 2
+    region: content
+hidden:
+  field_title: true
