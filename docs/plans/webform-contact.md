@@ -28,13 +28,21 @@ Permettre a un visiteur anonyme d'envoyer une **demande de devis**, une **demand
 ### Champs conditionnels (`#states` sur « Votre demande concerne »)
 | Champ | Element | Requis | Visible si |
 |-------|---------|--------|-----------|
-| Marque | `select` | ✅ | devis **ou** sav |
-| Modèle | `select` | ✅ | devis **ou** sav — cascade JS depuis Marque |
-| Motorisation | `select` | ✅ | devis **ou** sav — manuelle / automatique / automatique hybride |
+| Marque | `select` (taxo `vehicle_make`) | ✅ | devis **ou** sav |
+| Modèle | `select` (taxo `vehicle_model`, filtré par marque) | ✅ | cascade JS Marque→Modèle |
+| Motorisation | `select` (taxo `motorisation`, filtré par modèle) | ✅ | cascade JS Modèle→Motorisation (BVM/BVA/hybride/électrique selon dispo) |
 | N° de châssis | `textfield` | ✅ | devis **ou** sav — infobulle « carte grise » (aide accessible) |
 | Type de châssis | `textfield` | ✅ | **devis uniquement** — infobulle |
 | Document | `managed_file` | — | **sav uniquement** — jpg/pdf, 5 Mo, 1 max, supprimable, **stockage privé** |
 | Message | `textarea` | ✅ | dès qu'un cas est choisi (les 3) — placeholder « Description de votre message » |
+
+### Référentiel véhicules (partagé)
+Marque / Modèle / Motorisation proviennent d'un **référentiel véhicules réutilisable** (importé de `Drive_Matic_modeles.xlsx` : 31 marques, 124 modèles), **partagé avec le configurateur** (F14/F17). Modélisation :
+- `vehicle_make` — marque (31 termes).
+- `vehicle_model` — modèle (124 termes) ; champ parent → `vehicle_make` + champ multi `motorisation` (motorisations disponibles).
+- `motorisation` — 4 termes : manuelle (BVM), automatique (BVA), hybride, électrique.
+
+Cascade front (JS) : map `make→models` et `model→motorisations` passée via `drupalSettings` ; dégradation sans JS (listes complètes). **Nettoyage à l'import** : cellules marque fusionnées, lignes vides, espaces parasites. ⚠️ L'Excel prime sur les specs (4 motorisations vs 3). → Ce référentiel mérite son propre pas de modélisation/import (à cadrer avec le chantier configurateur).
 
 ### Bloc final (toujours)
 - `checkbox` **consentement** (✅) : « J'autorise ces informations à être utilisées par Drive Matic Legrand »
@@ -44,12 +52,12 @@ Permettre a un visiteur anonyme d'envoyer une **demande de devis**, une **demand
 
 ## 3. reCAPTCHA v3
 - Modules `captcha` + `recaptcha` (+ `recaptcha_v3` pour le mode score).
-- **Clés site/secret** en configuration : la **clé secrète n'est jamais commitée** (settings/env).
+- **Clés fournies** : clé **site** (publique → config) ; clé **secrète** → **variable d'environnement / `settings.local.php` gitignoré, jamais commitée**.
 - Invisible ; seuil de score configurable ; fallback en cas d'échec.
 - **RGPD (F18)** : charge des scripts Google → à intégrer à la CMP/consentement + politique de confidentialité.
 
 ## 4. Handlers e-mail (6, conditionnels sur « Votre demande concerne »)
-Chaque cas envoie 2 e-mails ; expéditeur `no-reply@…` (⚠️ adresse exacte à confirmer), gabarits HTML conformes aux specs (logo + récap).
+Chaque cas envoie 2 e-mails ; expéditeur **`no-reply@drivematiclegrand.com`**, gabarits HTML conformes aux specs (logo + récap).
 
 | Cas | Objet | Destinataires |
 |-----|-------|---------------|
@@ -65,10 +73,11 @@ Contenu : récap identité + champs du cas (cf. specs §2.14). Échapper toutes 
 - **Type `contact`** (ADR-002) : référence le webform ; contenu page = coordonnées + carte (image sans crop).
 - **Thème** : styles du formulaire (fondations + SDC éventuel), infobulle « carte grise » accessible.
 - **Config modules** : webform, captcha, recaptcha(_v3), honeypot, flood.
+- **Taxonomies véhicules** : `vehicle_make`, `vehicle_model`, `motorisation` + script/config d'import depuis `Drive_Matic_modeles.xlsx` (avec nettoyage). Partagées avec le configurateur.
 
 ## 6. Sécurité
 - Public anonyme → **Honeypot + reCAPTCHA v3 + Flood control**.
-- **RGPD** : consentement obligatoire ; rétention des soumissions à définir ; accès soumissions réservé aux admins ; droit à l'effacement.
+- **RGPD** : consentement obligatoire ; **rétention = suppression auto des soumissions après 36 mois** ; accès soumissions réservé aux admins ; droit à l'effacement.
 - **Upload SAV** : système de fichiers **privé**, jpg/pdf, 5 Mo, 1 fichier, validation extension **+ mime**.
 - **XSS / injection e-mail** : autoescape, pas de `|raw`, en-têtes non issus d'entrées libres.
 - CSRF : token Webform natif. Pas de donnée partenaire (formulaire public), soumissions non exposées.
@@ -104,13 +113,16 @@ Contenu : récap identité + champs du cas (cf. specs §2.14). Échapper toutes 
 - **Tests auto** (à mettre en place) : Functional (BrowserTestBase) happy path + erreurs ; Nightwatch pour la cascade JS.
 - **Cas d'erreur** : requis manquants ; particulier sans entreprise ; fichier mauvais format/taille ou 2ᵉ ; consentement décoché ; reCAPTCHA/honeypot déclenché ; échec e-mail.
 
-## 11. Décisions à confirmer
-1. **Source Marque/Modèle** : *(reco)* options **statiques provisoires** (Excel) en config, recâblées vers le **référentiel commun** au chantier configurateur — OK, ou construire le référentiel d'abord ?
-2. **Adresse `no-reply@`** exacte (coquille dans les specs).
-3. **Rétention** des soumissions (durée) — RGPD.
+## 11. Décisions (tranchées)
+1. ✅ **Marque / Modèle / Motorisation** = **référentiel véhicules réutilisable** (taxonomies importées de l'Excel), partagé avec le configurateur.
+2. ✅ **Expéditeur** : `no-reply@drivematiclegrand.com`.
+3. ✅ **Rétention** : suppression auto des soumissions après **36 mois**.
+4. ✅ **reCAPTCHA v3** : clés fournies (site en config ; secrète en env, hors dépôt).
+5. ✅ **Logo e-mail** : géré globalement au niveau du thème.
 
 ## Statut
 - [x] Champs validés (specs + maquettes)
 - [x] reCAPTCHA v3, handlers e-mail, upload définis
-- [ ] Décisions §11 tranchées
+- [x] Décisions tranchées (§11)
+- [ ] Référentiel véhicules à modéliser/importer (partagé configurateur)
 - [ ] Implémentation (après socle)
