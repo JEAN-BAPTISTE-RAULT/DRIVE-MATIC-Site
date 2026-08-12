@@ -14,6 +14,7 @@ export default [
       'web/libraries/**',
       'web/modules/contrib/**',
       'web/themes/contrib/**',
+      'web/sites/**',
       '**/*.min.js',
     ],
   },
