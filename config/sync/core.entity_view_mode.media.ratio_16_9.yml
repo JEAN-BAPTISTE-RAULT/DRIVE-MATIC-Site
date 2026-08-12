@@ -1,0 +1,11 @@
+uuid: c5ff7fcd-5f41-41db-84d7-e211fbf08080
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+id: media.ratio_16_9
+label: 'Ratio 16:9'
+description: null
+targetEntityType: media
+cache: true

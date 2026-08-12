@@ -63,7 +63,7 @@ Décision #11 + préalable #1. S'appuie sur les breakpoints (PRD §6) + ratios (
 
 ## Statut
 - [x] Plan validé (WebP+fallback, full-width, logos PNG)
-- [ ] Modules + crop types + widget
-- [ ] Image styles + responsive image styles
-- [ ] Retrofit contact/brand
-- [ ] ADR-004 + export + commit
+- [x] Modules + crop types + widget
+- [x] Image styles + responsive image styles (48 + 4)
+- [x] Retrofit contact (média + responsive WebP vérifié)
+- [x] ADR-004 + export + commit

@@ -8,7 +8,6 @@ dependencies:
     - field.field.node.contact.field_webform
     - node.type.contact
   module:
-    - image
     - text
     - user
     - webform
@@ -25,13 +24,11 @@ content:
     weight: 1
     region: content
   field_image:
-    type: image
+    type: entity_reference_entity_view
     label: hidden
     settings:
-      image_link: ''
-      image_style: ''
-      image_loading:
-        attribute: lazy
+      view_mode: free
+      link: false
     third_party_settings: {  }
     weight: 0
     region: content

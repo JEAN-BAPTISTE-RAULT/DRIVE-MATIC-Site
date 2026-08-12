@@ -1,0 +1,11 @@
+uuid: cb5b4168-a39e-4b34-8086-ea24f3c5abf3
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+id: media.free
+label: 'Sans crop'
+description: null
+targetEntityType: media
+cache: true

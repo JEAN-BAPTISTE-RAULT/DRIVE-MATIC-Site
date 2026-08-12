@@ -1,0 +1,11 @@
+uuid: 42fd1d18-7d13-4699-a111-1dc77c80c370
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+id: media.ratio_12_5
+label: 'Ratio 12:5'
+description: null
+targetEntityType: media
+cache: true

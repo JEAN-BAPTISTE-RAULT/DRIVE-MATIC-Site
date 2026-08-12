@@ -6,10 +6,9 @@ dependencies:
     - field.field.node.contact.body
     - field.field.node.contact.field_image
     - field.field.node.contact.field_webform
-    - image.style.thumbnail
     - node.type.contact
   module:
-    - image
+    - media_library
     - path
     - text
     - webform
@@ -35,12 +34,11 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_image:
-    type: image_image
+    type: media_library_widget
     weight: 2
     region: content
     settings:
-      progress_indicator: throbber
-      preview_image_style: thumbnail
+      media_types: {  }
     third_party_settings: {  }
   field_webform:
     type: webform_entity_reference_select

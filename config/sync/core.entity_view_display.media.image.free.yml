@@ -1,0 +1,32 @@
+uuid: 5100bc33-5f3f-4dc1-b10b-e4e2e1c142b0
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.free
+    - field.field.media.image.field_media_image
+    - media.type.image
+    - responsive_image.styles.dm_free
+  module:
+    - responsive_image
+id: media.image.free
+targetEntityType: media
+bundle: image
+mode: free
+content:
+  field_media_image:
+    type: responsive_image
+    label: hidden
+    settings:
+      responsive_image_style: dm_free
+      image_link: ''
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 6
+    region: content
+hidden:
+  created: true
+  name: true
+  thumbnail: true
+  uid: true
