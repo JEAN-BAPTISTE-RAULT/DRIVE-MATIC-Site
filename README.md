@@ -47,12 +47,32 @@ Scripts granulaires : `lint:js`, `lint:css`, `lint:php`. Config : `eslint.config
 
 ## Architecture
 
-<!-- A REMPLIR PAR /sync au fur et a mesure : structure des modules/themes custom,
-     docroot (web/), flux de donnees, IDs et points d'attention. -->
+Projet **Drupal 11** (`drupal/recommended-project`), docroot **`web/`**.
+
+- **Thème front** : `drive_matic` (`web/themes/custom/drive_matic/`) — thème **custom autonome** généré via `starterkit` (`base theme: false`, sans `stable9`, D12-proof), **SDC-first** (composants dans `components/`).
+- **Thème admin** : **Gin** (toolbar horizontale).
+- **Build front** : SCSS dans **`src/scss/`** → compilé (Dart Sass + PostCSS/autoprefixer) vers `web/themes/custom/drive_matic/css/style.css` (library `drive_matic/global`). Voir scripts npm `css` / `build` / `css:watch`.
+- **Config** : versionnée dans **`config/sync/`** (`drush cex` / `drush cim`).
+- **Breakpoints** : `drive_matic.breakpoints.yml` (xs→xxl, 1x/2x).
+- **Modules clés** : Paragraphs, Webform (+ reCAPTCHA v3, Honeypot), Media + Crop + Image Widget Crop, Metatag, Pathauto, Redirect, Simple Sitemap, Rabbit Hole (fragments sans page publique), Linkit + Link Target (liens internes/externes + cible), Video Embed Field, Symfony Mailer, Better Exposed Filters, Easy Breadcrumb, Twig Tweak, Rename Admin Paths.
+
+**Base de données locale** : MAMP MySQL (8889), base `drivematic`. `settings.php` (gitignoré) porte les accès locaux + `config_sync_directory = ../config/sync`.
 
 ## Structure du projet
 
-<!-- A REMPLIR PAR /sync : arborescence commentee du code custom. -->
+```
+web/                         docroot Drupal
+  core/  modules/contrib/  themes/contrib/   (Composer, gitignorés)
+  modules/custom/            modules custom (drivematic_*) — à venir
+  themes/custom/drive_matic/ thème front (SDC : components/, templates/, css/, js/)
+  sites/default/settings.php accès BDD (gitignoré)
+src/scss/                    sources SCSS (fondations : tokens, reset, typographie)
+config/sync/                 configuration Drupal versionnée
+docs/                        PRD, E2E, plans, études (content-types, paragraphs…)
+.claude/decisions/           ADR (001 paragraphes, 002 types de contenu)
+composer.json                projet Drupal + modules
+package.json                 build front + lint
+```
 
 ## Documentation
 

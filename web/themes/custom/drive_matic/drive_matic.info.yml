@@ -1,0 +1,27 @@
+name: DRIVE-MATIC
+type: theme
+'base theme': false
+version: 1.0.0
+libraries:
+  - drive_matic/base
+  - drive_matic/messages
+  - drive_matic/global
+  - core/normalize
+libraries-extend:
+  user/drupal.user:
+    - drive_matic/user
+  core/drupal.dropbutton:
+    - drive_matic/dropbutton
+  core/drupal.dialog:
+    - drive_matic/dialog
+  file/drupal.file:
+    - drive_matic/file
+  core/drupal.item-list:
+    - drive_matic/item-list
+  core/drupal.progress:
+    - drive_matic/progress
+  core/drupal.tablesort:
+    - drive_matic/drupal.tablesort
+description: ''
+core_version_requirement: ^11
+generator: 'starterkit_theme:11.4.5'

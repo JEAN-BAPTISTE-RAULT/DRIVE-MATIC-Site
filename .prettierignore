@@ -9,6 +9,12 @@ web/themes/contrib/
 *.min.js
 *.min.css
 
+# Drupal — fichiers geres/generes (non reformates par Prettier)
+config/sync/
+web/sites/
+web/themes/custom/drive_matic/css/
+web/themes/custom/drive_matic/templates/
+
 # Documentation en prose (Markdown) — geree a la main, pas reformatee par Prettier
 *.md
 

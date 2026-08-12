@@ -5,20 +5,38 @@
   "description": "DRIVE-MATIC — site corporate de detail d'equipements automobiles (grand public + acces partenaire authentifie).",
   "license": "UNLICENSED",
   "scripts": {
+    "css": "npm run css:compile && npm run css:prefix",
+    "css:compile": "sass src/scss/style.scss:web/themes/custom/drive_matic/css/style.css --style=expanded --no-source-map --load-path=node_modules --quiet-deps",
+    "css:prefix": "postcss web/themes/custom/drive_matic/css/style.css --use autoprefixer --replace --no-map",
+    "css:watch": "sass --watch src/scss/style.scss:web/themes/custom/drive_matic/css/style.css --style=expanded --load-path=node_modules --quiet-deps",
+    "build": "npm run css",
     "lint": "npm run lint:js && npm run lint:css && npm run lint:php",
     "lint:js": "eslint .",
-    "lint:css": "stylelint \"**/*.scss\" --allow-empty-input",
+    "lint:css": "stylelint \"src/**/*.scss\" \"web/themes/custom/**/*.scss\" --allow-empty-input",
     "lint:php": "composer --working-dir=. lint",
-    "lint:fix": "eslint . --fix && stylelint \"**/*.scss\" --allow-empty-input --fix && composer --working-dir=. lint:fix",
+    "lint:fix": "eslint . --fix && stylelint \"src/**/*.scss\" \"web/themes/custom/**/*.scss\" --allow-empty-input --fix && composer --working-dir=. lint:fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "echo \"⚠  Aucun test configure — voir docs/PRD.md (strategie de test)\" && exit 0"
   },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 major versions",
+    "not dead",
+    "Firefox ESR",
+    "iOS >= 12",
+    "Safari >= 12",
+    "not IE 11"
+  ],
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "autoprefixer": "^10.4.20",
     "eslint": "^9.9.0",
     "globals": "^15.9.0",
+    "postcss": "^8.4.47",
+    "postcss-cli": "^11.0.0",
     "prettier": "^3.3.0",
+    "sass": "^1.80.0",
     "stylelint": "^16.8.0",
     "stylelint-config-standard-scss": "^13.1.0"
   }

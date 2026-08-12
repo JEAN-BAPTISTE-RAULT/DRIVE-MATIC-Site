@@ -1,0 +1,22 @@
+uuid: 42d2d51f-a8f1-4dd0-9402-e7fb9f4d8a2a
+langcode: en
+status: true
+dependencies:
+  theme:
+    - drive_matic
+_core:
+  default_config_hash: nGE3EoPQQaQCuqTUtZgw0-KIzmrqdKDzdNQf2JyPUt4
+id: drive_matic_primary_local_tasks
+theme: drive_matic
+region: highlighted
+weight: -4
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: 'Primary tabs'
+  label_display: '0'
+  provider: core
+  primary: true
+  secondary: false
+visibility: {  }

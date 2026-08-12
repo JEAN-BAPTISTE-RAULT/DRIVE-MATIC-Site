@@ -1,0 +1,7 @@
+// DRIVE-MATIC — feuille de style globale (fondations)
+// Les composants front sont des SDC (CSS co-localise) ; ce fichier ne porte
+// que les fondations globales : tokens, reset, typographie (decision #2/#10).
+
+@use 'tokens';
+@use 'reset';
+@use 'typography';

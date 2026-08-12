@@ -1,0 +1,43 @@
+// Tokens de design — source : maquettes Figma (PRD §6, charte graphique).
+// Exposes en custom properties CSS (consommables par les SDC) + variables SCSS.
+
+:root {
+  // Couleurs
+  --dm-color-steel: #2f3a45; // Bleu acier (principal / footer)
+  --dm-color-anthracite: #1a1a1a; // Noir anthracite (titres)
+  --dm-color-red: #aa0000; // Accent / CTA / statut « a finaliser »
+  --dm-color-grey-light: #e8e8e8; // Fonds de sections
+  --dm-color-grey-metal: #b5b5b5; // Bordures / secondaire
+  --dm-color-grey-text: #666666; // Texte courant secondaire
+  --dm-color-white: #ffffff;
+
+  // Statuts devis (cf. F15)
+  --dm-status-todo: #aa0000; // a finaliser
+  --dm-status-order: #d97706; // a commander
+  --dm-status-done: #2e7d32; // commande
+
+  // Typographie
+  --dm-font-title:
+    'Exo 2', system-ui, -apple-system, 'Segoe UI', roboto, sans-serif;
+  --dm-font-body:
+    inter, system-ui, -apple-system, 'Segoe UI', roboto, sans-serif;
+
+  // Echelle titres (taille / interligne) — PRD §6
+  --dm-h1-size: 45px;
+  --dm-h1-line: 58px;
+  --dm-h2-size: 30px;
+  --dm-h2-line: 44px;
+  --dm-h3-size: 22px;
+  --dm-h3-line: 32px;
+  --dm-body-size: 16px;
+  --dm-body-line: 28px;
+}
+
+// Miroir SCSS (pour calculs/mixins eventuels)
+$dm-color-steel: #2f3a45;
+$dm-color-anthracite: #1a1a1a;
+$dm-color-red: #aa0000;
+$dm-color-grey-light: #e8e8e8;
+$dm-color-grey-metal: #b5b5b5;
+$dm-color-grey-text: #666666;
+$dm-color-white: #fff;

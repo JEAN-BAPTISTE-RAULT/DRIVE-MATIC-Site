@@ -10,5 +10,7 @@
     "web/themes/contrib/**",
     "**/*.min.css"
   ],
-  "rules": {}
+  "rules": {
+    "color-hex-length": null
+  }
 }

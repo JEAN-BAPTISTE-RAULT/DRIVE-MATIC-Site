@@ -76,9 +76,17 @@ Implemente les decisions **#1** (D11/PHP/MariaDB), **#2** (SDC/BEM/sans framewor
 3. ✅ **Git** : gitignore `vendor`/core/contrib-modules, versionne `web/themes/contrib` (aligne sur ta convention WEBLEX).
 
 ## Statut
-- [ ] Plan valide
-- [ ] Scaffold Composer + modules
-- [ ] Install Drupal (MAMP)
-- [ ] Sous-theme drive_matic + build
-- [ ] Config linter + doc
+- [x] Plan valide
+- [x] Scaffold Composer + modules (Drupal 11.4.5, ~26 modules + dev tooling)
+- [x] Install Drupal (MAMP MySQL 8889, base `drivematic`) — front HTTP 200, thème drive_matic actif
+- [x] Gin admin + toolbar horizontale
+- [x] Thème drive_matic autonome (starterkit, base theme: false) + breakpoints + build SCSS (tokens Figma)
+- [x] Config exportee (config/sync, 261 fichiers)
+- [x] Linters verts (PHP/JS/CSS/Prettier) + README structure
 - [ ] Commit
+
+### Reste (hors socle minimal, a faire ensuite)
+- Strategie `settings.php`/`settings.local.php` versionnable pour l'equipe (actuellement local, gitignore).
+- Auto-hebergement des polices Exo 2 / Inter (RGPD) dans `theme/fonts/` + `@font-face`.
+- Nettoyage eventuel des types de contenu du profil `standard` (article/page/tags) vs modele ADR-002.
+- Patch `image_widget_crop` (compat jQuery) si le widget de crop bug.

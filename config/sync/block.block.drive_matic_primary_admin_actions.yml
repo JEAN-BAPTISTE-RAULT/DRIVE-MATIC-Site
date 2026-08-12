@@ -1,0 +1,20 @@
+uuid: b90e7330-62d4-4e78-9a13-c481ae08a86d
+langcode: en
+status: true
+dependencies:
+  theme:
+    - drive_matic
+_core:
+  default_config_hash: Q9_2whdOj1YIomfvsIfopROW4FT_X5pY0DjdOiOaQ5U
+id: drive_matic_primary_admin_actions
+theme: drive_matic
+region: highlighted
+weight: -5
+provider: null
+plugin: local_actions_block
+settings:
+  id: local_actions_block
+  label: 'Primary admin actions'
+  label_display: '0'
+  provider: core
+visibility: {  }

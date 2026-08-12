@@ -1,0 +1,22 @@
+uuid: 374a36c8-d20c-4153-94bf-4b980d88089f
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - drive_matic
+_core:
+  default_config_hash: eYL19CLDyinGTWYQfBD1DswWzglEotE_kHnHx3AxTXM
+id: drive_matic_powered
+theme: drive_matic
+region: sidebar_first
+weight: 0
+provider: null
+plugin: system_powered_by_block
+settings:
+  id: system_powered_by_block
+  label: 'Powered by Drupal'
+  label_display: '0'
+  provider: system
+visibility: {  }

@@ -1,0 +1,20 @@
+uuid: 78d7bd9f-6a78-47fc-b682-26ccb81b9fa5
+langcode: en
+status: true
+dependencies:
+  theme:
+    - drive_matic
+_core:
+  default_config_hash: 6aOgWsNTXjqrDm98TXSAjP6qd2nCijD1xw45MrnbK-Y
+id: drive_matic_page_title
+theme: drive_matic
+region: sidebar_first
+weight: -5
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Page title'
+  label_display: '0'
+  provider: core
+visibility: {  }

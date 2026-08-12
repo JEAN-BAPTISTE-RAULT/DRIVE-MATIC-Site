@@ -1,0 +1,84 @@
+:root {
+  --dm-color-steel: #2f3a45;
+  --dm-color-anthracite: #1a1a1a;
+  --dm-color-red: #aa0000;
+  --dm-color-grey-light: #e8e8e8;
+  --dm-color-grey-metal: #b5b5b5;
+  --dm-color-grey-text: #666666;
+  --dm-color-white: #ffffff;
+  --dm-status-todo: #aa0000;
+  --dm-status-order: #d97706;
+  --dm-status-done: #2e7d32;
+  --dm-font-title:
+    'Exo 2', system-ui, -apple-system, 'Segoe UI', roboto, sans-serif;
+  --dm-font-body:
+    inter, system-ui, -apple-system, 'Segoe UI', roboto, sans-serif;
+  --dm-h1-size: 45px;
+  --dm-h1-line: 58px;
+  --dm-h2-size: 30px;
+  --dm-h2-line: 44px;
+  --dm-h3-size: 22px;
+  --dm-h3-line: 32px;
+  --dm-body-size: 16px;
+  --dm-body-line: 28px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+img,
+picture,
+video,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+body {
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  color: var(--dm-color-anthracite);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--dm-font-title);
+  font-weight: 700;
+  color: var(--dm-color-anthracite);
+  margin: 0 0 0.5em;
+}
+
+h1 {
+  font-size: var(--dm-h1-size);
+  line-height: var(--dm-h1-line);
+}
+
+h2 {
+  font-size: var(--dm-h2-size);
+  line-height: var(--dm-h2-line);
+}
+
+h3 {
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+}

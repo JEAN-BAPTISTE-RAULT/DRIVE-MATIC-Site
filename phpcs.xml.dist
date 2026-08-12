@@ -13,6 +13,8 @@
   <exclude-pattern>*/web/libraries/*</exclude-pattern>
   <exclude-pattern>*/web/modules/contrib/*</exclude-pattern>
   <exclude-pattern>*/web/themes/contrib/*</exclude-pattern>
+  <exclude-pattern>*/web/sites/*</exclude-pattern>
+  <exclude-pattern>*/config/sync/*</exclude-pattern>
   <exclude-pattern>*.min.css</exclude-pattern>
   <exclude-pattern>*.min.js</exclude-pattern>
 

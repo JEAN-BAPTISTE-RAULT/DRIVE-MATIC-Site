@@ -1,0 +1,11 @@
+uuid: 594af2d3-2993-4fcd-a852-4284f426ce0a
+langcode: en
+status: true
+dependencies:
+  module:
+    - recaptcha_v3
+id: recaptcha_v3_action.token
+label: Token
+description: null
+targetEntityType: recaptcha_v3_action
+cache: true

@@ -1,0 +1,22 @@
+uuid: 1cbe5615-bb9a-4d3a-9f38-0040c2d75d8c
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - drive_matic
+_core:
+  default_config_hash: VhBzWb7lMRtIOg9G7VSw_0uopi-7zXeHq4vXqqV1HFE
+id: drive_matic_breadcrumbs
+theme: drive_matic
+region: breadcrumb
+weight: 0
+provider: null
+plugin: system_breadcrumb_block
+settings:
+  id: system_breadcrumb_block
+  label: Breadcrumbs
+  label_display: '0'
+  provider: system
+visibility: {  }

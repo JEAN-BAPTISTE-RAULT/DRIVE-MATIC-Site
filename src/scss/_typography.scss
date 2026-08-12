@@ -1,0 +1,34 @@
+// Typographie globale — polices Exo 2 (titres) / Inter (corps).
+// Les fichiers de polices seront auto-heberges (RGPD) ; @font-face a ajouter
+// dans les fondations une fois les fichiers integres (theme/fonts/).
+
+body {
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  color: var(--dm-color-anthracite);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--dm-font-title);
+  font-weight: 700;
+  color: var(--dm-color-anthracite);
+  margin: 0 0 0.5em;
+}
+
+h1 {
+  font-size: var(--dm-h1-size);
+  line-height: var(--dm-h1-line);
+}
+
+h2 {
+  font-size: var(--dm-h2-size);
+  line-height: var(--dm-h2-line);
+}
+
+h3 {
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+}
