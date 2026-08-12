@@ -5,6 +5,9 @@
 ## Décisions
 - **Slideshows = Swiper** (vendorisé dans le thème, module a11y activé, `Drupal.behaviors` + `once`, `prefers-reduced-motion`).
 - **Crop requis par ratio** : le widget média impose le recadrage aux crops `1:1 / 16:9 / 12:5` → ratio toujours respecté.
+- **Vidéo = `video_embed_field` (contrib) + façade** (V1) : le lien embed est un champ `video_embed_field` avec **allowlist providers** (`youtube`/`vimeo`, contrôle serveur re-vérifié à la validation), distinct de la miniature (média image 16:9). Rendu en **façade** : l'iframe est placée dans un `<template>` inerte et injectée seulement au clic (behavior `driveMaticVideoFacade` + `once`, bouton accessible clavier) → aucun chargement tiers avant interaction (perf + RGPD). NB : `allowed_providers` se stocke en **map** (`youtube: youtube`), pas en liste.
+- **Options d'affichage = champs `list_string`** (V1) : `image_text_50` porte `field_text_position` (`left`/`right`, inversion via `flex-direction: row-reverse`) et `field_background` (`white`/`grey`), mappés en props du SDC. Plus simple qu'un plugin de comportement Paragraphs pour 2 options binaires.
+- **Liaison prop/slot** : champs scalaires (titre, légende, options) passés en **props** (`paragraph.field_x.value`, masqués dans le view display) ; champs renderable (description, lien, fichier, image, vidéo) injectés en **slots** via leurs formatters (`content.field_x`). L'image = média + mode d'affichage par ratio (`ratio_1_1`/`ratio_16_9`/`ratio_12_5`/`free`).
 
 ## 1. Architecture
 - **Config** : `paragraphs.paragraphs_type.*` (×27) + champs (`field.storage`/`field.field`) + form/view displays.
@@ -43,7 +46,7 @@ Par vague : créer une page, placer les paragraphes, vérifier en **navigateur**
 ## Statut
 - [x] Plan validé (Swiper, crop requis)
 - [x] V0 — Socle (build SCSS SDC, type page hôte, text_centered validé bout-en-bout)
-- [ ] V1 — Textes & médias
+- [x] V1 — Textes & médias (text_left_aligned, image_text_50, image_text_100, image_full, image_centered, video_centered — validés navigateur : responsive WebP par ratio, options 50/50, façade vidéo au clic)
 - [ ] V2 — Accordéon
 - [ ] V3 — Grille & éditorial
 - [ ] V4 — Home
