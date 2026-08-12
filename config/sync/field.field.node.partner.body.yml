@@ -1,0 +1,24 @@
+uuid: 5f18dbd2-0037-4d8e-b12f-b7879c758ede
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.partner
+  module:
+    - text
+id: node.partner.body
+field_name: body
+entity_type: node
+bundle: partner
+label: Corps
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: false
+  required_summary: false
+  allowed_formats: {  }
+field_type: text_with_summary
