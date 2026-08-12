@@ -1,0 +1,30 @@
+uuid: 66589ae5-542c-4fad-bbc8-eb3899a83bd4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_paragraphs
+    - node.type.page
+    - paragraphs.paragraphs_type.text_centered
+  module:
+    - entity_reference_revisions
+id: node.page.field_paragraphs
+field_name: field_paragraphs
+entity_type: node
+bundle: page
+label: Contenu
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      text_centered: text_centered
+    target_bundles_drag_drop:
+      text_centered:
+        weight: 0
+        enabled: true
+field_type: entity_reference_revisions

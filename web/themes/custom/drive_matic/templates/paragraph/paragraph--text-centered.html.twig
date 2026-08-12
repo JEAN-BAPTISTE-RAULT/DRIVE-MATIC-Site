@@ -1,0 +1,11 @@
+{#
+  Liaison paragraphe `text_centered` -> SDC `drive_matic:text-centered`.
+  Les champs sont rendus par leurs formatters (view display) et injectés en slots.
+#}
+{% embed 'drive_matic:text-centered' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block description %}{{ content.field_description }}{% endblock %}
+  {% block actions %}{{ content.field_link }}{% endblock %}
+  {% block download %}{{ content.field_file }}{% endblock %}
+{% endembed %}

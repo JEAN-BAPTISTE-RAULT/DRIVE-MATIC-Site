@@ -1,0 +1,36 @@
+// SDC « Bloc :: Texte centré » — CSS scopé (BEM), consomme les tokens globaux.
+
+.text-centered {
+  max-width: 800px;
+  margin-inline: auto;
+  padding-block: 2rem;
+  text-align: center;
+
+  &__title {
+    margin-bottom: 1rem;
+    color: var(--dm-color-anthracite);
+  }
+
+  &__description {
+    color: var(--dm-color-grey-text);
+  }
+
+  &__actions {
+    margin-top: 1.5rem;
+
+    a {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      background: var(--dm-color-red);
+      color: var(--dm-color-white);
+      font-family: var(--dm-font-title);
+      text-decoration: none;
+    }
+  }
+
+  &__download {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+}

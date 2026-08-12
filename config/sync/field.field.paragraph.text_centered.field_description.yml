@@ -1,0 +1,22 @@
+uuid: 916f0007-de85-4e18-8f98-20db8ac455e6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_description
+    - paragraphs.paragraphs_type.text_centered
+  module:
+    - text
+id: paragraph.text_centered.field_description
+field_name: field_description
+entity_type: paragraph
+bundle: text_centered
+label: Description
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

@@ -1,0 +1,29 @@
+.text-centered {
+  max-width: 800px;
+  margin-inline: auto;
+  padding-block: 2rem;
+  text-align: center;
+}
+.text-centered__title {
+  margin-bottom: 1rem;
+  color: var(--dm-color-anthracite);
+}
+.text-centered__description {
+  color: var(--dm-color-grey-text);
+}
+.text-centered__actions {
+  margin-top: 1.5rem;
+}
+.text-centered__actions a {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-title);
+  text-decoration: none;
+}
+.text-centered__download {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}

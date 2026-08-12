@@ -1,0 +1,19 @@
+uuid: 099b95df-2bee-44ab-bbdd-b22a6fba3711
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.text_centered
+id: paragraph.text_centered.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: text_centered
+label: Titre
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

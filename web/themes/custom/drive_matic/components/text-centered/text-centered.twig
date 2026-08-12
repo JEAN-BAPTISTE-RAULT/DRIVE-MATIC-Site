@@ -1,0 +1,19 @@
+{#
+  SDC « Bloc :: Texte centré ».
+  Prop : title. Slots (via embed/block) : description, actions, download.
+  Fondations globales (tokens/typo) + CSS scopé BEM.
+#}
+<div class="text-centered">
+  {% if title %}
+    <h2 class="text-centered__title">{{ title }}</h2>
+  {% endif %}
+  {% if block('description') is not empty %}
+    <div class="text-centered__description">{{ block('description') }}</div>
+  {% endif %}
+  {% if block('actions') is not empty %}
+    <div class="text-centered__actions">{{ block('actions') }}</div>
+  {% endif %}
+  {% if block('download') is not empty %}
+    <div class="text-centered__download">{{ block('download') }}</div>
+  {% endif %}
+</div>
