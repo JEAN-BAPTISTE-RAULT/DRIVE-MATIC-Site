@@ -51,8 +51,8 @@ Projet **Drupal 11** (`drupal/recommended-project`), docroot **`web/`**.
 
 - **Thème front** : `drive_matic` (`web/themes/custom/drive_matic/`) — thème **custom autonome** généré via `starterkit` (`base theme: false`, sans `stable9`, D12-proof), **SDC-first** (composants dans `components/`).
 - **Thème admin** : **Gin** (toolbar horizontale).
-- **Build front** : les **fondations** SCSS (`src/scss/` → `css/style.css`, library `drive_matic/global`) et le **CSS des SDC** (`components/**/*.scss` → `.css` co-localisé, auto-attaché par SDC) sont compilés par Dart Sass + PostCSS/autoprefixer. Scripts npm `css` (`css:foundations` + `css:components` + `css:prefix`), `build`, `css:watch`.
-- **Config** : versionnée dans **`config/sync/`** (`drush cex` / `drush cim`).
+- **Build front** : les **fondations** SCSS (`src/scss/` → `css/style.css`, library `drive_matic/global`) et le **CSS des SDC** (`components/**/*.scss` → `.css` co-localisé, auto-attaché par SDC) sont compilés par Dart Sass + PostCSS/autoprefixer. Scripts npm `css` (`css:foundations` + `css:components` + `css:prefix`), `build`, `css:watch`. Le `.css` généré des SDC est un **artefact** (ignoré par Prettier via `.prettierignore` — Sass impose des choix que Prettier refuse) ; seul le `.scss` source est vérifié (Stylelint + Prettier).
+- **Config** : versionnée dans **`config/sync/`** (`drush cex` / `drush cim`). Après avoir écrit de la config à la main, lancer `drush cim` puis **`drush cex`** pour la réécrire sous forme canonique (Drupal trie les clés) avant commit.
 - **Breakpoints** : `drive_matic.breakpoints.yml` (xs→xxl, 1x/2x).
 - **Modules clés** : Paragraphs, Webform (+ reCAPTCHA v3, Honeypot), Media (+ Media Library, Responsive Image) + Crop + Image Widget Crop, Metatag, Pathauto, Redirect, Simple Sitemap, Rabbit Hole (fragments sans page publique), Linkit + Link Target (liens internes/externes + cible), Video Embed Field, Symfony Mailer (+ Mailer Transport), Better Exposed Filters, Easy Breadcrumb, Twig Tweak, Rename Admin Paths.
 
@@ -66,6 +66,12 @@ Projet **Drupal 11** (`drupal/recommended-project`), docroot **`web/`**.
 
 **Paragraphes / SDC** : chaque paragraphe = un type Paragraph + un **SDC** (`components/<nom>/`) ; la liaison se fait via `paragraph--<type>.html.twig` (`{% embed 'drive_matic:<nom>' %}` → props + slots accédés par `{{ block('nom') }}`).
 
+- **Convention prop/slot** : les champs **scalaires** (titre, légende, options) sont passés en **props** (`paragraph.field_x.value`) et **masqués** dans le view display ; les champs **renderable** (description, lien, fichier, image, vidéo) sont injectés en **slots** via leurs formatters (`content.field_x`, donc présents dans le view display).
+- **Storages de champ partagés** sur l'entité `paragraph` : `field_title` (string), `field_description` (text_long), `field_link` (link), `field_file` (file), `field_image` (ref media), `field_caption` (string), `field_video` (video_embed_field), `field_text_position` / `field_background` (list_string, options 50/50).
+- **Image** = média + **mode d'affichage par ratio** (`ratio_1_1` / `ratio_16_9` / `ratio_12_5` / `free`), cf. ADR-004. Crop **requis** à l'import.
+- **Vidéo** (`video_centered`) = **façade** : champ `video_embed_field` (allowlist providers `youtube`/`vimeo`, re-vérifiée serveur) + miniature média 16:9 ; l'iframe est rendue dans un `<template>` inerte et injectée seulement au clic (behavior `driveMaticVideoFacade` + `once`, bouton accessible clavier). Cf. [ADR-006](.claude/decisions/006-video-embed-facade.md).
+- **Bibliothèque** (ADR-001) livrée par vagues (`docs/plans/paragraphs-sdc.md`) : **V0** `text_centered` ; **V1** `text_left_aligned`, `image_text_50` (options texte G/D + fond gris/blanc), `image_text_100`, `image_centered`, `image_full` (bannière 12:5), `video_centered`.
+
 ## Structure du projet
 
 ```
@@ -77,7 +83,7 @@ web/                         docroot Drupal
 src/scss/                    sources SCSS (fondations : tokens, reset, typographie)
 config/sync/                 configuration Drupal versionnée
 docs/                        PRD, E2E, plans, études (content-types, paragraphs…)
-.claude/decisions/           ADR (001 paragraphes · 002 types de contenu · 003 référentiel véhicules · 004 pipeline images · 005 config par environnement)
+.claude/decisions/           ADR (001 paragraphes · 002 types de contenu · 003 référentiel véhicules · 004 pipeline images · 005 config par environnement · 006 vidéo embed + façade)
 composer.json                projet Drupal + modules
 package.json                 build front + lint
 ```

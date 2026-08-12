@@ -10,6 +10,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-003](003-referentiel-vehicules.md) | Referentiel vehicules (taxonomies) | Accepte | 2026-08-12 |
 | [ADR-004](004-pipeline-images.md) | Pipeline images | Accepte | 2026-08-12 |
 | [ADR-005](005-config-par-environnement.md) | Config specifique a l'environnement (mail, secrets) | Accepte | 2026-08-12 |
+| [ADR-006](006-video-embed-facade.md) | Video — champ embed (video_embed_field) + facade | Accepte | 2026-08-13 |
 
 ## Quand creer un ADR
 
