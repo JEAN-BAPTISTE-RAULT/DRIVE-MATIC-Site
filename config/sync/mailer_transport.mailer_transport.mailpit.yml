@@ -1,0 +1,15 @@
+uuid: 3e70dc8e-865b-4a88-ac08-4e451e735f89
+langcode: en
+status: true
+dependencies: {  }
+id: mailpit
+label: 'Mailpit (local)'
+plugin: smtp
+configuration:
+  user: ''
+  pass: ''
+  host: 127.0.0.1
+  port: 1025
+  query:
+    verify_peer: false
+    local_domain: ''
