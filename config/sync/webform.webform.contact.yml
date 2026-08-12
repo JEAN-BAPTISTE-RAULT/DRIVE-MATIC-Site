@@ -17,31 +17,191 @@ id: contact
 title: Contact
 description: 'Basic email contact webform.'
 categories: {  }
-elements: |
-  name:
-    '#title': 'Your Name'
+elements: |-
+  identite:
+    '#type': fieldset
+    '#title': 'Vous êtes'
+    vous_etes:
+      '#type': select
+      '#title': 'Vous êtes'
+      '#title_display': invisible
+      '#required': true
+      '#empty_option': Sélectionner
+      '#options':
+        concession: 'Une concession'
+        auto_ecole: 'Une auto-école'
+        taxi: 'Un taxi'
+        particulier: 'Un particulier'
+    entreprise:
+      '#type': textfield
+      '#title': "Nom de l'entreprise"
+      '#states':
+        required:
+          ':input[name="vous_etes"]':
+            '!value': particulier
+    adresse:
+      '#type': textfield
+      '#title': Adresse
+      '#required': true
+    complement:
+      '#type': textfield
+      '#title': "Complément d'adresse"
+    code_postal:
+      '#type': textfield
+      '#title': 'Code postal'
+      '#required': true
+      '#pattern': '\d{5}'
+      '#placeholder': 'Ex : 13600'
+    ville:
+      '#type': textfield
+      '#title': Ville
+      '#required': true
+    civilite:
+      '#type': select
+      '#title': Civilité
+      '#required': true
+      '#empty_option': Sélectionner
+      '#options':
+        madame: Madame
+        monsieur: Monsieur
+    prenom:
+      '#type': textfield
+      '#title': Prénom
+      '#required': true
+    nom:
+      '#type': textfield
+      '#title': Nom
+      '#required': true
+      '#placeholder': 'Votre nom'
+    telephone:
+      '#type': tel
+      '#title': Téléphone
+      '#required': true
+    email:
+      '#type': email
+      '#title': E-mail
+      '#required': true
+      '#placeholder': 'Ex : monemail@gmail.com'
+  demande_concerne:
+    '#type': select
+    '#title': 'Votre demande concerne'
+    '#required': true
+    '#empty_option': Sélectionner
+    '#options':
+      devis: 'Demande de devis'
+      sav: SAV
+      question: 'Une question'
+  marque:
+    '#type': webform_term_select
+    '#title': Marque
+    '#vocabulary': vehicle_brand
+    '#empty_option': Marque
+    '#states':
+      visible:
+        - ':input[name="demande_concerne"]':
+            value: devis
+        - or
+        - ':input[name="demande_concerne"]':
+            value: sav
+      required:
+        - ':input[name="demande_concerne"]':
+            value: devis
+        - or
+        - ':input[name="demande_concerne"]':
+            value: sav
+  modele:
+    '#type': webform_term_select
+    '#title': Modèle
+    '#vocabulary': vehicle_model
+    '#empty_option': Modèle
+    '#states':
+      visible:
+        - ':input[name="demande_concerne"]':
+            value: devis
+        - or
+        - ':input[name="demande_concerne"]':
+            value: sav
+      required:
+        - ':input[name="demande_concerne"]':
+            value: devis
+        - or
+        - ':input[name="demande_concerne"]':
+            value: sav
+  motorisation:
+    '#type': webform_term_select
+    '#title': Motorisation
+    '#vocabulary': motorisation
+    '#empty_option': Sélectionner
+    '#states':
+      visible:
+        - ':input[name="demande_concerne"]':
+            value: devis
+        - or
+        - ':input[name="demande_concerne"]':
+            value: sav
+      required:
+        - ':input[name="demande_concerne"]':
+            value: devis
+        - or
+        - ':input[name="demande_concerne"]':
+            value: sav
+  numero_chassis:
     '#type': textfield
-    '#required': true
-    '#default_value': '[current-user:display-name]'
-  email:
-    '#title': 'Your Email'
-    '#type': email
-    '#required': true
-    '#default_value': '[current-user:mail]'
-  subject:
-    '#title': Subject
+    '#title': 'N° de châssis'
+    '#help': 'Voir la case E de votre carte grise.'
+    '#states':
+      visible:
+        - ':input[name="demande_concerne"]':
+            value: devis
+        - or
+        - ':input[name="demande_concerne"]':
+            value: sav
+      required:
+        - ':input[name="demande_concerne"]':
+            value: devis
+        - or
+        - ':input[name="demande_concerne"]':
+            value: sav
+  type_chassis:
     '#type': textfield
-    '#required': true
-    '#test': 'Testing contact webform from [site:name]'
+    '#title': 'Type châssis'
+    '#help': 'Voir la case D.2 de votre carte grise.'
+    '#states':
+      visible:
+        ':input[name="demande_concerne"]':
+          value: devis
+      required:
+        ':input[name="demande_concerne"]':
+          value: devis
+  document:
+    '#type': managed_file
+    '#title': 'Ajouter un document'
+    '#description': 'Formats : JPG, PDF. 5 Mo maximum.'
+    '#uri_scheme': private
+    '#max_filesize': '5'
+    '#file_extensions': 'jpg jpeg pdf'
+    '#states':
+      visible:
+        ':input[name="demande_concerne"]':
+          value: sav
   message:
-    '#title': Message
     '#type': textarea
+    '#title': 'Votre message'
+    '#placeholder': 'Description de votre message'
+    '#states':
+      visible:
+        ':input[name="demande_concerne"]':
+          filled: true
+      required:
+        ':input[name="demande_concerne"]':
+          filled: true
+  consentement:
+    '#type': checkbox
+    '#title': "J'autorise ces informations à être utilisées par Drive Matic Legrand"
     '#required': true
-    '#test': 'Please ignore this email.'
   actions:
     '#type': webform_actions
-    '#title': 'Submit button(s)'
-    '#submit__label': 'Send message'
+    '#submit__label': Envoyer
 css: ''
 javascript: ''
 settings:
@@ -83,6 +243,7 @@ settings:
   form_access_denied_message: ''
   form_access_denied_attributes: {  }
   form_file_limit: ''
+  form_file_limit_message: ''
   form_attributes: {  }
   form_method: ''
   form_action: ''
@@ -146,10 +307,10 @@ settings:
   draft_loaded_message: ''
   draft_pending_single_message: ''
   draft_pending_multiple_message: ''
-  confirmation_type: url_message
+  confirmation_type: message
   confirmation_url: '<front>'
   confirmation_title: ''
-  confirmation_message: 'Your message has been sent.'
+  confirmation_message: 'Votre demande a bien été envoyée ! Notre équipe vous répondra dans les meilleurs délais.'
   confirmation_attributes: {  }
   confirmation_back: true
   confirmation_back_label: ''
