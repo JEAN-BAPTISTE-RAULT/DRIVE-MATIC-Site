@@ -1,0 +1,24 @@
+uuid: 8214a0da-e13a-43f9-add5-0adedb6577c7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_image
+    - media.type.image
+    - paragraphs.paragraphs_type.image_centered
+id: paragraph.image_centered.field_image
+field_name: field_image
+entity_type: paragraph
+bundle: image_centered
+label: Image
+description: 'Image affichée sans recadrage, centrée (hauteur proportionnelle).'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+field_type: entity_reference

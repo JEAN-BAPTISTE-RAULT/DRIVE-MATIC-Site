@@ -1,0 +1,10 @@
+uuid: b483cf19-559d-4b7e-ac18-187bc491ddc1
+langcode: en
+status: true
+dependencies: {  }
+id: image_centered
+label: 'Bloc :: Image centrée'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

@@ -1,0 +1,16 @@
+.image-centered {
+  margin: 0;
+  padding-block: 2rem;
+  text-align: center;
+}
+.image-centered__media img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+.image-centered__caption {
+  margin-top: 0.5rem;
+  color: var(--dm-color-grey-text);
+  font-size: 0.9rem;
+}

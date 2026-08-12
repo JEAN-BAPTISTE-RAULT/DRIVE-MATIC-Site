@@ -1,0 +1,19 @@
+uuid: bdced1a6-cd94-4512-859b-72eb9176a922
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_caption
+    - paragraphs.paragraphs_type.image_centered
+id: paragraph.image_centered.field_caption
+field_name: field_caption
+entity_type: paragraph
+bundle: image_centered
+label: 'Légende de l’image'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

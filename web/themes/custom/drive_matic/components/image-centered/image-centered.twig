@@ -1,0 +1,11 @@
+{#
+  SDC « Bloc :: Image centrée ».
+  Prop : caption. Slot (via embed/block) : image.
+  Image sans crop, centrée dans une largeur maximale.
+#}
+<figure class="image-centered">
+  <div class="image-centered__media">{{ block('image') }}</div>
+  {% if caption %}
+    <figcaption class="image-centered__caption">{{ caption }}</figcaption>
+  {% endif %}
+</figure>

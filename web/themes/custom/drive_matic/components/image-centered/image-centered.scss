@@ -1,0 +1,20 @@
+// SDC « Bloc :: Image centrée » — CSS scopé (BEM), consomme les tokens globaux.
+
+.image-centered {
+  margin: 0;
+  padding-block: 2rem;
+  text-align: center;
+
+  &__media img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+  }
+
+  &__caption {
+    margin-top: 0.5rem;
+    color: var(--dm-color-grey-text);
+    font-size: 0.9rem;
+  }
+}

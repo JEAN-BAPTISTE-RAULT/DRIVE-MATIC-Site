@@ -1,0 +1,9 @@
+{#
+  Liaison paragraphe `image_centered` -> SDC `drive_matic:image-centered`.
+  Image renderable en slot (média responsive sans crop, mode d’affichage « free »).
+#}
+{% embed 'drive_matic:image-centered' with {
+  caption: paragraph.field_caption.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+{% endembed %}
