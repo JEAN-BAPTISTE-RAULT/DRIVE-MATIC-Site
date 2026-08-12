@@ -1,0 +1,24 @@
+uuid: 4b9ab6db-c9cf-475c-81ec-3a020789ad0c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_motorisations
+    - taxonomy.vocabulary.motorisation
+    - taxonomy.vocabulary.vehicle_model
+id: taxonomy_term.vehicle_model.field_motorisations
+field_name: field_motorisations
+entity_type: taxonomy_term
+bundle: vehicle_model
+label: Motorisations
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      motorisation: motorisation
+field_type: entity_reference

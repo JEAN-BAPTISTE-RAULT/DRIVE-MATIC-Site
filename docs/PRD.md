@@ -343,6 +343,9 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 ### Contenu editorial (public)
 Le modele de contenu editorial (types de contenu, taxonomie, mapping paragraphes) est acte dans [ADR-002](../.claude/decisions/002-types-de-contenu.md) et detaille dans `docs/active/content-types/model.md` : **12 nodes publics** (`homepage`, `transform`, `product`, `faq`, `documents`, `corporate`, `brands`, `contact`, `partner`, `legals`, `news`, `all_news`), **3 nodes « fragments »** sans page publique (`question`, `document`, `brand` — hors sitemap, URL bloquee), **1 taxonomie** (`categories`). Conventions transverses : champ « lien » interne/externe + cible d'onglet ; « fichier telechargeable » avec nom/format/poids ; metatags (body→description, titre→meta title) ; sitemap = nodes inclus / entites exclues.
 
+### Referentiel vehicules (partage)
+Trois taxonomies reutilisables (cf. [ADR-003](../.claude/decisions/003-referentiel-vehicules.md)), partagees par le webform contact (F10) et le configurateur (F14/F17) : `vehicle_make` (31 marques), `vehicle_model` (124 modeles ; champs `field_make` + `field_motorisations`), `motorisation` (4 : Manuelle, Automatique, Hybride, Électrique). Vocabulaires + champs versionnes ; termes = contenu (seeds depuis l'Excel, a recreer en prod).
+
 ### Regles de coherence
 - Un devis porte 1 a **10** configurations maximum.
 - Le tarif remise d'une ligne = remise par defaut du partenaire **ou** remise exceptionnelle saisie par Drive Matic pour ce devis (n'altere pas le taux par defaut).

@@ -1,0 +1,9 @@
+uuid: 60247530-a84a-4e48-a4bf-f0de08369725
+langcode: en
+status: true
+dependencies: {  }
+name: Modèle
+vid: vehicle_model
+description: null
+weight: 0
+new_revision: false

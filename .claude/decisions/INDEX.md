@@ -7,6 +7,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 |---|---|---|---|
 | [ADR-001](001-bibliotheque-paragraphes.md) | Bibliotheque de Paragraphes | Accepte | 2026-08-11 |
 | [ADR-002](002-types-de-contenu.md) | Types de contenu editorial | Accepte | 2026-08-11 |
+| [ADR-003](003-referentiel-vehicules.md) | Referentiel vehicules (taxonomies) | Accepte | 2026-08-12 |
 
 ## Quand creer un ADR
 
