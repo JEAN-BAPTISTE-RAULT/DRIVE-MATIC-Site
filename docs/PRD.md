@@ -36,7 +36,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 | 4 | **Comptes partenaires crees uniquement dans le back-office Drupal** (pas d'auto-inscription) | Les partenaires sont des clients _autorises_, valides par DRIVE-MATIC |
 | 5 | **Cloisonnement strict des donnees partenaires**, autorisation systematiquement re-verifiee cote serveur | Securite : jamais d'exposition de donnees partenaire a un utilisateur anonyme |
 | 6 | **Site en francais uniquement** (pas de traduction de contenu) ; le code reste traduisible (`t()` / `\|t`) par convention | Audience et marche francophones ; evite la complexite multilingue non requise |
-| 7 | Theme front = **sous-theme custom heritant d'Olivero** (theme par defaut de Drupal 11) | Base accessible et maintenue, demarrage rapide, markup surchargeable au besoin |
+| 7 | Theme front = **theme custom autonome** genere via `starterkit`, rendu **independant** (templates copies, `base theme: false`, **sans dependance a `stable9`** deprecie en Drupal 12) | Markup 100% maitrise pour un design sur-mesure + bibliotheque SDC ; perenne pour Drupal 12 |
 | 8 | **Accessibilite visee : RGAA / WCAG 2.1 niveau AA** | Audience incluant des personnes a mobilite reduite (PMR) ; exigence structurante pour le theme et les composants |
 | 9 | Theme d'administration **Gin**, configure avec la **toolbar d'administration horizontale** (en haut de l'ecran) | Back-office moderne et ergonomique pour les administrateurs Drive Matic |
 | 10 | **Tout le front (CSS + Twig) est gere via des SDC** (Single Directory Components) : chaque composant = un dossier autonome (`*.component.yml`, Twig, CSS, JS, props/slots). Aucun CSS/Twig hors SDC, hormis les fondations globales | Composants isoles, reutilisables et testables ; co-localisation CSS/Twig ; reduit la dette front et facilite la maintenance |
@@ -449,7 +449,7 @@ Couleurs de statut des devis (cf. F15) : rouge « a finaliser », orange « a co
 
 Effet titres : ombre portee `drop-shadow rgba(0,0,0,0.35)`, rayon 25. Polices **Exo 2** (titres) et **Inter** (corps) — a **auto-heberger** (pas de CDN Google Fonts) pour la conformite RGPD. `[INFERE]`
 
-Le theme (sous-theme Olivero, decision #7) applique ces tokens, dans le respect du niveau **RGAA / WCAG 2.1 AA** (decision #8 : contrastes, navigation clavier, semantique).
+Le theme (custom autonome via starterkit, decision #7) applique ces tokens, dans le respect du niveau **RGAA / WCAG 2.1 AA** (decision #8 : contrastes, navigation clavier, semantique).
 
 ## 7. Milestones
 
