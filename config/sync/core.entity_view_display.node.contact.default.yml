@@ -1,0 +1,52 @@
+uuid: 4f7644c7-dbf2-43de-bb72-558ebd610d51
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.contact.body
+    - field.field.node.contact.field_image
+    - field.field.node.contact.field_webform
+    - node.type.contact
+  module:
+    - image
+    - text
+    - user
+    - webform
+id: node.contact.default
+targetEntityType: node
+bundle: contact
+mode: default
+content:
+  body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_image:
+    type: image
+    label: hidden
+    settings:
+      image_link: ''
+      image_style: ''
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_webform:
+    type: webform_entity_reference_entity_view
+    label: hidden
+    settings:
+      source_entity: true
+      lazy: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden: {  }
