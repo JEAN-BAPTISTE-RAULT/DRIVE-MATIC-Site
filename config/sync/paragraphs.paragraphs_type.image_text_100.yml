@@ -1,0 +1,10 @@
+uuid: fcfde4a8-d802-4e28-801f-80856992d218
+langcode: en
+status: true
+dependencies: {  }
+id: image_text_100
+label: 'Bloc :: Image + texte 100%'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

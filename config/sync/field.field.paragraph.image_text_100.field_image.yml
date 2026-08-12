@@ -1,0 +1,24 @@
+uuid: ab961eb2-76e3-44c6-aada-7b17f87cfe85
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_image
+    - media.type.image
+    - paragraphs.paragraphs_type.image_text_100
+id: paragraph.image_text_100.field_image
+field_name: field_image
+entity_type: paragraph
+bundle: image_text_100
+label: Image
+description: 'Image affichée sans recadrage (largeur pleine, hauteur proportionnelle).'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+field_type: entity_reference

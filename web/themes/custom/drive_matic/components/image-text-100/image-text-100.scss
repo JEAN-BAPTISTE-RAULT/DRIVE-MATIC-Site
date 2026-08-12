@@ -1,0 +1,53 @@
+// SDC « Bloc :: Image + texte 100% » — CSS scopé (BEM), consomme les tokens globaux.
+
+.image-text-100 {
+  padding-block: 2rem;
+
+  &__media {
+    margin: 0;
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__caption {
+    margin-top: 0.5rem;
+    color: var(--dm-color-grey-text);
+    font-size: 0.9rem;
+  }
+
+  &__content {
+    margin-top: 1.5rem;
+  }
+
+  &__title {
+    margin-bottom: 1rem;
+    color: var(--dm-color-anthracite);
+  }
+
+  &__description {
+    color: var(--dm-color-grey-text);
+  }
+
+  &__actions {
+    margin-top: 1.5rem;
+
+    a {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      background: var(--dm-color-red);
+      color: var(--dm-color-white);
+      font-family: var(--dm-font-title);
+      text-decoration: none;
+    }
+  }
+
+  &__download {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+}

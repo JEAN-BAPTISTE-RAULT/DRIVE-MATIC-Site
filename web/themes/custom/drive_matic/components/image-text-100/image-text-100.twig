@@ -1,0 +1,27 @@
+{#
+  SDC « Bloc :: Image + texte 100% ».
+  Props : title, caption. Slots (via embed/block) : image, description, actions, download.
+  Image pleine largeur (sans crop) au-dessus du contenu textuel.
+#}
+<div class="image-text-100">
+  <figure class="image-text-100__media">
+    {{ block('image') }}
+    {% if caption %}
+      <figcaption class="image-text-100__caption">{{ caption }}</figcaption>
+    {% endif %}
+  </figure>
+  <div class="image-text-100__content">
+    {% if title %}
+      <h2 class="image-text-100__title">{{ title }}</h2>
+    {% endif %}
+    {% if block('description') is not empty %}
+      <div class="image-text-100__description">{{ block('description') }}</div>
+    {% endif %}
+    {% if block('actions') is not empty %}
+      <div class="image-text-100__actions">{{ block('actions') }}</div>
+    {% endif %}
+    {% if block('download') is not empty %}
+      <div class="image-text-100__download">{{ block('download') }}</div>
+    {% endif %}
+  </div>
+</div>

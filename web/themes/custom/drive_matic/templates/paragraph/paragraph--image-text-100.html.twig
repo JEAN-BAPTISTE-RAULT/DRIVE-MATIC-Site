@@ -1,0 +1,13 @@
+{#
+  Liaison paragraphe `image_text_100` -> SDC `drive_matic:image-text-100`.
+  Image renderable en slot (média responsive sans crop, mode d’affichage « free »).
+#}
+{% embed 'drive_matic:image-text-100' with {
+  title: paragraph.field_title.value,
+  caption: paragraph.field_caption.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+  {% block description %}{{ content.field_description }}{% endblock %}
+  {% block actions %}{{ content.field_link }}{% endblock %}
+  {% block download %}{{ content.field_file }}{% endblock %}
+{% endembed %}
