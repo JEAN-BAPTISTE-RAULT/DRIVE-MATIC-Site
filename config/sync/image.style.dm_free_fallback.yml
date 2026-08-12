@@ -1,0 +1,15 @@
+uuid: 5dc15423-a8a2-4b68-9b6c-8705a010d673
+langcode: en
+status: true
+dependencies: {  }
+name: dm_free_fallback
+label: 'Sans crop fallback'
+effects:
+  8e072b83-361c-4839-b9d7-9e262ffcfe00:
+    uuid: 8e072b83-361c-4839-b9d7-9e262ffcfe00
+    id: image_scale
+    weight: 0
+    data:
+      width: 1440
+      height: null
+      upscale: false

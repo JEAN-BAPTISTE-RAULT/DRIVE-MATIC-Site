@@ -1,0 +1,32 @@
+uuid: 3b5eefaf-3686-426d-8747-028d46f4ec3f
+langcode: en
+status: true
+dependencies:
+  config:
+    - crop.type.crop_1_1
+  module:
+    - crop
+name: dm_1_1_1920
+label: '1:1 1920px (WebP)'
+effects:
+  593be96a-fe52-4bfa-aca2-6e5668a11a24:
+    uuid: 593be96a-fe52-4bfa-aca2-6e5668a11a24
+    id: crop_crop
+    weight: 0
+    data:
+      crop_type: crop_1_1
+      automatic_crop_provider: null
+  f3f5703f-0604-444c-a08b-b7e02b5bbd00:
+    uuid: f3f5703f-0604-444c-a08b-b7e02b5bbd00
+    id: image_scale
+    weight: 1
+    data:
+      width: 1920
+      height: null
+      upscale: false
+  abeb6af5-e279-4077-9f55-005ae058ed0b:
+    uuid: abeb6af5-e279-4077-9f55-005ae058ed0b
+    id: image_convert
+    weight: 2
+    data:
+      extension: webp

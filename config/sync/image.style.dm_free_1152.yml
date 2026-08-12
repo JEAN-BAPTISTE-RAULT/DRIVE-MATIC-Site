@@ -1,0 +1,21 @@
+uuid: 1dc419ef-9f57-4832-9a66-dd736f505fe8
+langcode: en
+status: true
+dependencies: {  }
+name: dm_free_1152
+label: 'Sans crop 1152px (WebP)'
+effects:
+  0ce95a86-7dc1-4027-aa52-ac20bbd7f510:
+    uuid: 0ce95a86-7dc1-4027-aa52-ac20bbd7f510
+    id: image_scale
+    weight: 0
+    data:
+      width: 1152
+      height: null
+      upscale: false
+  66b554eb-7075-4349-adec-75f2da93a40c:
+    uuid: 66b554eb-7075-4349-adec-75f2da93a40c
+    id: image_convert
+    weight: 1
+    data:
+      extension: webp

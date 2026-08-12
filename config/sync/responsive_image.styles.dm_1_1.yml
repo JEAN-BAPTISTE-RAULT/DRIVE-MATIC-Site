@@ -1,0 +1,84 @@
+uuid: 3340a16c-a9fe-4e72-bf25-0ac98f06d365
+langcode: en
+status: true
+dependencies:
+  config:
+    - image.style.dm_1_1_1152
+    - image.style.dm_1_1_1200
+    - image.style.dm_1_1_1440
+    - image.style.dm_1_1_1536
+    - image.style.dm_1_1_1920
+    - image.style.dm_1_1_1984
+    - image.style.dm_1_1_2400
+    - image.style.dm_1_1_2560
+    - image.style.dm_1_1_576
+    - image.style.dm_1_1_768
+    - image.style.dm_1_1_992
+    - image.style.dm_1_1_fallback
+  theme:
+    - drive_matic
+id: dm_1_1
+label: 'DRIVE-MATIC 1:1'
+image_style_mappings:
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_1920
+    breakpoint_id: drive_matic.xxl
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_2560
+    breakpoint_id: drive_matic.xxl
+    multiplier: 2x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_1440
+    breakpoint_id: drive_matic.xl
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_2560
+    breakpoint_id: drive_matic.xl
+    multiplier: 2x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_1200
+    breakpoint_id: drive_matic.lg
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_2400
+    breakpoint_id: drive_matic.lg
+    multiplier: 2x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_992
+    breakpoint_id: drive_matic.md
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_1984
+    breakpoint_id: drive_matic.md
+    multiplier: 2x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_768
+    breakpoint_id: drive_matic.sm
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_1536
+    breakpoint_id: drive_matic.sm
+    multiplier: 2x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_576
+    breakpoint_id: drive_matic.xs
+    multiplier: 1x
+  -
+    image_mapping_type: image_style
+    image_mapping: dm_1_1_1152
+    breakpoint_id: drive_matic.xs
+    multiplier: 2x
+breakpoint_group: drive_matic
+fallback_image_style: dm_1_1_fallback

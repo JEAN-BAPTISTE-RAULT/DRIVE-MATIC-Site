@@ -1,0 +1,26 @@
+uuid: c0172a96-5b25-42d5-ab24-a6c8f2e1a58a
+langcode: en
+status: true
+dependencies:
+  config:
+    - crop.type.crop_16_9
+  module:
+    - crop
+name: dm_16_9_fallback
+label: '16:9 fallback'
+effects:
+  c5bfcc45-d313-40f7-9922-dfa2b235e86b:
+    uuid: c5bfcc45-d313-40f7-9922-dfa2b235e86b
+    id: crop_crop
+    weight: 0
+    data:
+      crop_type: crop_16_9
+      automatic_crop_provider: null
+  24049cec-b724-420b-94df-2df3e4e8dc90:
+    uuid: 24049cec-b724-420b-94df-2df3e4e8dc90
+    id: image_scale
+    weight: 1
+    data:
+      width: 1440
+      height: null
+      upscale: false

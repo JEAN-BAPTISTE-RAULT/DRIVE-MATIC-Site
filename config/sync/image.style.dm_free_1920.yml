@@ -1,0 +1,21 @@
+uuid: 58d02e30-81e4-4d8b-9e8d-f41cfed3b9c1
+langcode: en
+status: true
+dependencies: {  }
+name: dm_free_1920
+label: 'Sans crop 1920px (WebP)'
+effects:
+  65012b06-e9c2-4c94-b356-7ec7638dd98d:
+    uuid: 65012b06-e9c2-4c94-b356-7ec7638dd98d
+    id: image_scale
+    weight: 0
+    data:
+      width: 1920
+      height: null
+      upscale: false
+  76ecca76-f844-42ee-b56e-2c1b0c26db19:
+    uuid: 76ecca76-f844-42ee-b56e-2c1b0c26db19
+    id: image_convert
+    weight: 1
+    data:
+      extension: webp

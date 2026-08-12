@@ -38,6 +38,8 @@ module:
   link_target: 0
   linkit: 0
   mailer_transport: 0
+  media: 0
+  media_library: 0
   menu_link_attributes: 0
   menu_link_content: 0
   menu_ui: 0
@@ -53,6 +55,7 @@ module:
   recaptcha_v3: 0
   redirect: 0
   rename_admin_paths: 0
+  responsive_image: 0
   rh_node: 0
   simple_sitemap: 0
   symfony_mailer: 0

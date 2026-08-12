@@ -1,0 +1,12 @@
+uuid: 2874e71e-d863-4e73-960e-3234c867001a
+langcode: en
+status: true
+dependencies: {  }
+label: 'Bannière (12:5)'
+id: crop_12_5
+description: null
+aspect_ratio: '12:5'
+soft_limit_width: null
+soft_limit_height: null
+hard_limit_width: null
+hard_limit_height: null

@@ -1,0 +1,21 @@
+uuid: 4c9e3ed6-8ebe-4c45-99d3-73ce3332d8d6
+langcode: en
+status: true
+dependencies: {  }
+name: dm_free_768
+label: 'Sans crop 768px (WebP)'
+effects:
+  de9b87c9-9552-48d6-aa2c-21714d352e38:
+    uuid: de9b87c9-9552-48d6-aa2c-21714d352e38
+    id: image_scale
+    weight: 0
+    data:
+      width: 768
+      height: null
+      upscale: false
+  975483a8-4a56-4ab9-8c8a-9844cc502e10:
+    uuid: 975483a8-4a56-4ab9-8c8a-9844cc502e10
+    id: image_convert
+    weight: 1
+    data:
+      extension: webp

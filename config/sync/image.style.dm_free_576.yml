@@ -1,0 +1,21 @@
+uuid: 13454f59-628a-45e6-a452-632c400fa188
+langcode: en
+status: true
+dependencies: {  }
+name: dm_free_576
+label: 'Sans crop 576px (WebP)'
+effects:
+  5e50cebf-a601-4681-947a-0fbf16cc9f35:
+    uuid: 5e50cebf-a601-4681-947a-0fbf16cc9f35
+    id: image_scale
+    weight: 0
+    data:
+      width: 576
+      height: null
+      upscale: false
+  54428c36-a4c1-4eef-9a55-1773396bd1f4:
+    uuid: 54428c36-a4c1-4eef-9a55-1773396bd1f4
+    id: image_convert
+    weight: 1
+    data:
+      extension: webp

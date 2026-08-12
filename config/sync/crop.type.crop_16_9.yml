@@ -1,0 +1,12 @@
+uuid: 19b39b52-d834-4abb-a59b-4fc5d9daf6fb
+langcode: en
+status: true
+dependencies: {  }
+label: 'Paysage (16:9)'
+id: crop_16_9
+description: null
+aspect_ratio: '16:9'
+soft_limit_width: null
+soft_limit_height: null
+hard_limit_width: null
+hard_limit_height: null

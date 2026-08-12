@@ -1,0 +1,26 @@
+uuid: 2c4ff73a-970b-4d2f-a08b-918685042e99
+langcode: en
+status: true
+dependencies:
+  config:
+    - crop.type.crop_1_1
+  module:
+    - crop
+name: dm_1_1_fallback
+label: '1:1 fallback'
+effects:
+  b5f960b6-13b9-490e-ad18-62576c542f08:
+    uuid: b5f960b6-13b9-490e-ad18-62576c542f08
+    id: crop_crop
+    weight: 0
+    data:
+      crop_type: crop_1_1
+      automatic_crop_provider: null
+  a5bd1662-8729-42c3-9d00-a9d84e942097:
+    uuid: a5bd1662-8729-42c3-9d00-a9d84e942097
+    id: image_scale
+    weight: 1
+    data:
+      width: 1440
+      height: null
+      upscale: false
