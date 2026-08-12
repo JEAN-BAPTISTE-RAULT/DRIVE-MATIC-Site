@@ -1,0 +1,28 @@
+.text-left-aligned {
+  max-width: 800px;
+  padding-block: 2rem;
+  text-align: left;
+}
+.text-left-aligned__title {
+  margin-bottom: 1rem;
+  color: var(--dm-color-anthracite);
+}
+.text-left-aligned__description {
+  color: var(--dm-color-grey-text);
+}
+.text-left-aligned__actions {
+  margin-top: 1.5rem;
+}
+.text-left-aligned__actions a {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-title);
+  text-decoration: none;
+}
+.text-left-aligned__download {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}

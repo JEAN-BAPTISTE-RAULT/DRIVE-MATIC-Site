@@ -6,6 +6,7 @@ dependencies:
     - field.storage.node.field_paragraphs
     - node.type.page
     - paragraphs.paragraphs_type.text_centered
+    - paragraphs.paragraphs_type.text_left_aligned
   module:
     - entity_reference_revisions
 id: node.page.field_paragraphs
@@ -23,8 +24,12 @@ settings:
   handler_settings:
     target_bundles:
       text_centered: text_centered
+      text_left_aligned: text_left_aligned
     target_bundles_drag_drop:
       text_centered:
         weight: 0
+        enabled: true
+      text_left_aligned:
+        weight: 1
         enabled: true
 field_type: entity_reference_revisions

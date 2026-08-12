@@ -1,0 +1,56 @@
+uuid: afb1dee1-82cf-4be8-aa34-42ac4f874fe5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.text_left_aligned.field_description
+    - field.field.paragraph.text_left_aligned.field_file
+    - field.field.paragraph.text_left_aligned.field_link
+    - field.field.paragraph.text_left_aligned.field_title
+    - paragraphs.paragraphs_type.text_left_aligned
+  module:
+    - file
+    - link
+    - text
+id: paragraph.text_left_aligned.default
+targetEntityType: paragraph
+bundle: text_left_aligned
+mode: default
+content:
+  field_description:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_file:
+    type: file_default
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_title:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+      link_rel: canonical
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

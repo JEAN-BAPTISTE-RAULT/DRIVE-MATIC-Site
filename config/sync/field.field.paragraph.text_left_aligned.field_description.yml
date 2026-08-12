@@ -1,0 +1,22 @@
+uuid: 48d129da-ea1b-40cd-aa27-0a13d475031e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_description
+    - paragraphs.paragraphs_type.text_left_aligned
+  module:
+    - text
+id: paragraph.text_left_aligned.field_description
+field_name: field_description
+entity_type: paragraph
+bundle: text_left_aligned
+label: Description
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

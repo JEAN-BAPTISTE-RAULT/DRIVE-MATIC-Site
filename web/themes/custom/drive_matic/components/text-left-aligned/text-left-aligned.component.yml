@@ -1,0 +1,16 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Texte aligné à gauche'
+status: stable
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Titre
+slots:
+  description:
+    title: Description
+  actions:
+    title: Actions (lien / CTA)
+  download:
+    title: Fichier à télécharger
