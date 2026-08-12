@@ -1,0 +1,5 @@
+name: 'DRIVE-MATIC Formulaires'
+type: module
+description: 'Comportements custom des formulaires (cascade vehicules du webform contact).'
+package: 'DRIVE-MATIC'
+core_version_requirement: ^11

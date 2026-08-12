@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Comportements custom des formulaires DRIVE-MATIC.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Attache la cascade marque -> modele -> motorisation sur le webform contact.
+ */
+function drivematic_forms_form_alter(array &$form, FormStateInterface $form_state, string $form_id): void {
+  if (!str_starts_with($form_id, 'webform_submission_contact')) {
+    return;
+  }
+  $form['#attached']['library'][] = 'drivematic_forms/vehicle_select';
+  $form['#attached']['drupalSettings']['drivematicForms'] = _drivematic_forms_vehicle_map();
+}
+
+/**
+ * Construit les correspondances vehicule pour la cascade front.
+ *
+ * @return array
+ *   Deux maps indexees par identifiant de terme : 'modelsByBrand' (marque =>
+ *   liste de modeles) et 'motosByModel' (modele => liste de motorisations).
+ */
+function _drivematic_forms_vehicle_map(): array {
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $models = $storage->loadByProperties(['vid' => 'vehicle_model']);
+  $models_by_brand = [];
+  $motos_by_model = [];
+  foreach ($models as $model) {
+    $brand = $model->get('field_brand')->target_id;
+    if ($brand) {
+      $models_by_brand[$brand][] = (int) $model->id();
+    }
+    $motos_by_model[(int) $model->id()] = array_map(
+      static fn(array $item): int => (int) $item['target_id'],
+      $model->get('field_motorisations')->getValue()
+    );
+  }
+  return [
+    'modelsByBrand' => $models_by_brand,
+    'motosByModel' => $motos_by_model,
+  ];
+}

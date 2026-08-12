@@ -1,0 +1,8 @@
+vehicle_select:
+  version: 1.x
+  js:
+    js/vehicle-select.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/drupalSettings
