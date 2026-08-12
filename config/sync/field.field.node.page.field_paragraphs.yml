@@ -11,6 +11,7 @@ dependencies:
     - paragraphs.paragraphs_type.image_text_50
     - paragraphs.paragraphs_type.text_centered
     - paragraphs.paragraphs_type.text_left_aligned
+    - paragraphs.paragraphs_type.video_centered
   module:
     - entity_reference_revisions
 id: node.page.field_paragraphs
@@ -33,6 +34,7 @@ settings:
       image_text_50: image_text_50
       text_centered: text_centered
       text_left_aligned: text_left_aligned
+      video_centered: video_centered
     target_bundles_drag_drop:
       image_centered:
         weight: 4
@@ -51,5 +53,8 @@ settings:
         enabled: true
       text_left_aligned:
         weight: 1
+        enabled: true
+      video_centered:
+        weight: 6
         enabled: true
 field_type: entity_reference_revisions

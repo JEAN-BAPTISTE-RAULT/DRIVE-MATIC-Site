@@ -1,0 +1,41 @@
+uuid: 89e29352-482c-43ab-878e-ee6f09a7df8e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.video_centered.field_caption
+    - field.field.paragraph.video_centered.field_image
+    - field.field.paragraph.video_centered.field_video
+    - paragraphs.paragraphs_type.video_centered
+  module:
+    - media_library
+    - video_embed_field
+id: paragraph.video_centered.default
+targetEntityType: paragraph
+bundle: video_centered
+mode: default
+content:
+  field_caption:
+    type: string_textfield
+    weight: 2
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_image:
+    type: media_library_widget
+    weight: 1
+    region: content
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
+  field_video:
+    type: video_embed_field_textfield
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

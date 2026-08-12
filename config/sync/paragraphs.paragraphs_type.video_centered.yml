@@ -1,0 +1,10 @@
+uuid: 5ec72642-3828-419a-8e43-16927c1c2a69
+langcode: en
+status: true
+dependencies: {  }
+id: video_centered
+label: 'Bloc :: Vidéo centrée'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

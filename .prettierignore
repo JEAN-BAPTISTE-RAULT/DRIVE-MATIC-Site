@@ -13,6 +13,10 @@ web/themes/contrib/
 config/sync/
 web/sites/
 web/themes/custom/drive_matic/css/
+# CSS des SDC = genere depuis les .scss par `npm run css` (Sass impose des choix
+# — ex. guillemets doubles pour `content` — que Prettier refuse). Source .scss
+# vérifiée par Stylelint + Prettier ; l'artefact CSS est ignoré.
+web/themes/custom/drive_matic/components/**/*.css
 web/themes/custom/drive_matic/templates/
 
 # Documentation en prose (Markdown) — geree a la main, pas reformatee par Prettier

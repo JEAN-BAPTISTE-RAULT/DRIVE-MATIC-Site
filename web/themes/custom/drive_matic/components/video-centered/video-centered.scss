@@ -1,0 +1,61 @@
+// SDC « Bloc :: Vidéo centrée » — CSS scopé (BEM), consomme les tokens globaux.
+
+.video-centered {
+  margin: 0;
+  padding-block: 2rem;
+
+  &__frame {
+    position: relative;
+  }
+
+  &__play {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  &__thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  // Pastille de lecture centrée.
+  &__icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 72px;
+    height: 72px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--dm-color-red);
+  }
+
+  // Triangle « play ».
+  &__icon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 54%;
+    transform: translate(-50%, -50%);
+    border-width: 14px 0 14px 22px;
+    border-style: solid;
+    border-color: transparent transparent transparent var(--dm-color-white);
+  }
+
+  // Focus clavier visible sur la pastille.
+  &__play:focus-visible &__icon {
+    outline: 3px solid var(--dm-color-white);
+    outline-offset: 4px;
+  }
+
+  &__caption {
+    margin-top: 0.5rem;
+    color: var(--dm-color-grey-text);
+    font-size: 0.9rem;
+  }
+}

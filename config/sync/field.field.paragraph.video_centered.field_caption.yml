@@ -1,0 +1,19 @@
+uuid: fd8868d4-3510-46f3-b3e2-5890f7b8bc60
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_caption
+    - paragraphs.paragraphs_type.video_centered
+id: paragraph.video_centered.field_caption
+field_name: field_caption
+entity_type: paragraph
+bundle: video_centered
+label: 'Légende de la vidéo'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

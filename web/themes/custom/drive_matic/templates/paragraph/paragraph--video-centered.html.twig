@@ -1,0 +1,11 @@
+{#
+  Liaison paragraphe `video_centered` -> SDC `drive_matic:video-centered`.
+  Miniature = média image responsive 16:9 (slot thumbnail) ; embed = formatter
+  video_embed_field (slot video, injecté dans un <template> côté SDC).
+#}
+{% embed 'drive_matic:video-centered' with {
+  caption: paragraph.field_caption.value,
+} %}
+  {% block thumbnail %}{{ content.field_image }}{% endblock %}
+  {% block video %}{{ content.field_video }}{% endblock %}
+{% endembed %}

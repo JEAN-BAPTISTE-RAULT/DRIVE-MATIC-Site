@@ -1,0 +1,22 @@
+{#
+  SDC « Bloc :: Vidéo centrée » — façade RGPD/perf.
+  Prop : caption. Slots (via embed/block) : thumbnail (miniature 16:9), video (embed).
+  La miniature + bouton lecture sont affichés ; l'iframe tierce, placée dans un
+  <template> inerte, n'est injectée (et donc chargée) qu'au clic (voir .js).
+#}
+<figure class="video-centered">
+  <div class="video-centered__frame" data-dm-video-facade>
+    <button
+      type="button"
+      class="video-centered__play"
+      aria-label="{{ 'Lire la vidéo'|t }}{% if caption %} : {{ caption }}{% endif %}"
+    >
+      <span class="video-centered__thumb">{{ block('thumbnail') }}</span>
+      <span class="video-centered__icon" aria-hidden="true"></span>
+    </button>
+    <template class="video-centered__embed">{{ block('video') }}</template>
+  </div>
+  {% if caption %}
+    <figcaption class="video-centered__caption">{{ caption }}</figcaption>
+  {% endif %}
+</figure>
