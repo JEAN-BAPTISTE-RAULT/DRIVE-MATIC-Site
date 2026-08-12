@@ -1,11 +1,11 @@
-uuid: 19896435-6719-4a44-8e76-4179e81c4dfb
+uuid: fce3995c-b26a-4143-b530-230d4f5dfd74
 langcode: en
 status: true
 dependencies:
   module:
     - taxonomy
-id: taxonomy_term.field_make
-field_name: field_make
+id: taxonomy_term.field_brand
+field_name: field_brand
 entity_type: taxonomy_term
 type: entity_reference
 settings:

@@ -28,7 +28,7 @@ Permettre a un visiteur anonyme d'envoyer une **demande de devis**, une **demand
 ### Champs conditionnels (`#states` sur « Votre demande concerne »)
 | Champ | Element | Requis | Visible si |
 |-------|---------|--------|-----------|
-| Marque | `select` (taxo `vehicle_make`) | ✅ | devis **ou** sav |
+| Marque | `select` (taxo `vehicle_brand`) | ✅ | devis **ou** sav |
 | Modèle | `select` (taxo `vehicle_model`, filtré par marque) | ✅ | cascade JS Marque→Modèle |
 | Motorisation | `select` (taxo `motorisation`, filtré par modèle) | ✅ | cascade JS Modèle→Motorisation (BVM/BVA/hybride/électrique selon dispo) |
 | N° de châssis | `textfield` | ✅ | devis **ou** sav — infobulle « carte grise » (aide accessible) |
@@ -38,8 +38,8 @@ Permettre a un visiteur anonyme d'envoyer une **demande de devis**, une **demand
 
 ### Référentiel véhicules (partagé)
 Marque / Modèle / Motorisation proviennent d'un **référentiel véhicules réutilisable** (importé de `Drive_Matic_modeles.xlsx` : 31 marques, 124 modèles), **partagé avec le configurateur** (F14/F17). Modélisation :
-- `vehicle_make` — marque (31 termes).
-- `vehicle_model` — modèle (124 termes) ; champ parent → `vehicle_make` + champ multi `motorisation` (motorisations disponibles).
+- `vehicle_brand` — marque (31 termes).
+- `vehicle_model` — modèle (124 termes) ; champ parent → `vehicle_brand` + champ multi `motorisation` (motorisations disponibles).
 - `motorisation` — 4 termes : manuelle (BVM), automatique (BVA), hybride, électrique.
 
 Cascade front (JS) : map `make→models` et `model→motorisations` passée via `drupalSettings` ; dégradation sans JS (listes complètes). **Nettoyage à l'import** : cellules marque fusionnées, lignes vides, espaces parasites. ⚠️ L'Excel prime sur les specs (4 motorisations vs 3). → Ce référentiel mérite son propre pas de modélisation/import (à cadrer avec le chantier configurateur).
@@ -73,7 +73,7 @@ Contenu : récap identité + champs du cas (cf. specs §2.14). Échapper toutes 
 - **Type `contact`** (ADR-002) : référence le webform ; contenu page = coordonnées + carte (image sans crop).
 - **Thème** : styles du formulaire (fondations + SDC éventuel), infobulle « carte grise » accessible.
 - **Config modules** : webform, captcha, recaptcha(_v3), honeypot, flood.
-- **Taxonomies véhicules** : `vehicle_make`, `vehicle_model`, `motorisation` + script/config d'import depuis `Drive_Matic_modeles.xlsx` (avec nettoyage). Partagées avec le configurateur.
+- **Taxonomies véhicules** : `vehicle_brand`, `vehicle_model`, `motorisation` + script/config d'import depuis `Drive_Matic_modeles.xlsx` (avec nettoyage). Partagées avec le configurateur.
 
 ## 6. Sécurité
 - Public anonyme → **Honeypot + reCAPTCHA v3 + Flood control**.

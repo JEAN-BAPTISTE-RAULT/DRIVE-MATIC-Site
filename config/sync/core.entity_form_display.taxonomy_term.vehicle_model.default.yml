@@ -1,9 +1,9 @@
-uuid: a543dbb2-ca15-44f7-b5de-53d0e613ea6a
+uuid: 1c7cf227-848e-40c2-8d08-aaa26f197fa4
 langcode: en
 status: true
 dependencies:
   config:
-    - field.field.taxonomy_term.vehicle_model.field_make
+    - field.field.taxonomy_term.vehicle_model.field_brand
     - field.field.taxonomy_term.vehicle_model.field_motorisations
     - taxonomy.vocabulary.vehicle_model
   module:
@@ -22,7 +22,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_make:
+  field_brand:
     type: options_select
     weight: 1
     region: content

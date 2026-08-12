@@ -21,9 +21,9 @@ Le webform contact (F10) et le futur configurateur (F14/F17) ont besoin d'un ref
 
 ## Decision
 **Option B.** Trois vocabulaires :
-- `vehicle_make` (Marque) — 31 termes.
+- `vehicle_brand` (Marque) — 31 termes.
 - `motorisation` (Motorisation) — 4 termes : Manuelle (BVM), Automatique (BVA), Hybride, Électrique.
-- `vehicle_model` (Modele) — 124 termes + `field_make` (→ vehicle_make, obligatoire, simple) + `field_motorisations` (→ motorisation, obligatoire, multi).
+- `vehicle_model` (Modele) — 124 termes + `field_brand` (→ vehicle_brand, obligatoire, simple) + `field_motorisations` (→ motorisation, obligatoire, multi).
 
 **Import one-off** (pas de module/commande/migration, choix utilisatrice) : script Drush ponctuel a partir de l'Excel nettoye (forward-fill des marques fusionnees, trim, suppression des lignes vides / « marque seule »). Maintenance ulterieure **au cas par cas dans le BO**.
 

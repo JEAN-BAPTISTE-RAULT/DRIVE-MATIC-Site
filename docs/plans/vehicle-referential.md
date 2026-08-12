@@ -3,9 +3,9 @@
 > Référentiel réutilisable (3 taxonomies) importé une fois depuis `Drive_Matic_modeles.xlsx`, partagé webform contact + configurateur.
 
 ## 1. Modèle de données
-- `vehicle_make` (Marque) — 31 termes.
+- `vehicle_brand` (Marque) — 31 termes.
 - `motorisation` (Motorisation) — 4 termes : manuelle (BVM), automatique (BVA), hybride, électrique.
-- `vehicle_model` (Modèle) — 124 termes + `field_make` (→ vehicle_make, obligatoire, simple) + `field_motorisations` (→ motorisation, obligatoire, multi).
+- `vehicle_model` (Modèle) — 124 termes + `field_brand` (→ vehicle_brand, obligatoire, simple) + `field_motorisations` (→ motorisation, obligatoire, multi).
 
 ## 2. Config vs contenu
 - **Config versionnée** (config/sync) : vocabulaires + champs (storage/field) + form display du terme `vehicle_model`.

@@ -1,13 +1,13 @@
-uuid: 373b942d-91d0-45cc-9db2-279f50863d8f
+uuid: 85622f41-77ea-474c-b995-d7591bf77249
 langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.taxonomy_term.field_make
-    - taxonomy.vocabulary.vehicle_make
+    - field.storage.taxonomy_term.field_brand
+    - taxonomy.vocabulary.vehicle_brand
     - taxonomy.vocabulary.vehicle_model
-id: taxonomy_term.vehicle_model.field_make
-field_name: field_make
+id: taxonomy_term.vehicle_model.field_brand
+field_name: field_brand
 entity_type: taxonomy_term
 bundle: vehicle_model
 label: Marque
@@ -20,5 +20,5 @@ settings:
   handler: 'default:taxonomy_term'
   handler_settings:
     target_bundles:
-      vehicle_make: vehicle_make
+      vehicle_brand: vehicle_brand
 field_type: entity_reference

@@ -1,9 +1,9 @@
-uuid: c7580a1c-453f-42ea-9ec1-7acf7948be8c
+uuid: 7b5045c1-b88f-48ed-8529-eb853043dc93
 langcode: en
 status: true
 dependencies: {  }
 name: Marque
-vid: vehicle_make
+vid: vehicle_brand
 description: null
 weight: 0
 new_revision: false
