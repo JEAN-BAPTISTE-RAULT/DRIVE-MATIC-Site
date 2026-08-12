@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.storage.node.field_paragraphs
     - node.type.page
+    - paragraphs.paragraphs_type.image_text_50
     - paragraphs.paragraphs_type.text_centered
     - paragraphs.paragraphs_type.text_left_aligned
   module:
@@ -23,9 +24,13 @@ settings:
   handler: 'default:paragraph'
   handler_settings:
     target_bundles:
+      image_text_50: image_text_50
       text_centered: text_centered
       text_left_aligned: text_left_aligned
     target_bundles_drag_drop:
+      image_text_50:
+        weight: 2
+        enabled: true
       text_centered:
         weight: 0
         enabled: true

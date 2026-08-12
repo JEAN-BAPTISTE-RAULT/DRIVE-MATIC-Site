@@ -1,0 +1,35 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Image + texte 50/50'
+status: stable
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Titre
+    caption:
+      type: string
+      title: Légende de l’image
+    text_position:
+      type: string
+      title: Position du texte
+      enum:
+        - left
+        - right
+      default: left
+    background:
+      type: string
+      title: Fond de section
+      enum:
+        - white
+        - grey
+      default: white
+slots:
+  image:
+    title: Image (média responsive 1:1)
+  description:
+    title: Description
+  actions:
+    title: Actions (lien / CTA)
+  download:
+    title: Fichier à télécharger

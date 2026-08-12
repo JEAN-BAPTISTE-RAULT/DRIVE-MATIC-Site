@@ -1,0 +1,30 @@
+{#
+  SDC « Bloc :: Image + texte 50/50 ».
+  Props : title, caption, text_position (left|right), background (white|grey).
+  Slots (via embed/block) : image, description, actions, download.
+  Fondations globales (tokens/typo) + CSS scopé BEM.
+#}
+{% set position = text_position|default('left') %}
+{% set bg = background|default('white') %}
+<div class="image-text-50 image-text-50--text-{{ position }} image-text-50--bg-{{ bg }}">
+  <figure class="image-text-50__media">
+    {{ block('image') }}
+    {% if caption %}
+      <figcaption class="image-text-50__caption">{{ caption }}</figcaption>
+    {% endif %}
+  </figure>
+  <div class="image-text-50__content">
+    {% if title %}
+      <h2 class="image-text-50__title">{{ title }}</h2>
+    {% endif %}
+    {% if block('description') is not empty %}
+      <div class="image-text-50__description">{{ block('description') }}</div>
+    {% endif %}
+    {% if block('actions') is not empty %}
+      <div class="image-text-50__actions">{{ block('actions') }}</div>
+    {% endif %}
+    {% if block('download') is not empty %}
+      <div class="image-text-50__download">{{ block('download') }}</div>
+    {% endif %}
+  </div>
+</div>

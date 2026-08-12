@@ -1,0 +1,24 @@
+uuid: 440cb5d5-bd21-4f9c-8c56-aec5fb7b9427
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_image
+    - media.type.image
+    - paragraphs.paragraphs_type.image_text_50
+id: paragraph.image_text_50.field_image
+field_name: field_image
+entity_type: paragraph
+bundle: image_text_50
+label: Image
+description: 'Image recadrée au format 1:1 (crop à l’import).'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+field_type: entity_reference

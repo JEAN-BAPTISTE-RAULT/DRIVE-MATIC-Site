@@ -1,0 +1,16 @@
+{#
+  Liaison paragraphe `image_text_50` -> SDC `drive_matic:image-text-50`.
+  Champs prop (title/caption/options) via .value ; champs renderable en slots
+  (image = média responsive au ratio 1:1 via son mode d’affichage).
+#}
+{% embed 'drive_matic:image-text-50' with {
+  title: paragraph.field_title.value,
+  caption: paragraph.field_caption.value,
+  text_position: paragraph.field_text_position.value,
+  background: paragraph.field_background.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+  {% block description %}{{ content.field_description }}{% endblock %}
+  {% block actions %}{{ content.field_link }}{% endblock %}
+  {% block download %}{{ content.field_file }}{% endblock %}
+{% endembed %}

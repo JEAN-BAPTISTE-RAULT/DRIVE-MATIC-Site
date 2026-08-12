@@ -1,0 +1,23 @@
+uuid: 30f39ff3-87e1-4844-8786-5be7f24deb6f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text_position
+    - paragraphs.paragraphs_type.image_text_50
+  module:
+    - options
+id: paragraph.image_text_50.field_text_position
+field_name: field_text_position
+entity_type: paragraph
+bundle: image_text_50
+label: 'Position du texte'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: left
+default_value_callback: ''
+settings: {  }
+field_type: list_string

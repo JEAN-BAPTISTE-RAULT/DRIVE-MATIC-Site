@@ -1,0 +1,70 @@
+// SDC « Bloc :: Image + texte 50/50 » — CSS scopé (BEM), consomme les tokens globaux.
+
+.image-text-50 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
+  padding-block: 2rem;
+
+  &__media {
+    flex: 1 1 300px;
+    margin: 0;
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__content {
+    flex: 1 1 300px;
+  }
+
+  &__caption {
+    margin-top: 0.5rem;
+    color: var(--dm-color-grey-text);
+    font-size: 0.9rem;
+  }
+
+  &__title {
+    margin-bottom: 1rem;
+    color: var(--dm-color-anthracite);
+  }
+
+  &__description {
+    color: var(--dm-color-grey-text);
+  }
+
+  &__actions {
+    margin-top: 1.5rem;
+
+    a {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      background: var(--dm-color-red);
+      color: var(--dm-color-white);
+      font-family: var(--dm-font-title);
+      text-decoration: none;
+    }
+  }
+
+  &__download {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+
+  // Modificateur : texte à droite. row-reverse inverse l’ordre horizontal en
+  // desktop ; une fois empilé (mobile), l’ordre source (image puis texte) reste.
+  &--text-right {
+    flex-direction: row-reverse;
+  }
+
+  // Modificateur : fond gris (pleine largeur avec padding intérieur).
+  &--bg-grey {
+    padding-inline: 2rem;
+    background: var(--dm-color-grey-light);
+  }
+}

@@ -1,0 +1,27 @@
+uuid: 1d2d736a-a607-4aac-9f7b-cb7b640599cc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_file
+    - paragraphs.paragraphs_type.image_text_50
+  module:
+    - file
+id: paragraph.image_text_50.field_file
+field_name: field_file
+entity_type: paragraph
+bundle: image_text_50
+label: 'Fichier à télécharger'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: documents
+  file_extensions: 'pdf doc docx xls xlsx zip'
+  max_filesize: ''
+  description_field: false
+field_type: file

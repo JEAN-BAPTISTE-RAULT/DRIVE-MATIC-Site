@@ -1,0 +1,23 @@
+uuid: 4a219c9b-c45e-492d-a825-03c2ff288c08
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_background
+    - paragraphs.paragraphs_type.image_text_50
+  module:
+    - options
+id: paragraph.image_text_50.field_background
+field_name: field_background
+entity_type: paragraph
+bundle: image_text_50
+label: 'Fond de section'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: white
+default_value_callback: ''
+settings: {  }
+field_type: list_string
