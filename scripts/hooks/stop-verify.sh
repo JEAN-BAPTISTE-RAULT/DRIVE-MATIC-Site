@@ -30,8 +30,9 @@ run() { # run <label> <cmd...>
 # Lint JS (ESLint)
 [ -x "$BIN/eslint" ] && run "lint:js" "$BIN/eslint" .
 
-# Lint SCSS (Stylelint)
-[ -x "$BIN/stylelint" ] && run "lint:css" "$BIN/stylelint" "**/*.scss" --allow-empty-input
+# Lint SCSS (Stylelint) — uniquement notre code (jamais le contrib, qui embarque
+# ses propres configs stylelint avec des plugins non installes ici).
+[ -x "$BIN/stylelint" ] && run "lint:css" "$BIN/stylelint" "src/**/*.scss" "web/themes/custom/**/*.scss" --allow-empty-input
 
 # Lint PHP / Twig (PHPCS - standards Drupal)
 [ -x "$ROOT/vendor/bin/phpcs" ] && run "lint:php" "$ROOT/vendor/bin/phpcs"
