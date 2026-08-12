@@ -75,4 +75,4 @@ Implémente **F11** ; type `partner` (ADR-002) ; « soumissions stockées + e-ma
 - [x] Champs validés (specs + maquette)
 - [x] E-mails, confirmation, réutilisation contact définis
 - [x] Décisions tranchées (§10)
-- [ ] Implémentation (après socle)
+- [x] Implémenté (webform + type partner + page /devenir-partenaire) — vérifié

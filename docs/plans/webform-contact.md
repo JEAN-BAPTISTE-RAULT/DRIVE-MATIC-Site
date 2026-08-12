@@ -124,5 +124,5 @@ Contenu : récap identité + champs du cas (cf. specs §2.14). Échapper toutes 
 - [x] Champs validés (specs + maquettes)
 - [x] reCAPTCHA v3, handlers e-mail, upload définis
 - [x] Décisions tranchées (§11)
-- [ ] Référentiel véhicules à modéliser/importer (partagé configurateur)
-- [ ] Implémentation (après socle)
+- [x] Référentiel véhicules (ADR-003)
+- [x] Implémenté (chunks 1-5) — vérifié via Mailpit + navigateur
