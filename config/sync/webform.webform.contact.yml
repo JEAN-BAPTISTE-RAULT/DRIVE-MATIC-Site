@@ -387,32 +387,44 @@ access:
     users: {  }
     permissions: {  }
 handlers:
-  email_confirmation:
+  devis_demandeur:
     id: email
-    handler_id: email_confirmation
-    label: 'Email confirmation'
+    handler_id: devis_demandeur
+    label: 'Devis — accusé demandeur'
     notes: ''
     status: true
-    conditions: {  }
-    weight: 1
+    conditions:
+      enabled:
+        ':input[name="demande_concerne"]':
+          value: devis
+    weight: 0
     settings:
       states:
         - completed
-      to_mail: '[current-user:mail]'
+      to_mail: '[webform_submission:values:email:raw]'
       to_options: {  }
       bcc_mail: ''
       bcc_options: {  }
       cc_mail: ''
       cc_options: {  }
-      from_mail: _default
+      from_mail: no-reply@drivematiclegrand.com
       from_options: {  }
-      from_name: _default
+      from_name: 'Drive Matic Legrand'
       reply_to: ''
       return_path: ''
       sender_mail: ''
       sender_name: ''
-      subject: '[webform_submission:values:subject:raw]'
-      body: '[webform_submission:values:message:value]'
+      subject: 'Drive Matic Legrand : demande de devis'
+      body: |-
+        <p>Bonjour,</p><p>Nous vous remercions pour votre demande de devis. Elle a bien été enregistrée et est en cours de traitement par nos services.</p><p><strong>Vous êtes :</strong> [webform_submission:values:vous_etes]<br>
+        <strong>Entreprise :</strong> [webform_submission:values:entreprise]<br>
+        [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>E-mail :</strong> [webform_submission:values:email]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3>Votre demande de devis</h3><p><strong>Marque :</strong> [webform_submission:values:marque]<br>
+        <strong>Modèle :</strong> [webform_submission:values:modele]<br>
+        <strong>Motorisation :</strong> [webform_submission:values:motorisation]<br>
+        <strong>N° de châssis :</strong> [webform_submission:values:numero_chassis]<br>
+        <strong>Type châssis :</strong> [webform_submission:values:type_chassis]</p><p><strong>Message :</strong><br>[webform_submission:values:message]</p><p>À bientôt<br>www.drivematiclegrand.com</p>
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
@@ -425,32 +437,234 @@ handlers:
       langcode: ''
       parameters: {  }
       debug: false
-  email_notification:
+  devis_interne:
     id: email
-    handler_id: email_notification
-    label: 'Email notification'
+    handler_id: devis_interne
+    label: 'Devis — notification interne'
     notes: ''
     status: true
-    conditions: {  }
-    weight: 2
+    conditions:
+      enabled:
+        ':input[name="demande_concerne"]':
+          value: devis
+    weight: 1
     settings:
       states:
         - completed
-      to_mail: _default
+      to_mail: info@drivematiclegrand.com
       to_options: {  }
       bcc_mail: ''
       bcc_options: {  }
       cc_mail: ''
       cc_options: {  }
-      from_mail: '[webform_submission:values:email:raw]'
+      from_mail: no-reply@drivematiclegrand.com
       from_options: {  }
-      from_name: '[webform_submission:values:name:raw]'
+      from_name: 'Drive Matic Legrand'
       reply_to: ''
       return_path: ''
       sender_mail: ''
       sender_name: ''
-      subject: '[webform_submission:values:subject:raw]'
-      body: '[webform_submission:values:message:value]'
+      subject: 'Drive Matic Legrand : demande de devis'
+      body: |-
+        <p>Nous venons de recevoir cette demande de devis sur le site Internet.</p><h3>Demandeur</h3><p><strong>Vous êtes :</strong> [webform_submission:values:vous_etes]<br>
+        <strong>Entreprise :</strong> [webform_submission:values:entreprise]<br>
+        [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>E-mail :</strong> [webform_submission:values:email]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><p><strong>Adresse :</strong> [webform_submission:values:adresse], [webform_submission:values:code_postal] [webform_submission:values:ville]</p><h3>Demande de devis</h3><p><strong>Marque :</strong> [webform_submission:values:marque]<br>
+        <strong>Modèle :</strong> [webform_submission:values:modele]<br>
+        <strong>Motorisation :</strong> [webform_submission:values:motorisation]<br>
+        <strong>N° de châssis :</strong> [webform_submission:values:numero_chassis]<br>
+        <strong>Type châssis :</strong> [webform_submission:values:type_chassis]</p><p><strong>Message :</strong><br>[webform_submission:values:message]</p><p>À bientôt<br>www.drivematiclegrand.com</p>
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      langcode: ''
+      parameters: {  }
+      debug: false
+  sav_demandeur:
+    id: email
+    handler_id: sav_demandeur
+    label: 'SAV — accusé demandeur'
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="demande_concerne"]':
+          value: sav
+    weight: 2
+    settings:
+      states:
+        - completed
+      to_mail: '[webform_submission:values:email:raw]'
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: no-reply@drivematiclegrand.com
+      from_options: {  }
+      from_name: 'Drive Matic Legrand'
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Drive Matic Legrand : SAV'
+      body: |-
+        <p>Bonjour,</p><p>Votre demande de SAV a bien été enregistrée et est en cours de traitement par nos services.</p><p><strong>Vous êtes :</strong> [webform_submission:values:vous_etes]<br>
+        <strong>Entreprise :</strong> [webform_submission:values:entreprise]<br>
+        [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>E-mail :</strong> [webform_submission:values:email]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3>Votre demande de SAV</h3><p><strong>Marque :</strong> [webform_submission:values:marque]<br>
+        <strong>Modèle :</strong> [webform_submission:values:modele]<br>
+        <strong>Motorisation :</strong> [webform_submission:values:motorisation]<br>
+        <strong>N° de châssis :</strong> [webform_submission:values:numero_chassis]</p><p><strong>Message :</strong><br>[webform_submission:values:message]</p><p>À bientôt<br>www.drivematiclegrand.com</p>
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      langcode: ''
+      parameters: {  }
+      debug: false
+  sav_interne:
+    id: email
+    handler_id: sav_interne
+    label: 'SAV — notification interne'
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="demande_concerne"]':
+          value: sav
+    weight: 3
+    settings:
+      states:
+        - completed
+      to_mail: info@drivematiclegrand.com
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: no-reply@drivematiclegrand.com
+      from_options: {  }
+      from_name: 'Drive Matic Legrand'
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Drive Matic Legrand : SAV'
+      body: |-
+        <p>Nous venons de recevoir cette demande de SAV sur le site Internet.</p><h3>Demandeur</h3><p><strong>Vous êtes :</strong> [webform_submission:values:vous_etes]<br>
+        <strong>Entreprise :</strong> [webform_submission:values:entreprise]<br>
+        [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>E-mail :</strong> [webform_submission:values:email]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><p><strong>Adresse :</strong> [webform_submission:values:adresse], [webform_submission:values:code_postal] [webform_submission:values:ville]</p><h3>Demande de SAV</h3><p><strong>Marque :</strong> [webform_submission:values:marque]<br>
+        <strong>Modèle :</strong> [webform_submission:values:modele]<br>
+        <strong>Motorisation :</strong> [webform_submission:values:motorisation]<br>
+        <strong>N° de châssis :</strong> [webform_submission:values:numero_chassis]</p><p><strong>Message :</strong><br>[webform_submission:values:message]</p><p>À bientôt<br>www.drivematiclegrand.com</p>
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      langcode: ''
+      parameters: {  }
+      debug: false
+  question_demandeur:
+    id: email
+    handler_id: question_demandeur
+    label: 'Question — accusé demandeur'
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="demande_concerne"]':
+          value: question
+    weight: 4
+    settings:
+      states:
+        - completed
+      to_mail: '[webform_submission:values:email:raw]'
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: no-reply@drivematiclegrand.com
+      from_options: {  }
+      from_name: 'Drive Matic Legrand'
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Drive Matic Legrand : votre question'
+      body: |-
+        <p>Bonjour,</p><p>Nous vous remercions de l'intérêt porté à nos services. Votre message a bien été enregistré et est en cours de traitement.</p><p><strong>Vous êtes :</strong> [webform_submission:values:vous_etes]<br>
+        <strong>Entreprise :</strong> [webform_submission:values:entreprise]<br>
+        [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>E-mail :</strong> [webform_submission:values:email]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><p><strong>Message :</strong><br>[webform_submission:values:message]</p><p>À bientôt<br>www.drivematiclegrand.com</p>
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      langcode: ''
+      parameters: {  }
+      debug: false
+  question_interne:
+    id: email
+    handler_id: question_interne
+    label: 'Question — notification interne'
+    notes: ''
+    status: true
+    conditions:
+      enabled:
+        ':input[name="demande_concerne"]':
+          value: question
+    weight: 5
+    settings:
+      states:
+        - completed
+      to_mail: info@drivematiclegrand.com
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: no-reply@drivematiclegrand.com
+      from_options: {  }
+      from_name: 'Drive Matic Legrand'
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Drive Matic Legrand : question'
+      body: |-
+        <p>Nous venons de recevoir cette question sur le site Internet.</p><h3>Demandeur</h3><p><strong>Vous êtes :</strong> [webform_submission:values:vous_etes]<br>
+        <strong>Entreprise :</strong> [webform_submission:values:entreprise]<br>
+        [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>E-mail :</strong> [webform_submission:values:email]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><p><strong>Adresse :</strong> [webform_submission:values:adresse], [webform_submission:values:code_postal] [webform_submission:values:ville]</p><p><strong>Message :</strong><br>[webform_submission:values:message]</p><p>À bientôt<br>www.drivematiclegrand.com</p>
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
