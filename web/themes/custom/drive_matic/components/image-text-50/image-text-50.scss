@@ -1,70 +1,104 @@
 // SDC « Bloc :: Image + texte 50/50 » — CSS scopé (BEM), consomme les tokens globaux.
+// Maquette : image 1:1 (radius 16) + texte (titre H2 steel, description, boutons)
+// sur 2 colonnes ~510px. Options : texte gauche/droite, fond blanc/gris.
 
 .image-text-50 {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 2rem;
-  padding-block: 2rem;
+  max-width: 1130px;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+
+  @media (width >= 992px) {
+    flex-wrap: nowrap;
+    gap: 110px;
+  }
 
   &__media {
     flex: 1 1 300px;
     margin: 0;
 
-    img {
+    :is(img, picture) {
       display: block;
       width: 100%;
       height: auto;
+      border-radius: 16px;
     }
-  }
-
-  &__content {
-    flex: 1 1 300px;
   }
 
   &__caption {
     margin-top: 0.5rem;
     color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
     font-size: 0.9rem;
   }
 
+  &__content {
+    display: flex;
+    flex: 1 1 300px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   &__title {
-    margin-bottom: 1rem;
-    color: var(--dm-color-anthracite);
+    margin: 0;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h2-size);
+    line-height: var(--dm-h2-line);
+    font-weight: 700;
   }
 
   &__description {
     color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    font-weight: 400;
+    line-height: var(--dm-body-line);
   }
 
-  &__actions {
-    margin-top: 1.5rem;
+  // Rangée boutons : lien (gris) + téléchargement (contour), alignés à gauche.
+  &__cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
 
-    a {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      border-radius: 4px;
-      background: var(--dm-color-red);
-      color: var(--dm-color-white);
-      font-family: var(--dm-font-title);
-      text-decoration: none;
+  // Bouton lien « gris » (Figma Btn) : fond #E8E8E8, Inter Medium 15px steel.
+  &__actions a {
+    display: inline-block;
+    padding: 14px 16px;
+    border-radius: 6px;
+    background: var(--dm-color-grey-light);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  // Ordre source = image puis texte → naturellement « texte à droite ».
+  // Le modificateur « texte à gauche » inverse donc l'ordre (image à droite).
+  &--text-left {
+    @media (width >= 992px) {
+      flex-direction: row-reverse;
     }
   }
 
-  &__download {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-  }
-
-  // Modificateur : texte à droite. row-reverse inverse l’ordre horizontal en
-  // desktop ; une fois empilé (mobile), l’ordre source (image puis texte) reste.
-  &--text-right {
-    flex-direction: row-reverse;
-  }
-
-  // Modificateur : fond gris (pleine largeur avec padding intérieur).
+  // Modificateur : fond gris. Bande contenue (le plein écran + coins arrondis
+  // relève de l'assemblage de page, pas du bloc isolé).
   &--bg-grey {
-    padding-inline: 2rem;
+    padding-inline: 2.5rem;
     background: var(--dm-color-grey-light);
+  }
+
+  // Sur fond gris, le bouton lien passe en blanc pour rester visible (hypothèse
+  // à confirmer : le bloc gris de la maquette n'avait pas de bouton).
+  &--bg-grey &__actions a {
+    background: var(--dm-color-white);
   }
 }

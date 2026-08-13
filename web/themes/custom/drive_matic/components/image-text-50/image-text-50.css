@@ -3,52 +3,80 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 2rem;
-  padding-block: 2rem;
+  max-width: 1130px;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+}
+@media (width >= 992px) {
+  .image-text-50 {
+    flex-wrap: nowrap;
+    gap: 110px;
+  }
 }
 .image-text-50__media {
   flex: 1 1 300px;
   margin: 0;
 }
-.image-text-50__media img {
+.image-text-50__media :is(img, picture) {
   display: block;
   width: 100%;
   height: auto;
-}
-.image-text-50__content {
-  flex: 1 1 300px;
+  border-radius: 16px;
 }
 .image-text-50__caption {
   margin-top: 0.5rem;
   color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
   font-size: 0.9rem;
 }
+.image-text-50__content {
+  display: flex;
+  flex: 1 1 300px;
+  flex-direction: column;
+  gap: 10px;
+}
 .image-text-50__title {
-  margin-bottom: 1rem;
-  color: var(--dm-color-anthracite);
+  margin: 0;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h2-size);
+  line-height: var(--dm-h2-line);
+  font-weight: 700;
 }
 .image-text-50__description {
   color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  font-weight: 400;
+  line-height: var(--dm-body-line);
 }
-.image-text-50__actions {
-  margin-top: 1.5rem;
+.image-text-50__cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
 }
 .image-text-50__actions a {
   display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
-  font-family: var(--dm-font-title);
+  padding: 14px 16px;
+  border-radius: 6px;
+  background: var(--dm-color-grey-light);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: 15px;
+  font-weight: 500;
   text-decoration: none;
 }
-.image-text-50__download {
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
-.image-text-50--text-right {
-  flex-direction: row-reverse;
+@media (width >= 992px) {
+  .image-text-50--text-left {
+    flex-direction: row-reverse;
+  }
 }
 .image-text-50--bg-grey {
-  padding-inline: 2rem;
+  padding-inline: 2.5rem;
   background: var(--dm-color-grey-light);
+}
+.image-text-50--bg-grey .image-text-50__actions a {
+  background: var(--dm-color-white);
 }
