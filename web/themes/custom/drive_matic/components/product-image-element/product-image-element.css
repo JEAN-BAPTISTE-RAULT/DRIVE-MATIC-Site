@@ -1,0 +1,24 @@
+.product-image-element {
+  margin: 0;
+}
+.product-image-element__media {
+  margin-bottom: 1rem;
+}
+.product-image-element__title {
+  margin: 0 0 0.5rem;
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+}
+.product-image-element__description {
+  color: var(--dm-color-grey-text);
+}
+.product-image-element__caption {
+  margin: 0.5rem 0 0;
+  color: var(--dm-color-grey-text);
+  font-size: 0.875rem;
+}
+.product-image-element__actions, .product-image-element__download {
+  margin-top: 1rem;
+}

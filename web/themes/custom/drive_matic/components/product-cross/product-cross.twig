@@ -1,0 +1,10 @@
+{#
+  SDC « Bloc :: Cross-selling produit » — grille de cartes produits liées.
+  Prop : title (obl). Slot : items (cartes `product-cross-element`).
+#}
+<section class="product-cross">
+  <h2 class="product-cross__title">{{ title }}</h2>
+  <div class="product-cross__items">
+    {{ block('items') }}
+  </div>
+</section>

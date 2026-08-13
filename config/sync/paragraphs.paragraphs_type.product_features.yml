@@ -1,0 +1,10 @@
+uuid: 9c424f9d-9b01-4bc2-bea1-4f68a4b5d0b1
+langcode: en
+status: true
+dependencies: {  }
+id: product_features
+label: 'Bloc :: Présentation produit'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

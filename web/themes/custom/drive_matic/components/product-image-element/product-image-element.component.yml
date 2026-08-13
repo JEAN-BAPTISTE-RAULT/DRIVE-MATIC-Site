@@ -1,0 +1,21 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Élément :: Image produit'
+status: stable
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Titre
+    caption:
+      type: string
+      title: Légende
+slots:
+  image:
+    title: Image (16:9)
+  description:
+    title: Description
+  actions:
+    title: Lien
+  download:
+    title: Fichier à télécharger

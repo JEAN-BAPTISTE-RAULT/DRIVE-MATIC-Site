@@ -1,0 +1,35 @@
+uuid: 5886dc3e-187f-4fe6-9afb-5ca30720981c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_features_elements
+    - paragraphs.paragraphs_type.product_features
+    - paragraphs.paragraphs_type.product_image_element
+    - paragraphs.paragraphs_type.product_video_element
+  module:
+    - entity_reference_revisions
+id: paragraph.product_features.field_features_elements
+field_name: field_features_elements
+entity_type: paragraph
+bundle: product_features
+label: Éléments
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      product_image_element: product_image_element
+      product_video_element: product_video_element
+    target_bundles_drag_drop:
+      product_image_element:
+        weight: 0
+        enabled: true
+      product_video_element:
+        weight: 1
+        enabled: true
+field_type: entity_reference_revisions

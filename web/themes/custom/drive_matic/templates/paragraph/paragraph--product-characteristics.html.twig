@@ -1,0 +1,14 @@
+{#
+  Liaison paragraphe `product_characteristics` -> SDC `drive_matic:product-characteristics`.
+  Titre et légende = props ; image (sans crop), caractéristiques (éléments), notice
+  technique et documentation (fichiers) = slots.
+#}
+{% embed 'drive_matic:product-characteristics' with {
+  title: paragraph.field_title.value,
+  caption: paragraph.field_caption.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+  {% block characteristics %}{{ content.field_elements }}{% endblock %}
+  {% block notice %}{{ content.field_file_notice }}{% endblock %}
+  {% block documentation %}{{ content.field_file_doc }}{% endblock %}
+{% endembed %}

@@ -1,0 +1,25 @@
+.product-cross__title {
+  margin: 0 0 1.5rem;
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h2-size);
+  line-height: var(--dm-h2-line);
+}
+.product-cross__items {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+.product-cross__items > * {
+  display: contents;
+}
+@media (width >= 576px) {
+  .product-cross__items {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (width >= 992px) {
+  .product-cross__items {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,10 @@
+uuid: 65a1226b-e342-4457-9bc9-22ed033ddc8e
+langcode: en
+status: true
+dependencies: {  }
+id: product_cross
+label: 'Bloc :: Cross-selling produit'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

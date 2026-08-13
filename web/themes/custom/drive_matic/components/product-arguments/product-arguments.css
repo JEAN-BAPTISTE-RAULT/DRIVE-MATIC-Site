@@ -1,0 +1,21 @@
+.product-arguments__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (width >= 768px) {
+  .product-arguments__list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.product-arguments__item {
+  padding: 1.5rem;
+  background: var(--dm-color-grey-light);
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+}

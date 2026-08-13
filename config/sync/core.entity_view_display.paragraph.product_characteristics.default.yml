@@ -1,0 +1,57 @@
+uuid: fc50d5eb-c7d2-4251-b5a6-c516a27e4884
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.product_characteristics.field_caption
+    - field.field.paragraph.product_characteristics.field_elements
+    - field.field.paragraph.product_characteristics.field_file_doc
+    - field.field.paragraph.product_characteristics.field_file_notice
+    - field.field.paragraph.product_characteristics.field_image
+    - field.field.paragraph.product_characteristics.field_title
+    - paragraphs.paragraphs_type.product_characteristics
+  module:
+    - entity_reference_revisions
+    - file
+id: paragraph.product_characteristics.default
+targetEntityType: paragraph
+bundle: product_characteristics
+mode: default
+content:
+  field_elements:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_file_doc:
+    type: file_default
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_file_notice:
+    type: file_default
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: free
+      link: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_caption: true
+  field_title: true

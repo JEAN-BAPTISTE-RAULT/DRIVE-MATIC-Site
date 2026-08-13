@@ -1,0 +1,32 @@
+.product-characteristics {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+@media (width >= 992px) {
+  .product-characteristics {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+.product-characteristics__caption {
+  margin: 0.5rem 0 0;
+  color: var(--dm-color-grey-text);
+  font-size: 0.875rem;
+}
+.product-characteristics__title {
+  margin: 0 0 1rem;
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h2-size);
+  line-height: var(--dm-h2-line);
+}
+.product-characteristics__list > * {
+  display: contents;
+}
+.product-characteristics__downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}

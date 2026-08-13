@@ -1,0 +1,14 @@
+uuid: 7e3d32ab-6e39-4cd7-a55d-77e942a4e419
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.product_arguments.field_arguments
+    - paragraphs.paragraphs_type.product_arguments
+id: paragraph.product_arguments.default
+targetEntityType: paragraph
+bundle: product_arguments
+mode: default
+content: {  }
+hidden:
+  field_arguments: true

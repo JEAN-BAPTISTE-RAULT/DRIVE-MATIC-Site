@@ -1,0 +1,30 @@
+uuid: db0eecfe-91ff-42c7-9a61-47bb2b2bbed7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_elements
+    - paragraphs.paragraphs_type.product_characteristic_element
+    - paragraphs.paragraphs_type.product_characteristics
+  module:
+    - entity_reference_revisions
+id: paragraph.product_characteristics.field_elements
+field_name: field_elements
+entity_type: paragraph
+bundle: product_characteristics
+label: Caractéristiques
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      product_characteristic_element: product_characteristic_element
+    target_bundles_drag_drop:
+      product_characteristic_element:
+        weight: 0
+        enabled: true
+field_type: entity_reference_revisions

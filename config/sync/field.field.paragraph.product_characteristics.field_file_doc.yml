@@ -1,0 +1,27 @@
+uuid: 280f3af1-d3e3-4970-9e6d-a372e780149e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_file_doc
+    - paragraphs.paragraphs_type.product_characteristics
+  module:
+    - file
+id: paragraph.product_characteristics.field_file_doc
+field_name: field_file_doc
+entity_type: paragraph
+bundle: product_characteristics
+label: 'Documentation (à télécharger)'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: documents
+  file_extensions: 'pdf doc docx xls xlsx zip'
+  max_filesize: ''
+  description_field: false
+field_type: file

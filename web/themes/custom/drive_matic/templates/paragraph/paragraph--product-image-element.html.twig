@@ -1,0 +1,13 @@
+{#
+  Liaison paragraphe `product_image_element` -> SDC `drive_matic:product-image-element`.
+  Titre et légende = props ; image (16:9), description, lien et fichier = slots.
+#}
+{% embed 'drive_matic:product-image-element' with {
+  title: paragraph.field_title.value,
+  caption: paragraph.field_caption.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+  {% block description %}{{ content.field_description }}{% endblock %}
+  {% block actions %}{{ content.field_link }}{% endblock %}
+  {% block download %}{{ content.field_file }}{% endblock %}
+{% endembed %}

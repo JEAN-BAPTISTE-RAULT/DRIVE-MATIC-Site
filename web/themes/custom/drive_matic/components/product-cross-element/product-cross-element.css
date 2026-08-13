@@ -1,0 +1,19 @@
+.product-cross-element {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--dm-color-white);
+}
+.product-cross-element__media {
+  margin-bottom: 0.75rem;
+}
+.product-cross-element__title {
+  margin: 0 0 0.5rem;
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+}
+.product-cross-element__link {
+  margin-top: auto;
+}

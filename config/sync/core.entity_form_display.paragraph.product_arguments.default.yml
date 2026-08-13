@@ -1,0 +1,23 @@
+uuid: 040deda3-f57b-4fcf-888f-c6115b1f4e9a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.product_arguments.field_arguments
+    - paragraphs.paragraphs_type.product_arguments
+id: paragraph.product_arguments.default
+targetEntityType: paragraph
+bundle: product_arguments
+mode: default
+content:
+  field_arguments:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

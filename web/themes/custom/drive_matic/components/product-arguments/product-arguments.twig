@@ -1,0 +1,11 @@
+{#
+  SDC « Bloc :: Argumentaire produit » — liste de 1 à 3 titres.
+  Prop : titles (tableau de chaînes).
+#}
+<section class="product-arguments">
+  <ul class="product-arguments__list">
+    {% for title in titles %}
+      <li class="product-arguments__item">{{ title }}</li>
+    {% endfor %}
+  </ul>
+</section>

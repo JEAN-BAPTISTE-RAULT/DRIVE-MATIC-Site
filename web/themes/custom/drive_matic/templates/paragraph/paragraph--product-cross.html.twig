@@ -1,0 +1,9 @@
+{#
+  Liaison paragraphe `product_cross` -> SDC `drive_matic:product-cross`.
+  Titre = prop ; les cartes produits liées (éléments) sont rendues en slot.
+#}
+{% embed 'drive_matic:product-cross' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block items %}{{ content.field_cross_elements }}{% endblock %}
+{% endembed %}

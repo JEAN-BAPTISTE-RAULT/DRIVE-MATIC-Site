@@ -1,0 +1,10 @@
+uuid: f135e9a0-90c0-464f-be29-36a45acb6891
+langcode: en
+status: true
+dependencies: {  }
+id: product_arguments
+label: 'Bloc :: Argumentaire produit'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

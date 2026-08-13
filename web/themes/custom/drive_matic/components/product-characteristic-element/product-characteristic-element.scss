@@ -1,0 +1,17 @@
+// SDC « Élément :: Caractéristique produit » — CSS scopé (BEM).
+.product-characteristic-element {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--dm-color-grey-metal);
+
+  &__title {
+    margin: 0 0 0.25rem;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+  }
+
+  &__description {
+    color: var(--dm-color-grey-text);
+  }
+}

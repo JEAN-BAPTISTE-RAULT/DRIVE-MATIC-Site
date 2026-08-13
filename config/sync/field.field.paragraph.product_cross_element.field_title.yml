@@ -1,0 +1,19 @@
+uuid: 6663cbee-4fae-440b-8db8-1fcc2e50b2c3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.product_cross_element
+id: paragraph.product_cross_element.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: product_cross_element
+label: Titre
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

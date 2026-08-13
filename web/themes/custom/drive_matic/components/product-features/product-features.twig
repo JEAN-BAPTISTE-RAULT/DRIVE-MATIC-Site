@@ -1,0 +1,26 @@
+{#
+  SDC « Bloc :: Présentation produit » — présentation « swipe » en slideshow.
+  Slot : slides (diapositives `.swiper-slide`, 1 à 5 éléments image/vidéo).
+  Slideshow Swiper si > 1 (init par `drive_matic/slideshow`), sinon statique.
+  Amélioration progressive : sans JS, la piste s'empile ; les flèches
+  n'apparaissent que sous `html.js`.
+#}
+<section class="product-features">
+  <div class="product-features__viewport swiper" data-dm-slideshow>
+    <div class="swiper-wrapper">
+      {{ block('slides') }}
+    </div>
+    <button
+      type="button"
+      class="product-features__nav product-features__nav--prev"
+      data-dm-slideshow-prev
+      aria-label="{{ 'Diapositive précédente'|t }}"
+    ></button>
+    <button
+      type="button"
+      class="product-features__nav product-features__nav--next"
+      data-dm-slideshow-next
+      aria-label="{{ 'Diapositive suivante'|t }}"
+    ></button>
+  </div>
+</section>

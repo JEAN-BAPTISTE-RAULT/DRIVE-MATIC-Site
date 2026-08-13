@@ -1,0 +1,31 @@
+// SDC « Élément :: Image produit » — CSS scopé (BEM), consomme les tokens globaux.
+.product-image-element {
+  margin: 0;
+
+  &__media {
+    margin-bottom: 1rem;
+  }
+
+  &__title {
+    margin: 0 0 0.5rem;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+  }
+
+  &__description {
+    color: var(--dm-color-grey-text);
+  }
+
+  &__caption {
+    margin: 0.5rem 0 0;
+    color: var(--dm-color-grey-text);
+    font-size: 0.875rem;
+  }
+
+  &__actions,
+  &__download {
+    margin-top: 1rem;
+  }
+}

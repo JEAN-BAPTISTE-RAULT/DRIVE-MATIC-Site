@@ -15,6 +15,10 @@ dependencies:
     - paragraphs.paragraphs_type.image_text_50
     - paragraphs.paragraphs_type.jumbo_home
     - paragraphs.paragraphs_type.news_home
+    - paragraphs.paragraphs_type.product_arguments
+    - paragraphs.paragraphs_type.product_characteristics
+    - paragraphs.paragraphs_type.product_cross
+    - paragraphs.paragraphs_type.product_features
     - paragraphs.paragraphs_type.text_centered
     - paragraphs.paragraphs_type.text_left_aligned
     - paragraphs.paragraphs_type.triptych
@@ -49,6 +53,10 @@ settings:
       jumbo_home: jumbo_home
       news_home: news_home
       brands_home: brands_home
+      product_arguments: product_arguments
+      product_features: product_features
+      product_characteristics: product_characteristics
+      product_cross: product_cross
     target_bundles_drag_drop:
       accordion:
         weight: 7
@@ -79,6 +87,18 @@ settings:
         enabled: true
       news_home:
         weight: 12
+        enabled: true
+      product_arguments:
+        weight: 14
+        enabled: true
+      product_characteristics:
+        weight: 16
+        enabled: true
+      product_cross:
+        weight: 17
+        enabled: true
+      product_features:
+        weight: 15
         enabled: true
       text_centered:
         weight: 0

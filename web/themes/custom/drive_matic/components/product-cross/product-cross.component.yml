@@ -1,0 +1,14 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Cross-selling produit'
+status: stable
+props:
+  type: object
+  required:
+    - title
+  properties:
+    title:
+      type: string
+      title: Titre
+slots:
+  items:
+    title: Produits liés

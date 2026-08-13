@@ -1,0 +1,21 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Caractéristiques produit'
+status: stable
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Titre
+    caption:
+      type: string
+      title: Légende de l’image
+slots:
+  image:
+    title: Image (sans crop)
+  characteristics:
+    title: Caractéristiques
+  notice:
+    title: Notice technique (fichier)
+  documentation:
+    title: Documentation (fichier)

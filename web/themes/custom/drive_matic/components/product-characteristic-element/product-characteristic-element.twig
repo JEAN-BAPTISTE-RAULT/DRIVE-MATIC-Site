@@ -1,0 +1,10 @@
+{#
+  SDC « Élément :: Caractéristique produit » — une entrée titre / description.
+  Prop : title (obl). Slot : description.
+#}
+<div class="product-characteristic-element">
+  <h3 class="product-characteristic-element__title">{{ title }}</h3>
+  {% if block('description') is not empty %}
+    <div class="product-characteristic-element__description">{{ block('description') }}</div>
+  {% endif %}
+</div>

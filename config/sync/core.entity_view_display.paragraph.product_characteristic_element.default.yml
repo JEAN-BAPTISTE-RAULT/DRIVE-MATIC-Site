@@ -1,0 +1,24 @@
+uuid: 5d644490-afab-4e92-bec9-4d28d45fb6ae
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.product_characteristic_element.field_description
+    - field.field.paragraph.product_characteristic_element.field_title
+    - paragraphs.paragraphs_type.product_characteristic_element
+  module:
+    - text
+id: paragraph.product_characteristic_element.default
+targetEntityType: paragraph
+bundle: product_characteristic_element
+mode: default
+content:
+  field_description:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  field_title: true

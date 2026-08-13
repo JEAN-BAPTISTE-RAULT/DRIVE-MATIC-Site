@@ -1,0 +1,19 @@
+uuid: 65841a43-3f71-4b1d-a5e8-61039c53bc57
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_caption
+    - paragraphs.paragraphs_type.product_video_element
+id: paragraph.product_video_element.field_caption
+field_name: field_caption
+entity_type: paragraph
+bundle: product_video_element
+label: 'Légende de l’image'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,15 @@
+{#
+  Liaison paragraphe `product_video_element` -> SDC `drive_matic:product-video-element`.
+  Titre et légende = props ; miniature (16:9), embed, description, lien et fichier
+  = slots. La vidéo est rendue en façade (lecture au clic).
+#}
+{% embed 'drive_matic:product-video-element' with {
+  title: paragraph.field_title.value,
+  caption: paragraph.field_caption.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+  {% block video %}{{ content.field_video }}{% endblock %}
+  {% block description %}{{ content.field_description }}{% endblock %}
+  {% block actions %}{{ content.field_link }}{% endblock %}
+  {% block download %}{{ content.field_file }}{% endblock %}
+{% endembed %}

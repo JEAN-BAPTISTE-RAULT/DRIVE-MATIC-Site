@@ -1,0 +1,60 @@
+uuid: 43440bf6-d55e-481b-b8fd-ce0b899d7f12
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.product_image_element.field_caption
+    - field.field.paragraph.product_image_element.field_description
+    - field.field.paragraph.product_image_element.field_file
+    - field.field.paragraph.product_image_element.field_image
+    - field.field.paragraph.product_image_element.field_link
+    - field.field.paragraph.product_image_element.field_title
+    - paragraphs.paragraphs_type.product_image_element
+  module:
+    - file
+    - link
+    - text
+id: paragraph.product_image_element.default
+targetEntityType: paragraph
+bundle: product_image_element
+mode: default
+content:
+  field_description:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_file:
+    type: file_default
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: ratio_16_9
+      link: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 3
+    region: content
+hidden:
+  field_caption: true
+  field_title: true

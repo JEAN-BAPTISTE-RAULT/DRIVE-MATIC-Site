@@ -1,0 +1,36 @@
+// SDC « Bloc :: Caractéristiques produit » — CSS scopé (BEM).
+.product-characteristics {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @media (width >= 992px) {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  &__caption {
+    margin: 0.5rem 0 0;
+    color: var(--dm-color-grey-text);
+    font-size: 0.875rem;
+  }
+
+  &__title {
+    margin: 0 0 1rem;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h2-size);
+    line-height: var(--dm-h2-line);
+  }
+
+  &__list > * {
+    display: contents;
+  }
+
+  &__downloads {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+}

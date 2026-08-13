@@ -1,0 +1,10 @@
+uuid: d8b67e5b-6473-466c-a914-d3cd12edc32e
+langcode: en
+status: true
+dependencies: {  }
+id: product_characteristic_element
+label: 'Élément :: Caractéristique produit'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

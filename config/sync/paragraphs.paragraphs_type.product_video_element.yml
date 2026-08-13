@@ -1,0 +1,10 @@
+uuid: 160762e2-9fc7-4d5a-931b-7d4b1941fe4b
+langcode: en
+status: true
+dependencies: {  }
+id: product_video_element
+label: 'Élément :: Vidéo produit'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

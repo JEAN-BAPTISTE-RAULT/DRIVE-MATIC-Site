@@ -1,0 +1,39 @@
+{#
+  SDC « Élément :: Vidéo produit » — diapositive vidéo en façade.
+  Props : title (opt), caption (opt). Slots : image (miniature 16:9), video
+  (embed), description, actions (lien), download (fichier). La miniature est une
+  façade : la lecture se déclenche au clic (JS `drive_matic/video-facade`).
+#}
+<figure class="product-video-element">
+  {% if block('video') is not empty %}
+    <div class="product-video-element__media" data-dm-video-facade>
+      <button
+        type="button"
+        class="product-video-element__play"
+        data-dm-video-play
+        aria-label="{{ 'Lire la vidéo'|t }}{% if title %} : {{ title }}{% endif %}"
+      >
+        <span class="product-video-element__thumb">{{ block('image') }}</span>
+        <span class="product-video-element__icon" aria-hidden="true"></span>
+      </button>
+      <template class="product-video-element__embed" data-dm-video-embed>{{ block('video') }}</template>
+    </div>
+  {% else %}
+    <div class="product-video-element__media">{{ block('image') }}</div>
+  {% endif %}
+  {% if title or caption or block('description') is not empty or block('actions') is not empty or block('download') is not empty %}
+    <figcaption class="product-video-element__body">
+      {% if title %}<h3 class="product-video-element__title">{{ title }}</h3>{% endif %}
+      {% if block('description') is not empty %}
+        <div class="product-video-element__description">{{ block('description') }}</div>
+      {% endif %}
+      {% if caption %}<p class="product-video-element__caption">{{ caption }}</p>{% endif %}
+      {% if block('actions') is not empty %}
+        <div class="product-video-element__actions">{{ block('actions') }}</div>
+      {% endif %}
+      {% if block('download') is not empty %}
+        <div class="product-video-element__download">{{ block('download') }}</div>
+      {% endif %}
+    </figcaption>
+  {% endif %}
+</figure>

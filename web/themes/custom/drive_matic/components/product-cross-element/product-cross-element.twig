@@ -1,0 +1,13 @@
+{#
+  SDC « Élément :: Cross-selling produit » — carte produit liée.
+  Prop : title (obl). Slots : image (16:9), link (vers la fiche).
+#}
+<article class="product-cross-element">
+  <div class="product-cross-element__media">{{ block('image') }}</div>
+  <div class="product-cross-element__body">
+    <h3 class="product-cross-element__title">{{ title }}</h3>
+    {% if block('link') is not empty %}
+      <div class="product-cross-element__link">{{ block('link') }}</div>
+    {% endif %}
+  </div>
+</article>

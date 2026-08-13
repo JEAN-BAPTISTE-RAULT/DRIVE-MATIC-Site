@@ -1,0 +1,9 @@
+{#
+  Liaison paragraphe `product_characteristic_element` -> SDC
+  `drive_matic:product-characteristic-element`. Titre = prop ; description = slot.
+#}
+{% embed 'drive_matic:product-characteristic-element' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block description %}{{ content.field_description }}{% endblock %}
+{% endembed %}

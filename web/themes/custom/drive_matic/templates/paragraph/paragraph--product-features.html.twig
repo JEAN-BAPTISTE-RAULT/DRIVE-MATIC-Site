@@ -1,0 +1,12 @@
+{#
+  Liaison paragraphe `product_features` -> SDC `drive_matic:product-features`.
+  Chaque élément (image ou vidéo, rendu par son formatter) est enveloppé dans une
+  diapositive `.swiper-slide` attendue par Swiper.
+#}
+{% embed 'drive_matic:product-features' %}
+  {% block slides %}
+    {% for item in content.field_features_elements|filter((value, key) => not (key starts with '#')) %}
+      <div class="swiper-slide">{{ item }}</div>
+    {% endfor %}
+  {% endblock %}
+{% endembed %}

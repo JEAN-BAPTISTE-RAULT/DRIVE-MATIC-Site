@@ -1,0 +1,44 @@
+uuid: ea3f9154-0a70-4f23-9173-1072e37a53a6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.product_cross.field_cross_elements
+    - field.field.paragraph.product_cross.field_title
+    - paragraphs.paragraphs_type.product_cross
+  module:
+    - paragraphs
+id: paragraph.product_cross.default
+targetEntityType: paragraph
+bundle: product_cross
+mode: default
+content:
+  field_cross_elements:
+    type: paragraphs
+    weight: 1
+    region: content
+    settings:
+      title: Élément
+      title_plural: Éléments
+      edit_mode: closed
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: product_cross_element
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

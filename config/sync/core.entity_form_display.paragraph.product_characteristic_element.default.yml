@@ -1,0 +1,34 @@
+uuid: 072c9df2-9e91-4f01-8d18-c0185f917b40
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.product_characteristic_element.field_description
+    - field.field.paragraph.product_characteristic_element.field_title
+    - paragraphs.paragraphs_type.product_characteristic_element
+  module:
+    - text
+id: paragraph.product_characteristic_element.default
+targetEntityType: paragraph
+bundle: product_characteristic_element
+mode: default
+content:
+  field_description:
+    type: text_textarea
+    weight: 1
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

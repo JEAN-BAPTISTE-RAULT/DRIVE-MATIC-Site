@@ -1,0 +1,35 @@
+uuid: 57b9989f-292e-4de4-abb8-d61ead4a25a7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.product_features.field_features_elements
+    - paragraphs.paragraphs_type.product_features
+  module:
+    - paragraphs
+id: paragraph.product_features.default
+targetEntityType: paragraph
+bundle: product_features
+mode: default
+content:
+  field_features_elements:
+    type: paragraphs
+    weight: 0
+    region: content
+    settings:
+      title: Élément
+      title_plural: Éléments
+      edit_mode: closed
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: product_image_element
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

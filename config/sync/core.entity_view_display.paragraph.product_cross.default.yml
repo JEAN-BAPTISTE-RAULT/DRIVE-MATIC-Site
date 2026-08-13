@@ -1,0 +1,26 @@
+uuid: d7858ab7-8aeb-4364-bcf6-4c192eab9da7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.product_cross.field_cross_elements
+    - field.field.paragraph.product_cross.field_title
+    - paragraphs.paragraphs_type.product_cross
+  module:
+    - entity_reference_revisions
+id: paragraph.product_cross.default
+targetEntityType: paragraph
+bundle: product_cross
+mode: default
+content:
+  field_cross_elements:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  field_title: true

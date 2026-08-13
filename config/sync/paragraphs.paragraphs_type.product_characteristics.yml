@@ -1,0 +1,10 @@
+uuid: b808a7b6-19cc-46e1-888d-e7e93039cfac
+langcode: en
+status: true
+dependencies: {  }
+id: product_characteristics
+label: 'Bloc :: Caractéristiques produit'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

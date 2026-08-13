@@ -1,0 +1,10 @@
+{#
+  Liaison paragraphe `product_cross_element` -> SDC `drive_matic:product-cross-element`.
+  Titre = prop ; image (16:9) et lien vers la fiche = slots.
+#}
+{% embed 'drive_matic:product-cross-element' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+  {% block link %}{{ content.field_link }}{% endblock %}
+{% endembed %}

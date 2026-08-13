@@ -1,0 +1,19 @@
+uuid: 5af7e766-9ce9-49e3-b02a-c0266f7b9b60
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_arguments
+    - paragraphs.paragraphs_type.product_arguments
+id: paragraph.product_arguments.field_arguments
+field_name: field_arguments
+entity_type: paragraph
+bundle: product_arguments
+label: Titres
+description: 'De 1 à 3 titres d’argumentaire.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

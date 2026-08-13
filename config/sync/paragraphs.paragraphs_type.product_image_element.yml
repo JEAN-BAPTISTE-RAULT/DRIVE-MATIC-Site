@@ -1,0 +1,10 @@
+uuid: 9bde4860-baf8-4fb9-ace5-8e69cb28f744
+langcode: en
+status: true
+dependencies: {  }
+id: product_image_element
+label: 'Élément :: Image produit'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

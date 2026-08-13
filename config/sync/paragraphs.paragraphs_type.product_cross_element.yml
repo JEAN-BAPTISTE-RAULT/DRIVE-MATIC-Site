@@ -1,0 +1,10 @@
+uuid: 12f80e51-bf58-4f3a-9bf0-8dc844ff2919
+langcode: en
+status: true
+dependencies: {  }
+id: product_cross_element
+label: 'Élément :: Cross-selling produit'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

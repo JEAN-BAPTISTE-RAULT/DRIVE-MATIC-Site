@@ -1,0 +1,7 @@
+{#
+  Liaison paragraphe `product_arguments` -> SDC `drive_matic:product-arguments`.
+  Les 1 à 3 titres sont passés en prop (tableau de chaînes).
+#}
+{% include 'drive_matic:product-arguments' with {
+  titles: paragraph.field_arguments|map(item => item.value),
+} only %}
