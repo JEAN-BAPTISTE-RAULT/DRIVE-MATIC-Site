@@ -60,3 +60,38 @@
 .file--image {
   background-image: url(../../images/icons/image-x-generic.svg);
 }
+
+/* Bouton de téléchargement (maquette) : contour + icône globe + « Télécharger (FORMAT POIDS) ». */
+.file-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1.5rem;
+  border: 1.5px solid var(--dm-color-steel);
+  border-radius: 10px;
+  background: var(--dm-color-white);
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-body);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 28px;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+.file-download:hover,
+.file-download:focus-visible {
+  background: var(--dm-color-steel);
+  color: var(--dm-color-white);
+}
+.file-download__icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+.file-download__icon svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+}

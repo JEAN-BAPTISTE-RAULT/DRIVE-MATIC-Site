@@ -1,36 +1,47 @@
 // SDC « Bloc :: Texte centré » — CSS scopé (BEM), consomme les tokens globaux.
 
 .text-centered {
-  max-width: 800px;
+  max-width: 960px;
   margin-inline: auto;
-  padding-block: 2rem;
+  padding-block: 2.5rem;
   text-align: center;
 
   &__title {
-    margin-bottom: 1rem;
-    color: var(--dm-color-anthracite);
+    margin-bottom: 1.5rem;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h1-size);
+    line-height: var(--dm-h1-line);
+    font-weight: 700;
   }
 
   &__description {
     color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
   }
 
-  &__actions {
-    margin-top: 1.5rem;
-
-    a {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      border-radius: 4px;
-      background: var(--dm-color-red);
-      color: var(--dm-color-white);
-      font-family: var(--dm-font-title);
-      text-decoration: none;
-    }
+  // Rangée CTA : bouton d'action (rouge) + bouton de téléchargement (contour) côte à côte, centrés.
+  &__cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
   }
 
-  &__download {
-    margin-top: 1rem;
-    font-size: 0.9rem;
+  // Bouton rouge « primaire » (Figma BtnRouge) : Inter Medium 15px, padding 14×16.
+  &__actions a {
+    display: inline-block;
+    padding: 14px 16px;
+    border-radius: 4px;
+    background: var(--dm-color-red);
+    color: var(--dm-color-white);
+    font-family: var(--dm-font-body);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
   }
 }

@@ -1,29 +1,39 @@
 .text-centered {
-  max-width: 800px;
+  max-width: 960px;
   margin-inline: auto;
-  padding-block: 2rem;
+  padding-block: 2.5rem;
   text-align: center;
 }
 .text-centered__title {
-  margin-bottom: 1rem;
-  color: var(--dm-color-anthracite);
+  margin-bottom: 1.5rem;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h1-size);
+  line-height: var(--dm-h1-line);
+  font-weight: 700;
 }
 .text-centered__description {
   color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
 }
-.text-centered__actions {
-  margin-top: 1.5rem;
+.text-centered__cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 .text-centered__actions a {
   display: inline-block;
-  padding: 0.75rem 1.5rem;
+  padding: 14px 16px;
   border-radius: 4px;
   background: var(--dm-color-red);
   color: var(--dm-color-white);
-  font-family: var(--dm-font-title);
+  font-family: var(--dm-font-body);
+  font-size: 15px;
+  font-weight: 500;
   text-decoration: none;
-}
-.text-centered__download {
-  margin-top: 1rem;
-  font-size: 0.9rem;
 }

@@ -10,10 +10,14 @@
   {% if block('description') is not empty %}
     <div class="text-centered__description">{{ block('description') }}</div>
   {% endif %}
-  {% if block('actions') is not empty %}
-    <div class="text-centered__actions">{{ block('actions') }}</div>
-  {% endif %}
-  {% if block('download') is not empty %}
-    <div class="text-centered__download">{{ block('download') }}</div>
+  {% if block('actions') is not empty or block('download') is not empty %}
+    <div class="text-centered__cta-row">
+      {% if block('actions') is not empty %}
+        <div class="text-centered__actions">{{ block('actions') }}</div>
+      {% endif %}
+      {% if block('download') is not empty %}
+        <div class="text-centered__download">{{ block('download') }}</div>
+      {% endif %}
+    </div>
   {% endif %}
 </div>
