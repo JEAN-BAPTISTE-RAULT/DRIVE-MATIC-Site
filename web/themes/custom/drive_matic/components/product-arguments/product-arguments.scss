@@ -1,24 +1,45 @@
 // SDC « Bloc :: Argumentaire produit » — CSS scopé (BEM).
+// Maquette : 1 à 3 titres centrés (Exo 2 Bold 30/44), séparés par un filet
+// vertical gris (#B5B5B5) sur écran large. Pas de cartouche de fond.
+
 .product-arguments {
+  max-width: 960px;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+
   &__list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     margin: 0;
     padding: 0;
     list-style: none;
 
     @media (width >= 768px) {
-      grid-template-columns: repeat(3, 1fr);
+      flex-direction: row;
+      gap: 0;
     }
   }
 
   &__item {
-    padding: 1.5rem;
-    background: var(--dm-color-grey-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 2rem;
     color: var(--dm-color-anthracite);
     font-family: var(--dm-font-title);
-    font-size: var(--dm-h3-size);
-    line-height: var(--dm-h3-line);
+    font-size: var(--dm-h2-size);
+    line-height: var(--dm-h2-line);
+    font-weight: 700;
+    text-align: center;
+
+    @media (width >= 768px) {
+      flex: 1 1 0;
+      padding-block: 1rem;
+
+      & + & {
+        border-left: 1px solid var(--dm-color-grey-metal);
+      }
+    }
   }
 }
