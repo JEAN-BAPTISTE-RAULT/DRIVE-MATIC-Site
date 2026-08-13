@@ -147,6 +147,7 @@ Les decisions architecturales posterieures au PRD sont dans `.claude/decisions/`
 - **Neutraliser une protection de securite** : desactiver l'auto-echappement Twig, le CSRF, le Flood control ou la sanitation d'entrees pour "faire marcher" une fonctionnalite.
 - **Placer du CSS ou du Twig hors d'un SDC** (hors fondations globales) : casse l'isolation et la reutilisabilite des composants.
 - **Contourner le pipeline images** : crops/dimensions en dur, `<img>` hors media-library / image styles, ou sortie non-WebP.
+- **Charger un asset front tiers via CDN** : toute librairie JS/CSS ou police tierce est **auto-hebergee / vendorisee** dans le theme (`vendor/`), jamais appelee depuis un CDN externe (RGPD ; cf. ADR-008 et PRD §6).
 
 ### Securite du code
 

@@ -29,4 +29,7 @@ La bibliothèque de paragraphes (ADR-001) comporte des blocs vidéo (`video_cent
 - Un paragraphe vidéo porte **deux champs** (embed + miniature média) au lieu d'une seule entité Media remote_video.
 - Sécurité : providers cloisonnés côté serveur ; pas de chargement tiers avant interaction (perf + RGPD).
 - Réutilisable pour les futurs blocs vidéo (V4/V5) via le même SDC/pattern façade.
-- Dépendance : module `video_embed_field` (déjà activé). Fichiers : `field.storage.paragraph.field_video`, `field.field.paragraph.video_centered.*`, SDC `components/video-centered/` (`.twig`/`.scss`/`.js` + `libraryOverrides` : `core/drupal`, `core/once`).
+- Dépendance : module `video_embed_field` (déjà activé). Fichiers : `field.storage.paragraph.field_video`, `field.field.paragraph.video_centered.*`, SDC `components/video-centered/`.
+
+## Mise à jour (V3, 2026-08-13)
+Le behavior de façade a été **mutualisé** en librairie de thème **`drive_matic/video-facade`** (`js/video-facade.js`) : JS **générique piloté par data-attributs** (`[data-dm-video-facade]`, `[data-dm-video-play]`, `template[data-dm-video-embed]`), agnostique du markup BEM. Un **seul** `Drupal.behaviors.driveMaticVideoFacade` (évite les collisions). Consommé par `video_centered` (migré, `libraryOverrides: drive_matic/video-facade`) **et** `history_element` (V3), réutilisable par `product_video_element` (V5). Le CSS de la pastille reste scopé par composant (seul le JS est partagé).
