@@ -2,6 +2,9 @@
 node_modules/
 vendor/
 dist/
+# Worktrees des taches de fond (copies completes du repo sous .claude/) — ne
+# jamais formater/verifier : ce sont des checkouts ephemeres, pas nos sources.
+.claude/worktrees/
 web/core/
 web/libraries/
 web/modules/contrib/
