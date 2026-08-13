@@ -127,7 +127,9 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Resultat attendu** : Argumentaire produit complet, sans prix.
 
 **Criteres d'acceptation** :
-- [ ] Template commun a tous les produits : image 100 % largeur ; bloc argumentaires (image/texte) ; bloc swipe (max 5, visuel ou video + titre + texte + CTA) ; bloc caracteristiques techniques (donnees titre/texte + notice technique et documentation telechargeables avec nom/format/poids auto) ; bloc titre + CTA ; bloc configurateur ; bloc cross-selling (1 a 5 produits avec lien vers fiche).
+- [ ] Template commun a tous les produits : image 100 % largeur ; bloc argumentaires (`product_arguments`) ; bloc swipe (max 5, visuel ou video + titre + texte + CTA — `product_features`) ; bloc caracteristiques techniques (donnees titre/texte + notice technique et documentation telechargeables avec nom/format/poids auto — `product_characteristics`) ; bloc titre + CTA ; bloc configurateur ; bloc cross-selling (1 a 5 produits avec lien vers fiche — `product_cross`).
+  - Note d'arbitrage : le « bloc argumentaires » a ete acte comme **1 a 3 titres seuls** (`product_arguments`) dans la bibliotheque validee ([ADR-001](../.claude/decisions/001-bibliotheque-paragraphes.md) #14), et non « image/texte » comme le suggerait la formulation initiale des specs. Les blocs produit sont fournis par la vague V5 des paragraphes (F1) ; le **template page produit** (assemblage) reste a construire.
+  - `[OUVERT]` Le **poids** des fichiers telechargeables n'est pas encore affiche (le template `file-link.html.twig` omet `file_size`) — correctif transverse en cours.
 - [ ] **Aucun prix** n'est affiche sur les pages produit publiques.
 
 ---
