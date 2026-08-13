@@ -44,12 +44,10 @@
 #}
 <div class="layout-container">
 
-  <header>
-    {{ page.header }}
-  </header>
-
-  {{ page.primary_menu }}
-  {{ page.secondary_menu }}
+  {% embed 'drive_matic:site-header' %}
+    {% block branding %}{{ page.header }}{% endblock %}
+    {% block menu %}{{ page.primary_menu }}{{ page.secondary_menu }}{% endblock %}
+  {% endembed %}
 
   {{ page.breadcrumb }}
 
@@ -78,10 +76,8 @@
 
   </main>
 
-  {% if page.footer %}
-    <footer>
-      {{ page.footer }}
-    </footer>
-  {% endif %}
+  {% embed 'drive_matic:site-footer' with { site_name: drupal_config('system.site', 'name') } %}
+    {% block menu %}{{ page.footer }}{% endblock %}
+  {% endembed %}
 
 </div>{# /.layout-container #}

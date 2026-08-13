@@ -1,0 +1,10 @@
+{#
+  Home page (F3) — template dédié, plein largeur.
+  Pas de titre de node (le « titre générique » est fourni par un paragraphe),
+  pas d'infos de soumission. Le contenu vient de field_paragraphs
+  (le body est masqué à l'affichage, il alimente la meta description).
+  @see node.html.twig pour la liste complète des variables.
+#}
+<article{{ attributes.addClass('node', 'node--type-homepage') }}>
+  {{ content }}
+</article>

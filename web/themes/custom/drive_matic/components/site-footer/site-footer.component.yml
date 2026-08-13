@@ -1,0 +1,14 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Site :: Pied de page'
+status: stable
+props:
+  type: object
+  required:
+    - site_name
+  properties:
+    site_name:
+      type: string
+      title: Nom du site
+slots:
+  menu:
+    title: Liens de pied de page

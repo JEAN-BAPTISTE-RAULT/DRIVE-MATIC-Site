@@ -1,0 +1,13 @@
+uuid: a0ca8b04-04e7-4832-b9e8-deabacdc1417
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.homepage
+  module:
+    - node
+id: node__homepage
+label: 'Page :: Accueil'
+tags:
+  title: '[node:title] | [site:name]'
+  description: '[node:body]'

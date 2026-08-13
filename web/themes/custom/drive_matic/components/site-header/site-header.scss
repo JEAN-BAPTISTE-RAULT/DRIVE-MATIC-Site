@@ -1,0 +1,24 @@
+// SDC « Site :: En-tête » — bandeau global (logo + menu principal).
+.site-header {
+  background-color: var(--dm-color-white);
+  border-bottom: 1px solid var(--dm-color-grey-light);
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+  }
+
+  &__branding {
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+  }
+}

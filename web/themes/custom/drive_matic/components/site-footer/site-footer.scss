@@ -1,0 +1,39 @@
+// SDC « Site :: Pied de page » — bandeau sobre minimal (F2 = footer riche).
+.site-footer {
+  background-color: var(--dm-color-steel);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 1rem;
+  }
+
+  &__brand {
+    margin: 0;
+    font-family: var(--dm-font-title);
+    font-weight: 700;
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+  }
+
+  &__menu {
+    a {
+      color: var(--dm-color-white);
+    }
+  }
+
+  &__copyright {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 1.5rem 2rem;
+    font-size: 0.875rem;
+    color: var(--dm-color-grey-metal);
+  }
+}

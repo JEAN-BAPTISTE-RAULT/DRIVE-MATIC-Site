@@ -1,0 +1,68 @@
+uuid: 65b37003-c414-4f9c-9980-a4e70d965094
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_paragraphs
+    - node.type.homepage
+    - paragraphs.paragraphs_type.accordion
+    - paragraphs.paragraphs_type.brands_home
+    - paragraphs.paragraphs_type.grid
+    - paragraphs.paragraphs_type.image_text_100
+    - paragraphs.paragraphs_type.image_text_50
+    - paragraphs.paragraphs_type.jumbo_home
+    - paragraphs.paragraphs_type.news_home
+    - paragraphs.paragraphs_type.text_centered
+    - paragraphs.paragraphs_type.text_left_aligned
+id: node.homepage.field_paragraphs
+field_name: field_paragraphs
+entity_type: node
+bundle: homepage
+label: Blocs
+description: ''
+required: false
+translatable: false
+default_value: {}
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      text_centered: text_centered
+      text_left_aligned: text_left_aligned
+      image_text_50: image_text_50
+      image_text_100: image_text_100
+      grid: grid
+      accordion: accordion
+      jumbo_home: jumbo_home
+      news_home: news_home
+      brands_home: brands_home
+    target_bundles_drag_drop:
+      accordion:
+        weight: 5
+        enabled: true
+      brands_home:
+        weight: 8
+        enabled: true
+      grid:
+        weight: 4
+        enabled: true
+      image_text_100:
+        weight: 3
+        enabled: true
+      image_text_50:
+        weight: 2
+        enabled: true
+      jumbo_home:
+        weight: 6
+        enabled: true
+      news_home:
+        weight: 7
+        enabled: true
+      text_centered:
+        weight: 0
+        enabled: true
+      text_left_aligned:
+        weight: 1
+        enabled: true
+field_type: entity_reference_revisions

@@ -1,0 +1,11 @@
+{#
+  SDC « Site :: En-tête » — bandeau global (logo + menu principal).
+  Shell minimal : le menu multi-niveaux complet relève de F2.
+  Slots : branding (bloc marque), menu (bloc menu principal).
+#}
+<header class="site-header" role="banner">
+  <div class="site-header__inner">
+    <div class="site-header__branding">{{ block('branding') }}</div>
+    <div class="site-header__menu">{{ block('menu') }}</div>
+  </div>
+</header>
