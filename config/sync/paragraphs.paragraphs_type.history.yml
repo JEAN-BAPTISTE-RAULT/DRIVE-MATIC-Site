@@ -1,0 +1,10 @@
+uuid: 27b98e4a-2ba7-46a1-9587-ba3a13ffc69c
+langcode: en
+status: true
+dependencies: {  }
+id: history
+label: 'Bloc :: Histoire'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

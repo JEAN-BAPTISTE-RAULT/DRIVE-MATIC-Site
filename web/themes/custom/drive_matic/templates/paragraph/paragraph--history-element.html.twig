@@ -1,0 +1,13 @@
+{#
+  Liaison paragraphe `history_element` -> SDC `drive_matic:history-element`.
+  Titre et légende = props ; image (16:9), vidéo (embed) et description = slots
+  rendus par leurs formatters. La présence de la vidéo bascule le rendu en façade.
+#}
+{% embed 'drive_matic:history-element' with {
+  title: paragraph.field_title.value,
+  caption: paragraph.field_caption.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+  {% block video %}{{ content.field_video }}{% endblock %}
+  {% block description %}{{ content.field_description }}{% endblock %}
+{% endembed %}

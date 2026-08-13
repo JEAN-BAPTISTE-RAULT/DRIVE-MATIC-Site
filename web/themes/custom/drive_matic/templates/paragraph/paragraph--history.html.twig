@@ -1,0 +1,14 @@
+{#
+  Liaison paragraphe `history` -> SDC `drive_matic:history`.
+  Titre en prop. Chaque `history_element` (rendu par son formatter) est enveloppé
+  dans une diapositive `.swiper-slide` attendue par Swiper.
+#}
+{% embed 'drive_matic:history' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block slides %}
+    {% for item in content.field_elements|filter((value, key) => not (key starts with '#')) %}
+      <div class="swiper-slide">{{ item }}</div>
+    {% endfor %}
+  {% endblock %}
+{% endembed %}

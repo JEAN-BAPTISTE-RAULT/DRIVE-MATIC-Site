@@ -1,0 +1,10 @@
+uuid: c219878a-8bf9-47fe-aaeb-3aa666610c8c
+langcode: en
+status: true
+dependencies: {  }
+id: triptych_element
+label: 'Élément :: Triptyque'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

@@ -1,0 +1,9 @@
+{#
+  Liaison paragraphe `triptych_element` -> SDC `drive_matic:triptych-element`.
+  Les trois textes sont des scalaires passés en props (aucun slot renderable).
+#}
+{% include 'drive_matic:triptych-element' with {
+  text_top: paragraph.field_text_top.value,
+  text_main: paragraph.field_title.value,
+  text_bottom: paragraph.field_text_bottom.value,
+} only %}

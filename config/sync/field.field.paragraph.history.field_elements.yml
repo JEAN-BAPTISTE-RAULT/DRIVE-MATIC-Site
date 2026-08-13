@@ -1,0 +1,30 @@
+uuid: d91e1d1d-5674-485b-99e1-6ae95e0be653
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_elements
+    - paragraphs.paragraphs_type.history
+    - paragraphs.paragraphs_type.history_element
+  module:
+    - entity_reference_revisions
+id: paragraph.history.field_elements
+field_name: field_elements
+entity_type: paragraph
+bundle: history
+label: Éléments
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      history_element: history_element
+    target_bundles_drag_drop:
+      history_element:
+        weight: 0
+        enabled: true
+field_type: entity_reference_revisions

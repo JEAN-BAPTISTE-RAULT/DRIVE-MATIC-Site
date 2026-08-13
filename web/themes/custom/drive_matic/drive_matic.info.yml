@@ -3,6 +3,7 @@ type: theme
 'base theme': false
 version: 1.0.0
 libraries:
+  - drive_matic/js-detect
   - drive_matic/base
   - drive_matic/messages
   - drive_matic/global

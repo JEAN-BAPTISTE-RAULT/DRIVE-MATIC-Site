@@ -1,16 +1,21 @@
 /**
- * SDC « Vidéo centrée » — façade.
- * Au clic sur la miniature, on clone le contenu du <template> (l'iframe embed)
- * dans le DOM : la ressource tierce n'est chargée qu'à ce moment (perf + RGPD).
+ * Facade video generique — RGPD / perf.
+ * La ressource tierce (iframe embed) est placee dans un <template> inerte et
+ * n'est injectee dans le DOM qu'au clic sur la miniature. Comportement partage
+ * par tous les composants video, pilote par des data-attributs (agnostique du
+ * markup BEM de chaque composant) :
+ *   - [data-dm-video-facade]  : conteneur
+ *   - [data-dm-video-play]    : bouton de lecture (miniature)
+ *   - template[data-dm-video-embed] : gabarit inerte contenant l'iframe embed
  */
 (function (Drupal, once) {
   Drupal.behaviors.driveMaticVideoFacade = {
     attach(context) {
       once('dm-video-facade', '[data-dm-video-facade]', context).forEach(
         (facade) => {
-          const button = facade.querySelector('.video-centered__play');
+          const button = facade.querySelector('[data-dm-video-play]');
           const template = facade.querySelector(
-            'template.video-centered__embed',
+            'template[data-dm-video-embed]',
           );
           if (!button || !template) {
             return;

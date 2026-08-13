@@ -1,0 +1,22 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Élément :: Accordéon'
+status: stable
+props:
+  type: object
+  required:
+    - title
+    - id
+  properties:
+    title:
+      type: string
+      title: Titre (en-tête)
+    id:
+      type: [string, integer]
+      title: Identifiant unique (pour lier bouton et panneau)
+slots:
+  description:
+    title: Description
+  actions:
+    title: Actions (lien / CTA)
+  download:
+    title: Fichier à télécharger

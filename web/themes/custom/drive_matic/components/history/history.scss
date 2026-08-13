@@ -1,0 +1,77 @@
+// SDC « Bloc :: Histoire » — frise en slideshow (Swiper) avec repli progressif.
+// Sans JS : la piste Swiper s'empile (tout visible) et les flèches sont masquées.
+.history {
+  &__title {
+    margin: 0 0 1.5rem;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h2-size);
+    line-height: var(--dm-h2-line);
+  }
+
+  &__viewport {
+    position: relative;
+  }
+
+  // Flèches : masquées par défaut (inutiles sans JS), affichées sous html.js.
+  &__nav {
+    display: none;
+    position: absolute;
+    top: 40%;
+    z-index: 1;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--dm-color-red);
+    color: var(--dm-color-white);
+    cursor: pointer;
+  }
+
+  &__nav::before {
+    content: '';
+    display: block;
+    width: 12px;
+    height: 12px;
+    margin: 0 auto;
+    border-top: 2px solid currentcolor;
+    border-right: 2px solid currentcolor;
+  }
+
+  &__nav:focus-visible {
+    outline: 3px solid var(--dm-color-anthracite);
+    outline-offset: 2px;
+  }
+
+  &__nav--prev {
+    left: 0.5rem;
+  }
+
+  &__nav--prev::before {
+    transform: rotate(-135deg);
+  }
+
+  &__nav--next {
+    right: 0.5rem;
+  }
+
+  &__nav--next::before {
+    transform: rotate(45deg);
+  }
+
+  // Flèches actives uniquement quand Swiper a démarré (>= 2 diapositives) :
+  // masquées sans JS et pour un slideshow à un seul élément (repli en liste).
+  &__viewport.swiper-initialized &__nav {
+    display: block;
+  }
+
+  // Repli sans JS : neutralise le viewport Swiper (défilement vertical lisible).
+  :where(html.no-js) &__viewport {
+    overflow: visible;
+  }
+
+  :where(html.no-js) & .swiper-wrapper {
+    display: block;
+  }
+}

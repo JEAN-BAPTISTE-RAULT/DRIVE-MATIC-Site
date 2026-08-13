@@ -1,0 +1,19 @@
+uuid: 37e152d5-b4f9-4120-8f5c-2f10ed739023
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text_bottom
+    - paragraphs.paragraphs_type.triptych_element
+id: paragraph.triptych_element.field_text_bottom
+field_name: field_text_bottom
+entity_type: paragraph
+bundle: triptych_element
+label: 'Texte au-dessous'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

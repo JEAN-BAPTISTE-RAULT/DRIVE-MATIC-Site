@@ -1,0 +1,22 @@
+uuid: aed779a2-f176-42cc-aa95-5e47437c4d1c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_description
+    - paragraphs.paragraphs_type.accordion_element
+  module:
+    - text
+id: paragraph.accordion_element.field_description
+field_name: field_description
+entity_type: paragraph
+bundle: accordion_element
+label: Description
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

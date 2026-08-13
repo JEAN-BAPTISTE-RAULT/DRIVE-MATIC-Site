@@ -1,0 +1,15 @@
+{#
+  SDC « Élément :: Grille » — une carte (image 16:9 + titre optionnel + liens).
+  Prop : title (opt). Slots : image (média 16:9), links (liste de liens).
+#}
+<div class="grid-element">
+  <div class="grid-element__media">{{ block('image') }}</div>
+  <div class="grid-element__body">
+    {% if title %}
+      <h3 class="grid-element__title">{{ title }}</h3>
+    {% endif %}
+    {% if block('links') is not empty %}
+      <div class="grid-element__links">{{ block('links') }}</div>
+    {% endif %}
+  </div>
+</div>

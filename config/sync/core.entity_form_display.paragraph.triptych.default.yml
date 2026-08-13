@@ -1,0 +1,35 @@
+uuid: e4a08831-1372-4a42-ad38-3fdf8b1d407e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.triptych.field_triptych_elements
+    - paragraphs.paragraphs_type.triptych
+  module:
+    - paragraphs
+id: paragraph.triptych.default
+targetEntityType: paragraph
+bundle: triptych
+mode: default
+content:
+  field_triptych_elements:
+    type: paragraphs
+    weight: 0
+    region: content
+    settings:
+      title: Élément
+      title_plural: Éléments
+      edit_mode: closed
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: triptych_element
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

@@ -1,0 +1,13 @@
+{#
+  SDC « Bloc :: Accordéon ».
+  Prop : title (optionnel). Slot : items (liste de SDC `accordion-element`).
+  Comportement (fermeture du précédent à l'ouverture, ARIA, clavier) : accordion.js.
+#}
+<div class="accordion" data-accordion>
+  {% if title %}
+    <h2 class="accordion__title">{{ title }}</h2>
+  {% endif %}
+  <div class="accordion__items">
+    {{ block('items') }}
+  </div>
+</div>

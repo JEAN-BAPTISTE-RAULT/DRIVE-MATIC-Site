@@ -1,0 +1,12 @@
+{#
+  SDC « Bloc :: Grille ».
+  Prop : title (optionnel). Slot : items (liste de SDC `grid-element`).
+#}
+<div class="grid">
+  {% if title %}
+    <h2 class="grid__title">{{ title }}</h2>
+  {% endif %}
+  <div class="grid__items">
+    {{ block('items') }}
+  </div>
+</div>

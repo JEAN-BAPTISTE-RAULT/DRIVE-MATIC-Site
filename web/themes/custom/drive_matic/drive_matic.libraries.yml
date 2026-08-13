@@ -112,6 +112,44 @@ user:
       css/components/user.css:
         weight: -10
 
+# Détection JS : bascule `no-js` -> `js` sur <html>, chargée en <head> pour
+# éviter tout flash sur les composants à amélioration progressive (accordéon…).
+js-detect:
+  version: VERSION
+  header: true
+  js:
+    js/js-detect.js: { weight: -100 }
+
+# Swiper (slideshow) vendorise dans le theme (self-contained, pas de CDN — RGPD).
+# Bundle = global `Swiper` + tous les modules (dont a11y). Source : npm `swiper`.
+swiper:
+  version: 14.1.0
+  css:
+    theme:
+      vendor/swiper/swiper-bundle.min.css: { minified: true, weight: -10 }
+  js:
+    vendor/swiper/swiper-bundle.min.js: { minified: true, weight: -10 }
+
+# Comportement d'initialisation des slideshows (wrapper Swiper accessible).
+slideshow:
+  version: VERSION
+  js:
+    js/slideshow.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - drive_matic/swiper
+
+# Facade video generique (injection de l'iframe au clic) — RGPD/perf.
+# Partagee par les composants video (video_centered, history_element, ...).
+video-facade:
+  version: VERSION
+  js:
+    js/video-facade.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
 # Fondations globales DRIVE-MATIC (compilees depuis src/scss/ via `npm run css`)
 global:
   version: VERSION

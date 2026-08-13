@@ -1,0 +1,18 @@
+uuid: 962e3cd9-7aa5-440d-b8f1-e884d11b593c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.triptych_element.field_text_bottom
+    - field.field.paragraph.triptych_element.field_text_top
+    - field.field.paragraph.triptych_element.field_title
+    - paragraphs.paragraphs_type.triptych_element
+id: paragraph.triptych_element.default
+targetEntityType: paragraph
+bundle: triptych_element
+mode: default
+content: {  }
+hidden:
+  field_text_bottom: true
+  field_text_top: true
+  field_title: true

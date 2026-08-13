@@ -1,0 +1,26 @@
+uuid: ca6d5dd2-e5f7-444a-bfa2-c4c98d9d8164
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.history.field_elements
+    - field.field.paragraph.history.field_title
+    - paragraphs.paragraphs_type.history
+  module:
+    - entity_reference_revisions
+id: paragraph.history.default
+targetEntityType: paragraph
+bundle: history
+mode: default
+content:
+  field_elements:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  field_title: true

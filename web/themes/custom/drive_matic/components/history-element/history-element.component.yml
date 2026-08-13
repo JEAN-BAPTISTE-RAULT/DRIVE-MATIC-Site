@@ -1,17 +1,24 @@
 '$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
-name: 'Bloc :: Vidéo centrée'
+name: 'Élément :: Histoire'
 status: stable
 props:
   type: object
+  required:
+    - title
   properties:
+    title:
+      type: string
+      title: Titre
     caption:
       type: string
-      title: Légende de la vidéo
+      title: Légende
 slots:
-  thumbnail:
-    title: Miniature (média responsive 16:9)
+  image:
+    title: Image / miniature (16:9)
   video:
-    title: Lecteur vidéo (embed)
+    title: Vidéo (embed) — optionnel
+  description:
+    title: Description
 libraryOverrides:
   dependencies:
     - drive_matic/video-facade

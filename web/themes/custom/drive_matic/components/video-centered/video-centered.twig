@@ -9,12 +9,13 @@
     <button
       type="button"
       class="video-centered__play"
+      data-dm-video-play
       aria-label="{{ 'Lire la vidéo'|t }}{% if caption %} : {{ caption }}{% endif %}"
     >
       <span class="video-centered__thumb">{{ block('thumbnail') }}</span>
       <span class="video-centered__icon" aria-hidden="true"></span>
     </button>
-    <template class="video-centered__embed">{{ block('video') }}</template>
+    <template class="video-centered__embed" data-dm-video-embed>{{ block('video') }}</template>
   </div>
   {% if caption %}
     <figcaption class="video-centered__caption">{{ caption }}</figcaption>

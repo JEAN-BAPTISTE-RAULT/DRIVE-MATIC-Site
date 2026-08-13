@@ -1,0 +1,10 @@
+uuid: 26a67649-0b3e-43b4-a448-5b0b6f5cc0a5
+langcode: en
+status: true
+dependencies: {  }
+id: triptych
+label: 'Bloc :: Triptyque'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

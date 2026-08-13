@@ -1,0 +1,10 @@
+uuid: 027e804a-9e6c-47ab-90bc-ee9847f0e7a9
+langcode: en
+status: true
+dependencies: {  }
+id: grid
+label: 'Bloc :: Grille'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

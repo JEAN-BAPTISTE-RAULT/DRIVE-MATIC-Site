@@ -1,0 +1,90 @@
+// SDC « Élément :: Accordéon » — CSS scopé (BEM), consomme les tokens globaux.
+// Amélioration progressive : le panneau est OUVERT par défaut (lisible sans JS).
+// Sous `html.js` (classe posée en <head> par `drive_matic/js-detect`), il est
+// fermé tant que le behavior ne l'ouvre pas — ce qui évite tout flash au
+// chargement, le CSS s'appliquant avant que le JS n'attache l'état ARIA.
+
+.accordion-element {
+  border-bottom: 1px solid var(--dm-color-grey-metal);
+
+  &__header {
+    margin: 0;
+  }
+
+  &__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem 0;
+    border: 0;
+    background: none;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+    text-align: left;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--dm-color-red);
+      outline-offset: 2px;
+    }
+  }
+
+  &__icon {
+    flex: 0 0 auto;
+    width: 0.6em;
+    height: 0.6em;
+    margin-top: -0.2em;
+    border-right: 2px solid currentcolor;
+    border-bottom: 2px solid currentcolor;
+    transform: rotate(45deg);
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: transform 0.2s ease;
+    }
+  }
+
+  // Chevron vers le haut quand le panneau est ouvert.
+  &__trigger[aria-expanded='true'] &__icon {
+    transform: rotate(225deg);
+    margin-top: 0.2em;
+  }
+
+  &__panel {
+    // Ouvert par défaut (repli sans JS). Fermé seulement sous `html.js`.
+    :where(html.js) & {
+      display: none;
+
+      &.is-open {
+        display: block;
+      }
+    }
+  }
+
+  &__body {
+    padding-bottom: 1.5rem;
+    color: var(--dm-color-grey-text);
+  }
+
+  &__actions {
+    margin-top: 1.5rem;
+
+    a {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      background: var(--dm-color-red);
+      color: var(--dm-color-white);
+      font-family: var(--dm-font-title);
+      text-decoration: none;
+    }
+  }
+
+  &__download {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+}

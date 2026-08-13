@@ -1,0 +1,10 @@
+uuid: 6167fb85-30dd-4e01-bf8e-2cafbe087cda
+langcode: en
+status: true
+dependencies: {  }
+id: history_element
+label: 'Élément :: Histoire'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

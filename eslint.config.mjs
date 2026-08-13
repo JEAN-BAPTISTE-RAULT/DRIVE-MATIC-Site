@@ -35,6 +35,8 @@ export default [
         once: 'readonly',
         jQuery: 'readonly',
         $: 'readonly',
+        // Librairie slideshow vendorisee (web/themes/custom/drive_matic/vendor/swiper).
+        Swiper: 'readonly',
       },
     },
     rules: {

@@ -1,0 +1,22 @@
+uuid: 69e29218-b385-486a-9ada-33f648cb30a4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_description
+    - paragraphs.paragraphs_type.history_element
+  module:
+    - text
+id: paragraph.history_element.field_description
+field_name: field_description
+entity_type: paragraph
+bundle: history_element
+label: Description
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

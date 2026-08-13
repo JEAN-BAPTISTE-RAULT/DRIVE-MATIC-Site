@@ -1,0 +1,19 @@
+uuid: 4ae0b9bd-8b22-49f5-916a-2efc502c737b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_text_top
+    - paragraphs.paragraphs_type.triptych_element
+id: paragraph.triptych_element.field_text_top
+field_name: field_text_top
+entity_type: paragraph
+bundle: triptych_element
+label: 'Texte au-dessus'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

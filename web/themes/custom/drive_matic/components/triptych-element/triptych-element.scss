@@ -1,0 +1,28 @@
+// SDC « Élément :: Triptyque » — texte centré, chiffre/accroche en emphase.
+.triptych-element {
+  text-align: center;
+
+  &__top {
+    margin: 0 0 0.5rem;
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
+
+  &__main {
+    margin: 0;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h1-size);
+    line-height: var(--dm-h1-line);
+  }
+
+  &__bottom {
+    margin: 0.5rem 0 0;
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
+}

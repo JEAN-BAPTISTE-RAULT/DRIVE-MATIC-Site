@@ -1,0 +1,53 @@
+// SDC « Élément :: Grille » — carte (image 16:9 + titre optionnel + liens).
+// Les wrappers de champ Drupal (`field__items`) sont neutralisés via
+// `display: contents` pour que le `gap` s'applique aux liens.
+.grid-element {
+  display: flex;
+  flex-direction: column;
+  background: var(--dm-color-white);
+
+  &__media {
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__body {
+    padding: 1rem 0;
+  }
+
+  &__title {
+    margin: 0 0 0.75rem;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+  }
+
+  &__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    > * {
+      display: contents;
+    }
+
+    a {
+      color: var(--dm-color-red);
+      font-family: var(--dm-font-title);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--dm-color-red);
+      outline-offset: 2px;
+    }
+  }
+}

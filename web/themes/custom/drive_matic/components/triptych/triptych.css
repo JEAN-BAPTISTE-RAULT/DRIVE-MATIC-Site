@@ -1,0 +1,13 @@
+.triptych__items {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+.triptych__items > * {
+  display: contents;
+}
+@media (width >= 768px) {
+  .triptych__items {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

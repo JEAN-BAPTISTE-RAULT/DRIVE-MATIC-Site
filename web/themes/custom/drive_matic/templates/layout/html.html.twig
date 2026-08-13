@@ -32,7 +32,13 @@
   ]
 %}
 <!DOCTYPE html>
-<html{{ html_attributes }}>
+{#
+  Classe `no-js` basculée en `js` très tôt (lib `drive_matic/js-detect`, chargée
+  en <head>). Permet aux composants à amélioration progressive (accordéon…) de
+  s'afficher dans leur état « JS actif » sans flash, tout en restant lisibles si
+  le JS échoue.
+#}
+<html{{ html_attributes.addClass('no-js') }}>
   <head>
     <head-placeholder token="{{ placeholder_token }}">
     <title>{{ head_title|safe_join(' | ') }}</title>

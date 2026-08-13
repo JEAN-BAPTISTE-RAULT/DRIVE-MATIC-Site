@@ -1,0 +1,17 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Élément :: Triptyque'
+status: stable
+props:
+  type: object
+  required:
+    - text_main
+  properties:
+    text_top:
+      type: string
+      title: Texte au-dessus
+    text_main:
+      type: string
+      title: Texte en gras
+    text_bottom:
+      type: string
+      title: Texte au-dessous

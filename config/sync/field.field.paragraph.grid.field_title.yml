@@ -1,0 +1,19 @@
+uuid: fee4d36f-26c0-4052-b719-c22218128a67
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.grid
+id: paragraph.grid.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: grid
+label: Titre
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

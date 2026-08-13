@@ -1,0 +1,41 @@
+uuid: 5f9da3ae-4718-4e55-b258-c550a34fabe5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.triptych_element.field_text_bottom
+    - field.field.paragraph.triptych_element.field_text_top
+    - field.field.paragraph.triptych_element.field_title
+    - paragraphs.paragraphs_type.triptych_element
+id: paragraph.triptych_element.default
+targetEntityType: paragraph
+bundle: triptych_element
+mode: default
+content:
+  field_text_bottom:
+    type: string_textfield
+    weight: 2
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_text_top:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

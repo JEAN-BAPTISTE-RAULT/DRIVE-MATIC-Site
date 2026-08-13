@@ -1,0 +1,10 @@
+uuid: e9a434af-1346-4132-ad31-ee8cefcbd1c0
+langcode: en
+status: true
+dependencies: {  }
+id: grid_element
+label: 'Élément :: Grille'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

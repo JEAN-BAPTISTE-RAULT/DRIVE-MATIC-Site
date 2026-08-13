@@ -1,0 +1,10 @@
+uuid: 2f057755-1baa-47b1-aa0c-5ef3552723fd
+langcode: en
+status: true
+dependencies: {  }
+id: accordion_element
+label: 'Élément :: Accordéon'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

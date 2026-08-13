@@ -1,0 +1,11 @@
+{#
+  Liaison paragraphe `grid_element` -> SDC `drive_matic:grid-element`.
+  Titre = prop ; image (média 16:9) et liens sont rendus par leurs formatters
+  et injectés en slots.
+#}
+{% embed 'drive_matic:grid-element' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+  {% block links %}{{ content.field_links }}{% endblock %}
+{% endembed %}

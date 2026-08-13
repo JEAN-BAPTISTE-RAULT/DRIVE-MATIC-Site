@@ -1,0 +1,13 @@
+{#
+  Liaison paragraphe `accordion_element` -> SDC `drive_matic:accordion-element`.
+  Titre = prop (en-tête cliquable) ; id = id du paragraphe (lie bouton/panneau).
+  Description, lien et fichier sont rendus par leurs formatters et injectés en slots.
+#}
+{% embed 'drive_matic:accordion-element' with {
+  title: paragraph.field_title.value,
+  id: paragraph.id.0.value,
+} %}
+  {% block description %}{{ content.field_description }}{% endblock %}
+  {% block actions %}{{ content.field_link }}{% endblock %}
+  {% block download %}{{ content.field_file }}{% endblock %}
+{% endembed %}

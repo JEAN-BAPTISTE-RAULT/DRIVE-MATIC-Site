@@ -1,0 +1,78 @@
+// SDC « Élément :: Histoire » — image ou façade vidéo + titre/description/légende.
+// La façade (bouton lecture) est un CSS présentationnel scopé (le JS d'injection
+// est mutualisé dans la lib `drive_matic/video-facade`).
+.history-element {
+  &__media {
+    position: relative;
+  }
+
+  &__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  &__play {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  &__thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  &__icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 64px;
+    height: 64px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--dm-color-red);
+  }
+
+  &__icon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 54%;
+    transform: translate(-50%, -50%);
+    border-width: 12px 0 12px 19px;
+    border-style: solid;
+    border-color: transparent transparent transparent var(--dm-color-white);
+  }
+
+  &__play:focus-visible &__icon {
+    outline: 3px solid var(--dm-color-white);
+    outline-offset: 4px;
+  }
+
+  &__body {
+    padding: 1rem 0;
+  }
+
+  &__title {
+    margin: 0 0 0.5rem;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+  }
+
+  &__description {
+    color: var(--dm-color-grey-text);
+  }
+
+  &__caption {
+    margin: 0.5rem 0 0;
+    color: var(--dm-color-grey-text);
+    font-size: 0.9rem;
+  }
+}

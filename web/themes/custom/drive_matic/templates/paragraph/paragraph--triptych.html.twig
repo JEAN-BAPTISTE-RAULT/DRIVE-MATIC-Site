@@ -1,0 +1,7 @@
+{#
+  Liaison paragraphe `triptych` -> SDC `drive_matic:triptych`.
+  Les éléments imbriqués (1 à 3) sont rendus par leur formatter et injectés en slot.
+#}
+{% embed 'drive_matic:triptych' %}
+  {% block items %}{{ content.field_triptych_elements }}{% endblock %}
+{% endembed %}

@@ -1,0 +1,19 @@
+// SDC « Bloc :: Accordéon » — CSS scopé (BEM), consomme les tokens globaux.
+// Le style d'un item (en-tête, panneau, état ouvert/fermé) vit dans le SDC
+// `accordion-element`.
+
+.accordion {
+  max-width: 800px;
+  margin-inline: auto;
+  padding-block: 2rem;
+
+  &__title {
+    margin-bottom: 1rem;
+    color: var(--dm-color-anthracite);
+  }
+
+  // Bordure haute sur le premier item pour fermer le trait de séparation.
+  &__items {
+    border-top: 1px solid var(--dm-color-grey-metal);
+  }
+}

@@ -1,0 +1,19 @@
+uuid: a52e2680-0619-45ff-af6d-0e065a6ee65d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.triptych_element
+id: paragraph.triptych_element.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: triptych_element
+label: 'Texte en gras'
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

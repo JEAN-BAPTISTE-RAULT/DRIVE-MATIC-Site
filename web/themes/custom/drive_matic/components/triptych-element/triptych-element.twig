@@ -1,0 +1,13 @@
+{#
+  SDC « Élément :: Triptyque » — bloc de mise en avant (chiffre / accroche).
+  Props : text_top (opt), text_main (en gras, obl), text_bottom (opt).
+#}
+<div class="triptych-element">
+  {% if text_top %}
+    <p class="triptych-element__top">{{ text_top }}</p>
+  {% endif %}
+  <p class="triptych-element__main">{{ text_main }}</p>
+  {% if text_bottom %}
+    <p class="triptych-element__bottom">{{ text_bottom }}</p>
+  {% endif %}
+</div>

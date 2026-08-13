@@ -1,0 +1,18 @@
+// SDC « Bloc :: Triptyque » — jusqu'à 3 éléments côte à côte (empilés sur mobile).
+// Le wrapper de champ Drupal (`field__items`) est neutralisé via
+// `display: contents` pour que les éléments soient les cellules directes.
+.triptych {
+  &__items {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+
+    > * {
+      display: contents;
+    }
+
+    @media (width >= 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}

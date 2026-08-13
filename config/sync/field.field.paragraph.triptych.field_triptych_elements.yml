@@ -1,0 +1,30 @@
+uuid: bf7df393-cd40-4ebc-861b-8358ed8e6916
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_triptych_elements
+    - paragraphs.paragraphs_type.triptych
+    - paragraphs.paragraphs_type.triptych_element
+  module:
+    - entity_reference_revisions
+id: paragraph.triptych.field_triptych_elements
+field_name: field_triptych_elements
+entity_type: paragraph
+bundle: triptych
+label: Éléments
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      triptych_element: triptych_element
+    target_bundles_drag_drop:
+      triptych_element:
+        weight: 0
+        enabled: true
+field_type: entity_reference_revisions

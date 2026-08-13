@@ -1,0 +1,34 @@
+{#
+  SDC « Élément :: Histoire » — une entrée de la frise.
+  Props : title (obl), caption (opt). Slots : image (16:9), video (embed, opt),
+  description. Exclusivité image/vidéo : si le slot `video` est renseigné, la
+  miniature devient une façade (lecture au clic, JS `drive_matic/video-facade`) ;
+  sinon simple image. L'image (slot `image`) est toujours présente (le visuel).
+#}
+<article class="history-element">
+  {% if block('video') is not empty %}
+    <div class="history-element__media" data-dm-video-facade>
+      <button
+        type="button"
+        class="history-element__play"
+        data-dm-video-play
+        aria-label="{{ 'Lire la vidéo'|t }}{% if title %} : {{ title }}{% endif %}"
+      >
+        <span class="history-element__thumb">{{ block('image') }}</span>
+        <span class="history-element__icon" aria-hidden="true"></span>
+      </button>
+      <template class="history-element__embed" data-dm-video-embed>{{ block('video') }}</template>
+    </div>
+  {% else %}
+    <div class="history-element__media">{{ block('image') }}</div>
+  {% endif %}
+  <div class="history-element__body">
+    <h3 class="history-element__title">{{ title }}</h3>
+    {% if block('description') is not empty %}
+      <div class="history-element__description">{{ block('description') }}</div>
+    {% endif %}
+    {% if caption %}
+      <p class="history-element__caption">{{ caption }}</p>
+    {% endif %}
+  </div>
+</article>

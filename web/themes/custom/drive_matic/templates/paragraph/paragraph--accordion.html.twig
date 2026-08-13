@@ -1,0 +1,10 @@
+{#
+  Liaison paragraphe `accordion` -> SDC `drive_matic:accordion`.
+  Le titre (optionnel) est passé en prop ; les éléments imbriqués sont rendus par
+  leur formatter (view display) et injectés en slot.
+#}
+{% embed 'drive_matic:accordion' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block items %}{{ content.field_elements }}{% endblock %}
+{% endembed %}

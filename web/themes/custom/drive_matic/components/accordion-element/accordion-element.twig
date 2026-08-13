@@ -1,0 +1,42 @@
+{#
+  SDC « Élément :: Accordéon » — une disclosure (en-tête + panneau).
+  Props : title, id. Slots (via embed/block) : description, actions, download.
+
+  Amélioration progressive : le markup serveur rend le panneau OUVERT et sans
+  `aria-expanded`/`hidden`. C'est le behavior `driveMaticAccordion` qui pose les
+  attributs ARIA et l'état fermé au chargement. Sans JS, tout reste lisible ;
+  avec JS, le CSS (sous `html.js`) ferme les panneaux avant peinture (pas de
+  flash). Voir accordion.js + accordion.scss.
+#}
+{% set eid = 'accordion-' ~ id %}
+<div class="accordion-element">
+  <h3 class="accordion-element__header">
+    <button
+      type="button"
+      class="accordion-element__trigger"
+      id="{{ eid }}-trigger"
+      aria-controls="{{ eid }}-panel"
+    >
+      <span class="accordion-element__label">{{ title }}</span>
+      <span class="accordion-element__icon" aria-hidden="true"></span>
+    </button>
+  </h3>
+  <div
+    class="accordion-element__panel"
+    id="{{ eid }}-panel"
+    role="region"
+    aria-labelledby="{{ eid }}-trigger"
+  >
+    <div class="accordion-element__body">
+      {% if block('description') is not empty %}
+        <div class="accordion-element__description">{{ block('description') }}</div>
+      {% endif %}
+      {% if block('actions') is not empty %}
+        <div class="accordion-element__actions">{{ block('actions') }}</div>
+      {% endif %}
+      {% if block('download') is not empty %}
+        <div class="accordion-element__download">{{ block('download') }}</div>
+      {% endif %}
+    </div>
+  </div>
+</div>

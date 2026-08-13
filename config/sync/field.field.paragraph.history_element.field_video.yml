@@ -1,0 +1,24 @@
+uuid: c314775a-866d-481e-a3de-3247754fd0fa
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_video
+    - paragraphs.paragraphs_type.history_element
+  module:
+    - video_embed_field
+id: paragraph.history_element.field_video
+field_name: field_video
+entity_type: paragraph
+bundle: history_element
+label: 'Vidéo (lien embed)'
+description: 'Optionnel. Si renseigné, l’élément devient une vidéo : la miniature ci-dessus sert de façade et la lecture se déclenche au clic. Fournisseurs autorisés : YouTube, Vimeo.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_providers:
+    youtube: youtube
+    vimeo: vimeo
+field_type: video_embed_field
