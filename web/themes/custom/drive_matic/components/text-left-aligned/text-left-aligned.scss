@@ -1,35 +1,71 @@
 // SDC « Bloc :: Texte aligné à gauche » — CSS scopé (BEM), consomme les tokens globaux.
 
 .text-left-aligned {
-  max-width: 800px;
-  padding-block: 2rem;
+  max-width: 960px;
+  padding-block: 2.5rem;
   text-align: left;
 
   &__title {
     margin-bottom: 1rem;
-    color: var(--dm-color-anthracite);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+    font-weight: 700;
   }
 
   &__description {
     color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    font-weight: 400;
+    line-height: var(--dm-body-line);
   }
 
-  &__actions {
-    margin-top: 1.5rem;
+  // Rangée CTA : boutons alignés à gauche.
+  &__cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.75rem;
+  }
 
-    a {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      border-radius: 4px;
-      background: var(--dm-color-red);
-      color: var(--dm-color-white);
-      font-family: var(--dm-font-title);
-      text-decoration: none;
+  // Bouton lien : contour + icône globe.
+  // NB : style identique au bouton de téléchargement (.file-download).
+  // Candidat à un style de bouton partagé (ADR) si le motif se répète.
+  &__actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1.5rem;
+    border: 1.5px solid var(--dm-color-steel);
+    border-radius: 10px;
+    background: var(--dm-color-white);
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 28px;
+    text-align: center;
+    text-decoration: none;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+
+    &::before {
+      content: '';
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      background-color: currentcolor;
+      mask: url('../../images/icons/globe.svg') no-repeat center / contain;
     }
-  }
 
-  &__download {
-    margin-top: 1rem;
-    font-size: 0.9rem;
+    &:hover,
+    &:focus-visible {
+      background: var(--dm-color-steel);
+      color: var(--dm-color-white);
+    }
   }
 }

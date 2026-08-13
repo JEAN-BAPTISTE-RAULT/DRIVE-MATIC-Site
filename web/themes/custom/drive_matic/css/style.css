@@ -57,6 +57,7 @@ body {
   font-size: var(--dm-body-size);
   line-height: var(--dm-body-line);
   color: var(--dm-color-anthracite);
+  font-feature-settings: "liga" off, "clig" off;
 }
 
 h1,
