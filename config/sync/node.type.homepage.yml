@@ -1,7 +1,7 @@
 uuid: 9f8e7e2d-760f-459b-a630-5d49aac734b7
 langcode: en
 status: true
-dependencies: {}
+dependencies: {  }
 name: 'Page :: Accueil'
 type: homepage
 description: null

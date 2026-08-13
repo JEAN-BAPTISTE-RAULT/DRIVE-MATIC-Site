@@ -23,5 +23,5 @@ visibility:
   request_path:
     id: request_path
     negate: true
-    context_mapping: {}
+    context_mapping: {  }
     pages: '<front>'

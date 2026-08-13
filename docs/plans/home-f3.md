@@ -22,8 +22,9 @@
 ## Sécurité / cache
 Page 100 % publique, aucune donnée partenaire. Cache tags `node_list:news`/`node_list:brand` réattachés par `drive_matic_preprocess_paragraph` (acquis V4). Aucun asset tiers, aucun `|raw`.
 
-## Portabilité front page
-`system.site.page.front` référence le node home. ID de node non portable au seed → gérer via redirect `/node/N`→`<front>` ou re-pointage au déploiement (à finaliser en impl).
+## Portabilité front page — RÉSOLU
+Module custom **`drivematic_home`** : service `FrontPageOverride` (`ConfigFactoryOverride`) surcharge `system.site:page.front` → `/node/{id}` de l'unique node `homepage` publié, à l'exécution. **Sans ID en dur, sans alias `/accueil`**, portable au seed. La valeur versionnée reste `/node` (les overrides ne sont pas exportés → aucune dérive). Cache invalidé par `node_list:homepage`. Robuste à l'install (try/catch → pas de surcharge si entités indisponibles).
+Reste optionnel : redirect `/node/{id}` → `<front>` si l'on veut interdire l'accès canonique `/node/N` (la home reste servie à `/` dans tous les cas).
 
 ## E2E
 Rend **S2** rejouable pour de vrai. Liens « solutions »/« configurateur » = CTA placeholder tant que product/transform/configurateur (F4/F5/F14) n'existent pas.

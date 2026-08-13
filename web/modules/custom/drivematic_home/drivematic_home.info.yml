@@ -1,0 +1,5 @@
+name: 'DRIVE-MATIC Accueil'
+type: module
+description: "Definit la page d'accueil sur l'unique node « homepage » publie, sans ID en dur (portable au seed)."
+package: 'DRIVE-MATIC'
+core_version_requirement: ^11
