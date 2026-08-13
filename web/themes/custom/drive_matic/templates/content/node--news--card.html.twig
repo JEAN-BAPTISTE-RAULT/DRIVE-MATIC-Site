@@ -1,0 +1,10 @@
+{#
+  Rendu d'une actualité en mode d'affichage `card` (lignes de la Vue news_home).
+  Embarque le SDC `drive_matic:news-card` : titre + URL = props, image = slot.
+#}
+{% embed 'drive_matic:news-card' with {
+  title: label,
+  url: url,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+{% endembed %}

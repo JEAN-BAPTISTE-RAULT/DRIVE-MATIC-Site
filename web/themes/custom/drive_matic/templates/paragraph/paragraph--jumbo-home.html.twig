@@ -1,0 +1,12 @@
+{#
+  Liaison paragraphe `jumbo_home` -> SDC `drive_matic:jumbo-home`.
+  Chaque `jumbo_home_element` (rendu par son formatter) est enveloppé dans une
+  diapositive `.swiper-slide` attendue par Swiper.
+#}
+{% embed 'drive_matic:jumbo-home' %}
+  {% block slides %}
+    {% for item in content.field_jumbo_elements|filter((value, key) => not (key starts with '#')) %}
+      <div class="swiper-slide">{{ item }}</div>
+    {% endfor %}
+  {% endblock %}
+{% endembed %}

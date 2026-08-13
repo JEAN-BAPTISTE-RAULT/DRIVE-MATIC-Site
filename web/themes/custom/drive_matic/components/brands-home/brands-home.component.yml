@@ -1,0 +1,19 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Marques Homepage'
+status: stable
+props:
+  type: object
+  required:
+    - title
+  properties:
+    title:
+      type: string
+      title: Titre
+slots:
+  link:
+    title: Lien « marques partenaires »
+  slides:
+    title: Diapositives (logos de marques)
+libraryOverrides:
+  dependencies:
+    - drive_matic/slideshow

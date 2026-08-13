@@ -44,6 +44,12 @@
 - Le carrousel marques defile (fleches) en **ordre alphabetique**.
 - A l'ouverture du 2e accordeon SEO, le **1er se ferme**.
 
+**Blocs home V4 (slideshows `jumbo_home` / `news_home` / `brands_home`)** :
+- `jumbo_home` : slideshow si **2 ou 3** bannieres (visuel 16:9 + titre + CTA opt) ; **1 seule** banniere → pas de slideshow, fleches masquees ; ajout d'une **4e** banniere bloque (cardinalite 3).
+- `news_home` : slideshow des **5** actualites les plus recentes (image 16:9 WebP responsive + titre + « Lire la suite » vers le detail) + lien « voir toutes » ; **0 actualite** → bloc vide propre.
+- `brands_home` : slideshow de **toutes** les marques en **ordre alpha** (logo + nom) ; les logos ne sont **pas** cliquables (page canonique du fragment `brand` en **403**).
+- Slideshows accessibles clavier ; sans JS, les diapositives s'empilent (tout visible) et les fleches restent masquees (amelioration progressive).
+
 ---
 
 ## S3 — Page solution (auto-ecole / PMR)

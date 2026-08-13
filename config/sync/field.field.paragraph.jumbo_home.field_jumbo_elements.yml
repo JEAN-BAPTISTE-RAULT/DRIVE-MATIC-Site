@@ -1,0 +1,30 @@
+uuid: 829f6658-cab0-4418-b0de-6a5c41050b80
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_jumbo_elements
+    - paragraphs.paragraphs_type.jumbo_home
+    - paragraphs.paragraphs_type.jumbo_home_element
+  module:
+    - entity_reference_revisions
+id: paragraph.jumbo_home.field_jumbo_elements
+field_name: field_jumbo_elements
+entity_type: paragraph
+bundle: jumbo_home
+label: Éléments
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      jumbo_home_element: jumbo_home_element
+    target_bundles_drag_drop:
+      jumbo_home_element:
+        weight: 0
+        enabled: true
+field_type: entity_reference_revisions

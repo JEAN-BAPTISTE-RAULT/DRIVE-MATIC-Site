@@ -1,0 +1,93 @@
+// SDC « Bloc :: Marques Homepage » — slideshow de logos de marques (ordre alpha).
+// Le wrapper `.view` de la Vue embarquée est neutralisé (display: contents)
+// pour que `.swiper-wrapper` soit pris en charge par Swiper.
+.brands-home {
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__title {
+    margin: 0;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h2-size);
+    line-height: var(--dm-h2-line);
+  }
+
+  &__more a {
+    color: var(--dm-color-red);
+    font-family: var(--dm-font-title);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  &__more a:hover {
+    text-decoration: underline;
+  }
+
+  &__viewport {
+    position: relative;
+  }
+
+  &__nav {
+    display: none;
+    position: absolute;
+    top: 40%;
+    z-index: 1;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--dm-color-red);
+    color: var(--dm-color-white);
+    cursor: pointer;
+  }
+
+  &__nav::before {
+    content: '';
+    display: block;
+    width: 12px;
+    height: 12px;
+    margin: 0 auto;
+    border-top: 2px solid currentcolor;
+    border-right: 2px solid currentcolor;
+  }
+
+  &__nav:focus-visible {
+    outline: 3px solid var(--dm-color-anthracite);
+    outline-offset: 2px;
+  }
+
+  &__nav--prev {
+    left: 0.5rem;
+  }
+
+  &__nav--prev::before {
+    transform: rotate(-135deg);
+  }
+
+  &__nav--next {
+    right: 0.5rem;
+  }
+
+  &__nav--next::before {
+    transform: rotate(45deg);
+  }
+
+  &__viewport.swiper-initialized &__nav {
+    display: block;
+  }
+
+  :where(html.no-js) &__viewport {
+    overflow: visible;
+  }
+
+  :where(html.no-js) & .swiper-wrapper {
+    display: block;
+  }
+}

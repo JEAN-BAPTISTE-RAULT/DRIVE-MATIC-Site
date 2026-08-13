@@ -1,0 +1,20 @@
+{#
+  Liaison paragraphe `news_home` -> SDC `drive_matic:news-home`.
+  Titre = prop ; lien « voir toutes » = slot (formatter). Les diapositives sont
+  les 5 actualités récentes de la Vue `news_home` : on récupère le résultat
+  (drupal_view_result) puis on rend chaque node en mode `card`, enveloppé en
+  `.swiper-slide`. Rendre les cartes directement (plutôt que la Vue complète)
+  garantit que `.swiper-wrapper` reste l'enfant direct exigé par Swiper.
+  Le tag de cache de liste (`node_list:news`) est ajouté par le preprocess.
+#}
+{% set rows = drupal_view_result('news_home', 'block_1') %}
+{% embed 'drive_matic:news-home' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block link %}{{ content.field_link }}{% endblock %}
+  {% block slides %}
+    {% for row in rows %}
+      <div class="swiper-slide">{{ drupal_entity('node', row._entity.id, 'card') }}</div>
+    {% endfor %}
+  {% endblock %}
+{% endembed %}

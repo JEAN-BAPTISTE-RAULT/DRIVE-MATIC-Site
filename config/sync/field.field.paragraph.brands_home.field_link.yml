@@ -1,0 +1,23 @@
+uuid: cf92d7f5-e317-42c1-a972-5a307fbd47ea
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_link
+    - paragraphs.paragraphs_type.brands_home
+  module:
+    - link
+id: paragraph.brands_home.field_link
+field_name: field_link
+entity_type: paragraph
+bundle: brands_home
+label: Lien
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 1
+  link_type: 17
+field_type: link

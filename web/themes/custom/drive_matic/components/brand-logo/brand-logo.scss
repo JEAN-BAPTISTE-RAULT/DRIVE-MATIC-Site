@@ -1,0 +1,23 @@
+// SDC « Carte :: Marque » — logo centré (sans crop) + nom.
+.brand-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+
+  &__image {
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  &__name {
+    color: var(--dm-color-text);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+}

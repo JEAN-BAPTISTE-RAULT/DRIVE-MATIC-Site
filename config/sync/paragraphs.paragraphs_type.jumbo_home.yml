@@ -1,0 +1,10 @@
+uuid: 7d9d5028-832b-4b53-87c4-20d9ed2801ed
+langcode: en
+status: true
+dependencies: {  }
+id: jumbo_home
+label: 'Bloc :: Jumbo Homepage'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

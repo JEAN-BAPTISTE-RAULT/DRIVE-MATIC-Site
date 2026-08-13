@@ -1,0 +1,26 @@
+{#
+  SDC « Bloc :: Jumbo Homepage » — bannière d'accueil en slideshow (Swiper).
+  Slot : slides (diapositives `.swiper-slide`, 1 à 3 éléments jumbo).
+  Slideshow si > 1 diapositive (init par `drive_matic/slideshow`), sinon
+  bannière statique. Amélioration progressive : sans JS, la piste s'empile et
+  reste lisible ; les flèches n'apparaissent que sous `html.js`.
+#}
+<section class="jumbo-home">
+  <div class="jumbo-home__viewport swiper" data-dm-slideshow>
+    <div class="swiper-wrapper">
+      {{ block('slides') }}
+    </div>
+    <button
+      type="button"
+      class="jumbo-home__nav jumbo-home__nav--prev"
+      data-dm-slideshow-prev
+      aria-label="{{ 'Diapositive précédente'|t }}"
+    ></button>
+    <button
+      type="button"
+      class="jumbo-home__nav jumbo-home__nav--next"
+      data-dm-slideshow-next
+      aria-label="{{ 'Diapositive suivante'|t }}"
+    ></button>
+  </div>
+</section>

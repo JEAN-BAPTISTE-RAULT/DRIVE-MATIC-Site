@@ -1,0 +1,31 @@
+{#
+  SDC « Bloc :: Marques Homepage ».
+  Prop : title (obl). Slots : link (« marques partenaires »), slides (logos de
+  marques, chacun enveloppé en `.swiper-slide`). Swiper exige `.swiper-wrapper`
+  en enfant DIRECT : c'est le SDC qui la fournit. Slideshow si > 1 diapositive.
+#}
+<section class="brands-home">
+  <div class="brands-home__head">
+    <h2 class="brands-home__title">{{ title }}</h2>
+    {% if block('link') is not empty %}
+      <div class="brands-home__more">{{ block('link') }}</div>
+    {% endif %}
+  </div>
+  <div class="brands-home__viewport swiper" data-dm-slideshow>
+    <div class="swiper-wrapper">
+      {{ block('slides') }}
+    </div>
+    <button
+      type="button"
+      class="brands-home__nav brands-home__nav--prev"
+      data-dm-slideshow-prev
+      aria-label="{{ 'Marque précédente'|t }}"
+    ></button>
+    <button
+      type="button"
+      class="brands-home__nav brands-home__nav--next"
+      data-dm-slideshow-next
+      aria-label="{{ 'Marque suivante'|t }}"
+    ></button>
+  </div>
+</section>

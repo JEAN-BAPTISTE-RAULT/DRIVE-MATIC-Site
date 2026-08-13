@@ -1,0 +1,19 @@
+uuid: ced688ce-9f59-4082-b5b1-1d32ceb526bc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.news_home
+id: paragraph.news_home.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: news_home
+label: Titre
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,30 @@
+uuid: 3e1b4d2a-d6c7-4a48-97b3-a0c604d06fd9
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.card
+    - field.field.node.brand.field_image
+    - node.type.brand
+  module:
+    - user
+id: node.brand.card
+targetEntityType: node
+bundle: brand
+mode: card
+content:
+  field_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: free
+      link: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden: {  }

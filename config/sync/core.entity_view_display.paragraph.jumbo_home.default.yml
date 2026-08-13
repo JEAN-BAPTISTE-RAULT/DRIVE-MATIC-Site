@@ -1,0 +1,24 @@
+uuid: 816eb073-63e4-44f1-8734-66c894f01d56
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.jumbo_home.field_jumbo_elements
+    - paragraphs.paragraphs_type.jumbo_home
+  module:
+    - entity_reference_revisions
+id: paragraph.jumbo_home.default
+targetEntityType: paragraph
+bundle: jumbo_home
+mode: default
+content:
+  field_jumbo_elements:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

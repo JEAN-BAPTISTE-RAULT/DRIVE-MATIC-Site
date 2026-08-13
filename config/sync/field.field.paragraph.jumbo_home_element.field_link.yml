@@ -1,0 +1,23 @@
+uuid: 03824a87-d98b-4648-960d-dc628b10e462
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_link
+    - paragraphs.paragraphs_type.jumbo_home_element
+  module:
+    - link
+id: paragraph.jumbo_home_element.field_link
+field_name: field_link
+entity_type: paragraph
+bundle: jumbo_home_element
+label: Lien
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 1
+  link_type: 17
+field_type: link

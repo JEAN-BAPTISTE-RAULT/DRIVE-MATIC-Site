@@ -1,0 +1,11 @@
+{#
+  SDC « Carte :: Actualité » — item du bloc actualités home.
+  Props : title (obl), url (obl, détail de l'actualité). Slot : image (16:9).
+#}
+<article class="news-card">
+  <div class="news-card__media">{{ block('image') }}</div>
+  <div class="news-card__body">
+    <h3 class="news-card__title">{{ title }}</h3>
+    <a class="news-card__more" href="{{ url }}">{{ 'Lire la suite'|t }}</a>
+  </div>
+</article>

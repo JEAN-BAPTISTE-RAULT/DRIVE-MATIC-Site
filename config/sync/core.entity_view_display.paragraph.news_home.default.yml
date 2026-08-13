@@ -1,0 +1,29 @@
+uuid: 73b3e6ef-fee0-40e9-986d-6451ef655a13
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.news_home.field_link
+    - field.field.paragraph.news_home.field_title
+    - paragraphs.paragraphs_type.news_home
+  module:
+    - link
+id: paragraph.news_home.default
+targetEntityType: paragraph
+bundle: news_home
+mode: default
+content:
+  field_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_title: true

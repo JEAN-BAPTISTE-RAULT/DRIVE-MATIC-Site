@@ -1,0 +1,19 @@
+uuid: 0c27d61b-d796-4824-87bf-ae6398914d51
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_title
+    - paragraphs.paragraphs_type.jumbo_home_element
+id: paragraph.jumbo_home_element.field_title
+field_name: field_title
+entity_type: paragraph
+bundle: jumbo_home_element
+label: Titre
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

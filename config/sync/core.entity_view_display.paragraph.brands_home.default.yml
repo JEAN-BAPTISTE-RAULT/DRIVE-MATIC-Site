@@ -1,0 +1,29 @@
+uuid: cada9043-a628-48ce-abb2-ae54aecf3fff
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.brands_home.field_link
+    - field.field.paragraph.brands_home.field_title
+    - paragraphs.paragraphs_type.brands_home
+  module:
+    - link
+id: paragraph.brands_home.default
+targetEntityType: paragraph
+bundle: brands_home
+mode: default
+content:
+  field_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_title: true

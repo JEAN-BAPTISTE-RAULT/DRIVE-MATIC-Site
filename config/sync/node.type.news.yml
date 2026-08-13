@@ -1,0 +1,11 @@
+uuid: 85a2bc3b-d15a-41e6-bfa1-8ede5ba87c99
+langcode: en
+status: true
+dependencies: {  }
+name: 'Page :: Détail d’une actualité'
+type: news
+description: null
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

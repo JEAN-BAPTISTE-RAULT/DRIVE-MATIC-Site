@@ -1,0 +1,18 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Carte :: Actualité'
+status: stable
+props:
+  type: object
+  required:
+    - title
+    - url
+  properties:
+    title:
+      type: string
+      title: Titre
+    url:
+      type: string
+      title: URL du détail
+slots:
+  image:
+    title: Image (16:9)

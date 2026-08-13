@@ -1,0 +1,16 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Élément :: Jumbo Homepage'
+status: stable
+props:
+  type: object
+  required:
+    - title
+  properties:
+    title:
+      type: string
+      title: Titre
+slots:
+  image:
+    title: Image (16:9)
+  link:
+    title: Lien (CTA) — optionnel

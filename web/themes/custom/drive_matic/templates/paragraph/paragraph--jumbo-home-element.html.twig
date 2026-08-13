@@ -1,0 +1,11 @@
+{#
+  Liaison paragraphe `jumbo_home_element` -> SDC `drive_matic:jumbo-home-element`.
+  Titre = prop ; image (média 16:9) et lien (CTA) rendus par leurs formatters
+  et injectés en slots.
+#}
+{% embed 'drive_matic:jumbo-home-element' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+  {% block link %}{{ content.field_link }}{% endblock %}
+{% endembed %}

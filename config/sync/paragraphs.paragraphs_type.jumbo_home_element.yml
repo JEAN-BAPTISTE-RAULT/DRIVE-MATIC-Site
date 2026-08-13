@@ -1,0 +1,10 @@
+uuid: 22fe0f94-5789-422b-9511-841ae3601a41
+langcode: en
+status: true
+dependencies: {  }
+id: jumbo_home_element
+label: 'Élément :: Jumbo Homepage'
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

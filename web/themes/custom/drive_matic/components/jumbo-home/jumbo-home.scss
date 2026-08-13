@@ -1,0 +1,69 @@
+// SDC « Bloc :: Jumbo Homepage » — bannière d'accueil en slideshow (Swiper).
+// Sans JS : la piste Swiper s'empile (tout visible) et les flèches sont masquées.
+.jumbo-home {
+  &__viewport {
+    position: relative;
+  }
+
+  // Flèches : masquées par défaut (inutiles sans JS), affichées sous html.js.
+  &__nav {
+    display: none;
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--dm-color-red);
+    color: var(--dm-color-white);
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  &__nav::before {
+    content: '';
+    display: block;
+    width: 12px;
+    height: 12px;
+    margin: 0 auto;
+    border-top: 2px solid currentcolor;
+    border-right: 2px solid currentcolor;
+  }
+
+  &__nav:focus-visible {
+    outline: 3px solid var(--dm-color-anthracite);
+    outline-offset: 2px;
+  }
+
+  &__nav--prev {
+    left: 0.5rem;
+  }
+
+  &__nav--prev::before {
+    transform: rotate(-135deg);
+  }
+
+  &__nav--next {
+    right: 0.5rem;
+  }
+
+  &__nav--next::before {
+    transform: rotate(45deg);
+  }
+
+  // Flèches actives uniquement quand Swiper a démarré (>= 2 diapositives).
+  &__viewport.swiper-initialized &__nav {
+    display: block;
+  }
+
+  // Repli sans JS : neutralise le viewport Swiper (empilement vertical lisible).
+  :where(html.no-js) &__viewport {
+    overflow: visible;
+  }
+
+  :where(html.no-js) & .swiper-wrapper {
+    display: block;
+  }
+}

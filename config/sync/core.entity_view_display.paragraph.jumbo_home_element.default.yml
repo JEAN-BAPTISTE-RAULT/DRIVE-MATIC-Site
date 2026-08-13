@@ -1,0 +1,39 @@
+uuid: 7c934198-d352-4c5a-b695-436c27f40eb9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.jumbo_home_element.field_image
+    - field.field.paragraph.jumbo_home_element.field_link
+    - field.field.paragraph.jumbo_home_element.field_title
+    - paragraphs.paragraphs_type.jumbo_home_element
+  module:
+    - link
+id: paragraph.jumbo_home_element.default
+targetEntityType: paragraph
+bundle: jumbo_home_element
+mode: default
+content:
+  field_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: ratio_16_9
+      link: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  field_title: true

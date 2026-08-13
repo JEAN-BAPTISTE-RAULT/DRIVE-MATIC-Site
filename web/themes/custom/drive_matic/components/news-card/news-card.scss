@@ -1,0 +1,41 @@
+// SDC « Carte :: Actualité » — image 16:9 + titre + lien « Lire la suite ».
+.news-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--dm-color-white);
+
+  &__media {
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__body {
+    padding: 1rem 0;
+  }
+
+  &__title {
+    margin: 0 0 0.75rem;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+  }
+
+  &__more {
+    color: var(--dm-color-red);
+    font-family: var(--dm-font-title);
+    text-decoration: none;
+  }
+
+  &__more:hover {
+    text-decoration: underline;
+  }
+
+  &__more:focus-visible {
+    outline: 2px solid var(--dm-color-red);
+    outline-offset: 2px;
+  }
+}

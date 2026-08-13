@@ -1,0 +1,12 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Jumbo Homepage'
+status: stable
+props:
+  type: object
+  properties: {}
+slots:
+  slides:
+    title: Diapositives (éléments jumbo)
+libraryOverrides:
+  dependencies:
+    - drive_matic/slideshow

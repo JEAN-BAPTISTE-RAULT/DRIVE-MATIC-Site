@@ -1,0 +1,34 @@
+uuid: bc6bd418-665b-42d2-96d1-f3e8109ebe2c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.brands_home.field_link
+    - field.field.paragraph.brands_home.field_title
+    - paragraphs.paragraphs_type.brands_home
+  module:
+    - link
+id: paragraph.brands_home.default
+targetEntityType: paragraph
+bundle: brands_home
+mode: default
+content:
+  field_link:
+    type: link_default
+    weight: 1
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

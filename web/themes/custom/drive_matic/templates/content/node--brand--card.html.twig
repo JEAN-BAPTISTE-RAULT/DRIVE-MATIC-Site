@@ -1,0 +1,10 @@
+{#
+  Rendu d'une marque en mode d'affichage `card` (lignes de la Vue brands_home).
+  Embarque le SDC `drive_matic:brand-logo` : nom = prop, logo = slot. Aucun
+  lien : la page canonique du fragment `brand` est bloquée (Rabbit Hole).
+#}
+{% embed 'drive_matic:brand-logo' with {
+  name: label,
+} %}
+  {% block image %}{{ content.field_image }}{% endblock %}
+{% endembed %}

@@ -1,0 +1,52 @@
+// SDC « Élément :: Jumbo Homepage » — bannière (visuel 16:9 + titre + CTA).
+// Titre et CTA superposés en bas du visuel, sur un dégradé de lisibilité.
+.jumbo-home-element {
+  position: relative;
+
+  &__media {
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__body {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 2rem 1.5rem 1.5rem;
+    background: linear-gradient(to top, rgb(0 0 0 / 65%), rgb(0 0 0 / 0%));
+    color: var(--dm-color-white);
+  }
+
+  &__title {
+    margin: 0 0 1rem;
+    color: var(--dm-color-white);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h2-size);
+    line-height: var(--dm-h2-line);
+    text-shadow: 0 2px 8px rgb(0 0 0 / 45%);
+  }
+
+  &__cta {
+    a {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: var(--dm-color-red);
+      color: var(--dm-color-white);
+      font-family: var(--dm-font-title);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus-visible {
+      outline: 3px solid var(--dm-color-white);
+      outline-offset: 2px;
+    }
+  }
+}

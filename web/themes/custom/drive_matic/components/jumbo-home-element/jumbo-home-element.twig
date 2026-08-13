@@ -1,0 +1,13 @@
+{#
+  SDC « Élément :: Jumbo Homepage » — une bannière (visuel 16:9 + titre + CTA).
+  Prop : title (obl). Slots : image (média 16:9), link (CTA, opt).
+#}
+<article class="jumbo-home-element">
+  <div class="jumbo-home-element__media">{{ block('image') }}</div>
+  <div class="jumbo-home-element__body">
+    <h2 class="jumbo-home-element__title">{{ title }}</h2>
+    {% if block('link') is not empty %}
+      <div class="jumbo-home-element__cta">{{ block('link') }}</div>
+    {% endif %}
+  </div>
+</article>

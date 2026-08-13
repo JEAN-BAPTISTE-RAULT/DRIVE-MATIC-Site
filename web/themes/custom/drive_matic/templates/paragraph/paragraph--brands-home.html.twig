@@ -1,0 +1,20 @@
+{#
+  Liaison paragraphe `brands_home` -> SDC `drive_matic:brands-home`.
+  Titre = prop ; lien « marques partenaires » = slot (formatter). Les
+  diapositives sont toutes les marques (ordre alpha) de la Vue `brands_home` :
+  on récupère le résultat (drupal_view_result) puis on rend chaque node en mode
+  `card`, enveloppé en `.swiper-slide`. Rendre les cartes directement garantit
+  que `.swiper-wrapper` reste l'enfant direct exigé par Swiper.
+  Le tag de cache de liste (`node_list:brand`) est ajouté par le preprocess.
+#}
+{% set rows = drupal_view_result('brands_home', 'block_1') %}
+{% embed 'drive_matic:brands-home' with {
+  title: paragraph.field_title.value,
+} %}
+  {% block link %}{{ content.field_link }}{% endblock %}
+  {% block slides %}
+    {% for row in rows %}
+      <div class="swiper-slide">{{ drupal_entity('node', row._entity.id, 'card') }}</div>
+    {% endfor %}
+  {% endblock %}
+{% endembed %}

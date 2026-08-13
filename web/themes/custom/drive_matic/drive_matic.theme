@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * Fonctions de theme pour DRIVE-MATIC.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_preprocess_HOOK() for paragraph.
+ *
+ * Les blocs home `news_home` / `brands_home` rendent une liste d'entites via
+ * `drupal_view_result()` + `drupal_entity()` (cf. templates paragraph--*_home).
+ * Ce rendu ne fait remonter que les cache tags des entites rendues, pas le
+ * `node_list` de la Vue : on l'ajoute explicitement pour que le bloc soit
+ * invalide a la publication/suppression d'une actualite ou d'une marque.
+ */
+function drive_matic_preprocess_paragraph(array &$variables): void {
+  $list_tag = [
+    'news_home' => 'node_list:news',
+    'brands_home' => 'node_list:brand',
+  ][$variables['paragraph']->bundle()] ?? NULL;
+
+  if ($list_tag !== NULL) {
+    $variables['#cache']['tags'][] = $list_tag;
+  }
+}

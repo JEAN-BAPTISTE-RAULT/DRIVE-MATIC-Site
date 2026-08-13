@@ -1,0 +1,14 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Carte :: Marque'
+status: stable
+props:
+  type: object
+  required:
+    - name
+  properties:
+    name:
+      type: string
+      title: Nom de la marque
+slots:
+  image:
+    title: Logo (sans crop)

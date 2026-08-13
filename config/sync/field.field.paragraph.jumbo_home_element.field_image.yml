@@ -1,0 +1,24 @@
+uuid: 36e2a770-43f1-4a62-9f00-cb600a1530f2
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_image
+    - media.type.image
+    - paragraphs.paragraphs_type.jumbo_home_element
+id: paragraph.jumbo_home_element.field_image
+field_name: field_image
+entity_type: paragraph
+bundle: jumbo_home_element
+label: Image
+description: 'Image recadrée au format 16:9 (crop à l’import).'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+field_type: entity_reference

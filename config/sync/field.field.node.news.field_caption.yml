@@ -1,0 +1,19 @@
+uuid: 7202fd9f-17a2-4ec7-9f3d-7bb96b465bf0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_caption
+    - node.type.news
+id: node.news.field_caption
+field_name: field_caption
+entity_type: node
+bundle: news
+label: 'Légende de l’image'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

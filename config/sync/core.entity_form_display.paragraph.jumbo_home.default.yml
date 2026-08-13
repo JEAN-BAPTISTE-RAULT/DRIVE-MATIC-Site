@@ -1,0 +1,35 @@
+uuid: f5490b9a-758b-453b-becc-c1572289e299
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.jumbo_home.field_jumbo_elements
+    - paragraphs.paragraphs_type.jumbo_home
+  module:
+    - paragraphs
+id: paragraph.jumbo_home.default
+targetEntityType: paragraph
+bundle: jumbo_home
+mode: default
+content:
+  field_jumbo_elements:
+    type: paragraphs
+    weight: 0
+    region: content
+    settings:
+      title: Élément
+      title_plural: Éléments
+      edit_mode: closed
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: jumbo_home_element
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
