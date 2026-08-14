@@ -20,6 +20,9 @@
     "format:check": "prettier --check .",
     "test": "echo \"⚠  Aucun test configure — voir docs/PRD.md (strategie de test)\" && exit 0"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "browserslist": [
     "> 0.5%",
     "last 2 major versions",

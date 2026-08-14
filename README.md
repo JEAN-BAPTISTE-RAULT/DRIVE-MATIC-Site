@@ -17,6 +17,7 @@ Site corporate de detail d'equipements automobiles a destination du grand public
 
 - **PHP** >= 8.3 et **Composer** 2.x
 - **Node.js** >= 20 et **npm** (outillage front : ESLint, Stylelint, Prettier)
+  - ⚠️ **Contrainte réelle, pas indicative** : `sass ^1.80` est **ESM-only**. Sous un Node < 20, `npm run css` s'interrompt sur `ERR_REQUIRE_ESM` — et si la sortie est redirigée, le build **paraît réussir** alors que les `.css` compilés restent périmés : on debugge alors un rendu qui ne correspond plus au SCSS. Vérifier `node -v` avant tout build front ; avec nvm : `nvm use` (voir `.nvmrc`).
 - (Recommande) **Drush** pour l'administration Drupal en ligne de commande
 
 ## Installation
