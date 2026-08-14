@@ -1,24 +1,33 @@
 .triptych-element {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 2.5rem;
+  border-radius: 16px;
+  background: var(--dm-color-white);
+  text-align: left;
 }
 .triptych-element__top {
-  margin: 0 0 0.5rem;
+  margin: 0;
   color: var(--dm-color-grey-text);
-  font-family: var(--dm-font-body);
-  font-size: var(--dm-body-size);
-  line-height: var(--dm-body-line);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+  font-weight: 700;
 }
 .triptych-element__main {
   margin: 0;
-  color: var(--dm-color-anthracite);
+  color: var(--dm-color-steel);
   font-family: var(--dm-font-title);
-  font-size: var(--dm-h1-size);
-  line-height: var(--dm-h1-line);
+  font-size: 60px;
+  line-height: 58px;
+  font-weight: 900;
 }
 .triptych-element__bottom {
-  margin: 0.5rem 0 0;
+  margin: 0;
   color: var(--dm-color-grey-text);
-  font-family: var(--dm-font-body);
-  font-size: var(--dm-body-size);
-  line-height: var(--dm-body-line);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+  font-weight: 700;
 }
