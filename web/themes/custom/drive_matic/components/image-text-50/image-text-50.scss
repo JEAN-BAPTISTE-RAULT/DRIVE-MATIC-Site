@@ -28,11 +28,13 @@
     }
   }
 
+  // Légende ferrée sous l'image, en bas à droite (convention globale du site).
   &__caption {
     margin-top: 0.5rem;
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
     font-size: 0.9rem;
+    text-align: right;
   }
 
   &__content {
