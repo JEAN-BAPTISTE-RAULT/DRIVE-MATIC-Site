@@ -17,11 +17,15 @@
     {% if block('description') is not empty %}
       <div class="image-text-100__description">{{ block('description') }}</div>
     {% endif %}
-    {% if block('actions') is not empty %}
-      <div class="image-text-100__actions">{{ block('actions') }}</div>
-    {% endif %}
-    {% if block('download') is not empty %}
-      <div class="image-text-100__download">{{ block('download') }}</div>
+    {% if block('actions') is not empty or block('download') is not empty %}
+      <div class="image-text-100__cta-row">
+        {% if block('actions') is not empty %}
+          <div class="image-text-100__actions">{{ block('actions') }}</div>
+        {% endif %}
+        {% if block('download') is not empty %}
+          <div class="image-text-100__download">{{ block('download') }}</div>
+        {% endif %}
+      </div>
     {% endif %}
   </div>
 </div>
