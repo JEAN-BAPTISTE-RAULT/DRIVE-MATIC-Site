@@ -90,11 +90,23 @@ depose ne garantit pas.
   Deux rendus subsistent — le bouton global du formatter pour un document
   unique, le helper pour un bloc en portant plusieurs — mais **un seul
   comportement editorial**.
-- **Replis differencies, volontairement** : « Télécharger » pour un document
-  unique (libelle de la maquette, sans ambiguite possible) ; **nom du fichier**
-  pour un bloc multi-documents (« Télécharger » y serait indiscernable). Aucune
-  regression sur le contenu existant : sans description saisie, les blocs deja
-  livres affichent exactement ce qu'ils affichaient.
+- **Description obligatoire** (decision du 2026-08-14) : plutot que de traiter
+  le libelle manquant comme un cas courant, on l'empeche a la saisie. Le cœur
+  n'offrant pas ce reglage (`description_field` n'a pas de pendant
+  « obligatoire »), un `#process` ajoute apres celui de `FileWidget` marque la
+  description `#required` et la renomme « Libellé du bouton de téléchargement »
+  (`drivematic_forms`, hook `field_widget_single_element_file_generic_form_alter`).
+  Comme le cœur ne construit cet element **qu'avec un fichier joint**, un champ
+  fichier laisse vide reste facultatif : la contrainte ne mord que sur un
+  document reellement deverse.
+- **Replis conserves comme filet, pas comme comportement** : « Télécharger »
+  pour un document unique, **nom du fichier** pour un bloc multi-documents. Ils
+  ne sont plus atteignables par le formulaire ; ils couvrent le contenu cree
+  **avant** cette contrainte et les insertions **programmatiques** (seed,
+  migration), qui ne passent pas par la validation de formulaire.
+- **Doublon de libelle non surveille** : rien n'empeche de saisir deux fois le
+  meme libelle dans un bloc multi-documents. C'est de la responsabilite
+  editoriale ; y ajouter une validation couterait plus que le probleme.
 - **Saisie editoriale a expliquer** : la description d'un fichier n'est pas un
   champ evident en back-office. Le texte d'aide de chaque champ precise qu'elle
   devient le libelle du bouton — a reprendre pour tout nouveau champ fichier.

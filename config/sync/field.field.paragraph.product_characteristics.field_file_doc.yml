@@ -12,7 +12,7 @@ field_name: field_file_doc
 entity_type: paragraph
 bundle: product_characteristics
 label: 'Documentation (à télécharger)'
-description: 'La description du fichier sert de libellé au bouton de téléchargement (ex. « Dossier général »). Le format et le poids sont ajoutés automatiquement. Sans description, le nom du fichier est utilisé.'
+description: ''
 required: false
 translatable: true
 default_value: {  }

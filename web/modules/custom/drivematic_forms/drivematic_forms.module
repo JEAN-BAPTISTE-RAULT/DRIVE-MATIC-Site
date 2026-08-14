@@ -21,6 +21,48 @@ function drivematic_forms_form_alter(array &$form, FormStateInterface $form_stat
 }
 
 /**
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
+ *
+ * La description d'un fichier sert de libelle a son bouton de telechargement
+ * (ADR-009) : un document sans description donnerait un bouton sans nom. On la
+ * rend donc obligatoire, et on la nomme pour ce qu'elle est.
+ *
+ * Le cœur ne propose pas ce reglage : `description_field` n'a pas de pendant
+ * « obligatoire ». La description est construite par un `#process` de
+ * FileWidget, et seulement si un fichier est deja joint : on ajoute donc notre
+ * callback APRES le sien. Consequence utile — un champ fichier laisse vide
+ * reste facultatif, seul un document effectivement deverse exige un libelle.
+ */
+function drivematic_forms_field_widget_single_element_file_generic_form_alter(array &$element, FormStateInterface $form_state, array $context): void {
+  $element['#process'][] = '_drivematic_forms_require_file_description';
+}
+
+/**
+ * Rend obligatoire la description d'un fichier deverse (callback #process).
+ *
+ * @param array $element
+ *   L'element `managed_file` en cours de construction.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   Etat du formulaire.
+ * @param array $form
+ *   Le formulaire complet.
+ *
+ * @return array
+ *   L'element, description marquee obligatoire si elle existe.
+ */
+function _drivematic_forms_require_file_description(array $element, FormStateInterface $form_state, array $form): array {
+  if (!isset($element['description'])) {
+    return $element;
+  }
+
+  $element['description']['#required'] = TRUE;
+  $element['description']['#title'] = t('Libellé du bouton de téléchargement');
+  $element['description']['#description'] = t('Exemple : « Notice technique ». Le format et le poids du fichier sont ajoutés automatiquement.');
+
+  return $element;
+}
+
+/**
  * Construit les correspondances vehicule pour la cascade front.
  *
  * @return array
