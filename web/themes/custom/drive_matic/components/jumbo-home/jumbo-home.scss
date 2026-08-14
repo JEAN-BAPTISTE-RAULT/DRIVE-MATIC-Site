@@ -12,7 +12,10 @@
 
   // La piste garde le calage gauche du conteneur mais déborde à droite
   // jusqu'au bord de la fenêtre (la diapo suivante est coupée par le viewport).
-  &__viewport {
+  // La classe `.swiper` est répétée : le bundle pose `margin-right: auto` à la
+  // même spécificité que notre BEM et il est chargé après (sinon la piste
+  // s'arrête au bord du conteneur).
+  &__viewport.swiper {
     position: relative;
     margin-right: calc(50% - 50vw);
   }
@@ -105,8 +108,9 @@
   }
 
   // Repli sans JS : neutralise le viewport Swiper (empilement vertical lisible).
-  :where(html.no-js) &__viewport {
+  :where(html.no-js) &__viewport.swiper {
     overflow: visible;
+    margin-right: 0;
   }
 
   :where(html.no-js) & .swiper-wrapper {

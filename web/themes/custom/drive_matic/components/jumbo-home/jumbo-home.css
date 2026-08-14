@@ -6,7 +6,7 @@
 .jumbo-home .swiper-slide {
   width: min(900px, 82%);
 }
-.jumbo-home__viewport {
+.jumbo-home__viewport.swiper {
   position: relative;
   margin-right: calc(50% - 50vw);
 }
@@ -74,8 +74,9 @@
 .jumbo-home .swiper-pagination-bullet-active {
   background: var(--dm-color-red);
 }
-:where(html.no-js) .jumbo-home__viewport {
+:where(html.no-js) .jumbo-home__viewport.swiper {
   overflow: visible;
+  margin-right: 0;
 }
 :where(html.no-js) .jumbo-home .swiper-wrapper {
   display: block;
