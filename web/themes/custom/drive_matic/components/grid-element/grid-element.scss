@@ -4,10 +4,13 @@
 .grid-element {
   display: flex;
   flex-direction: column;
-  background: var(--dm-color-white);
+  gap: 2rem;
 
   &__media {
-    img {
+    overflow: hidden;
+    border-radius: 16px;
+
+    :is(img, picture) {
       display: block;
       width: 100%;
       height: auto;
@@ -15,30 +18,48 @@
   }
 
   &__body {
-    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   &__title {
-    margin: 0 0 0.75rem;
-    color: var(--dm-color-anthracite);
+    margin: 0;
+    color: var(--dm-color-steel);
     font-family: var(--dm-font-title);
-    font-size: var(--dm-h3-size);
-    line-height: var(--dm-h3-line);
+    font-size: var(--dm-h2-size);
+    line-height: var(--dm-h2-line);
+    font-weight: 700;
   }
 
   &__links {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 6px;
 
     > * {
       display: contents;
     }
 
+    // Lien texte + chevron rouge (motif « Lien » de la maquette).
     a {
-      color: var(--dm-color-red);
-      font-family: var(--dm-font-title);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--dm-color-steel);
+      font-family: var(--dm-font-body);
+      font-size: var(--dm-body-size);
+      line-height: var(--dm-body-line);
       text-decoration: none;
+
+      &::after {
+        content: '';
+        flex: 0 0 auto;
+        width: 24px;
+        height: 24px;
+        background-color: var(--dm-color-red);
+        mask: url('../../images/icons/chevron-right.svg') no-repeat center;
+      }
     }
 
     a:hover {

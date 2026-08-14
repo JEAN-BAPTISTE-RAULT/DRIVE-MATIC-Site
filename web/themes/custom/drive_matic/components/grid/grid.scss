@@ -3,18 +3,24 @@
 // (`field__items`) est neutralisé via `display: contents` pour que les cartes
 // deviennent les cellules directes de la grille.
 .grid {
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+
   &__title {
-    margin: 0 0 1.5rem;
-    color: var(--dm-color-anthracite);
+    margin: 0 0 2.5rem;
+    color: var(--dm-color-steel);
     font-family: var(--dm-font-title);
-    font-size: var(--dm-h2-size);
-    line-height: var(--dm-h2-line);
+    font-size: var(--dm-h1-size);
+    line-height: var(--dm-h1-line);
+    font-weight: 700;
+    text-align: center;
   }
 
   &__items {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 2.5rem 20px;
 
     > * {
       display: contents;
