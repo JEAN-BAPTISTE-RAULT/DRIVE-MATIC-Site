@@ -1,52 +1,62 @@
 // SDC « Élément :: Jumbo Homepage » — bannière (visuel 16:9 + titre + CTA).
-// Titre et CTA superposés en bas du visuel, sur un dégradé de lisibilité.
+// Titre et CTA superposés en bas à gauche du visuel, sur un dégradé de lisibilité.
 .jumbo-home-element {
   position: relative;
+  overflow: hidden;
+  border-radius: 16px;
 
   &__media {
-    img {
+    :is(img, picture) {
       display: block;
       width: 100%;
       height: auto;
     }
   }
 
+  // Le dégradé couvre toute la carte (calque de lisibilité de la maquette),
+  // le contenu restant ferré en bas à gauche. Angle et arrêts : Figma 303:5977.
   &__body {
     position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding: 2rem 1.5rem 1.5rem;
-    background: linear-gradient(to top, rgb(0 0 0 / 65%), rgb(0 0 0 / 0%));
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: 24px;
+    background: linear-gradient(
+      22.83deg,
+      rgb(0 0 0 / 60%) 19.56%,
+      rgb(0 0 0 / 0%) 34.72%
+    );
     color: var(--dm-color-white);
   }
 
   &__title {
-    margin: 0 0 1rem;
+    margin: 0;
     color: var(--dm-color-white);
     font-family: var(--dm-font-title);
     font-size: var(--dm-h2-size);
     line-height: var(--dm-h2-line);
-    text-shadow: 0 2px 8px rgb(0 0 0 / 45%);
+    font-weight: 700;
+    text-shadow: 0 0 25px rgb(0 0 0 / 35%);
   }
 
-  &__cta {
-    a {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      background: var(--dm-color-red);
-      color: var(--dm-color-white);
-      font-family: var(--dm-font-title);
-      text-decoration: none;
-    }
+  // Bouton gris (Figma Btn) : #E8E8E8, Inter Medium 15px steel.
+  &__cta a {
+    display: inline-block;
+    padding: 14px 16px;
+    border-radius: 6px;
+    background: var(--dm-color-grey-light);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+  }
 
-    a:hover {
-      text-decoration: underline;
-    }
-
-    a:focus-visible {
-      outline: 3px solid var(--dm-color-white);
-      outline-offset: 2px;
-    }
+  &__cta a:focus-visible {
+    outline: 3px solid var(--dm-color-white);
+    outline-offset: 2px;
   }
 }

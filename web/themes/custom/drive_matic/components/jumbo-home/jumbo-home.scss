@@ -1,61 +1,107 @@
 // SDC « Bloc :: Jumbo Homepage » — bannière d'accueil en slideshow (Swiper).
 // Sans JS : la piste Swiper s'empile (tout visible) et les flèches sont masquées.
 .jumbo-home {
-  &__viewport {
-    position: relative;
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+
+  // Diapositives à largeur fixe (peek du suivant) — slidesPerView: auto.
+  & .swiper-slide {
+    width: min(900px, 82%);
   }
 
-  // Flèches : masquées par défaut (inutiles sans JS), affichées sous html.js.
+  // La piste garde le calage gauche du conteneur mais déborde à droite
+  // jusqu'au bord de la fenêtre (la diapo suivante est coupée par le viewport).
+  &__viewport {
+    position: relative;
+    margin-right: calc(50% - 50vw);
+  }
+
+  // Flèche « Next » (Figma 303:6298) : carré blanc arrondi 44px à 80 %
+  // d'opacité, sans ombre portée, chevron anthracite.
   &__nav {
     display: none;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     top: 50%;
-    z-index: 1;
+    z-index: 2;
     width: 44px;
     height: 44px;
     padding: 0;
     border: 0;
-    border-radius: 50%;
-    background: var(--dm-color-red);
-    color: var(--dm-color-white);
+    border-radius: 8px;
+    opacity: 0.8;
+    background: var(--dm-color-white);
+    color: var(--dm-color-anthracite);
     transform: translateY(-50%);
     cursor: pointer;
   }
 
+  // Chevron exporté de la maquette, masqué pour hériter de `color`.
   &__nav::before {
     content: '';
-    display: block;
-    width: 12px;
-    height: 12px;
-    margin: 0 auto;
-    border-top: 2px solid currentcolor;
-    border-right: 2px solid currentcolor;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color: currentcolor;
+    mask: url('../../images/icons/chevron-right.svg') no-repeat center;
   }
 
   &__nav:focus-visible {
-    outline: 3px solid var(--dm-color-anthracite);
+    outline: 3px solid var(--dm-color-red);
     outline-offset: 2px;
   }
 
   &__nav--prev {
-    left: 0.5rem;
+    left: 40px;
   }
 
   &__nav--prev::before {
-    transform: rotate(-135deg);
+    transform: scaleX(-1);
   }
 
   &__nav--next {
-    right: 0.5rem;
-  }
-
-  &__nav--next::before {
-    transform: rotate(45deg);
+    right: 40px;
   }
 
   // Flèches actives uniquement quand Swiper a démarré (>= 2 diapositives).
   &__viewport.swiper-initialized &__nav {
-    display: block;
+    display: flex;
+  }
+
+  // Flèche en bout de course : masquée (maquette — pas de flèche « précédent »
+  // sur la première diapositive) plutôt qu'atténuée comme par défaut.
+  &__viewport.swiper-initialized &__nav.swiper-button-disabled {
+    display: none;
+  }
+
+  // Pagination (points) sous le slider, centrée. Point actif rouge.
+  // La classe `.swiper-pagination` est répétée pour battre la mise en position
+  // absolue du bundle Swiper (sinon les points se détachent du composant).
+  &__pagination.swiper-pagination {
+    // Le bundle Swiper applique `margin: 0 4px` à chaque point via une règle
+    // plus spécifique que la nôtre : on l'annule par sa propre variable pour
+    // que l'écart de 10px vienne uniquement du `gap`.
+    --swiper-pagination-bullet-horizontal-gap: 0;
+
+    position: static;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 18px;
+  }
+
+  & .swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--dm-color-grey-metal);
+    opacity: 1;
+  }
+
+  & .swiper-pagination-bullet-active {
+    background: var(--dm-color-red);
   }
 
   // Repli sans JS : neutralise le viewport Swiper (empilement vertical lisible).
@@ -65,5 +111,13 @@
 
   :where(html.no-js) & .swiper-wrapper {
     display: block;
+  }
+
+  :where(html.no-js) & .swiper-slide {
+    width: 100%;
+  }
+
+  :where(html.no-js) &__pagination.swiper-pagination {
+    display: none;
   }
 }

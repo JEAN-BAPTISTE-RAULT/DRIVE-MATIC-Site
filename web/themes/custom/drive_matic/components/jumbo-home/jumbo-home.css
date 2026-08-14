@@ -1,52 +1,88 @@
+.jumbo-home {
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+}
+.jumbo-home .swiper-slide {
+  width: min(900px, 82%);
+}
 .jumbo-home__viewport {
   position: relative;
+  margin-right: calc(50% - 50vw);
 }
 .jumbo-home__nav {
   display: none;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: 50%;
-  z-index: 1;
+  z-index: 2;
   width: 44px;
   height: 44px;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
+  border-radius: 8px;
+  opacity: 0.8;
+  background: var(--dm-color-white);
+  color: var(--dm-color-anthracite);
   transform: translateY(-50%);
   cursor: pointer;
 }
 .jumbo-home__nav::before {
   content: "";
-  display: block;
-  width: 12px;
-  height: 12px;
-  margin: 0 auto;
-  border-top: 2px solid currentcolor;
-  border-right: 2px solid currentcolor;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: currentcolor;
+  -webkit-mask: url("../../images/icons/chevron-right.svg") no-repeat center;
+          mask: url("../../images/icons/chevron-right.svg") no-repeat center;
 }
 .jumbo-home__nav:focus-visible {
-  outline: 3px solid var(--dm-color-anthracite);
+  outline: 3px solid var(--dm-color-red);
   outline-offset: 2px;
 }
 .jumbo-home__nav--prev {
-  left: 0.5rem;
+  left: 40px;
 }
 .jumbo-home__nav--prev::before {
-  transform: rotate(-135deg);
+  transform: scaleX(-1);
 }
 .jumbo-home__nav--next {
-  right: 0.5rem;
-}
-.jumbo-home__nav--next::before {
-  transform: rotate(45deg);
+  right: 40px;
 }
 .jumbo-home__viewport.swiper-initialized .jumbo-home__nav {
-  display: block;
+  display: flex;
+}
+.jumbo-home__viewport.swiper-initialized .jumbo-home__nav.swiper-button-disabled {
+  display: none;
+}
+.jumbo-home__pagination.swiper-pagination {
+  --swiper-pagination-bullet-horizontal-gap: 0;
+  position: static;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 18px;
+}
+.jumbo-home .swiper-pagination-bullet {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--dm-color-grey-metal);
+  opacity: 1;
+}
+.jumbo-home .swiper-pagination-bullet-active {
+  background: var(--dm-color-red);
 }
 :where(html.no-js) .jumbo-home__viewport {
   overflow: visible;
 }
 :where(html.no-js) .jumbo-home .swiper-wrapper {
   display: block;
+}
+:where(html.no-js) .jumbo-home .swiper-slide {
+  width: 100%;
+}
+:where(html.no-js) .jumbo-home__pagination.swiper-pagination {
+  display: none;
 }

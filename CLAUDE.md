@@ -121,6 +121,7 @@ Le formatage (indentation, guillemets, longueur de ligne) est gere par le linter
 - Tout composant front est un **SDC** (Single Directory Component) : Twig + CSS (+ JS) co-localises et scopes dans le dossier du composant. Rien hors SDC, hormis les **fondations globales** (reset, tokens/variables, typographie).
 - Nommage **BEM** (`.block__element--modifier`) a l'interieur de chaque composant.
 - Pas de couleurs/tailles en dur : utiliser les tokens (variables SCSS / custom properties).
+- **Icones** : quand la maquette fournit un glyphe, utiliser l'**asset SVG exporte** auto-heberge dans `images/icons/`, applique en `mask` CSS avec `background-color` sur un token (permet d'heriter de `currentcolor`). Ne pas redessiner un glyphe en bordures/rotations : c'est moins fidele et ca diverge du reste du thème. Reutiliser un asset existant avant d'en ajouter un.
 
 **Media / images**
 

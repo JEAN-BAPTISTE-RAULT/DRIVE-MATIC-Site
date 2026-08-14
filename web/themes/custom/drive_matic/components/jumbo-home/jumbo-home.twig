@@ -6,7 +6,12 @@
   reste lisible ; les flèches n'apparaissent que sous `html.js`.
 #}
 <section class="jumbo-home">
-  <div class="jumbo-home__viewport swiper" data-dm-slideshow>
+  <div
+    class="jumbo-home__viewport swiper"
+    data-dm-slideshow
+    data-dm-slideshow-per-view="auto"
+    data-dm-slideshow-space="20"
+  >
     <div class="swiper-wrapper">
       {{ block('slides') }}
     </div>
@@ -23,4 +28,8 @@
       aria-label="{{ 'Diapositive suivante'|t }}"
     ></button>
   </div>
+  <div
+    class="jumbo-home__pagination swiper-pagination"
+    data-dm-slideshow-pagination
+  ></div>
 </section>
