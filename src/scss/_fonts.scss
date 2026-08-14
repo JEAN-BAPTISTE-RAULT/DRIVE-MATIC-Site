@@ -1,0 +1,44 @@
+// Polices auto-hébergées (RGPD, cf. ADR-008) — aucun appel tiers au runtime.
+// Fichiers woff2 Fontsource (licence OFL) dans le thème (fonts/).
+// Exo 2 (titres) : 700, 900. Inter (corps) : 400, 500, 700.
+// URLs relatives à la feuille compilée css/style.css.
+
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/exo-2-latin-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('../fonts/exo-2-latin-900.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/inter-latin-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/inter-latin-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/inter-latin-700.woff2') format('woff2');
+}
