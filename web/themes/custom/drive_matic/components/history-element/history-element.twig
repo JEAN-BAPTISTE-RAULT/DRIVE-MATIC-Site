@@ -4,8 +4,15 @@
   description. Exclusivité image/vidéo : si le slot `video` est renseigné, la
   miniature devient une façade (lecture au clic, JS `drive_matic/video-facade`) ;
   sinon simple image. L'image (slot `image`) est toujours présente (le visuel).
+  Ordre de la maquette : titre + description, puis le visuel (et sa légende).
 #}
 <article class="history-element">
+  <div class="history-element__body">
+    <h3 class="history-element__title">{{ title }}</h3>
+    {% if block('description') is not empty %}
+      <div class="history-element__description">{{ block('description') }}</div>
+    {% endif %}
+  </div>
   {% if block('video') is not empty %}
     <div class="history-element__media" data-dm-video-facade>
       <button
@@ -22,13 +29,7 @@
   {% else %}
     <div class="history-element__media">{{ block('image') }}</div>
   {% endif %}
-  <div class="history-element__body">
-    <h3 class="history-element__title">{{ title }}</h3>
-    {% if block('description') is not empty %}
-      <div class="history-element__description">{{ block('description') }}</div>
-    {% endif %}
-    {% if caption %}
-      <p class="history-element__caption">{{ caption }}</p>
-    {% endif %}
-  </div>
+  {% if caption %}
+    <p class="history-element__caption">{{ caption }}</p>
+  {% endif %}
 </article>

@@ -160,6 +160,11 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Criteres d'acceptation** :
 - [ ] Pages composables via Paragraphes (F1) : Qui sommes-nous, Nos ateliers, Recherche & developpement, Savoir-faire et certifications.
 - [ ] FAQ : accordeons (fermeture du precedent a l'ouverture).
+- [ ] Frise « Notre histoire » (`history`) : en-tete titre + **paire de fleches**, filet pointille, entrees defilant horizontalement ; l'entree suivante est visible en **apercu coupe** a droite. Chaque entree = titre + description **puis** le visuel 16:9 (les visuels ne sont pas alignes entre colonnes : chacun suit son propre texte).
+- [ ] **Pas de boucle** : en bout de course, la fleche concernee reste en place mais devient inerte et atenuee (l'en-tete ne se reorganise pas).
+
+**Cas limites** :
+- Une seule entree → pas de slideshow : les fleches restent masquees.
 
 ---
 

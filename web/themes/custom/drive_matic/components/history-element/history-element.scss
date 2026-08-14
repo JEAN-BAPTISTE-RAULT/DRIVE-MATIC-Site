@@ -1,9 +1,50 @@
-// SDC « Élément :: Histoire » — image ou façade vidéo + titre/description/légende.
+// SDC « Élément :: Histoire » — titre/description puis image ou façade vidéo.
+// Maquette Figma 433:10243 + 512:16594 : colonne de 374px, écart 10px entre le
+// titre et la description, 24px avant le visuel, visuel 16:9 arrondi à 16px.
 // La façade (bouton lecture) est un CSS présentationnel scopé (le JS d'injection
 // est mutualisé dans la lib `drive_matic/video-facade`).
 .history-element {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__title {
+    margin: 0;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+    font-weight: 700;
+  }
+
+  &__description {
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
+
+  // Le champ `text_long` rend des <p> porteurs des marges de l'agent
+  // utilisateur : on les neutralise aux extrémités pour que les écarts de la
+  // maquette viennent des seuls `gap`.
+  &__description :is(p):first-child {
+    margin-top: 0;
+  }
+
+  &__description :is(p):last-child {
+    margin-bottom: 0;
+  }
+
   &__media {
     position: relative;
+    overflow: hidden;
+    border-radius: 16px;
   }
 
   &__media img {
@@ -54,24 +95,8 @@
     outline-offset: 4px;
   }
 
-  &__body {
-    padding: 1rem 0;
-  }
-
-  &__title {
-    margin: 0 0 0.5rem;
-    color: var(--dm-color-anthracite);
-    font-family: var(--dm-font-title);
-    font-size: var(--dm-h3-size);
-    line-height: var(--dm-h3-line);
-  }
-
-  &__description {
-    color: var(--dm-color-grey-text);
-  }
-
   &__caption {
-    margin: 0.5rem 0 0;
+    margin: 0;
     color: var(--dm-color-grey-text);
     font-size: 0.9rem;
   }

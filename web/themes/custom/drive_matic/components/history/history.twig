@@ -2,26 +2,37 @@
   SDC « Bloc :: Histoire ».
   Prop : title (obl). Slot : slides (diapositives `.swiper-slide`).
   Slideshow Swiper si > 1 diapositive (init par `drive_matic/slideshow`), sinon
-  liste statique. Amélioration progressive : sans JS, la piste s'empile et reste
-  entièrement lisible ; les flèches n'apparaissent que sous `html.js`.
+  liste statique. Les flèches vivent dans l'en-tête du bloc (maquette) et non sur
+  la piste : le behavior les résout dans le conteneur du composant.
+  Amélioration progressive : sans JS, la piste s'empile et reste lisible ; les
+  flèches n'apparaissent que lorsque Swiper a démarré.
 #}
 <section class="history">
-  <h2 class="history__title">{{ title }}</h2>
-  <div class="history__viewport swiper" data-dm-slideshow>
+  <div class="history__header">
+    <h2 class="history__title">{{ title }}</h2>
+    <div class="history__nav">
+      <button
+        type="button"
+        class="history__nav-button history__nav-button--prev"
+        data-dm-slideshow-prev
+        aria-label="{{ 'Diapositive précédente'|t }}"
+      ></button>
+      <button
+        type="button"
+        class="history__nav-button history__nav-button--next"
+        data-dm-slideshow-next
+        aria-label="{{ 'Diapositive suivante'|t }}"
+      ></button>
+    </div>
+  </div>
+  <div
+    class="history__viewport swiper"
+    data-dm-slideshow
+    data-dm-slideshow-per-view="auto"
+    data-dm-slideshow-space="30"
+  >
     <div class="swiper-wrapper">
       {{ block('slides') }}
     </div>
-    <button
-      type="button"
-      class="history__nav history__nav--prev"
-      data-dm-slideshow-prev
-      aria-label="{{ 'Diapositive précédente'|t }}"
-    ></button>
-    <button
-      type="button"
-      class="history__nav history__nav--next"
-      data-dm-slideshow-next
-      aria-label="{{ 'Diapositive suivante'|t }}"
-    ></button>
   </div>
 </section>

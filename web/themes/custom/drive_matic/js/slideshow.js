@@ -5,6 +5,9 @@
  * degradation « liste si un seul item »). Modules : navigation (fleches),
  * pagination (si un element [data-dm-slideshow-pagination] est present dans le
  * conteneur du composant) + a11y. `prefers-reduced-motion` supprime l'animation.
+ * Fleches et pagination sont cherchees dans le conteneur du composant, ce qui
+ * autorise les deux placements de la maquette : superposees a la piste
+ * (`jumbo_home`) ou dans l'en-tete du bloc, hors `.swiper` (`history`).
  *
  * Options par data-attribut (sur l'element `[data-dm-slideshow]`) :
  *   - data-dm-slideshow-per-view : nombre ou "auto" (defaut 1)
@@ -32,8 +35,8 @@
           slidesPerView: perView === 'auto' ? 'auto' : Number(perView),
           spaceBetween: Number(el.dataset.dmSlideshowSpace || 24),
           navigation: {
-            prevEl: el.querySelector('[data-dm-slideshow-prev]'),
-            nextEl: el.querySelector('[data-dm-slideshow-next]'),
+            prevEl: scope.querySelector('[data-dm-slideshow-prev]'),
+            nextEl: scope.querySelector('[data-dm-slideshow-next]'),
           },
           pagination: paginationEl
             ? { el: paginationEl, clickable: true }
