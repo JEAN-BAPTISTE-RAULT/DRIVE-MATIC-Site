@@ -1,21 +1,43 @@
 {#
   SDC « Bloc :: Caractéristiques produit ».
-  Props : title (opt), caption (opt). Slots : image (sans crop), characteristics
-  (liste d'éléments), notice + documentation (fichiers à télécharger optionnels).
+  Props : title (opt), caption (opt), downloads (liste opt de boutons de
+  téléchargement : label, url, format, size).
+  Slots : image (sans crop), characteristics (liste d'éléments).
+  Bandeau sombre pleine largeur : visuel produit à gauche, caractéristiques en
+  deux colonnes à droite, documents à télécharger en pied de colonne.
 #}
 <section class="product-characteristics">
-  <div class="product-characteristics__media">
-    {{ block('image') }}
-    {% if caption %}<p class="product-characteristics__caption">{{ caption }}</p>{% endif %}
-  </div>
-  <div class="product-characteristics__body">
-    {% if title %}<h2 class="product-characteristics__title">{{ title }}</h2>{% endif %}
-    <div class="product-characteristics__list">{{ block('characteristics') }}</div>
-    {% if block('notice') is not empty or block('documentation') is not empty %}
-      <div class="product-characteristics__downloads">
-        {{ block('notice') }}
-        {{ block('documentation') }}
-      </div>
-    {% endif %}
+  <div class="product-characteristics__inner">
+    <div class="product-characteristics__media">
+      {{ block('image') }}
+      {% if caption %}
+        <p class="product-characteristics__caption">{{ caption }}</p>
+      {% endif %}
+    </div>
+    <div class="product-characteristics__body">
+      {% if title %}
+        <h2 class="product-characteristics__title">{{ title }}</h2>
+      {% endif %}
+      <div class="product-characteristics__list">{{ block('characteristics') }}</div>
+      {% if downloads is not empty %}
+        <div class="product-characteristics__downloads">
+          {% for download in downloads %}
+            <a
+              class="product-characteristics__download"
+              href="{{ download.url }}"
+              download
+            >
+              <span
+                class="product-characteristics__download-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="product-characteristics__download-label">
+                {{ download.label }} ({{ download.format }} {{ download.size }})
+              </span>
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
   </div>
 </section>

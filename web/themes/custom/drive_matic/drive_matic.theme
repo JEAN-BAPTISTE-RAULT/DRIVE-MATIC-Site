@@ -7,7 +7,9 @@
 
 declare(strict_types=1);
 
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\file\FileInterface;
+use Drupal\paragraphs\ParagraphInterface;
 
 /**
  * Implements hook_preprocess_HOOK() for paragraph.
@@ -17,16 +19,78 @@ use Drupal\file\FileInterface;
  * Ce rendu ne fait remonter que les cache tags des entites rendues, pas le
  * `node_list` de la Vue : on l'ajoute explicitement pour que le bloc soit
  * invalide a la publication/suppression d'une actualite ou d'une marque.
+ *
+ * `product_characteristics` expose en plus ses deux telechargements sous forme
+ * de donnees pretes a afficher (cf. _drive_matic_document_downloads()).
  */
 function drive_matic_preprocess_paragraph(array &$variables): void {
+  $paragraph = $variables['paragraph'];
+
   $list_tag = [
     'news_home' => 'node_list:news',
     'brands_home' => 'node_list:brand',
-  ][$variables['paragraph']->bundle()] ?? NULL;
+  ][$paragraph->bundle()] ?? NULL;
 
   if ($list_tag !== NULL) {
     $variables['#cache']['tags'][] = $list_tag;
   }
+
+  if ($paragraph->bundle() === 'product_characteristics') {
+    $variables['downloads'] = _drive_matic_document_downloads($paragraph, [
+      'field_file_notice' => t('Notice technique'),
+      'field_file_doc' => t('Dossier général'),
+    ], $variables);
+  }
+}
+
+/**
+ * Construit des boutons de telechargement nommes a partir de champs fichier.
+ *
+ * Le bouton global (`file-link.html.twig`) affiche « Télécharger (FORMAT
+ * POIDS) », ce qui ne convient pas quand un bloc en porte plusieurs : la
+ * maquette nomme chaque bouton (« Notice technique », « Dossier général »).
+ * Le libelle front est donc fourni ici, les libelles de champ etant
+ * administratifs (« Notice technique (à télécharger) »). Format et poids
+ * suivent la convention du bouton global.
+ *
+ * @param \Drupal\paragraphs\ParagraphInterface $paragraph
+ *   Le paragraphe portant les champs fichier.
+ * @param array $labels
+ *   Libelles front indexes par nom de champ, dans l'ordre d'affichage.
+ * @param array $variables
+ *   Variables du template, pour y attacher les cache tags des fichiers.
+ *
+ * @return array
+ *   Liste de tableaux `label`, `url`, `format`, `size` (champs vides ignores).
+ */
+function _drive_matic_document_downloads(ParagraphInterface $paragraph, array $labels, array &$variables): array {
+  $downloads = [];
+
+  foreach ($labels as $field_name => $label) {
+    if (!$paragraph->hasField($field_name) || $paragraph->get($field_name)->isEmpty()) {
+      continue;
+    }
+    $file = $paragraph->get($field_name)->entity;
+    if (!$file instanceof FileInterface) {
+      continue;
+    }
+
+    $downloads[] = [
+      'label' => $label,
+      'url' => \Drupal::service('file_url_generator')->generateString($file->getFileUri()),
+      'format' => mb_strtoupper(pathinfo($file->getFilename(), PATHINFO_EXTENSION)),
+      'size' => ByteSizeMarkup::create((int) $file->getSize()),
+    ];
+
+    // Le fichier n'est pas rendu par son formatter : ses cache tags ne
+    // remontent pas tout seuls.
+    $variables['#cache']['tags'] = array_merge(
+      $variables['#cache']['tags'] ?? [],
+      $file->getCacheTags()
+    );
+  }
+
+  return $downloads;
 }
 
 /**

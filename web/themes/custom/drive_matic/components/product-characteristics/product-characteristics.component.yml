@@ -10,12 +10,26 @@ props:
     caption:
       type: string
       title: Légende de l’image
+    downloads:
+      type: array
+      title: Documents à télécharger
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+            title: Libellé du bouton
+          url:
+            type: string
+            title: URL du fichier
+          format:
+            type: string
+            title: Format (ex. PDF)
+          size:
+            type: string
+            title: Poids formaté
 slots:
   image:
     title: Image (sans crop)
   characteristics:
     title: Caractéristiques
-  notice:
-    title: Notice technique (fichier)
-  documentation:
-    title: Documentation (fichier)

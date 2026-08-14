@@ -1,17 +1,36 @@
 // SDC « Élément :: Caractéristique produit » — CSS scopé (BEM).
+// Maquette Figma 393:11519 : libellé gris métallisé 16/28 puis valeur blanche
+// 18/28, écart de 6px, sans séparateur. Conçu pour le bandeau sombre de son
+// bloc parent `product_characteristics`.
 .product-characteristic-element {
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--dm-color-grey-metal);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 
   &__title {
-    margin: 0 0 0.25rem;
-    color: var(--dm-color-anthracite);
-    font-family: var(--dm-font-title);
-    font-size: var(--dm-h3-size);
-    line-height: var(--dm-h3-line);
+    margin: 0;
+    color: var(--dm-color-grey-metal);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+    font-weight: 400;
   }
 
+  // 18px : style Figma « Text-18-reg », hors échelle de tokens du thème.
   &__description {
-    color: var(--dm-color-grey-text);
+    color: var(--dm-color-white);
+    font-family: var(--dm-font-body);
+    font-size: 18px;
+    line-height: var(--dm-body-line);
+  }
+
+  // Le champ `text_long` rend des <p> porteurs des marges de l'agent
+  // utilisateur : on les neutralise aux extrémités (l'écart vient du `gap`).
+  &__description :is(p):first-child {
+    margin-top: 0;
+  }
+
+  &__description :is(p):last-child {
+    margin-bottom: 0;
   }
 }

@@ -1,36 +1,121 @@
 // SDC « Bloc :: Caractéristiques produit » — CSS scopé (BEM).
+// Maquette Figma 390:11137 (fiche produit, région y=2434→3117) : bandeau
+// anthracite pleine largeur, visuel produit à gauche (sans crop, 380px de
+// large), colonne de droite = titre + caractéristiques en 2 × 295px, puis les
+// documents à télécharger alignés sur les mêmes colonnes.
 .product-characteristics {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+  // Pleine largeur (full-bleed) quel que soit le conteneur — même idiome que
+  // `image_full`.
+  width: 100vw;
+  max-width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  padding-block: 70px;
+  background: var(--dm-color-anthracite);
+  color: var(--dm-color-white);
 
-  @media (width >= 992px) {
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
+  // Conteneur interne : la largeur de la maquette est exacte à partir de
+  // 1130px, en dessous on garde une gouttière (premier bloc full-bleed avec
+  // contenu contraint, d'où le `min()` plutôt qu'un simple `max-width`).
+  &__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 44px;
+    width: min(1130px, 100% - 3rem);
+    margin-inline: auto;
+
+    @media (width >= 992px) {
+      // 415 (visuel) + 44 (gouttière) + 640 (2 × 295 + 50) = maquette.
+      grid-template-columns: 415px minmax(0, 640px);
+      align-items: center;
+    }
+  }
+
+  // Visuel produit : largeur fixe de la maquette, hauteur proportionnelle.
+  &__media {
+    justify-self: center;
+  }
+
+  &__media :is(img, picture) {
+    display: block;
+    width: 100%;
+    max-width: 380px;
+    height: auto;
   }
 
   &__caption {
     margin: 0.5rem 0 0;
-    color: var(--dm-color-grey-text);
+    color: var(--dm-color-grey-metal);
     font-size: 0.875rem;
   }
 
   &__title {
-    margin: 0 0 1rem;
-    color: var(--dm-color-anthracite);
+    margin: 0 0 35px;
+    color: var(--dm-color-white);
     font-family: var(--dm-font-title);
     font-size: var(--dm-h2-size);
     line-height: var(--dm-h2-line);
+    font-weight: 700;
   }
 
-  &__list > * {
-    display: contents;
+  // Deux colonnes de caractéristiques ; le wrapper de champ Drupal
+  // (`field__items`) est neutralisé pour que les éléments soient les cellules.
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 295px));
+    gap: 40px 50px;
+
+    > * {
+      display: contents;
+    }
   }
 
+  // Documents : alignés sur les colonnes des caractéristiques, largeur du
+  // contenu (le bouton ne remplit pas sa cellule).
   &__downloads {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 295px));
+    gap: 1rem 50px;
+    justify-items: start;
+    margin-top: 67px;
+  }
+
+  // Bouton « contour + icône » de la maquette, variante sur fond sombre :
+  // contour et texte blancs, fond transparent.
+  &__download {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    border: 1px solid var(--dm-color-white);
+    border-radius: 6px;
+    color: var(--dm-color-white);
+    font-family: var(--dm-font-body);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  // Icône exportée de la maquette (boîte 24px, vecteur 20px), masquée pour
+  // hériter de `color`.
+  &__download-icon {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color: currentcolor;
+    mask: url('../../images/icons/download.svg') no-repeat center / 20px 20px;
+  }
+
+  &__download:hover,
+  &__download:focus-visible {
+    background: var(--dm-color-white);
+    color: var(--dm-color-anthracite);
+  }
+
+  &__download:focus-visible {
+    outline: 3px solid var(--dm-color-white);
+    outline-offset: 2px;
   }
 }

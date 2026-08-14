@@ -1,14 +1,25 @@
 .product-characteristic-element {
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--dm-color-grey-metal);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 .product-characteristic-element__title {
-  margin: 0 0 0.25rem;
-  color: var(--dm-color-anthracite);
-  font-family: var(--dm-font-title);
-  font-size: var(--dm-h3-size);
-  line-height: var(--dm-h3-line);
+  margin: 0;
+  color: var(--dm-color-grey-metal);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  font-weight: 400;
 }
 .product-characteristic-element__description {
-  color: var(--dm-color-grey-text);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+  font-size: 18px;
+  line-height: var(--dm-body-line);
+}
+.product-characteristic-element__description :is(p):first-child {
+  margin-top: 0;
+}
+.product-characteristic-element__description :is(p):last-child {
+  margin-bottom: 0;
 }
