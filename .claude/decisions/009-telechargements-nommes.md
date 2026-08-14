@@ -83,16 +83,21 @@ depose ne garantit pas.
 
 ## Consequences
 
-- Le bouton global (`file-link.html.twig`) reste **inchange** pour tous les
-  blocs mono-document (`text_centered`, `text_left_aligned`, `image_text_*`,
-  `accordion_element`…) : aucune regression sur l'existant. Leurs maquettes
-  affichent « Télécharger » ; si le libelle doit y devenir editorial aussi, il
-  faudra activer `description_field` sur chacun de ces champs et brancher le
-  meme helper.
+- **Etendu a tout le site** (decision du 2026-08-14, dans la foulee) : le libelle
+  editorial ne concerne pas que le bloc multi-documents. `description_field` est
+  active sur les **9 instances** de champ fichier des paragraphes, et l'override
+  global `file-link.html.twig` affiche `download_label` (description saisie).
+  Deux rendus subsistent — le bouton global du formatter pour un document
+  unique, le helper pour un bloc en portant plusieurs — mais **un seul
+  comportement editorial**.
+- **Replis differencies, volontairement** : « Télécharger » pour un document
+  unique (libelle de la maquette, sans ambiguite possible) ; **nom du fichier**
+  pour un bloc multi-documents (« Télécharger » y serait indiscernable). Aucune
+  regression sur le contenu existant : sans description saisie, les blocs deja
+  livres affichent exactement ce qu'ils affichaient.
 - **Saisie editoriale a expliquer** : la description d'un fichier n'est pas un
   champ evident en back-office. Le texte d'aide de chaque champ precise qu'elle
-  devient le libelle du bouton — a reprendre pour tout nouveau champ fichier
-  branche sur ce mecanisme.
+  devient le libelle du bouton — a reprendre pour tout nouveau champ fichier.
 - Deux rendus de telechargement coexistent desormais dans le theme — l'un
   global (« Télécharger »), l'autre par composant (nomme). C'est le prix de la
   fidelite maquette ; le format reste en **majuscules** dans les deux (« PDF »),

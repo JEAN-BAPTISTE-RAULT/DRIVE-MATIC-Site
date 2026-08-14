@@ -3,14 +3,18 @@
  * @file
  * Theme override for a link to a file.
  *
- * Rendu maquette : bouton « Télécharger (FORMAT POIDS) » avec icône globe.
+ * Rendu maquette : bouton « LIBELLÉ (FORMAT POIDS) » avec icône globe. Le
+ * libellé est la description du fichier saisie en back-office, ou « Télécharger »
+ * à défaut (cf. ADR-009).
  *
  * Variables (coeur) :
  * - link : lien vers le fichier (repli).
  * - file_size : poids formaté du fichier.
+ * - description : description du fichier saisie en back-office.
  * Variables ajoutées par drive_matic_preprocess_file_link() :
  * - download_url : URL directe du fichier.
  * - file_extension : extension en majuscules (ex. PDF).
+ * - download_label : description saisie, ou « Télécharger ».
  *
  * @see drive_matic_preprocess_file_link()
  * @see \Drupal\file\Hook\FileThemeHooks::preprocessFileLink()
@@ -26,7 +30,7 @@
       </svg>
     </span>
     <span class="file-download__label">
-      {{ 'Télécharger'|t }}{% if file_extension or file_size %} ({{ file_extension }}{% if file_extension and file_size %} {% endif %}{{ file_size }}){% endif %}
+      {{ download_label }}{% if file_extension or file_size %} ({{ file_extension }}{% if file_extension and file_size %} {% endif %}{{ file_size }}){% endif %}
     </span>
   </a>
 {% else %}

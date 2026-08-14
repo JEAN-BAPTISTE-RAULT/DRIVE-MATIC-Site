@@ -12,7 +12,7 @@ field_name: field_file
 entity_type: paragraph
 bundle: text_centered
 label: 'Fichier à télécharger'
-description: ''
+description: 'La description du fichier sert de libellé au bouton de téléchargement. Le format et le poids sont ajoutés automatiquement. Sans description, le bouton affiche « Télécharger ».'
 required: false
 translatable: true
 default_value: {  }
@@ -23,5 +23,5 @@ settings:
   file_directory: documents
   file_extensions: 'pdf doc docx xls xlsx zip'
   max_filesize: ''
-  description_field: false
+  description_field: true
 field_type: file
