@@ -79,6 +79,8 @@ Details : `npm run lint` enchaine `lint:js` (ESLint), `lint:css` (Stylelint), `l
 
 Regle : ne JAMAIS considerer le travail termine si l'une de ces commandes echoue.
 
+**Toute modification SCSS exige un build** : les `.css` compiles sont versionnes a cote des `.scss` et c'est eux que Drupal sert. Enchainer `npm run css` puis **verifier dans le `.css` genere** qu'une valeur modifiee y figure. Le build exige **node >= 20** (`nvm use`) : sous une version plus ancienne il echoue sur `ERR_REQUIRE_ESM` et, si la sortie est redirigee, il *parait* reussir en laissant des `.css` perimes — on debugge alors un rendu qui ne correspond plus au source.
+
 ### Repartition de la documentation (ne jamais dupliquer entre fichiers)
 
 | Fichier | Responsabilite | Contenu |

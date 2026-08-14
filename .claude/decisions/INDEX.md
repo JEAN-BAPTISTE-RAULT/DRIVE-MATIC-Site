@@ -13,6 +13,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-006](006-video-embed-facade.md) | Video — champ embed (video_embed_field) + facade | Accepte | 2026-08-13 |
 | [ADR-007](007-storage-partage-elements.md) | Storage partage `field_elements` (paires Bloc/Element) | Accepte | 2026-08-13 |
 | [ADR-008](008-slideshow-swiper.md) | Slideshow — Swiper vendorise (librairie unique) | Accepte | 2026-08-13 |
+| [ADR-009](009-telechargements-nommes.md) | Telechargements nommes (bloc multi-documents) | Accepte | 2026-08-14 |
 
 ## Quand creer un ADR
 
