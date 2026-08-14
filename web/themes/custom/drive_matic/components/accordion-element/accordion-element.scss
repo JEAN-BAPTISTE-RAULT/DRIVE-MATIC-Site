@@ -1,11 +1,9 @@
 // SDC « Élément :: Accordéon » — CSS scopé (BEM), consomme les tokens globaux.
 // Amélioration progressive : le panneau est OUVERT par défaut (lisible sans JS).
-// Sous `html.js` (classe posée en <head> par `drive_matic/js-detect`), il est
-// fermé tant que le behavior ne l'ouvre pas — ce qui évite tout flash au
-// chargement, le CSS s'appliquant avant que le JS n'attache l'état ARIA.
+// Sous `html.js`, il est fermé tant que le behavior ne l'ouvre pas — pas de flash.
 
 .accordion-element {
-  border-bottom: 1px solid var(--dm-color-grey-metal);
+  border-bottom: 1px solid var(--dm-color-grey-light);
 
   &__header {
     margin: 0;
@@ -15,15 +13,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 1.5rem;
     width: 100%;
-    padding: 1rem 0;
+    padding: 1.25rem 0;
     border: 0;
     background: none;
-    color: var(--dm-color-anthracite);
+    color: var(--dm-color-steel);
     font-family: var(--dm-font-title);
     font-size: var(--dm-h3-size);
     line-height: var(--dm-h3-line);
+    font-weight: 700;
     text-align: left;
     cursor: pointer;
 
@@ -33,24 +32,45 @@
     }
   }
 
+  // Cercle 54px (blanc, bordure grise) contenant un « + » (fermé).
   &__icon {
+    position: relative;
     flex: 0 0 auto;
-    width: 0.6em;
-    height: 0.6em;
-    margin-top: -0.2em;
-    border-right: 2px solid currentcolor;
-    border-bottom: 2px solid currentcolor;
-    transform: rotate(45deg);
+    width: 54px;
+    height: 54px;
+    border: 1px solid var(--dm-color-grey-metal);
+    border-radius: 50%;
+    background: var(--dm-color-white);
 
     @media (prefers-reduced-motion: no-preference) {
       transition: transform 0.2s ease;
     }
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      background: var(--dm-color-anthracite);
+    }
+
+    &::before {
+      width: 22px;
+      height: 2px;
+      transform: translate(-50%, -50%);
+    }
+
+    &::after {
+      width: 2px;
+      height: 22px;
+      transform: translate(-50%, -50%);
+    }
   }
 
-  // Chevron vers le haut quand le panneau est ouvert.
+  // Ouvert : le « + » pivote en « × ».
   &__trigger[aria-expanded='true'] &__icon {
-    transform: rotate(225deg);
-    margin-top: 0.2em;
+    transform: rotate(45deg);
   }
 
   &__panel {
@@ -67,24 +87,42 @@
   &__body {
     padding-bottom: 1.5rem;
     color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
   }
 
-  &__actions {
+  // Rangée boutons du panneau : lien (pilule) + téléchargement.
+  &__cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
     margin-top: 1.5rem;
-
-    a {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      border-radius: 4px;
-      background: var(--dm-color-red);
-      color: var(--dm-color-white);
-      font-family: var(--dm-font-title);
-      text-decoration: none;
-    }
   }
 
-  &__download {
-    margin-top: 1rem;
-    font-size: 0.9rem;
+  // Bouton lien « pilule » (Figma Btn formation) : contour #B5B5B5 + globe.
+  &__actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 15px;
+    border: 1px solid var(--dm-color-grey-metal);
+    border-radius: 30px;
+    background: var(--dm-color-white);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+
+    &::before {
+      content: '';
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      background-color: currentcolor;
+      mask: url('../../images/icons/globe.svg') no-repeat center / contain;
+    }
   }
 }

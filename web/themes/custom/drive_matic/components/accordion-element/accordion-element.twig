@@ -31,11 +31,15 @@
       {% if block('description') is not empty %}
         <div class="accordion-element__description">{{ block('description') }}</div>
       {% endif %}
-      {% if block('actions') is not empty %}
-        <div class="accordion-element__actions">{{ block('actions') }}</div>
-      {% endif %}
-      {% if block('download') is not empty %}
-        <div class="accordion-element__download">{{ block('download') }}</div>
+      {% if block('actions') is not empty or block('download') is not empty %}
+        <div class="accordion-element__cta-row">
+          {% if block('actions') is not empty %}
+            <div class="accordion-element__actions">{{ block('actions') }}</div>
+          {% endif %}
+          {% if block('download') is not empty %}
+            <div class="accordion-element__download">{{ block('download') }}</div>
+          {% endif %}
+        </div>
       {% endif %}
     </div>
   </div>
