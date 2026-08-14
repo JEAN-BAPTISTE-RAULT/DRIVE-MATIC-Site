@@ -91,7 +91,8 @@
 **Bloc `product_characteristics` (integration maquette)** :
 - **Bandeau anthracite pleine largeur** (deborde le conteneur de la page, blanc au-dessus et en dessous).
 - Visuel produit a gauche (**sans crop**, 380px de large), colonne de droite = titre blanc + caracteristiques en **2 colonnes** : libelle gris metallise puis valeur blanche.
-- Les **deux boutons de telechargement** (contour blanc + icone) sont alignes sur les deux memes colonnes et **nommes distinctement** : « Notice technique (FORMAT POIDS) » et « Dossier général (FORMAT POIDS) » — et non deux boutons « Télécharger » identiques.
+- Les **deux boutons de telechargement** (contour blanc + icone) sont alignes sur les deux memes colonnes et portent le **libelle saisi en back-office** (description du fichier) suivi du **format et du poids calcules** — et non deux boutons « Télécharger » identiques.
+- **A rejouer en BO** : modifier la description d'un fichier change le libelle du bouton ; **vider** la description fait retomber sur le **nom du fichier sans extension** (jamais de bouton sans libelle).
 - Un document **absent** ne laisse pas de bouton vide ; les deux absents supprime la rangee.
 
 ---
@@ -416,7 +417,7 @@
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
 | 2026-08-11 | Creation initiale a partir du PRD (F1-F18) | S1-S23 |
-| 2026-08-14 | F5 — integration maquette `product_characteristics` (Figma 390:11137). Nouveaux comportements a rejouer : bandeau sombre pleine largeur, grille de caracteristiques 2 colonnes, et **boutons de telechargement nommes** (libelle par document, la ou le bouton global affiche « Télécharger ») | S4 (fiche produit) |
+| 2026-08-14 | F5 — integration maquette `product_characteristics` (Figma 390:11137). Nouveaux comportements a rejouer : bandeau sombre pleine largeur, grille de caracteristiques 2 colonnes, et **boutons de telechargement nommes** — libelle **saisi en BO** (description du fichier, repli sur le nom du fichier), la ou le bouton global affiche « Télécharger » (ADR-009) | S4 (fiche produit) |
 | 2026-08-14 | F9 — integration maquette `history` (Figma 433:9747). Nouveaux comportements a rejouer : fleches **dans l'en-tete** du bloc (hors piste), filet pointille debordant, **apercu coupe** de l'entree suivante, visuel **sous** le texte, fleche en bout de course **atenuee et inerte**. Corrige au passage l'apercu de `jumbo_home`, qui ne debordait pas (specificite `.swiper`) | S3 (frise history), S2 (jumbo) |
 | 2026-08-14 | F3 — integration maquette `jumbo_home` (Figma 303:5967). Nouveaux comportements a rejouer : piste calee a gauche sur le conteneur et debordante a droite (**apercu coupe** de la diapo suivante), **points de pagination** cliquables, **fleche en bout de course masquee** (pas de boucle). Sans JS : points **et** fleches masques | S2 (blocs home) |
 | 2026-08-12 | F10/F11 implementes (webforms contact & partenaire, pages /contact & /devenir-partenaire) — comportements inchanges, scenarios toujours valides | S8-S11 |

@@ -50,38 +50,49 @@ Les libelles de champ ne sont pas utilisables : ils sont administratifs
   tags ne remontent plus** (a reattacher explicitement) ; le SDC gagne une prop
   au lieu d'un slot, donc une API un peu moins « Drupal ».
 
-### Option D : nom du fichier (ou champ « description ») comme libelle
+### Option D : libelle saisi en back-office (champ « description » du fichier)
 
-- Avantages : correspond a la lettre de la spec F5 (« nom/format/poids ») ;
-  l'editeur maitrise le libelle.
-- Inconvenients : le nom de fichier brut est rarement presentable
-  (`DOC_2024_v3_final.pdf`) ; passer par le champ « description » impose un
-  changement de config **et** une saisie supplementaire a chaque upload, sans
-  garantie de qualite.
+- Avantages : correspond a la lettre de la spec F5 (« nom/format/poids ») ; la
+  personne qui depose le document le nomme, donc le libelle suit toujours le
+  document reellement en ligne (un libelle fixe mentirait si l'editeur change
+  de piece).
+- Inconvenients : impose un changement de config (`description_field`) **et**
+  une saisie supplementaire a chaque depot ; un libelle vide doit avoir un repli.
 
 ## Decision
 
-**Option C.** Un helper `_drive_matic_document_downloads(paragraph, labels, variables)`
-(`drive_matic.theme`) prend une carte `nom de champ => libelle front` et renvoie
-une liste `label` / `url` / `format` / `size` prete a afficher ; il reattache au
-passage les cache tags des fichiers. Le SDC `product-characteristics` recoit une
-prop `downloads` (les slots `notice` / `documentation` disparaissent) et dessine
-le bouton « contour + icone » de la maquette.
+**Option C pour le mecanisme, option D pour le libelle** (arbitrage rendu par
+l'utilisatrice le 2026-08-14).
 
-Le libelle front est donc porte par le **theme** : c'est du texte structurel du
-composant (ce bloc a toujours une notice et une documentation), traduisible via
-`t()`, et non de la donnee editoriale.
+Un helper `_drive_matic_document_downloads(paragraph, field_names, variables)`
+(`drive_matic.theme`) parcourt les champs fichier demandes et renvoie une liste
+`label` / `url` / `format` / `size` prete a afficher ; il reattache au passage
+les cache tags des fichiers. Le SDC `product-characteristics` recoit une prop
+`downloads` (les slots `notice` / `documentation` disparaissent) et dessine le
+bouton « contour + icone » de la maquette.
 
-L'option D reste **ouverte cote produit** : si le libelle doit venir du document
-choisi par l'editeur, il suffira de preferer la description du fichier au
-libelle fixe dans le helper (+ activation du champ description). Trace dans le
-PRD F5.
+Le **libelle vient de la description du fichier**, saisie en back-office
+(`description_field: true` sur `field_file_notice` et `field_file_doc`, avec un
+texte d'aide qui explique que cette description devient le libelle du bouton).
+A defaut de description, repli sur le **nom du fichier prive de son extension**
+— jamais de bouton sans libelle. Le **format et le poids restent calcules**.
+
+Ecarte : un libelle fixe porte par le theme (« Notice technique », « Dossier
+général »), plus previsible mais qui affirmerait quelque chose que le document
+depose ne garantit pas.
 
 ## Consequences
 
 - Le bouton global (`file-link.html.twig`) reste **inchange** pour tous les
   blocs mono-document (`text_centered`, `text_left_aligned`, `image_text_*`,
-  `accordion_element`…) : aucune regression sur l'existant.
+  `accordion_element`…) : aucune regression sur l'existant. Leurs maquettes
+  affichent « Télécharger » ; si le libelle doit y devenir editorial aussi, il
+  faudra activer `description_field` sur chacun de ces champs et brancher le
+  meme helper.
+- **Saisie editoriale a expliquer** : la description d'un fichier n'est pas un
+  champ evident en back-office. Le texte d'aide de chaque champ precise qu'elle
+  devient le libelle du bouton — a reprendre pour tout nouveau champ fichier
+  branche sur ce mecanisme.
 - Deux rendus de telechargement coexistent desormais dans le theme — l'un
   global (« Télécharger »), l'autre par composant (nomme). C'est le prix de la
   fidelite maquette ; le format reste en **majuscules** dans les deux (« PDF »),

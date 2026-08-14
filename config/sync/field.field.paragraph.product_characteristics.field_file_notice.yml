@@ -12,7 +12,7 @@ field_name: field_file_notice
 entity_type: paragraph
 bundle: product_characteristics
 label: 'Notice technique (à télécharger)'
-description: ''
+description: 'La description du fichier sert de libellé au bouton de téléchargement (ex. « Notice technique »). Le format et le poids sont ajoutés automatiquement. Sans description, le nom du fichier est utilisé.'
 required: false
 translatable: true
 default_value: {  }
@@ -23,5 +23,5 @@ settings:
   file_directory: documents
   file_extensions: 'pdf doc docx xls xlsx zip'
   max_filesize: ''
-  description_field: false
+  description_field: true
 field_type: file

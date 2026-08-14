@@ -36,10 +36,11 @@ function drive_matic_preprocess_paragraph(array &$variables): void {
   }
 
   if ($paragraph->bundle() === 'product_characteristics') {
-    $variables['downloads'] = _drive_matic_document_downloads($paragraph, [
-      'field_file_notice' => t('Notice technique'),
-      'field_file_doc' => t('Dossier général'),
-    ], $variables);
+    $variables['downloads'] = _drive_matic_document_downloads(
+      $paragraph,
+      ['field_file_notice', 'field_file_doc'],
+      $variables
+    );
   }
 }
 
@@ -47,32 +48,39 @@ function drive_matic_preprocess_paragraph(array &$variables): void {
  * Construit des boutons de telechargement nommes a partir de champs fichier.
  *
  * Le bouton global (`file-link.html.twig`) affiche « Télécharger (FORMAT
- * POIDS) », ce qui ne convient pas quand un bloc en porte plusieurs : la
- * maquette nomme chaque bouton (« Notice technique », « Dossier général »).
- * Le libelle front est donc fourni ici, les libelles de champ etant
- * administratifs (« Notice technique (à télécharger) »). Format et poids
- * suivent la convention du bouton global.
+ * POIDS) », ce qui ne convient pas quand un bloc en porte plusieurs : ils
+ * seraient indiscernables. Le libelle vient donc de la **description du
+ * fichier**, saisie en back-office par la personne qui depose le document
+ * (`description_field` active sur le champ) ; a defaut, on retombe sur le nom
+ * du fichier. Format et poids restent calcules, comme pour le bouton global.
  *
  * @param \Drupal\paragraphs\ParagraphInterface $paragraph
  *   Le paragraphe portant les champs fichier.
- * @param array $labels
- *   Libelles front indexes par nom de champ, dans l'ordre d'affichage.
+ * @param array $field_names
+ *   Noms des champs fichier, dans l'ordre d'affichage.
  * @param array $variables
  *   Variables du template, pour y attacher les cache tags des fichiers.
  *
  * @return array
  *   Liste de tableaux `label`, `url`, `format`, `size` (champs vides ignores).
  */
-function _drive_matic_document_downloads(ParagraphInterface $paragraph, array $labels, array &$variables): array {
+function _drive_matic_document_downloads(ParagraphInterface $paragraph, array $field_names, array &$variables): array {
   $downloads = [];
 
-  foreach ($labels as $field_name => $label) {
+  foreach ($field_names as $field_name) {
     if (!$paragraph->hasField($field_name) || $paragraph->get($field_name)->isEmpty()) {
       continue;
     }
-    $file = $paragraph->get($field_name)->entity;
+    $item = $paragraph->get($field_name)->first();
+    $file = $item->entity;
     if (!$file instanceof FileInterface) {
       continue;
+    }
+
+    // Libelle editorial ; repli sur le nom du fichier prive de son extension.
+    $label = trim((string) $item->description);
+    if ($label === '') {
+      $label = pathinfo($file->getFilename(), PATHINFO_FILENAME);
     }
 
     $downloads[] = [
