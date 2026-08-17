@@ -6,7 +6,12 @@
   n'apparaissent que sous `html.js`.
 #}
 <section class="product-features">
-  <div class="product-features__viewport swiper" data-dm-slideshow>
+  <div
+    class="product-features__viewport swiper"
+    data-dm-slideshow
+    data-dm-slideshow-per-view="auto"
+    data-dm-slideshow-space="20"
+  >
     <div class="swiper-wrapper">
       {{ block('slides') }}
     </div>

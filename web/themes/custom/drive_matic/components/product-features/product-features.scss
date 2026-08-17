@@ -1,69 +1,107 @@
-// SDC « Bloc :: Présentation produit » — présentation « swipe » en slideshow (Swiper).
-// Sans JS : la piste Swiper s'empile (tout visible) et les flèches sont masquées.
+// SDC « Bloc :: Présentation produit » — présentation « swipe » en slideshow.
+// Maquette Figma 396:11618 (fiche produit, région y=1607→2341) : diapositives de
+// 900px espacées de 20, calées à gauche sur le conteneur et débordantes à droite
+// (aperçu coupé de la suivante), flèche superposée à 40px du bord de la fenêtre
+// et centrée sur le visuel. Sans JS : la piste s'empile, flèches masquées.
 .product-features {
-  &__viewport {
+  // Largeur de diapositive, exprimée en `vw` et non en `%` : la même valeur sert
+  // à centrer la flèche sur la hauteur du visuel (`top`), où un pourcentage se
+  // résoudrait sur la hauteur du conteneur et non sur sa largeur.
+  --dm-features-slide: min(900px, 70vw);
+
+  max-width: 1130px;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+
+  // La piste garde le calage gauche du conteneur mais déborde à droite jusqu'au
+  // bord de la fenêtre. `.swiper` est répété : le bundle pose
+  // `margin-right: auto` à la même spécificité que notre BEM, et il est chargé
+  // après.
+  &__viewport.swiper {
     position: relative;
+    margin-right: calc(50% - 50vw);
   }
 
-  // Flèches : masquées par défaut (inutiles sans JS), affichées sous html.js.
+  & .swiper-slide {
+    width: var(--dm-features-slide);
+  }
+
+  // Flèches : masquées par défaut (inutiles sans JS), affichées quand Swiper a
+  // démarré. Carré gris clair arrondi 44px à 80 % d'opacité, chevron anthracite.
   &__nav {
     display: none;
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    top: 50%;
-    z-index: 1;
+
+    // Centrée sur le VISUEL 16:9, pas sur la diapositive (qui porte aussi le
+    // texte) : la moitié de la hauteur du visuel vaut sa largeur × 9/32.
+    top: calc(var(--dm-features-slide) * 9 / 32);
+    z-index: 2;
     width: 44px;
     height: 44px;
     padding: 0;
     border: 0;
-    border-radius: 50%;
-    background: var(--dm-color-red);
-    color: var(--dm-color-white);
+    border-radius: 8px;
+    opacity: 0.8;
+    background: var(--dm-color-grey-light);
+    color: var(--dm-color-anthracite);
     transform: translateY(-50%);
     cursor: pointer;
   }
 
+  // Chevron exporté de la maquette, masqué pour hériter de `color`.
   &__nav::before {
     content: '';
-    display: block;
-    width: 12px;
-    height: 12px;
-    margin: 0 auto;
-    border-top: 2px solid currentcolor;
-    border-right: 2px solid currentcolor;
-  }
-
-  &__nav:focus-visible {
-    outline: 3px solid var(--dm-color-anthracite);
-    outline-offset: 2px;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color: currentcolor;
+    mask: url('../../images/icons/chevron-right.svg') no-repeat center;
   }
 
   &__nav--prev {
-    left: 0.5rem;
+    left: 40px;
   }
 
   &__nav--prev::before {
-    transform: rotate(-135deg);
+    transform: scaleX(-1);
   }
 
+  // 40px du bord de la fenêtre : le viewport déborde jusque-là.
   &__nav--next {
-    right: 0.5rem;
+    right: 40px;
   }
 
-  &__nav--next::before {
-    transform: rotate(45deg);
+  &__nav:focus-visible {
+    outline: 3px solid var(--dm-color-red);
+    outline-offset: 2px;
   }
 
   // Flèches actives uniquement quand Swiper a démarré (>= 2 diapositives).
   &__viewport.swiper-initialized &__nav {
-    display: block;
+    display: flex;
   }
 
-  // Repli sans JS : neutralise le viewport Swiper (empilement vertical lisible).
-  :where(html.no-js) &__viewport {
+  // Flèche en bout de course : masquée (la maquette ne montre pas de flèche
+  // « précédent » sur la première diapositive), comme `jumbo_home` — elles sont
+  // superposées au visuel, leur disparition ne réorganise rien.
+  &__viewport.swiper-initialized &__nav.swiper-button-disabled {
+    display: none;
+  }
+
+  // Repli sans JS : neutralise le viewport Swiper (empilement vertical lisible)
+  // et son débordement à droite, sinon les diapositives sortent de l'écran.
+  :where(html.no-js) &__viewport.swiper {
     overflow: visible;
+    margin-right: 0;
   }
 
   :where(html.no-js) & .swiper-wrapper {
     display: block;
+  }
+
+  :where(html.no-js) & .swiper-slide {
+    width: 100%;
   }
 }

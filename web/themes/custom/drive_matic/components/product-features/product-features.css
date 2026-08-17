@@ -1,52 +1,69 @@
-.product-features__viewport {
+.product-features {
+  --dm-features-slide: min(900px, 70vw);
+  max-width: 1130px;
+  margin-inline: auto;
+  padding-block: 2.5rem;
+}
+.product-features__viewport.swiper {
   position: relative;
+  margin-right: calc(50% - 50vw);
+}
+.product-features .swiper-slide {
+  width: var(--dm-features-slide);
 }
 .product-features__nav {
   display: none;
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  top: 50%;
-  z-index: 1;
+  top: calc(var(--dm-features-slide) * 9 / 32);
+  z-index: 2;
   width: 44px;
   height: 44px;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
+  border-radius: 8px;
+  opacity: 0.8;
+  background: var(--dm-color-grey-light);
+  color: var(--dm-color-anthracite);
   transform: translateY(-50%);
   cursor: pointer;
 }
 .product-features__nav::before {
   content: "";
-  display: block;
-  width: 12px;
-  height: 12px;
-  margin: 0 auto;
-  border-top: 2px solid currentcolor;
-  border-right: 2px solid currentcolor;
-}
-.product-features__nav:focus-visible {
-  outline: 3px solid var(--dm-color-anthracite);
-  outline-offset: 2px;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: currentcolor;
+  -webkit-mask: url("../../images/icons/chevron-right.svg") no-repeat center;
+          mask: url("../../images/icons/chevron-right.svg") no-repeat center;
 }
 .product-features__nav--prev {
-  left: 0.5rem;
+  left: 40px;
 }
 .product-features__nav--prev::before {
-  transform: rotate(-135deg);
+  transform: scaleX(-1);
 }
 .product-features__nav--next {
-  right: 0.5rem;
+  right: 40px;
 }
-.product-features__nav--next::before {
-  transform: rotate(45deg);
+.product-features__nav:focus-visible {
+  outline: 3px solid var(--dm-color-red);
+  outline-offset: 2px;
 }
 .product-features__viewport.swiper-initialized .product-features__nav {
-  display: block;
+  display: flex;
 }
-:where(html.no-js) .product-features__viewport {
+.product-features__viewport.swiper-initialized .product-features__nav.swiper-button-disabled {
+  display: none;
+}
+:where(html.no-js) .product-features__viewport.swiper {
   overflow: visible;
+  margin-right: 0;
 }
 :where(html.no-js) .product-features .swiper-wrapper {
   display: block;
+}
+:where(html.no-js) .product-features .swiper-slide {
+  width: 100%;
 }

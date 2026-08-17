@@ -14,18 +14,22 @@
 Ordre = les 18 blocs de la bibliotheque validee (ADR-001) ; les Elements sont
 stylises dans leur Bloc parent.
 
-La **home est terminee** (F3). Restent deux blocs produit :
+La **home est terminee** (F3). Reste **un** bloc :
 
 | Bloc | Page | Point d'attention connu |
 |---|---|---|
-| `product_features` | Produit (F5) | Slideshow, plafonne 5, **deux** bundles Element possibles (image **ou** video en facade). |
-| `product_cross` | Produit (F5) | Grille de cartes liees, plafonne 5. |
+| `product_cross` | Produit (F5) | Grille de cartes liees, plafonne 5. **Dernier bloc de la bibliotheque.** |
 
 Pour demarrer un bloc, il faut le **node id Figma** du frame ou de la region
 (fileKey `ZmmVBSOWSsHVkok6EU2Ays`).
 
 ## Reserves ouvertes (non bloquantes)
 
+- **Glyphes dessines en bordures CSS** dans `video_centered` et
+  `history_element` : ces deux façades video sont anterieures a la regle « icone
+  = asset SVG exporte, applique en `mask` » (CLAUDE.md). `product_features`
+  utilise le vrai glyphe (`images/icons/play.svg`) — les deux autres restent a
+  aligner, ce qui uniformisera aussi la plaque (blanc translucide, rayon 8).
 - **Fleches de navigation dupliquees a l'identique** dans `history`, `news_home`
   et `brands_home` (carre gris clair 44px + chevron masque, ~40 lignes chacune),
   plus une variante blanche superposee dans `jumbo_home`. **Quatrieme copie** :
@@ -49,10 +53,11 @@ Pour demarrer un bloc, il faut le **node id Figma** du frame ou de la region
 
 ## Etat du bac a sable (node 33)
 
-Enrichi bloc par bloc, non versionne (base locale) : **18 paragraphes**, tous les
+Enrichi bloc par bloc, non versionne (base locale) : **19 paragraphes**, tous les
 blocs integres a ce jour y sont rejouables. Ajouts recents : `history`
 (4 entrees), `product_characteristics` (6 caracteristiques + 2 documents),
-`news_home`, `brands_home` ; second PDF de demo
+`news_home`, `brands_home`, `product_features` (3 diapositives dont une video en
+façade) ; second PDF de demo
 `public://sandbox/dossier-general.pdf` ; recadrages 16:9 sur les medias 3 et 4 ;
 descriptions de fichier saisies sur 3 des 9 champs fichier ; **16 marques** de
 demo (les 4 de test + 12 nommees) pour que la rangee deborde.

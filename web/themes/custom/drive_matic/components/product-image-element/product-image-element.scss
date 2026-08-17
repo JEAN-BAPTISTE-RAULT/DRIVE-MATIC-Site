@@ -1,31 +1,91 @@
-// SDC « Élément :: Image produit » — CSS scopé (BEM), consomme les tokens globaux.
+// SDC « Élément :: Image produit » — visuel 16:9 puis titre, description et CTA.
+// Maquette Figma 396:11566 : visuel arrondi à 16px, écart de 26px avant le
+// corps, titre H2 acier, description 16/28 gris, bouton gris à 22px du texte.
 .product-image-element {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
   margin: 0;
 
   &__media {
-    margin-bottom: 1rem;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+
+  &__media :is(img, picture) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  // Le corps garde l'écart de 10px de la maquette entre titre et description ;
+  // les rangées d'action ajoutent les 12px qui portent leur écart à 22px.
+  &__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 
   &__title {
-    margin: 0 0 0.5rem;
-    color: var(--dm-color-anthracite);
+    margin: 0;
+    color: var(--dm-color-steel);
     font-family: var(--dm-font-title);
-    font-size: var(--dm-h3-size);
-    line-height: var(--dm-h3-line);
+    font-size: var(--dm-h2-size);
+    line-height: var(--dm-h2-line);
+    font-weight: 700;
   }
 
   &__description {
     color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
+
+  &__description :is(p):first-child {
+    margin-top: 0;
+  }
+
+  &__description :is(p):last-child {
+    margin-bottom: 0;
   }
 
   &__caption {
-    margin: 0.5rem 0 0;
+    margin: 0;
     color: var(--dm-color-grey-text);
     font-size: 0.875rem;
   }
 
   &__actions,
   &__download {
-    margin-top: 1rem;
+    margin-top: 12px;
+  }
+
+  // Lien de la maquette : bouton gris (le champ fichier garde, lui, le bouton
+  // de téléchargement global).
+  &__actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: 6px;
+    background: var(--dm-color-grey-light);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 18px;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+
+  &__actions a:hover {
+    background: var(--dm-color-grey-metal);
+  }
+
+  &__actions a:focus-visible {
+    outline: 3px solid var(--dm-color-red);
+    outline-offset: 2px;
   }
 }
