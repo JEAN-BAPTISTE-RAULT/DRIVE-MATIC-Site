@@ -59,6 +59,24 @@ Pose a ce jour sur `homepage`, `news`, `contact`, `partner` — **a ajouter a ch
 
 ⚠️ **Piege de la page d'accueil** : Metatag applique sur `<front>` son defaut special **`front`**, qui **remplace** les defauts `node` et `node__homepage` (`metatag.module`, branche `getSpecialMetatags()` → le `else` de la branche entite n'est pas execute). Le mapping a donc ete recopie dans le defaut `front`, en y **conservant `canonical_url: [site:url]`** : l'URL canonique de l'accueil doit rester la racine et non `/node/<id>`. La surcharge par le champ du node, elle, s'applique bien sur l'accueil (elle est fusionnee apres, hors de cette branche).
 
+### Formulaire back-office (convention transverse, 2026-08-17)
+
+Tous les types de contenu presentent **le meme formulaire** : deux **onglets horizontaux** (module `field_group`).
+
+| Onglet | Contenu |
+|---|---|
+| **Informations generales** | `title`, `path`, `field_meta_tags`, `status` |
+| **Contenu** | tous les autres champs, **paragraphes en dernier** |
+
+**Desactives** (jamais proposes a la saisie) : `uid`, `created`, `simple_sitemap`, `url_redirects`.
+
+⚠️ Deux pieges rencontres a la mise en place :
+
+1. `simple_sitemap` et `url_redirects` declarent bien leur champ dans « Gerer le formulaire », mais leurs modules **ajoutent l'element sans consulter le form display** : les desactiver en configuration ne suffit pas. Ils sont retires en **`#after_build`** (`drivematic_forms`), et non dans un `hook_form_alter` — verifie : leurs alters passent **apres** le notre meme avec un poids de module superieur.
+2. Un champ ajoute a un type de contenu et **non range dans un groupe** apparait hors onglets, en haut du formulaire. A verifier apres chaque ajout de champ.
+
+**Alias d'URL** : motif Pathauto `/[node:title]` (le titre, nettoye) sur `contact`, `partner`, `news`. Chaque nouveau node public a besoin de son `pathauto.pattern.node_<bundle>`.
+
 ### Sitemap
 **Nodes inclus**, **entités exclues** (Simple XML Sitemap ou équivalent), configuré par type.
 

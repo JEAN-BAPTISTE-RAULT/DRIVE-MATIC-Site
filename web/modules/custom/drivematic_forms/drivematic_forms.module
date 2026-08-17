@@ -21,6 +21,36 @@ function drivematic_forms_form_alter(array &$form, FormStateInterface $form_stat
 }
 
 /**
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
+ *
+ * Convention de formulaire BO : les blocs techniques ne sont pas proposes a la
+ * saisie. `uid` et `created` sortent par le form display, mais `simple_sitemap`
+ * et `url_redirects` sont ajoutes par leurs modules dans le groupe « advanced »
+ * **sans consulter le form display** : les desactiver en configuration ne
+ * suffit pas, il faut les retirer ici.
+ *
+ * Aucune donnee n'est perdue : le reglage sitemap reste porte par le type de
+ * contenu, et les redirections restent gerables depuis leur page dediee.
+ */
+function drivematic_forms_form_node_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form['#after_build'][] = '_drivematic_forms_strip_technical_blocks';
+}
+
+/**
+ * Retire les blocs techniques du formulaire de node (callback #after_build).
+ *
+ * Le retrait se fait en `#after_build` et non dans l'alter : `redirect` et
+ * `simple_sitemap` ajoutent leurs elements **apres** notre implementation, y
+ * compris avec un poids de module superieur (verifie). `#after_build` est le
+ * dernier point de passage, donc le seul fiable ici.
+ */
+function _drivematic_forms_strip_technical_blocks(array $form, FormStateInterface $form_state): array {
+  unset($form['simple_sitemap'], $form['url_redirects']);
+
+  return $form;
+}
+
+/**
  * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
  *
  * La description d'un fichier sert de libelle a son bouton de telechargement

@@ -1,0 +1,23 @@
+uuid: 73644c86-7d32-4c50-98a1-07c00c3da7e0
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.partner
+  module:
+    - node
+id: node_partner
+label: 'Page :: Devenir partenaire'
+type: 'canonical_entities:node'
+pattern: '/[node:title]'
+selection_criteria:
+  a8d35f6c-4daa-41f0-b2a0-cdf791b7dc65:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      partner: partner
+selection_logic: and
+weight: 0
+relationships: {  }

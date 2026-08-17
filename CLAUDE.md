@@ -129,6 +129,19 @@ Le formatage (indentation, guillemets, longueur de ligne) est gere par le linter
 
 - Toute image passe par la **media-library** et un **image style defini** (responsive, aligne sur les breakpoints du site), sortie **WebP**. Jamais de dimension/crop en dur ni de `<img>` hors image styles. Reference : etude images (docs/PRD.md §7).
 
+### Convention de formulaire back-office (TOUS les types de contenu)
+
+Regle posee par l'utilisatrice, a appliquer **a chaque nouveau type de contenu** (et a verifier apres tout ajout de champ) :
+
+- **Deux onglets horizontaux** (`field_group`, format `tabs` / `direction: horizontal`, groupes `group_tabs` > `group_general` + `group_content`) :
+  - **« Informations generales »** : `title`, `path`, `field_meta_tags`, `status` — dans cet ordre.
+  - **« Contenu »** : tous les autres champs, **les paragraphes en dernier**.
+- **Champs jamais proposes a la saisie** : `uid`, `created`, `simple_sitemap`, `url_redirects`. Les deux premiers se desactivent dans le form display ; les deux autres sont ajoutes par leurs modules **sans consulter le form display** et sont retires en `#after_build` (`drivematic_forms_form_node_form_alter()`) — pas dans un `hook_form_alter`, qui passe avant eux.
+- **Alias d'URL** : motif Pathauto `/[node:title]` pour tout node dont l'URL doit suivre le titre (fait pour `contact`, `partner`, `news`). Un nouveau type public a besoin de son propre `pathauto.pattern.node_<bundle>`.
+- Un champ ajoute a un type de contenu **doit etre range dans un des deux onglets** : sans groupe, il apparait hors onglets, en haut du formulaire.
+
+Detail et raisons dans `docs/active/content-types/model.md`.
+
 ### Regles metier critiques
 
 <!-- A REMPLIR AU FUR ET A MESURE — regles du domaine metier qui impactent les choix

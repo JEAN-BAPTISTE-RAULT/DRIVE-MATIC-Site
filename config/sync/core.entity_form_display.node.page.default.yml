@@ -6,22 +6,71 @@ dependencies:
     - field.field.node.page.field_paragraphs
     - node.type.page
   module:
+    - field_group
     - paragraphs
     - path
+third_party_settings:
+  field_group:
+    group_tabs:
+      children:
+        - group_general
+        - group_content
+      label: Onglets
+      region: content
+      parent_name: ''
+      weight: -50
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        direction: horizontal
+        width_breakpoint: 640
+    group_general:
+      children:
+        - title
+        - path
+        - status
+      label: 'Informations générales'
+      region: content
+      parent_name: group_tabs
+      weight: -49
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        formatter: open
+        description: ''
+        required_fields: true
+    group_content:
+      children:
+        - langcode
+        - revision_log
+        - field_paragraphs
+      label: Contenu
+      region: content
+      parent_name: group_tabs
+      weight: -48
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        formatter: closed
+        description: ''
+        required_fields: true
 id: node.page.default
 targetEntityType: node
 bundle: page
 mode: default
 content:
-  created:
-    type: datetime_timestamp
-    weight: 10
-    region: content
-    settings: {  }
-    third_party_settings: {  }
   field_paragraphs:
     type: paragraphs
-    weight: 1
+    weight: 5
     region: content
     settings:
       title: Bloc
@@ -39,45 +88,29 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 30
-    region: content
-    settings: {  }
-    third_party_settings: {  }
-  simple_sitemap:
-    weight: 10
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 120
+    weight: 2
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
   title:
     type: string_textfield
-    weight: -5
+    weight: 0
     region: content
     settings:
       size: 60
       placeholder: ''
-    third_party_settings: {  }
-  uid:
-    type: entity_reference_autocomplete
-    weight: 5
-    region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  url_redirects:
-    weight: 50
-    region: content
-    settings: {  }
     third_party_settings: {  }
 hidden:
+  created: true
   promote: true
+  simple_sitemap: true
   sticky: true
+  uid: true
+  url_redirects: true

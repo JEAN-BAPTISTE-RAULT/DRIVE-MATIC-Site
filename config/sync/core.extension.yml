@@ -17,7 +17,6 @@ module:
   crop: 0
   datetime: 0
   dblog: 0
-  drivematic_forms: 0
   drivematic_home: 0
   dynamic_page_cache: 0
   easy_breadcrumb: 0
@@ -72,6 +71,7 @@ module:
   webform: 0
   webform_ui: 0
   pathauto: 1
+  drivematic_forms: 10
   views: 10
   paragraphs: 11
   standard: 1000

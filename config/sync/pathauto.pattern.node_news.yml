@@ -1,0 +1,23 @@
+uuid: 9615b500-1c07-41ed-af34-6195af11dab3
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.news
+  module:
+    - node
+id: node_news
+label: 'Page :: Détail d’une actualité'
+type: 'canonical_entities:node'
+pattern: '/[node:title]'
+selection_criteria:
+  dd035d5d-8453-47c9-9054-4020c50030d0:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      news: news
+selection_logic: and
+weight: 0
+relationships: {  }
