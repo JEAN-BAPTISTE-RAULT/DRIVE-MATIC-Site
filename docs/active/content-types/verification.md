@@ -53,8 +53,15 @@
 1. **Le site tourne en anglais** — dates, poids de fichiers, pagination. Chantier a part, lance.
 2. **La page d'accueil n'a aucun `<h1>`** — antérieur a cette brique ; a trancher avec le
    placement du titre, a l'integration des maquettes.
-3. **Double saisie du nom d'un document** — titre du node **et** description du fichier.
+3. **Etiquetage du titre sur les 3 fragments** (`document`, `question`, `brand`) : pas de
+   `core.base_field_override` sur `title`, donc le champ s'affiche « Title » au lieu de
+   « Titre administratif ». Les 11 types publics l'ont.
 4. **URL de base du sitemap** vide : en CLI les URL sortent en `http://default/`. A verifier en preprod.
+
+> Retire de cette liste le 2026-08-17 : la « double saisie du nom d'un document » n'en etait pas
+> une. Un `document` porte volontairement un **titre administratif** et un **libelle de bouton**,
+> exactement comme `title` / `field_title` sur les types publics. Ma recommandation d'exempter
+> `document` d'ADR-009 est retiree.
 
 ## Self-review
 

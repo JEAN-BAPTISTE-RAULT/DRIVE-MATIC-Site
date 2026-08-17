@@ -185,13 +185,15 @@ Conforme à ADR-002 / `docs/active/content-types/model.md`. Ne contredit aucune 
   (et non un paragraphe « section ») — la bibliothèque ADR-001 reste close à 27.
   Les titres de section sont les **libellés des deux champs**, donc modifiables en
   configuration mais pas par l'éditeur.
-- ⚠️ `[OUVERT]` **Double saisie du nom d'un document** — constaté en T5. Un `document` porte
-  un **titre de node** (ce que voit l'éditeur quand il référence le document depuis la page
-  Documentations) **et** une **description de fichier**, que la règle ADR-009 rend obligatoire
-  et qui sert de libellé au bouton de téléchargement. L'éditeur saisit donc deux fois le même
-  nom. Implémenté conformément à ADR-009 (libellé = description). L'alternative — libellé = titre
-  du node, et exemption de `document` dans le `#process` de `drivematic_forms` — se tient tout
-  autant : à arbitrer.
+- **`document` = titre administratif + fichier + libellé de bouton, les trois obligatoires**
+  (arbitrage utilisatrice, 2026-08-17). Ce n'est **pas** une double saisie : c'est la même
+  séparation que `title` / `field_title` sur les types publics — un libellé pour
+  l'administration (listes, recherche, autocomplétion depuis la page Documentations), un pour
+  le public (le bouton). J'avais d'abord signalé cette structure comme un défaut d'ergonomie et
+  recommandé une exemption d'ADR-009 : recommandation retirée, elle allait contre la convention.
+  **Reste à faire** : les trois fragments (`document`, `question`, `brand`) n'ont pas de
+  `core.base_field_override` sur `title`, donc leur champ s'affiche « Title » au lieu de
+  « Titre administratif » — seul écart réel avec le modèle.
 - **`product`** : **pas** de `grid` — on s'en tient à l'allowlist du modèle.
 - **« Bloc configurateur »** (F3, F4, F5) : il n'existe pas comme paragraphe ; ce contenu se
   construit avec **`image_text_100`**, déjà autorisé sur `homepage`, `transform` et `product`.
