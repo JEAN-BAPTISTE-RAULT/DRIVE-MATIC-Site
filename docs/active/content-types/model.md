@@ -50,6 +50,15 @@ Tout champ **lien** = champ **Link** pouvant pointer vers un **node interne** (r
 ### Metatags
 Module **Metatag** : par type de node, mapper **body → meta description** et **titre → meta title** (tokens). Types sans metatags : `legals`.
 
+**Mise en œuvre (2026-08-17)** — deux etages :
+
+1. **Remplissage automatique** par les defauts Metatag : `node` porte `title: [node:title] | [site:name]` et `description: [node:summary]` (`[node:summary]` = le resume s'il est saisi, sinon un extrait tronque du body — evite une description a rallonge). Rien a saisir par defaut.
+2. **Surcharge editoriale** : champ **`field_meta_tags`** (type Metatag, libelle « Balises meta ») sur les nodes publics, widget `metatag_firehose` en **barre laterale** du formulaire, **masque au rendu** (les balises partent dans le `<head>`, pas dans le contenu). Vide = remplissage automatique.
+
+Pose a ce jour sur `homepage`, `news`, `contact`, `partner` — **a ajouter a chaque nouveau node public** (`transform`, `product`, `faq`, `documents`, `corporate`, `brands`, `all_news`) ; jamais sur `legals` ni sur les fragments (`question`, `document`, `brand`), ni sur `page` (hote de test).
+
+⚠️ **Piege de la page d'accueil** : Metatag applique sur `<front>` son defaut special **`front`**, qui **remplace** les defauts `node` et `node__homepage` (`metatag.module`, branche `getSpecialMetatags()` → le `else` de la branche entite n'est pas execute). Le mapping a donc ete recopie dans le defaut `front`, en y **conservant `canonical_url: [site:url]`** : l'URL canonique de l'accueil doit rester la racine et non `/node/<id>`. La surcharge par le champ du node, elle, s'applique bien sur l'accueil (elle est fusionnee apres, hors de cette branche).
+
 ### Sitemap
 **Nodes inclus**, **entités exclues** (Simple XML Sitemap ou équivalent), configuré par type.
 

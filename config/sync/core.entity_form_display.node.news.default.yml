@@ -6,9 +6,11 @@ dependencies:
     - field.field.node.news.body
     - field.field.node.news.field_caption
     - field.field.node.news.field_image
+    - field.field.node.news.field_meta_tags
     - node.type.news
   module:
     - media_library
+    - metatag
     - path
     - text
 id: node.news.default
@@ -46,6 +48,14 @@ content:
     region: content
     settings:
       media_types: {  }
+    third_party_settings: {  }
+  field_meta_tags:
+    type: metatag_firehose
+    weight: 90
+    region: content
+    settings:
+      sidebar: true
+      use_details: true
     third_party_settings: {  }
   path:
     type: path

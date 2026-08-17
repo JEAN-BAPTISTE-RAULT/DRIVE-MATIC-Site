@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.news.body
     - field.field.node.news.field_caption
     - field.field.node.news.field_image
+    - field.field.node.news.field_meta_tags
     - node.type.news
   module:
     - user
@@ -32,3 +33,4 @@ content:
 hidden:
   body: true
   field_caption: true
+  field_meta_tags: true
