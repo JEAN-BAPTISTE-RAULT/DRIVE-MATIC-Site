@@ -1,6 +1,6 @@
 _core:
   default_config_hash: ijfbzDTN4CbE7Sr-6ubWzy_t1vH4OtU1doNCLssVz-4
-langcode: en
+langcode: fr
 uuid: 32a5498f-9f1f-4eb7-9d37-7c2f2a097d1b
 name: DRIVE-MATIC
 mail: no-reply@drivematiclegrand.com
@@ -11,5 +11,5 @@ page:
   front: /node
 admin_compact_mode: false
 weight_select_max: 100
-default_langcode: en
+default_langcode: fr
 mail_notification: null
