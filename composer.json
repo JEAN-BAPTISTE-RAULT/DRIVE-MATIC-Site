@@ -23,7 +23,6 @@
     "drupal/easy_breadcrumb": "^2.0",
     "drupal/field_group": "^4.0",
     "drupal/gin": "^5.0",
-    "drupal/gin_toolbar": "^3.0",
     "drupal/honeypot": "^2.2",
     "drupal/image_widget_crop": "^3.0",
     "drupal/link_target": "^1.5",
