@@ -1,0 +1,23 @@
+uuid: b5e789f1-9b90-4cca-9f06-8400bfa2363d
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.transform
+  module:
+    - node
+id: node_transform
+label: 'Page :: Transformer / Équiper'
+type: 'canonical_entities:node'
+pattern: '/[node:field_title]'
+selection_criteria:
+  f55b88be-8bde-4a41-869a-c7f5ad17ac2c:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      transform: transform
+selection_logic: and
+weight: 0
+relationships: {  }

@@ -1,0 +1,24 @@
+uuid: fee8a32b-91db-4106-b3c6-25f9b07c438c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.transform
+  module:
+    - text
+id: node.transform.body
+field_name: body
+entity_type: node
+bundle: transform
+label: Corps
+description: 'Résumé de la page. Il n’est pas affiché : il alimente la méta description quand les balises meta ne sont pas surchargées.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: false
+  required_summary: false
+  allowed_formats: {  }
+field_type: text_with_summary

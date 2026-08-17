@@ -1,0 +1,11 @@
+uuid: 1fcbe463-5a4c-4f54-a003-04882420bb13
+langcode: en
+status: true
+dependencies: {  }
+name: 'Page :: Transformer / Équiper'
+type: transform
+description: 'Page de solution (transformation auto-école, équipement PMR). La page se compose de blocs.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

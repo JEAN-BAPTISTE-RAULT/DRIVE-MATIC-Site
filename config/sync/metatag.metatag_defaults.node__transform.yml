@@ -1,0 +1,9 @@
+uuid: c0d5a18f-a004-4a19-9693-8f5478cd5ea4
+langcode: en
+status: true
+dependencies: {  }
+id: node__transform
+label: 'Page :: Transformer / Équiper'
+tags:
+  title: '[node:field_title] | [site:name]'
+  description: '[node:summary]'

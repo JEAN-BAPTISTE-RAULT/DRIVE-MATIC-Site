@@ -1,0 +1,150 @@
+uuid: 30ee77e4-1476-4bd3-97fd-2e6ca6ed778b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.transform.body
+    - field.field.node.transform.field_meta_tags
+    - field.field.node.transform.field_paragraphs
+    - field.field.node.transform.field_title
+    - node.type.transform
+  module:
+    - field_group
+    - metatag
+    - paragraphs
+    - path
+    - text
+third_party_settings:
+  field_group:
+    group_tabs:
+      children:
+        - group_general
+        - group_content
+      label: Onglets
+      region: content
+      parent_name: ''
+      weight: -50
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        direction: horizontal
+        width_breakpoint: 640
+    group_general:
+      children:
+        - title
+        - field_title
+        - path
+        - field_meta_tags
+        - status
+      label: 'Informations générales'
+      region: content
+      parent_name: group_tabs
+      weight: -49
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        formatter: open
+        description: ''
+        required_fields: true
+    group_content:
+      children:
+        - body
+        - langcode
+        - revision_log
+        - field_paragraphs
+      label: Contenu
+      region: content
+      parent_name: group_tabs
+      weight: -48
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        formatter: closed
+        description: ''
+        required_fields: true
+id: node.transform.default
+targetEntityType: node
+bundle: transform
+mode: default
+content:
+  body:
+    type: text_textarea_with_summary
+    weight: 5
+    region: content
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+      show_summary: false
+    third_party_settings: {  }
+  field_meta_tags:
+    type: metatag_firehose
+    weight: 3
+    region: content
+    settings:
+      sidebar: true
+      use_details: true
+    third_party_settings: {  }
+  field_paragraphs:
+    type: paragraphs
+    weight: 6
+    region: content
+    settings:
+      title: Bloc
+      title_plural: Blocs
+      edit_mode: closed
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: ''
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 4
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  promote: true
+  simple_sitemap: true
+  sticky: true
+  uid: true
+  url_redirects: true

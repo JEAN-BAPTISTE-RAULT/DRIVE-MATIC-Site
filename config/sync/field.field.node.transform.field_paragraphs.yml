@@ -1,0 +1,58 @@
+uuid: 9f972fab-480c-49c8-942e-139d13d10607
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_paragraphs
+    - node.type.transform
+    - paragraphs.paragraphs_type.text_centered
+    - paragraphs.paragraphs_type.text_left_aligned
+    - paragraphs.paragraphs_type.image_text_50
+    - paragraphs.paragraphs_type.image_text_100
+    - paragraphs.paragraphs_type.grid
+    - paragraphs.paragraphs_type.accordion
+    - paragraphs.paragraphs_type.image_full
+id: node.transform.field_paragraphs
+field_name: field_paragraphs
+entity_type: node
+bundle: transform
+label: Blocs
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      text_centered: text_centered
+      text_left_aligned: text_left_aligned
+      image_text_50: image_text_50
+      image_text_100: image_text_100
+      grid: grid
+      accordion: accordion
+      image_full: image_full
+    target_bundles_drag_drop:
+      accordion:
+        weight: 5
+        enabled: true
+      grid:
+        weight: 4
+        enabled: true
+      image_full:
+        weight: 6
+        enabled: true
+      image_text_100:
+        weight: 3
+        enabled: true
+      image_text_50:
+        weight: 2
+        enabled: true
+      text_centered:
+        weight: 0
+        enabled: true
+      text_left_aligned:
+        weight: 1
+        enabled: true
+field_type: entity_reference_revisions

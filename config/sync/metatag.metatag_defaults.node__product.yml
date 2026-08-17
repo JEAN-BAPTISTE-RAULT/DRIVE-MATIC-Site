@@ -1,0 +1,9 @@
+uuid: 7331e08c-812d-41f7-96c4-265aca30d8c6
+langcode: en
+status: true
+dependencies: {  }
+id: node__product
+label: 'Page :: Produit'
+tags:
+  title: '[node:field_title] | [site:name]'
+  description: '[node:summary]'
