@@ -48,6 +48,16 @@ sable une fois ces reserves arbitrees.
 
 ## Etat du bac a sable (node 33)
 
+Le type `page` est desormais **« Page :: Bac à sable paragraphes »** et ne porte
+plus **que** le node 33 : les 11 autres pages de test (recettes V4/V5, tests
+video/frise, page interne) ont ete supprimees le 2026-08-17, avec purge des
+35 paragraphes devenus orphelins.
+
+⚠️ Conséquence : les **cas de repli a un seul element** (ex-node 28 « jumbo 1
+element », ex-node 30 « features 1 element ») n'ont plus de fixture. Les rejouer
+demande de re-semer un node avec un bloc a un seul element — les traces de la
+recette d'origine restent dans `docs/active/paragraphs*/verification*.md`.
+
 Enrichi bloc par bloc, non versionne (base locale) : **19 paragraphes**, tous les
 blocs integres a ce jour y sont rejouables. Ajouts recents : `history`
 (4 entrees), `product_characteristics` (6 caracteristiques + 2 documents),
