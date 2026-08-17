@@ -13,8 +13,6 @@
 }
 .product-features__nav {
   display: none;
-  align-items: center;
-  justify-content: center;
   position: absolute;
   top: calc(var(--dm-features-slide) * 9 / 32);
   z-index: 2;
@@ -22,27 +20,13 @@
   height: 44px;
   padding: 0;
   border: 0;
-  border-radius: 8px;
-  opacity: 0.8;
-  background: var(--dm-color-grey-light);
-  color: var(--dm-color-anthracite);
+  background: url("../../images/icons/slideshow-next.svg") no-repeat center/contain;
   transform: translateY(-50%);
   cursor: pointer;
 }
-.product-features__nav::before {
-  content: "";
-  flex: 0 0 auto;
-  width: 24px;
-  height: 24px;
-  background-color: currentcolor;
-  -webkit-mask: url("../../images/icons/chevron-right.svg") no-repeat center;
-          mask: url("../../images/icons/chevron-right.svg") no-repeat center;
-}
 .product-features__nav--prev {
   left: 40px;
-}
-.product-features__nav--prev::before {
-  transform: scaleX(-1);
+  background-image: url("../../images/icons/slideshow-prev.svg");
 }
 .product-features__nav--next {
   right: 40px;
@@ -52,7 +36,7 @@
   outline-offset: 2px;
 }
 .product-features__viewport.swiper-initialized .product-features__nav {
-  display: flex;
+  display: block;
 }
 .product-features__viewport.swiper-initialized .product-features__nav.swiper-button-disabled {
   display: none;

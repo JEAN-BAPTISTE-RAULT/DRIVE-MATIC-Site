@@ -26,30 +26,15 @@
   display: flex;
 }
 .history__nav-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 44px;
   height: 44px;
   padding: 0;
   border: 0;
-  border-radius: 8px;
-  opacity: 0.8;
-  background: var(--dm-color-grey-light);
-  color: var(--dm-color-anthracite);
+  background: url("../../images/icons/slideshow-next.svg") no-repeat center/contain;
   cursor: pointer;
 }
-.history__nav-button::before {
-  content: "";
-  flex: 0 0 auto;
-  width: 24px;
-  height: 24px;
-  background-color: currentcolor;
-  -webkit-mask: url("../../images/icons/chevron-right.svg") no-repeat center;
-          mask: url("../../images/icons/chevron-right.svg") no-repeat center;
-}
-.history__nav-button--prev::before {
-  transform: scaleX(-1);
+.history__nav-button--prev {
+  background-image: url("../../images/icons/slideshow-prev.svg");
 }
 .history__nav-button:focus-visible {
   outline: 3px solid var(--dm-color-red);

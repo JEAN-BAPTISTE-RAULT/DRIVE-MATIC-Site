@@ -23,19 +23,16 @@ sable une fois ces reserves arbitrees.
 
 ## Reserves ouvertes (non bloquantes)
 
-- **Fleches de navigation dupliquees a l'identique** dans `history`, `news_home`,
-  `brands_home` et `product_features` (carre gris clair 44px + chevron masque,
-  ~40 lignes chacune), plus une variante blanche superposee dans `jumbo_home`.
-  Deux routes possibles, a arbitrer en ADR :
-  - **SDC partage** — desormais **eprouve** par `video-play` (la CSS d'un SDC
-    inclus est bien attachee, aucun changement de build). Mais la fleche differe
-    par son **placement** selon le bloc (superposee au visuel, dans l'en-tete,
-    aux extremites de la rangee) : le composant partagerait l'apparence, et
-    chaque bloc devrait positionner une classe qui ne lui appartient pas — ce que
-    l'isolation SDC proscrit.
-  - **Mixin de fondation** — garde chaque CSS scopee, mais demande un
-    `--load-path=src/scss` dans `css:components` (decision de build).
-
+- ~~Fleches de navigation dupliquees~~ — **resolu** (2026-08-17) : l'apparence est
+  portee par deux assets exportes de la maquette
+  (`images/icons/slideshow-{next,prev}.svg`), les cinq blocs ne declarant plus que
+  taille, position et asset. La duplication restante (~10 lignes par bloc) tient
+  au **placement**, qui differe reellement d'un bloc a l'autre : plus rien a
+  factoriser, l'ADR envisage n'a plus d'objet.
+- **Contraste de la fleche sur photo** : la plaque grise a 80 % passe moins bien
+  sur un visuel clair que la variante blanche que la maquette prevoyait pour le
+  jumbo. Consigne assumee (« meme fleche partout »), mais a regarder en recette
+  sur les vrais visuels de banniere.
 - **Full-bleed et barre de defilement** : voir README (« Idiome pleine largeur »).
   A verifier sous Windows en recette ; concerne `image_full`,
   `product_characteristics`, `jumbo_home`, `history`.

@@ -20,12 +20,13 @@
     margin-right: calc(50% - 50vw);
   }
 
-  // Flèche « Next » (Figma 303:6298) : carré blanc arrondi 44px à 80 %
-  // d'opacité, sans ombre portée, chevron anthracite.
+  // Flèche de défilement : export du calque « Next » de la maquette (Figma Home,
+  // Group 4 pour « suivant », Group 5 pour « précédent »). L'asset porte la
+  // plaque gris clair à 80 % et le chevron : rien à redessiner en CSS.
+  // NB : la maquette du jumbo montrait une plaque **blanche** ; la consigne
+  // « même flèche dans tous les paragraphes » l'emporte.
   &__nav {
     display: none;
-    align-items: center;
-    justify-content: center;
     position: absolute;
     top: 50%;
     z-index: 2;
@@ -33,22 +34,10 @@
     height: 44px;
     padding: 0;
     border: 0;
-    border-radius: 8px;
-    opacity: 0.8;
-    background: var(--dm-color-white);
-    color: var(--dm-color-anthracite);
+    background: url('../../images/icons/slideshow-next.svg') no-repeat center /
+      contain;
     transform: translateY(-50%);
     cursor: pointer;
-  }
-
-  // Chevron exporté de la maquette, masqué pour hériter de `color`.
-  &__nav::before {
-    content: '';
-    flex: 0 0 auto;
-    width: 24px;
-    height: 24px;
-    background-color: currentcolor;
-    mask: url('../../images/icons/chevron-right.svg') no-repeat center;
   }
 
   &__nav:focus-visible {
@@ -58,10 +47,7 @@
 
   &__nav--prev {
     left: 40px;
-  }
-
-  &__nav--prev::before {
-    transform: scaleX(-1);
+    background-image: url('../../images/icons/slideshow-prev.svg');
   }
 
   &__nav--next {
@@ -70,7 +56,7 @@
 
   // Flèches actives uniquement quand Swiper a démarré (>= 2 diapositives).
   &__viewport.swiper-initialized &__nav {
-    display: flex;
+    display: block;
   }
 
   // Flèche en bout de course : masquée (maquette — pas de flèche « précédent »

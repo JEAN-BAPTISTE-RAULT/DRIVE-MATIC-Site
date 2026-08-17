@@ -12,8 +12,6 @@
 }
 .jumbo-home__nav {
   display: none;
-  align-items: center;
-  justify-content: center;
   position: absolute;
   top: 50%;
   z-index: 2;
@@ -21,21 +19,9 @@
   height: 44px;
   padding: 0;
   border: 0;
-  border-radius: 8px;
-  opacity: 0.8;
-  background: var(--dm-color-white);
-  color: var(--dm-color-anthracite);
+  background: url("../../images/icons/slideshow-next.svg") no-repeat center/contain;
   transform: translateY(-50%);
   cursor: pointer;
-}
-.jumbo-home__nav::before {
-  content: "";
-  flex: 0 0 auto;
-  width: 24px;
-  height: 24px;
-  background-color: currentcolor;
-  -webkit-mask: url("../../images/icons/chevron-right.svg") no-repeat center;
-          mask: url("../../images/icons/chevron-right.svg") no-repeat center;
 }
 .jumbo-home__nav:focus-visible {
   outline: 3px solid var(--dm-color-red);
@@ -43,15 +29,13 @@
 }
 .jumbo-home__nav--prev {
   left: 40px;
-}
-.jumbo-home__nav--prev::before {
-  transform: scaleX(-1);
+  background-image: url("../../images/icons/slideshow-prev.svg");
 }
 .jumbo-home__nav--next {
   right: 40px;
 }
 .jumbo-home__viewport.swiper-initialized .jumbo-home__nav {
-  display: flex;
+  display: block;
 }
 .jumbo-home__viewport.swiper-initialized .jumbo-home__nav.swiper-button-disabled {
   display: none;

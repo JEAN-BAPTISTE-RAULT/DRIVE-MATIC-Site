@@ -27,11 +27,11 @@
   }
 
   // Flèches : masquées par défaut (inutiles sans JS), affichées quand Swiper a
-  // démarré. Carré gris clair arrondi 44px à 80 % d'opacité, chevron anthracite.
+  // démarré. Export du calque « Next » de la maquette (Figma Home, Group 4 pour
+  // « suivant », Group 5 pour « précédent ») : l'asset porte la plaque gris
+  // clair à 80 % et le chevron, rien à redessiner en CSS.
   &__nav {
     display: none;
-    align-items: center;
-    justify-content: center;
     position: absolute;
 
     // Centrée sur le VISUEL 16:9, pas sur la diapositive (qui porte aussi le
@@ -42,30 +42,15 @@
     height: 44px;
     padding: 0;
     border: 0;
-    border-radius: 8px;
-    opacity: 0.8;
-    background: var(--dm-color-grey-light);
-    color: var(--dm-color-anthracite);
+    background: url('../../images/icons/slideshow-next.svg') no-repeat center /
+      contain;
     transform: translateY(-50%);
     cursor: pointer;
   }
 
-  // Chevron exporté de la maquette, masqué pour hériter de `color`.
-  &__nav::before {
-    content: '';
-    flex: 0 0 auto;
-    width: 24px;
-    height: 24px;
-    background-color: currentcolor;
-    mask: url('../../images/icons/chevron-right.svg') no-repeat center;
-  }
-
   &__nav--prev {
     left: 40px;
-  }
-
-  &__nav--prev::before {
-    transform: scaleX(-1);
+    background-image: url('../../images/icons/slideshow-prev.svg');
   }
 
   // 40px du bord de la fenêtre : le viewport déborde jusque-là.
@@ -80,7 +65,7 @@
 
   // Flèches actives uniquement quand Swiper a démarré (>= 2 diapositives).
   &__viewport.swiper-initialized &__nav {
-    display: flex;
+    display: block;
   }
 
   // Flèche en bout de course : masquée (la maquette ne montre pas de flèche

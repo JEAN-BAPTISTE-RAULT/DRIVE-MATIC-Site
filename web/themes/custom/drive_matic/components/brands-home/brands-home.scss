@@ -39,8 +39,6 @@
   // marque). Superposées aux extrémités, centrées sur la hauteur des tuiles.
   &__nav-button {
     display: none;
-    align-items: center;
-    justify-content: center;
     position: absolute;
     top: 50%;
     z-index: 2;
@@ -48,30 +46,15 @@
     height: 44px;
     padding: 0;
     border: 0;
-    border-radius: 8px;
-    opacity: 0.8;
-    background: var(--dm-color-grey-light);
-    color: var(--dm-color-anthracite);
+    background: url('../../images/icons/slideshow-next.svg') no-repeat center /
+      contain;
     transform: translateY(-50%);
     cursor: pointer;
   }
 
-  // Chevron exporté de la maquette, masqué pour hériter de `color`.
-  &__nav-button::before {
-    content: '';
-    flex: 0 0 auto;
-    width: 24px;
-    height: 24px;
-    background-color: currentcolor;
-    mask: url('../../images/icons/chevron-right.svg') no-repeat center;
-  }
-
   &__nav-button--prev {
     left: 0;
-  }
-
-  &__nav-button--prev::before {
-    transform: scaleX(-1);
+    background-image: url('../../images/icons/slideshow-prev.svg');
   }
 
   &__nav-button--next {
@@ -93,7 +76,7 @@
   // Déclaré après les règles simples de `&__nav-button` : `:has()` est plus
   // spécifique, Stylelint (no-descending-specificity) exige cet ordre.
   &:has(&__viewport.swiper-initialized) &__nav-button {
-    display: flex;
+    display: block;
   }
 
   // « Marques partenaires » : bouton gris de la maquette, centré sous la rangée.

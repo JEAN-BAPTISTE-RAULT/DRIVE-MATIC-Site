@@ -39,35 +39,21 @@
     display: flex;
   }
 
-  // Flèche « Next » de la maquette : carré gris clair arrondi 44px à 80 %
-  // d'opacité, chevron anthracite 24px.
+  // Flèche de défilement : export du calque « Next » de la maquette (Figma Home,
+  // Group 4 pour « suivant », Group 5 pour « précédent »). L'asset porte la
+  // plaque gris clair à 80 % et le chevron : rien à redessiner en CSS.
   &__nav-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 44px;
     height: 44px;
     padding: 0;
     border: 0;
-    border-radius: 8px;
-    opacity: 0.8;
-    background: var(--dm-color-grey-light);
-    color: var(--dm-color-anthracite);
+    background: url('../../images/icons/slideshow-next.svg') no-repeat center /
+      contain;
     cursor: pointer;
   }
 
-  // Chevron exporté de la maquette, masqué pour hériter de `color`.
-  &__nav-button::before {
-    content: '';
-    flex: 0 0 auto;
-    width: 24px;
-    height: 24px;
-    background-color: currentcolor;
-    mask: url('../../images/icons/chevron-right.svg') no-repeat center;
-  }
-
-  &__nav-button--prev::before {
-    transform: scaleX(-1);
+  &__nav-button--prev {
+    background-image: url('../../images/icons/slideshow-prev.svg');
   }
 
   &__nav-button:focus-visible {

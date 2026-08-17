@@ -430,6 +430,7 @@
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
 | 2026-08-11 | Creation initiale a partir du PRD (F1-F18) | S1-S23 |
+| 2026-08-17 | **Transverse** — une **seule apparence de fleche de defilement** pour tous les paragraphes (export des calques « Next » de la Home : Group 4 = suivant, Group 5 = precedent). Changement visible : les fleches du **jumbo** passent de la plaque blanche a la plaque grise. A rejouer sur les 5 slideshows | S2, S3, S4 (tout slideshow) |
 | 2026-08-17 | F5 — integration maquette `product_cross` (Figma 396:11619). **Termine la bibliotheque : les 18 blocs sont integres.** Nouveau comportement a rejouer : la ligne cliquable d'une carte porte le **titre** de la carte, pas le libelle du champ lien — dont la **cible d'ouverture** reste respectee | S4 (fiche produit) |
 | 2026-08-17 | F5 — integration maquette `product_features` (Figma 396:11618). Nouveaux comportements a rejouer : **fleche centree sur le visuel** et non sur la diapositive, **façade video** (plaque translucide + glyphe, iframe au clic) dans une diapositive de slideshow, bouton gris issu du champ lien | S4 (fiche produit) |
 | 2026-08-17 | F3 — integration maquette `brands_home` (Figma 303:6307). **Termine la home.** Nouveaux comportements a rejouer : rangee de tuiles carrees, **fleche a chaque extremite**, tuiles qui **passent a la ligne** sans JS, et **nom de marque masque visuellement** mais lisible au lecteur d'ecran | S2 (blocs home), S6 (marques) |
