@@ -14,7 +14,7 @@
         aria-label="{{ 'Lire la vidéo'|t }}{% if title %} : {{ title }}{% endif %}"
       >
         <span class="product-video-element__thumb">{{ block('image') }}</span>
-        <span class="product-video-element__icon" aria-hidden="true"></span>
+        {{ include('drive_matic:video-play') }}
       </button>
       <template class="product-video-element__embed" data-dm-video-embed>{{ block('video') }}</template>
     </div>

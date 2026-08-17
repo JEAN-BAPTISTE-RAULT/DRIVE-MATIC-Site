@@ -33,3 +33,26 @@ La bibliothèque de paragraphes (ADR-001) comporte des blocs vidéo (`video_cent
 
 ## Mise à jour (V3, 2026-08-13)
 Le behavior de façade a été **mutualisé** en librairie de thème **`drive_matic/video-facade`** (`js/video-facade.js`) : JS **générique piloté par data-attributs** (`[data-dm-video-facade]`, `[data-dm-video-play]`, `template[data-dm-video-embed]`), agnostique du markup BEM. Un **seul** `Drupal.behaviors.driveMaticVideoFacade` (évite les collisions). Consommé par `video_centered` (migré, `libraryOverrides: drive_matic/video-facade`) **et** `history_element` (V3), réutilisable par `product_video_element` (V5). Le CSS de la pastille reste scopé par composant (seul le JS est partagé).
+
+## Mise a jour (integration maquette, 2026-08-17)
+
+La **pastille de lecture** est mutualisee a son tour : le CSS n'est plus scope par
+composant (il divergeait — carre blanc translucide dans `video_centered`, cercle
+rouge dans `history_element`, plaque + glyphe masque dans `product_video_element`).
+
+- Un **SDC dedie `video-play`** porte desormais le markup **et** le style de la
+  plaque ; les trois façades l'incluent (`{{ include('drive_matic:video-play') }}`)
+  dans leur `<button data-dm-video-play>`. La CSS du composant inclus est bien
+  attachee a l'inclusion : aucune declaration de dependance n'est necessaire.
+- Le visuel est l'**export du calque « Group 17 »** de la maquette
+  (`images/icons/video-play.svg`, Figma 396:11579) : plaque blanche de 70px
+  arrondie a 8px et a 70 % d'opacite + glyphe de lecture acier. Les couleurs sont
+  portees par le SVG, ce qui deroge sciemment a la regle « pas de couleur en
+  dur » : c'est un visuel de maquette rendu en image, pas un glyphe a teindre —
+  contrairement aux icones utilisees en `mask` (chevron, globe, telechargement).
+  L'export brut de Figma inclut le fond du canvas et celui du frame : ces deux
+  rectangles parasites doivent etre retires a la main.
+- Consequence : le rayon, l'opacite et le glyphe d'une façade ne se reglent plus
+  composant par composant. Un changement de maquette se fait en remplacant
+  l'asset. La contrainte de couplage est que le conteneur de la miniature doit
+  etre **positionne** (la plaque se centre en absolu) — documente dans le SDC.

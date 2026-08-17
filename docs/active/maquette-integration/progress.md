@@ -25,11 +25,6 @@ Pour demarrer un bloc, il faut le **node id Figma** du frame ou de la region
 
 ## Reserves ouvertes (non bloquantes)
 
-- **Glyphes dessines en bordures CSS** dans `video_centered` et
-  `history_element` : ces deux façades video sont anterieures a la regle « icone
-  = asset SVG exporte, applique en `mask` » (CLAUDE.md). `product_features`
-  utilise le vrai glyphe (`images/icons/play.svg`) — les deux autres restent a
-  aligner, ce qui uniformisera aussi la plaque (blanc translucide, rayon 8).
 - **Fleches de navigation dupliquees a l'identique** dans `history`, `news_home`
   et `brands_home` (carre gris clair 44px + chevron masque, ~40 lignes chacune),
   plus une variante blanche superposee dans `jumbo_home`. **Quatrieme copie** :

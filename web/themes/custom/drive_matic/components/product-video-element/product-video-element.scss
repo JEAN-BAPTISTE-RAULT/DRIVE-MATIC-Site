@@ -1,10 +1,8 @@
 // SDC « Élément :: Vidéo produit » — miniature 16:9 en façade puis titre,
 // description et CTA. Mêmes valeurs de corps que `product_image_element` (les
 // deux Éléments alimentent la même présentation « swipe »).
-// Maquette Figma 396:11579 pour la façade : carré blanc 70px arrondi à 8px et
-// à 70 % d'opacité, glyphe « play » acier de 32px (à pleine opacité, c'est un
-// calque frère du carré dans la maquette).
-// Le JS d'injection de l'iframe est mutualisé (`drive_matic/video-facade`).
+// La plaque de lecture est le SDC partagé `video-play` (inclus dans le bouton) ;
+// le JS d'injection de l'iframe est mutualisé (`drive_matic/video-facade`).
 .product-video-element {
   display: flex;
   flex-direction: column;
@@ -36,43 +34,6 @@
     display: block;
     width: 100%;
     height: auto;
-  }
-
-  &__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 70px;
-    height: 70px;
-    transform: translate(-50%, -50%);
-  }
-
-  // Plaque blanche à 70 % : un fond dédié, pour que le glyphe reste opaque.
-  &__icon::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 8px;
-    background: var(--dm-color-white);
-    opacity: 0.7;
-  }
-
-  // Glyphe exporté de la maquette, masqué pour hériter de sa couleur.
-  &__icon::after {
-    content: '';
-    position: relative;
-    width: 32px;
-    height: 32px;
-    background-color: var(--dm-color-steel);
-    mask: url('../../images/icons/play.svg') no-repeat center / 30px 30px;
-  }
-
-  &__play:focus-visible &__icon::before {
-    outline: 3px solid var(--dm-color-red);
-    outline-offset: 2px;
   }
 
   &__body {

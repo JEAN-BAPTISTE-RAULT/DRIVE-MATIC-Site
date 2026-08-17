@@ -1,0 +1,22 @@
+// SDC « Bouton :: Lecture vidéo » — plaque de lecture commune aux façades.
+// L'asset est l'export du calque « Group 17 » de la maquette (Figma 396:11579) :
+// plaque blanche de 70px arrondie à 8px et à 70 % d'opacité + glyphe de lecture
+// acier. Les couleurs sont donc portées par le SVG, pas par le CSS — c'est un
+// visuel de maquette, pas un glyphe à teinter.
+.video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70px;
+  height: 70px;
+  background: url('../../images/icons/video-play.svg') no-repeat center /
+    contain;
+  transform: translate(-50%, -50%);
+}
+
+// Focus clavier : la plaque est l'enfant du `<button>` de la façade, qui ne
+// porte pas d'anneau lui-même (il est de la taille de la miniature).
+:where(button:focus-visible) > .video-play {
+  outline: 3px solid var(--dm-color-white);
+  outline-offset: 4px;
+}

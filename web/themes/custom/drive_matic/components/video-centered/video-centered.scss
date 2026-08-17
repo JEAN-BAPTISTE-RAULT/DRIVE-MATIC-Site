@@ -28,36 +28,6 @@
     height: auto;
   }
 
-  // Bouton lecture : carré blanc arrondi (70px, 70% d'opacité), centré.
-  &__icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 70px;
-    height: 70px;
-    transform: translate(-50%, -50%);
-    border-radius: 8px;
-    background: rgb(255 255 255 / 70%);
-  }
-
-  // Triangle « play » sombre.
-  &__icon::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 54%;
-    transform: translate(-50%, -50%);
-    border-width: 12px 0 12px 20px;
-    border-style: solid;
-    border-color: transparent transparent transparent var(--dm-color-anthracite);
-  }
-
-  // Focus clavier visible sur le bouton.
-  &__play:focus-visible &__icon {
-    outline: 3px solid var(--dm-color-white);
-    outline-offset: 4px;
-  }
-
   // Légende ferrée sous la vidéo, en bas à droite (convention globale).
   &__caption {
     margin-top: 0.5rem;

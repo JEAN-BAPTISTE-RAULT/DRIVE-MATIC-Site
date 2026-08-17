@@ -22,7 +22,7 @@
         aria-label="{{ 'Lire la vidéo'|t }}{% if title %} : {{ title }}{% endif %}"
       >
         <span class="history-element__thumb">{{ block('image') }}</span>
-        <span class="history-element__icon" aria-hidden="true"></span>
+        {{ include('drive_matic:video-play') }}
       </button>
       <template class="history-element__embed" data-dm-video-embed>{{ block('video') }}</template>
     </div>

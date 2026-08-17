@@ -21,30 +21,6 @@
   width: 100%;
   height: auto;
 }
-.video-centered__icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 70px;
-  height: 70px;
-  transform: translate(-50%, -50%);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.7);
-}
-.video-centered__icon::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 54%;
-  transform: translate(-50%, -50%);
-  border-width: 12px 0 12px 20px;
-  border-style: solid;
-  border-color: transparent transparent transparent var(--dm-color-anthracite);
-}
-.video-centered__play:focus-visible .video-centered__icon {
-  outline: 3px solid var(--dm-color-white);
-  outline-offset: 4px;
-}
 .video-centered__caption {
   margin-top: 0.5rem;
   color: var(--dm-color-grey-text);

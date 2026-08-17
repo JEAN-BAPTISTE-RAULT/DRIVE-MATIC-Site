@@ -27,38 +27,6 @@
   width: 100%;
   height: auto;
 }
-.product-video-element__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 70px;
-  height: 70px;
-  transform: translate(-50%, -50%);
-}
-.product-video-element__icon::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 8px;
-  background: var(--dm-color-white);
-  opacity: 0.7;
-}
-.product-video-element__icon::after {
-  content: "";
-  position: relative;
-  width: 32px;
-  height: 32px;
-  background-color: var(--dm-color-steel);
-  -webkit-mask: url("../../images/icons/play.svg") no-repeat center/30px 30px;
-          mask: url("../../images/icons/play.svg") no-repeat center/30px 30px;
-}
-.product-video-element__play:focus-visible .product-video-element__icon::before {
-  outline: 3px solid var(--dm-color-red);
-  outline-offset: 2px;
-}
 .product-video-element__body {
   display: flex;
   flex-direction: column;
