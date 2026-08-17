@@ -122,6 +122,12 @@
 - Documents presentes avec nom/format/poids, dans l'ordre defini en back-office.
 - Le telechargement fonctionne.
 
+**Mise en oeuvre (a rejouer)** :
+- La page porte **deux champs reference ordonnes** ; les **libelles de champ** font les titres de section (« Auto-ecoles », « PMR »). Reordonner en BO doit reordonner la page.
+- **Section vide** → ni titre de section, ni espace mort.
+- Un document est un **fragment** : `/node/<id>` d'un document doit repondre **403** en anonyme.
+- Le libelle du bouton est la **description du fichier** (ADR-009), pas le titre du node — d'ou une saisie du nom a deux endroits, point ouvert du PRD (F6).
+
 ---
 
 ## S6 — Marques partenaires
@@ -133,6 +139,11 @@
 
 **Resultats attendus** :
 - Liste de logos en **ordre alphabetique** + bloc informations generales.
+
+**Mise en oeuvre (a rejouer)** :
+- Les tuiles sont celles de la home, mais en **grille qui passe a la ligne** (SDC `brands-grid`) et non en piste defilante.
+- Les logos ne sont **pas cliquables** : `/node/<id>` d'une marque repond **403**.
+- Aucune marque publiee → « Aucune marque partenaire n'est publiee pour le moment. ».
 
 ---
 
@@ -150,6 +161,38 @@
 **Resultats attendus** :
 - **10 actualites par page** ; l'actualite **non publiee n'apparait pas**.
 - Le detail affiche titre, date, visuel, contenu (paragraphes), documents/video eventuels.
+
+**Mise en oeuvre (a rejouer)** :
+- La liste vit a **`/actualites`**, les details a **`/actualites/<titre>`** — seul type a porter un prefixe d'URL.
+- La ligne de liste (`news-teaser`) affiche **la date**, contrairement a la carte du bloc home (`news-card`) qui ne montre que visuel + titre.
+- Le lien **« Voir toutes les actualites »** de la home mene bien a `/actualites`.
+- **0 actualite publiee** → « Aucune actualite n'est publiee pour le moment. », sans bloc casse.
+- **Depublier une actualite** doit la retirer de la liste **sans vidage de cache**.
+- ⚠️ La date sort aujourd'hui en **anglais** (« 17 August 2026 ») : ecart de langue du site, cf. PRD section 7.
+
+---
+
+## S24 — FAQ & filtre par categorie
+
+> Ajoute apres coup (numerotation a la suite, position thematique). Couvre le volet FAQ de F9,
+> jusque-la sans scenario dedie.
+
+**Objectif** : Verifier la page FAQ, son filtre par categorie et le comportement d'accordeon.
+
+**Donnees de test** : au moins 2 questions par categorie (General, Auto-ecole, PMR).
+
+**Etapes** :
+1. Ouvrir la page FAQ.
+2. Ouvrir une question, puis une seconde.
+3. Cliquer sur le filtre « Auto-ecole », puis revenir a toutes les categories.
+
+**Resultats attendus** :
+- Toutes les questions publiees sont listees, la **derniere modifiee en tete**.
+- A l'ouverture de la 2e question, la **1re se ferme** (meme comportement que les accordeons de F1).
+- Le filtre est rendu en **liens** (un par categorie), **au-dessus** de l'accordeon et non dedans ; il filtre la liste sans quitter la page.
+- Une categorie sans resultat → « Aucune question ne correspond a cette categorie. ».
+- Une question est un **fragment** : `/node/<id>` repond **403** en anonyme.
+- Sans JS : toutes les reponses restent lisibles (amelioration progressive), et les liens de filtre fonctionnent en pur GET.
 
 ---
 
@@ -423,12 +466,16 @@
 | S17, S22 | F16 |
 | S20, S21 | F12, decision #5 (cloisonnement) |
 | S23 | F18 |
-| Transverse (S1-S23) | F1 (Paragraphes), decision #8 (RGAA/WCAG AA) |
+| S24 | F9 (volet FAQ) |
+| Transverse (S1-S24) | F1 (Paragraphes), decision #8 (RGAA/WCAG AA) |
 
 ## Historique des modifications
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-08-17 | **Transverse — titre affiche distinct du libelle d'administration** (ADR-011) : le champ « Titre » porte ce que voit l'internaute (`h1`, balise `title`, alias) ; le « Titre administratif » ne sert qu'au back-office. **A rejouer en BO** : saisir deux valeurs differentes et verifier que le front n'affiche jamais la valeur d'administration — page, onglet du navigateur, carte d'actualite, ligne de liste. L'alias suit desormais le titre affiche (et une modification cree une **redirection 301** depuis l'ancien) | Toute page publique (S1-S7, S24) + recette editoriale |
+| 2026-08-17 | **F4/F5/F6/F7/F8/F9 — les 10 types de contenu restants sont livres**, avec leurs pages : solutions, produit, corporate, mentions legales, liste + detail d'actualites, FAQ, documentations, marques. Les scenarios S3 a S7 deviennent **rejouables pour de vrai** ; **S24 (FAQ)** est ajoute | S3, S4, S5, S6, S7, S24 |
+| 2026-08-17 | **F18 — sitemap configure par type** : les 12 nodes publics inclus, les 3 fragments et le bac a sable exclus, l'accueil declaree en lien personnalise sur `/`. A rejouer : `sitemap.xml` ne doit contenir **aucune** URL de fragment | S1 a S7, S24 |
 | 2026-08-11 | Creation initiale a partir du PRD (F1-F18) | S1-S23 |
 | 2026-08-17 | **F18 / transverse** — **balises meta** : chaque node public sort `titre \| nom du site` en title et un extrait du corps en description ; champ « Balises meta » pour surcharger (vide = automatique). A rejouer en BO **et** dans le `<head>` du rendu, en particulier sur la **page d'accueil** (cas special `front`, cf. ADR-010) | S1 a S7 (toute page publique) |
 | 2026-08-17 | **BO / transverse** — formulaire de contenu unifie : **deux onglets horizontaux** (« Informations generales » / « Contenu », paragraphes en dernier), champs `uid`/`created`/`simple_sitemap`/`url_redirects` retires, alias d'URL auto-genere depuis le titre sur Contact / Devenir partenaire / Detail d'une actualite. A rejouer a la creation d'un contenu | Recette editoriale (hors S1-S23) |

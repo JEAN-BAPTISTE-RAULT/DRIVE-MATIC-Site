@@ -132,7 +132,9 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 **Criteres d'acceptation** :
 - [ ] Template commun a tous les produits : image 100 % largeur ; bloc argumentaires (`product_arguments`) ; bloc swipe (max 5, visuel ou video + titre + texte + CTA — `product_features`) ; bloc caracteristiques techniques (donnees titre/texte + notice technique et documentation telechargeables avec nom/format/poids auto — `product_characteristics`) ; bloc titre + CTA ; bloc configurateur ; bloc cross-selling (1 a 5 produits avec lien vers fiche — `product_cross`).
-  - Note d'arbitrage : le « bloc argumentaires » a ete acte comme **1 a 3 titres seuls** (`product_arguments`) dans la bibliotheque validee ([ADR-001](../.claude/decisions/001-bibliotheque-paragraphes.md) #14), et non « image/texte » comme le suggerait la formulation initiale des specs. Les blocs produit sont fournis par la vague V5 des paragraphes (F1) ; le **template page produit** (assemblage) reste a construire.
+  - Note d'arbitrage : le « bloc argumentaires » a ete acte comme **1 a 3 titres seuls** (`product_arguments`) dans la bibliotheque validee ([ADR-001](../.claude/decisions/001-bibliotheque-paragraphes.md) #14), et non « image/texte » comme le suggerait la formulation initiale des specs. Les blocs produit sont fournis par la vague V5 des paragraphes (F1).
+  - **Type `product` livre** : la page est un **assemblage de paragraphes**, sans template dedie (le template generique ne rend pas le libelle du node en pleine page). Allowlist = les 4 blocs V5 + `text_centered`, `text_left_aligned`, `image_text_50/100`, `accordion`, `image_full` — **sans `grid`**. Le **corps de texte est masque a l'affichage** : il alimente la meta description, la page etant entierement composee de blocs.
+  - **« Bloc configurateur » — arbitre** : il n'existe pas comme paragraphe dans la bibliotheque ADR-001. Ce contenu se compose avec **`image_text_100`** (autorise sur `homepage`, `transform` et `product`). Son lien reste un placeholder tant que le configurateur (F14) n'existe pas.
   - **Nom du document — arbitre** : le libelle de **tout bouton de telechargement du site** est **saisi en back-office** par la personne qui depose le fichier (champ « description » du champ fichier), et il est **obligatoire** des qu'un document est joint ; le **format et le poids** restent calcules automatiquement. Cf. [ADR-009](../.claude/decisions/009-telechargements-nommes.md).
 - [ ] Bloc cross-selling (`product_cross`, integration maquette) : titre puis **grille de deux colonnes** de cartes ; chaque carte = visuel **16:9 arrondi** et **une seule ligne cliquable** (le **titre** de la carte en est le libelle, son champ lien la destination) — le libelle du champ lien n'est donc **pas** affiche. Au-dela de deux cartes, elles passent a la ligne.
 - [ ] Bloc « swipe » (`product_features`, integration maquette) : diapositives de 900px **calees a gauche** sur le conteneur et **debordantes a droite** (aperçu coupe de la suivante) ; chaque diapositive = visuel **16:9 arrondi**, titre, description et **bouton gris** (le lien) ; une diapositive **video** affiche une **façade** (plaque blanche translucide + glyphe de lecture au centre du visuel), l'iframe n'etant chargee qu'au clic. La fleche est **centree sur le visuel**, pas sur la diapositive, et **disparait en bout de course**.
@@ -145,7 +147,10 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 **Criteres d'acceptation** :
 - [ ] **Documentations** : template dedie listant les documents Auto-ecole et PMR, ordre gere en back-office, chaque document affiche nom/format/poids (calcul auto).
+  - **Mise en oeuvre** : deux **champs reference ordonnes** (`field_documents_school`, `field_documents_pmr`) vers des fragments `document`, et non un paragraphe « section » — la bibliotheque ADR-001 reste close a 27. Les **libelles des deux champs** servent de titres de section (« Auto-ecoles », « PMR ») : modifiables en configuration, pas par l'editeur. Une section vide n'affiche **rien** (pas de titre orphelin).
+  - `[OUVERT]` **Double saisie du nom d'un document** : un `document` porte un titre de node (visible a la selection depuis la page Documentations) **et** une description de fichier, obligatoire par [ADR-009](../.claude/decisions/009-telechargements-nommes.md) et qui sert de libelle au bouton. L'editeur saisit donc deux fois le meme nom. Alternative a arbitrer : libelle = titre du node, avec exemption de `document` dans le `#process` de `drivematic_forms`.
 - [ ] **Marques partenaires** : bloc informations generales + liste des marques sous forme de logos, **ordre alphabetique**.
+  - **Mise en oeuvre** : Vue `brands` embarquee, tuiles `brand-logo` (les memes qu'en home) enveloppees par le SDC **`brands-grid`** — la page passe a la ligne la ou la home defile. Logos **non cliquables** (page canonique du fragment bloquee).
 
 ---
 
@@ -155,7 +160,11 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 **Criteres d'acceptation** :
 - [ ] **Liste** : derniere publiee/modifiee en tete ; chaque item = photo principale + titre + date + lien « Lire la suite » ; pagination **10 par page**.
+  - **Mise en oeuvre** : node `all_news` (titre, corps, metatags) + Vue `all_news` embarquee par `drupal_view()`. Ligne = SDC **`news-teaser`** (visuel 16:9, titre, date, « Lire la suite ») en mode d'affichage `teaser` — a distinguer de `news-card`, la carte du bloc home, qui n'affiche **pas** la date. Liste vide → message « Aucune actualite n'est publiee pour le moment. ».
 - [ ] **Detail** : titre, date, visuel principal, blocs (titre/texte/lien/document/video optionnels), possibilite d'ajouter des paragraphes texte/image/video.
+  - **Mise en oeuvre** : `news` porte `field_paragraphs` (allowlist `text_left_aligned`, `image_centered`, `video_centered`). La date affichee est `changed`, format **`dm_long`** (`j F Y`), rendue en `<time datetime>` par `node--news.html.twig`.
+  - **Alias** : `/actualites/[node:field_title]`, sous la page `all_news` servie a `/actualites` — seul type a porter un prefixe (cf. [ADR-011](../.claude/decisions/011-titre-affiche-et-alias.md)).
+  - `[OUVERT]` La date sort en **anglais** (« 17 August 2026 ») tant que le site n'est pas passe en francais — cf. section 7.
 - [ ] Une actualite dispose d'une fonction publier / ne pas publier en back-office.
 
 ---
@@ -164,7 +173,9 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 **Criteres d'acceptation** :
 - [ ] Pages composables via Paragraphes (F1) : Qui sommes-nous, Nos ateliers, Recherche & developpement, Savoir-faire et certifications.
+  - **Mise en oeuvre** : type `corporate`, 9 paragraphes autorises (dont `triptych`, `history`, `image_centered`, `video_centered`). Corps de texte masque a l'affichage (source de la meta description).
 - [ ] FAQ : accordeons (fermeture du precedent a l'ouverture).
+  - **Mise en oeuvre** : node `faq` (titre, corps, metatags) + fragments `question` (question, reponse, lien opt., fichier opt., **categorie obligatoire** → taxonomie `categories`). La Vue `faq` filtre par categorie avec un **filtre expose BEF rendu en liens**, et ses lignes sont enveloppees dans le SDC `accordion` : le comportement de fermeture du precedent est celui de F1, **sans JS supplementaire**. Le formulaire expose reste hors de l'accordeon. Categorie inconnue ou sans resultat → « Aucune question ne correspond a cette categorie. ».
 - [ ] Frise « Notre histoire » (`history`) : en-tete titre + **paire de fleches**, filet pointille, entrees defilant horizontalement ; l'entree suivante est visible en **apercu coupe** a droite. Chaque entree = titre + description **puis** le visuel 16:9 (les visuels ne sont pas alignes entre colonnes : chacun suit son propre texte).
 - [ ] **Pas de boucle** : en bout de course, la fleche concernee reste en place mais devient inerte et atenuee (l'en-tete ne se reorganise pas).
 
@@ -331,9 +342,10 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - [ ] Integration d'un outil d'analytics — **outil a trancher (Matomo ou GA4)** `[A PRECISER]`.
 - [ ] Bandeau de consentement cookies (CMP) — **outil a trancher (Axeptio, tarte au citron ou similaire)** `[A PRECISER]`.
 - [ ] Accordeons SEO en home ; metadonnees editables ; **plan de redirection** a realiser par Passerelle.
-  - **Metadonnees editables — fait** : chaque node public affiche par defaut `titre | nom du site` en balise title et un extrait du corps de texte en description ; un champ **« Balises meta »** permet de surcharger au cas par cas (vide = calcul automatique). Cf. [ADR-010](../.claude/decisions/010-metatags.md).
+  - **Metadonnees editables — fait** : chaque node public affiche par defaut `titre | nom du site` en balise title et un extrait du corps de texte en description ; un champ **« Balises meta »** permet de surcharger au cas par cas (vide = calcul automatique). Cf. [ADR-010](../.claude/decisions/010-metatags.md), amende par [ADR-011](../.claude/decisions/011-titre-affiche-et-alias.md) : la balise title suit desormais le **titre affiche** (`field_title`) et non le libelle d'administration.
   - `[OUVERT]` **Longueur des descriptions** non bornee : l'extrait suit la troncature du champ corps de texte, sans garantie de rester sous ~160 caracteres.
-  - `[OUVERT]` **Sitemap** (« nodes inclus, entites exclues », cf. section 5) pas encore configure par type.
+  - **Sitemap — fait** : indexation **opt-in par bundle**. Les 12 nodes publics sont inclus, les 3 fragments et le bac a sable exclus (par absence de reglage). L'accueil figure en **lien personnalise** sur `/` (priorite 1.0) plutot qu'en reglage de bundle, pour eviter un doublon avec `/node/<id>`.
+  - `[OUVERT]` **URL de base du sitemap** : `simple_sitemap.settings.base_url` est vide. En CLI, les URL generees sortent donc en `http://default/`. A verifier en preprod : si l'hote n'est pas correct, renseigner `base_url`.
 - [ ] Liens vers les reseaux sociaux (Instagram, TikTok, LinkedIn, YouTube).
 
 ## 5. Modele de donnees
@@ -358,7 +370,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 | **Soumission de formulaire** (Webform) | Contact (devis / SAV / question), devenir partenaire — **stockees + e-mail** | — |
 
 ### Contenu editorial (public)
-Le modele de contenu editorial (types de contenu, taxonomie, mapping paragraphes) est acte dans [ADR-002](../.claude/decisions/002-types-de-contenu.md) et detaille dans `docs/active/content-types/model.md` : **12 nodes publics** (`homepage`, `transform`, `product`, `faq`, `documents`, `corporate`, `brands`, `contact`, `partner`, `legals`, `news`, `all_news`), **3 nodes « fragments »** sans page publique (`question`, `document`, `brand` — hors sitemap, URL bloquee), **1 taxonomie** (`categories`). Conventions transverses : champ « lien » interne/externe + cible d'onglet ; « fichier telechargeable » avec nom/format/poids ; metatags (body→description, titre→meta title) ; sitemap = nodes inclus / entites exclues.
+Le modele de contenu editorial (types de contenu, taxonomie, mapping paragraphes) est acte dans [ADR-002](../.claude/decisions/002-types-de-contenu.md) et detaille dans `docs/active/content-types/model.md` : **12 nodes publics** (`homepage`, `transform`, `product`, `faq`, `documents`, `corporate`, `brands`, `contact`, `partner`, `legals`, `news`, `all_news`), **3 nodes « fragments »** sans page publique (`question`, `document`, `brand` — hors sitemap, URL bloquee), **1 taxonomie** (`categories`). **Livre en totalite.** Conventions transverses : champ « lien » interne/externe + cible d'onglet ; « fichier telechargeable » avec nom/format/poids ; **titre affiche (`field_title`) distinct du libelle d'administration**, qui alimente l'alias et la balise title ([ADR-011](../.claude/decisions/011-titre-affiche-et-alias.md)) ; metatags (body→description) ; sitemap = nodes inclus / entites exclues.
 
 ### Referentiel vehicules (partage)
 Trois taxonomies reutilisables (cf. [ADR-003](../.claude/decisions/003-referentiel-vehicules.md)), partagees par le webform contact (F10) et le configurateur (F14/F17) : `vehicle_brand` (31 marques), `vehicle_model` (124 modeles ; champs `field_brand` + `field_motorisations`), `motorisation` (4 : Manuelle, Automatique, Hybride, Électrique). Vocabulaires + champs versionnes ; termes = contenu (seeds depuis l'Excel, a recreer en prod).
@@ -480,6 +492,14 @@ Perimetre livre en **une seule version (V1)** couvrant l'ensemble des features.
 | **V1** | F1 a F18 (site public complet + espace partenaire : configurateur, devis, back-office partenaires) | Toutes les features recettees selon leurs criteres d'acceptation ; scenarios E2E (docs/E2E_SCENARIOS.md) au vert ; `npm run lint`, `npm run format:check` et `npm test` passent ; conformite RGAA/WCAG 2.1 AA verifiee ; cloisonnement des donnees partenaires valide cote serveur |
 
 > Elements a trancher avant/pendant la V1 (cf. `[A PRECISER]`) : outils analytics (Matomo/GA4) et consentement cookies ; champs du fichier « partenaires » ; modalites d'import du referentiel vehicules.
+
+### Ecarts ouverts constates a l'implementation
+
+| # | Ecart | Decision concernee |
+|---|-------|--------------------|
+| 1 | **Le site tourne en anglais** : les modules `language` et `locale` ne sont pas installes, `system.site` est en `en`. Le francais visible ne vient que des libelles saisis a la main. Consequences : dates (« 17 August 2026 »), poids de fichiers (« 50 KB »), pagination, boutons de formulaire — tout le cœur sort en anglais. Chantier a part : installer le francais, le passer par defaut, importer les traductions. | #6 (site en francais uniquement) |
+| 2 | **La page d'accueil n'a aucun `<h1>`** : le bloc titre de page y est masque et le titre visible vient du SDC `text_centered`, qui rend un `<h2>`. Non corrige car changer le niveau de titre du SDC toucherait toutes les pages qui l'utilisent — a trancher avec le placement du titre, a l'integration des maquettes. | #8 (RGAA / WCAG 2.1 AA) |
+| 3 | **Le titre de page est rendu apres le contenu**, dans un `<aside>` (region `sidebar_first` heritee du starterkit). A reprendre avec le shell de page en F2. | #8 |
 
 ### Prealables techniques (avant le developpement front)
 
