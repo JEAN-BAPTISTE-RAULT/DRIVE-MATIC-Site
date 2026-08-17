@@ -118,3 +118,35 @@ h3 {
   font-size: var(--dm-h3-size);
   line-height: var(--dm-h3-line);
 }
+
+.block-local-tasks-block {
+  position: fixed;
+  z-index: 5;
+  inset-block-start: calc(var(--drupal-displace-offset-top, 0px) + 16px);
+  inset-inline-end: 0;
+  padding: 16px;
+  background-color: var(--dm-color-grey-light);
+}
+.block-local-tasks-block .tabs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.block-local-tasks-block li {
+  display: block;
+  margin: 0;
+}
+.block-local-tasks-block a {
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  text-decoration: none;
+}
+.block-local-tasks-block a:hover {
+  text-decoration: underline;
+}
+.block-local-tasks-block a:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 2px;
+}

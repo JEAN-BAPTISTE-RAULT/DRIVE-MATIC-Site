@@ -1,0 +1,45 @@
+// Onglets locaux (Voir / Modifier / Supprimer…) affiches sur le front aux
+// personnes authentifiees qui y ont acces — le bloc n'est pas rendu pour les
+// autres. Portage de la regle du projet CFPA : carte posee en haut a droite,
+// en `fixed`, donc elle suit le defilement.
+// Le crayon vient des **liens contextuels** du cœur (module `contextual`), qui
+// apparait au survol de la region : il n'est pas dessine ici.
+// Le decalage haut suit la barre d'administration via la variable posee par
+// `Drupal.displace` — sans elle (barre masquee), la carte remonte d'autant.
+.block-local-tasks-block {
+  position: fixed;
+  z-index: 5;
+  inset-block-start: calc(var(--drupal-displace-offset-top, 0px) + 16px);
+  inset-inline-end: 0;
+  padding: 16px;
+  background-color: var(--dm-color-grey-light);
+
+  .tabs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // Le coeur pose `display: inline-block` sur les items : on les rempile.
+  li {
+    display: block;
+    margin: 0;
+  }
+
+  a {
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--dm-color-red);
+    outline-offset: 2px;
+  }
+}

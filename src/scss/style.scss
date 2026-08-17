@@ -1,8 +1,12 @@
 // DRIVE-MATIC — feuille de style globale (fondations)
 // Les composants front sont des SDC (CSS co-localise) ; ce fichier ne porte
 // que les fondations globales : tokens, reset, typographie (decision #2/#10).
+// Exception assumee : `local-tasks` habille les onglets d'administration du
+// cœur, qui ne sont pas un composant du site. En faire un SDC imposerait un
+// template pour l'embarquer ; la regle tient en quelques declarations.
 
 @use 'tokens';
 @use 'fonts';
 @use 'reset';
 @use 'typography';
+@use 'local-tasks';
