@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.question
+id: node.question.title
+field_name: title
+entity_type: node
+bundle: question
+label: Question
+description: 'La question telle qu’elle s’affiche, en en-tête d’accordéon sur la page FAQ.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

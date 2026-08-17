@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.brand
+id: node.brand.title
+field_name: title
+entity_type: node
+bundle: brand
+label: 'Nom de la marque'
+description: 'Il n’est pas visible à l’écran — la maquette ne montre que le logo — mais il est lu par les lecteurs d’écran et sert à trier les marques par ordre alphabétique.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

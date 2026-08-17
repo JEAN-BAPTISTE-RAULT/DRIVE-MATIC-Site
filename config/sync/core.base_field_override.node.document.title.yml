@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.document
+id: node.document.title
+field_name: title
+entity_type: node
+bundle: document
+label: 'Titre administratif'
+description: 'Nom du document en back-office : listes de contenu, recherche, et sélection depuis la page Documentations. Il n’est jamais affiché sur le site — le libellé visible est celui du bouton de téléchargement.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
