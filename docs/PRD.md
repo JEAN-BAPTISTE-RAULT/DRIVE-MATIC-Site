@@ -331,6 +331,9 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - [ ] Integration d'un outil d'analytics — **outil a trancher (Matomo ou GA4)** `[A PRECISER]`.
 - [ ] Bandeau de consentement cookies (CMP) — **outil a trancher (Axeptio, tarte au citron ou similaire)** `[A PRECISER]`.
 - [ ] Accordeons SEO en home ; metadonnees editables ; **plan de redirection** a realiser par Passerelle.
+  - **Metadonnees editables — fait** : chaque node public affiche par defaut `titre | nom du site` en balise title et un extrait du corps de texte en description ; un champ **« Balises meta »** permet de surcharger au cas par cas (vide = calcul automatique). Cf. [ADR-010](../.claude/decisions/010-metatags.md).
+  - `[OUVERT]` **Longueur des descriptions** non bornee : l'extrait suit la troncature du champ corps de texte, sans garantie de rester sous ~160 caracteres.
+  - `[OUVERT]` **Sitemap** (« nodes inclus, entites exclues », cf. section 5) pas encore configure par type.
 - [ ] Liens vers les reseaux sociaux (Instagram, TikTok, LinkedIn, YouTube).
 
 ## 5. Modele de donnees

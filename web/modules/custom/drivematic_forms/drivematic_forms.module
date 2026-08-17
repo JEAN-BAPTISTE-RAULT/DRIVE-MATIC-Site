@@ -41,8 +41,8 @@ function drivematic_forms_form_node_form_alter(array &$form, FormStateInterface 
  *
  * Le retrait se fait en `#after_build` et non dans l'alter : `redirect` et
  * `simple_sitemap` ajoutent leurs elements **apres** notre implementation, y
- * compris avec un poids de module superieur (verifie). `#after_build` est le
- * dernier point de passage, donc le seul fiable ici.
+ * compris avec un poids de module superieur (teste, puis remis a 0 : inutile).
+ * `#after_build` est le dernier point de passage, donc le seul fiable ici.
  */
 function _drivematic_forms_strip_technical_blocks(array $form, FormStateInterface $form_state): array {
   unset($form['simple_sitemap'], $form['url_redirects']);
