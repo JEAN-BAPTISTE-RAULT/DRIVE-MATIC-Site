@@ -7,7 +7,7 @@
 > bac a sable.
 >
 > Methode, capture et pieges : cf. memoire agent (`visual-integration-loop`).
-> Derniere mise a jour : 2026-08-14 (fin de session).
+> Derniere mise a jour : 2026-08-17.
 
 ## Reste a integrer
 
@@ -16,8 +16,7 @@ stylises dans leur Bloc parent.
 
 | Bloc | Page | Point d'attention connu |
 |---|---|---|
-| `news_home` | Accueil (F3) | Slideshow alimente par une **Vue** — premier du genre a styliser (pattern `drupal_view_result` + `drupal_entity(card)`, cf. ADR-008). Reutilise la machinerie data-attributs de `jumbo_home`. |
-| `brands_home` | Accueil (F3) | Idem Vue ; logos **non cliquables** (page canonique du fragment `brand` en 403). Termine la home avec `news_home`. |
+| `brands_home` | Accueil (F3) | Slideshow alimente par une **Vue** (comme `news_home`, deja fait) ; logos **non cliquables** (page canonique du fragment `brand` en 403). Termine la home. |
 | `product_features` | Produit (F5) | Slideshow, plafonne 5, **deux** bundles Element possibles (image **ou** video en facade). |
 | `product_cross` | Produit (F5) | Grille de cartes liees, plafonne 5. |
 
@@ -25,6 +24,13 @@ Pour demarrer un bloc, il faut le **node id Figma** du frame ou de la region
 (fileKey `ZmmVBSOWSsHVkok6EU2Ays`).
 
 ## Reserves ouvertes (non bloquantes)
+
+- **Fleches de navigation dupliquees a l'identique** dans `history` et
+  `news_home` (carre gris clair 44px + chevron masque, ~40 lignes), plus une
+  variante blanche superposee dans `jumbo_home`. Troisieme copie : candidat a un
+  style partage, ce qui demande un `--load-path=src/scss` dans `css:components`
+  pour qu'un SDC puisse utiliser un mixin de fondation. A acter en ADR plutot
+  qu'a decider en cours d'integration.
 
 - **Full-bleed et barre de defilement** : voir README (« Idiome pleine largeur »).
   A verifier sous Windows en recette ; concerne `image_full`,

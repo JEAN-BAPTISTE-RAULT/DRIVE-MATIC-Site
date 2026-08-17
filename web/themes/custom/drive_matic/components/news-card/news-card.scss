@@ -1,33 +1,58 @@
 // SDC « Carte :: Actualité » — image 16:9 + titre + lien « Lire la suite ».
+// Maquette Figma 303:6011 : image arrondie à 16px, écart de 16px avant le
+// texte, titre H3 acier puis lien à 16px. Seuls le titre et l'image de
+// l'actualité sont utilisés (ni date, ni chapô).
 .news-card {
   display: flex;
   flex-direction: column;
-  background: var(--dm-color-white);
+  gap: 16px;
 
   &__media {
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
+    overflow: hidden;
+    border-radius: 16px;
+  }
+
+  &__media img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   &__body {
-    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
 
   &__title {
-    margin: 0 0 0.75rem;
-    color: var(--dm-color-anthracite);
+    margin: 0;
+    color: var(--dm-color-steel);
     font-family: var(--dm-font-title);
     font-size: var(--dm-h3-size);
     line-height: var(--dm-h3-line);
+    font-weight: 700;
   }
 
+  // Lien texte + chevron rouge (motif « Lien » de la maquette).
   &__more {
-    color: var(--dm-color-red);
-    font-family: var(--dm-font-title);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
     text-decoration: none;
+  }
+
+  &__more::after {
+    content: '';
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color: var(--dm-color-red);
+    mask: url('../../images/icons/chevron-right.svg') no-repeat center;
   }
 
   &__more:hover {

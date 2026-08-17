@@ -104,6 +104,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - [ ] Blocs presents : titre generique ; jusqu'a 3 jumbos (visuel + titre + CTA optionnel) ; bloc solutions auto-ecole & PMR (3 blocs produits avec liens) ; bloc configurateur ; bloc actualites (5 plus recentes + lien « voir toutes ») ; carrousel marques partenaires (ordre alpha, navigation fleches) ; bloc image a gauche fond gris ; accordeons SEO.
 - [ ] Accordeons SEO : l'ouverture d'un accordeon ferme le precedent.
 - [ ] Jumbos : navigation par **fleches et points de pagination** ; **pas de boucle** (la fleche en bout de course disparait) ; la banniere suivante est visible en **apercu coupe** a droite.
+- [ ] Bloc actualites (integration maquette) : titre **centre** avec la **paire de fleches a droite**, cartes defilant horizontalement (l'actualite suivante en **apercu coupe**), et le lien « voir toutes » en **bouton gris centre sous la piste**. Chaque carte n'affiche que le **visuel 16:9** et le **titre** de l'actualite (ni date, ni chapo), plus le lien « Lire la suite ».
 
 **Cas limites** :
 - Moins de 5 actualites publiees → le bloc affiche celles disponibles. `[INFERE]`

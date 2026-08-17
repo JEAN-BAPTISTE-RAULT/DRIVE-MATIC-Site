@@ -1,32 +1,41 @@
 {#
   SDC « Bloc :: Actualités Homepage ».
-  Prop : title (obl). Slots : link (« voir toutes »), slides (cartes actualités,
-  chacune enveloppée en `.swiper-slide`). Swiper exige `.swiper-wrapper` en
-  enfant DIRECT : c'est le SDC qui la fournit. Slideshow si > 1 diapositive,
-  sinon liste statique (amélioration progressive, flèches sous html.js).
+  Prop : title (obl). Slots : link (« voir toutes », rendu en bouton sous la
+  piste), slides (cartes actualités, chacune enveloppée en `.swiper-slide`).
+  Swiper exige `.swiper-wrapper` en enfant DIRECT : c'est le SDC qui la fournit.
+  Slideshow si > 1 diapositive, sinon liste statique. Les flèches vivent dans
+  l'en-tête (maquette), hors de la piste : le behavior les résout dans le
+  conteneur du composant.
 #}
 <section class="news-home">
   <div class="news-home__head">
     <h2 class="news-home__title">{{ title }}</h2>
-    {% if block('link') is not empty %}
-      <div class="news-home__more">{{ block('link') }}</div>
-    {% endif %}
+    <div class="news-home__nav">
+      <button
+        type="button"
+        class="news-home__nav-button news-home__nav-button--prev"
+        data-dm-slideshow-prev
+        aria-label="{{ 'Actualité précédente'|t }}"
+      ></button>
+      <button
+        type="button"
+        class="news-home__nav-button news-home__nav-button--next"
+        data-dm-slideshow-next
+        aria-label="{{ 'Actualité suivante'|t }}"
+      ></button>
+    </div>
   </div>
-  <div class="news-home__viewport swiper" data-dm-slideshow>
+  <div
+    class="news-home__viewport swiper"
+    data-dm-slideshow
+    data-dm-slideshow-per-view="auto"
+    data-dm-slideshow-space="20"
+  >
     <div class="swiper-wrapper">
       {{ block('slides') }}
     </div>
-    <button
-      type="button"
-      class="news-home__nav news-home__nav--prev"
-      data-dm-slideshow-prev
-      aria-label="{{ 'Actualité précédente'|t }}"
-    ></button>
-    <button
-      type="button"
-      class="news-home__nav news-home__nav--next"
-      data-dm-slideshow-next
-      aria-label="{{ 'Actualité suivante'|t }}"
-    ></button>
   </div>
+  {% if block('link') is not empty %}
+    <div class="news-home__more">{{ block('link') }}</div>
+  {% endif %}
 </section>
