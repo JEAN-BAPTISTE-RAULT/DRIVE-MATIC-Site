@@ -7,16 +7,17 @@
 > bac a sable.
 >
 > Methode, capture et pieges : cf. memoire agent (`visual-integration-loop`).
-> Derniere mise a jour : 2026-08-17.
+> Derniere mise a jour : 2026-08-17 (home terminee).
 
 ## Reste a integrer
 
 Ordre = les 18 blocs de la bibliotheque validee (ADR-001) ; les Elements sont
 stylises dans leur Bloc parent.
 
+La **home est terminee** (F3). Restent deux blocs produit :
+
 | Bloc | Page | Point d'attention connu |
 |---|---|---|
-| `brands_home` | Accueil (F3) | Slideshow alimente par une **Vue** (comme `news_home`, deja fait) ; logos **non cliquables** (page canonique du fragment `brand` en 403). Termine la home. |
 | `product_features` | Produit (F5) | Slideshow, plafonne 5, **deux** bundles Element possibles (image **ou** video en facade). |
 | `product_cross` | Produit (F5) | Grille de cartes liees, plafonne 5. |
 
@@ -25,12 +26,13 @@ Pour demarrer un bloc, il faut le **node id Figma** du frame ou de la region
 
 ## Reserves ouvertes (non bloquantes)
 
-- **Fleches de navigation dupliquees a l'identique** dans `history` et
-  `news_home` (carre gris clair 44px + chevron masque, ~40 lignes), plus une
-  variante blanche superposee dans `jumbo_home`. Troisieme copie : candidat a un
-  style partage, ce qui demande un `--load-path=src/scss` dans `css:components`
-  pour qu'un SDC puisse utiliser un mixin de fondation. A acter en ADR plutot
-  qu'a decider en cours d'integration.
+- **Fleches de navigation dupliquees a l'identique** dans `history`, `news_home`
+  et `brands_home` (carre gris clair 44px + chevron masque, ~40 lignes chacune),
+  plus une variante blanche superposee dans `jumbo_home`. **Quatrieme copie** :
+  le style partage devient difficile a justifier autrement que par la dette. Il
+  demande un `--load-path=src/scss` dans `css:components` pour qu'un SDC puisse
+  utiliser un mixin de fondation → a acter en ADR (decision de build), pas a
+  decider en cours d'integration.
 
 - **Full-bleed et barre de defilement** : voir README (« Idiome pleine largeur »).
   A verifier sous Windows en recette ; concerne `image_full`,
@@ -47,12 +49,17 @@ Pour demarrer un bloc, il faut le **node id Figma** du frame ou de la region
 
 ## Etat du bac a sable (node 33)
 
-Enrichi bloc par bloc, non versionne (base locale) : **17 paragraphes**, tous les
+Enrichi bloc par bloc, non versionne (base locale) : **18 paragraphes**, tous les
 blocs integres a ce jour y sont rejouables. Ajouts recents : `history`
 (4 entrees), `product_characteristics` (6 caracteristiques + 2 documents),
-`news_home` ; second PDF de demo `public://sandbox/dossier-general.pdf` ;
-recadrages 16:9 sur les medias 3 et 4 ; descriptions de fichier saisies sur 3
-des 9 champs fichier.
+`news_home`, `brands_home` ; second PDF de demo
+`public://sandbox/dossier-general.pdf` ; recadrages 16:9 sur les medias 3 et 4 ;
+descriptions de fichier saisies sur 3 des 9 champs fichier ; **16 marques** de
+demo (les 4 de test + 12 nommees) pour que la rangee deborde.
+
+⚠️ Les medias de demo ne sont **pas des logos** (une photo et une capture) : la
+tuile de marque est verifiee sur sa geometrie, pas sur son rendu final. Prevoir
+de vrais logos avant la recette visuelle des marques.
 
 `news_home` est aussi place sur la **page d'accueil** (node 31), son emplacement
 prevu par F3 — le bac a sable sert a le rejouer, la home a le composer. Regle a

@@ -1,93 +1,144 @@
 // SDC « Bloc :: Marques Homepage » — slideshow de logos de marques (ordre alpha).
-// Le wrapper `.view` de la Vue embarquée est neutralisé (display: contents)
-// pour que `.swiper-wrapper` soit pris en charge par Swiper.
+// Maquette Figma 303:6307 (home, région y=3294→3596) : titre centré, rangée de
+// tuiles de 118px espacées de 16, flèches superposées aux extrémités de la
+// rangée, bouton gris centré dessous. La piste démarre après la flèche
+// « précédent » et déborde à droite (dernière tuile coupée).
+// Sans JS : les tuiles passent à la ligne (tout visible), flèches masquées.
 .brands-home {
-  &__head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-block: 2.5rem;
 
   &__title {
-    margin: 0;
-    color: var(--dm-color-anthracite);
-    font-family: var(--dm-font-title);
-    font-size: var(--dm-h2-size);
-    line-height: var(--dm-h2-line);
+    margin: 0 0 40px;
+    color: var(--dm-color-steel);
+    text-align: center;
   }
 
-  &__more a {
-    color: var(--dm-color-red);
-    font-family: var(--dm-font-title);
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  &__more a:hover {
-    text-decoration: underline;
-  }
-
-  &__viewport {
+  // Rangée : contexte de positionnement des flèches (elles ne peuvent pas être
+  // dans le `.swiper`, qui masque son débordement).
+  &__row {
     position: relative;
   }
 
-  &__nav {
+  // La piste laisse la place de la flèche « précédent » à gauche (66px = calage
+  // de la maquette) et déborde à droite jusqu'au bord de la fenêtre.
+  // `.swiper` est répété : le bundle pose `margin-left/right: auto` à la même
+  // spécificité que notre BEM et il est chargé après.
+  &__viewport.swiper {
+    margin-left: 66px;
+    margin-right: calc(50% - 50vw);
+  }
+
+  // Tuiles à largeur fixe — slidesPerView: auto.
+  & .swiper-slide {
+    width: 118px;
+  }
+
+  // Flèches : masquées tant que Swiper n'a pas démarré (sans JS, ou une seule
+  // marque). Superposées aux extrémités, centrées sur la hauteur des tuiles.
+  &__nav-button {
     display: none;
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    top: 40%;
-    z-index: 1;
+    top: 50%;
+    z-index: 2;
     width: 44px;
     height: 44px;
     padding: 0;
     border: 0;
-    border-radius: 50%;
-    background: var(--dm-color-red);
-    color: var(--dm-color-white);
+    border-radius: 8px;
+    opacity: 0.8;
+    background: var(--dm-color-grey-light);
+    color: var(--dm-color-anthracite);
+    transform: translateY(-50%);
     cursor: pointer;
   }
 
-  &__nav::before {
+  // Chevron exporté de la maquette, masqué pour hériter de `color`.
+  &__nav-button::before {
     content: '';
-    display: block;
-    width: 12px;
-    height: 12px;
-    margin: 0 auto;
-    border-top: 2px solid currentcolor;
-    border-right: 2px solid currentcolor;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color: currentcolor;
+    mask: url('../../images/icons/chevron-right.svg') no-repeat center;
   }
 
-  &__nav:focus-visible {
-    outline: 3px solid var(--dm-color-anthracite);
+  &__nav-button--prev {
+    left: 0;
+  }
+
+  &__nav-button--prev::before {
+    transform: scaleX(-1);
+  }
+
+  &__nav-button--next {
+    right: 0;
+  }
+
+  &__nav-button:focus-visible {
+    outline: 3px solid var(--dm-color-red);
     outline-offset: 2px;
   }
 
-  &__nav--prev {
-    left: 0.5rem;
+  // Bout de course : la flèche reste en place (elle encadre la rangée) mais
+  // devient inerte et atténuée.
+  &__nav-button.swiper-button-disabled {
+    opacity: 0.35;
+    pointer-events: none;
   }
 
-  &__nav--prev::before {
-    transform: rotate(-135deg);
+  // Déclaré après les règles simples de `&__nav-button` : `:has()` est plus
+  // spécifique, Stylelint (no-descending-specificity) exige cet ordre.
+  &:has(&__viewport.swiper-initialized) &__nav-button {
+    display: flex;
   }
 
-  &__nav--next {
-    right: 0.5rem;
+  // « Marques partenaires » : bouton gris de la maquette, centré sous la rangée.
+  // Le wrapper de champ Drupal est neutralisé pour centrer le lien.
+  &__more {
+    display: flex;
+    justify-content: center;
+    margin-top: 54px;
+
+    > * {
+      display: contents;
+    }
   }
 
-  &__nav--next::before {
-    transform: rotate(45deg);
+  &__more a {
+    padding: 14px 16px;
+    border-radius: 6px;
+    background: var(--dm-color-grey-light);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 18px;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
   }
 
-  &__viewport.swiper-initialized &__nav {
-    display: block;
+  &__more a:hover {
+    background: var(--dm-color-grey-metal);
   }
 
-  :where(html.no-js) &__viewport {
+  &__more a:focus-visible {
+    outline: 3px solid var(--dm-color-red);
+    outline-offset: 2px;
+  }
+
+  // Repli sans JS : les tuiles étant petites et de taille fixe, elles passent à
+  // la ligne plutôt que de s'empiler (plus lisible qu'une colonne de logos).
+  :where(html.no-js) &__viewport.swiper {
     overflow: visible;
+    margin-inline: 0;
   }
 
   :where(html.no-js) & .swiper-wrapper {
-    display: block;
+    flex-wrap: wrap;
+    gap: 16px;
   }
 }
