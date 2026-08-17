@@ -57,7 +57,9 @@ valide : le fil d'Ariane des actualités aura un vrai 3ᵉ niveau.
 ### Constats de passage (hors périmètre, non corrigés)
 
 - `easy_breadcrumb.settings` : `home_segment_title: Home` non traduit, et `alternative_title_field`
-  pointe sur un `field_breadcrumb_title` inexistant (candidat naturel : `field_title`). Relève de F2.
+  pointe sur un `field_breadcrumb_title` inexistant (candidat naturel : `field_title`).
+  **Corrigé le 2026-08-17** avec la bascule linguistique : segment « Accueil », titre affiché,
+  capitalisation automatique coupée.
 - `pathauto.settings.ignore_words` est une liste de mots-outils **anglais** : les alias français
   garderont « un », « en », « de ». Réglage éditorial, à arbitrer si besoin.
 
@@ -158,15 +160,11 @@ réutilise `brand-logo`.
    `<time datetime>` sur les dates d'actualité.
 8. **`hook_update_N`** : aucun. Tout passe par config + `drush cim`.
 9. **i18n** : libellés de types, de champs et de vues en français, chaînes de template via `|t`.
-10. ⚠️ **La langue du site est l'anglais** — constaté en T1. Les modules `language` et `locale` ne
-    sont pas installés, `system.site` est en `en`, et le site n'a jamais reçu de traduction
-    française. Le français visible aujourd'hui vient uniquement des **libellés saisis à la main**
-    (types, champs, vues). Conséquence directe sur F8 : le format de date `dm_long` (`j F Y`)
-    rend « 17 August 2026 » au lieu de « 17 août 2026 ». Touche aussi `format_size`
-    (« 50 KB »), le pager, et toute chaîne du cœur ou d'un module contrib.
-    **Ne se corrige pas dans cette brique** : installer `language` + `locale`, ajouter le
-    français, le passer par défaut et importer les traductions — chantier à part, à planifier.
-    Contredit la décision #6 du PRD (« site en français uniquement »).
+10. ~~La langue du site est l'anglais~~ — **resolu le 2026-08-17** : `language` + `locale`
+    installes, francais par defaut, 15 309 chaines importees. Dates, poids de fichiers et
+    chaines du cœur sont en francais. Les deux pieges rencontres (reference circulaire d'une
+    `ConfigFactoryOverride`, alias casses par le changement de langcode) sont decrits dans
+    docs/PRD.md, section 7.
 11. ⚠️ **La page d'accueil n'a aucun `<h1>`** — constaté en T6, **antérieur à cette brique**
     (hérité de F3). Le bloc titre de page y est masqué (`request_path: <front>`) et le titre
     visible, « Bienvenue chez DRIVE-MATIC », vient du SDC `text_centered` qui rend un `<h2>`.
@@ -210,7 +208,7 @@ tranche qui crée le type ; T0 ne rattrape que les types déjà livrés.
 | # | Tranche | Vérification |
 |---|---|---|
 | **T0** ✅ | ADR-011 · storage `field_title` + override du `title` en « Titre administratif » · substitution dans `preprocess_page_title` · mapping Metatag · rattrapage `contact`/`partner`/`news` · motifs d'alias | ✅ Token `[node:field_title]` résolu ; un seul `<h1>` par page ; `<h1>` **et** `<title>` = titre affiché (vérifié avec un libellé admin distinct) ; 301 depuis l'ancien alias ; `drush config:status` clean ; lint + format verts |
-| **T1** ✅ | `all_news` (F8) + vue paginée + `node--news` (détail : date, visuel 16:9, légende) + `field_paragraphs` sur `news` | ✅ `/actualites` sert la liste, le lien « voir toutes » de la home y mène ; 10 en page 1 / 1 en page 2 sur 11 actualités ; 0 actualité → message propre ; dépublier une actualité met la liste à jour **sans vidage de cache** ; lint + format verts. ⚠️ Date rendue en anglais (cf. §5.10) |
+| **T1** ✅ | `all_news` (F8) + vue paginée + `node--news` (détail : date, visuel 16:9, légende) + `field_paragraphs` sur `news` | ✅ `/actualites` sert la liste, le lien « voir toutes » de la home y mène ; 10 en page 1 / 1 en page 2 sur 11 actualités ; 0 actualité → message propre ; dépublier une actualité met la liste à jour **sans vidage de cache** ; lint + format verts |
 | **T2** ✅ | `transform` (F4) + `product` (F5) | ✅ Les deux pages rendent tous leurs blocs (fiche produit = les 4 blocs V5 + bannière + configurateur en `image_text_100`) ; `grid` **refusé** sur `product`, autorisé sur `transform` ; les 9 champs rangés dans leurs onglets sur les deux formulaires ; alias, `<h1>` et `<title>` depuis `field_title` ; lint + format verts. **Aucun template dédié nécessaire** : le template générique ne rend pas le libellé en pleine page |
 | **T3** ✅ | `corporate` (F9) + `legals` | ✅ `corporate` rend ses 6 blocs de démo (dont `triptych`, `history`, `image_centered`, `video_centered`) ; `legals` **sans body ni champ « Balises meta »** (absents du formulaire), dans le sitemap, aucune méta description émise, et `<title>` = titre affiché grâce à un défaut Metatag limité au titre ; lint + format verts |
 | **T4** ✅ | taxo `categories` + `question` (fragment) + `faq` + vue BEF | ✅ `/node/<question>` → **403** ; filtre BEF rendu en **liens** (un par catégorie), `?categorie=479` → 2 questions, catégorie inconnue → message propre ; les 6 questions rendues en `accordion-element` dans le SDC `accordion`, dont les assets (CSS + JS) sont bien attachés depuis un template de Vue ; formulaire `question` sans `field_title` ni métatags ; lint + format verts |

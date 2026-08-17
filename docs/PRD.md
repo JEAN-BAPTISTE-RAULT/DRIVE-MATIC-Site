@@ -181,7 +181,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - [ ] **Detail** : titre, date, visuel principal, blocs (titre/texte/lien/document/video optionnels), possibilite d'ajouter des paragraphes texte/image/video.
   - **Mise en oeuvre** : `news` porte `field_paragraphs` (allowlist `text_left_aligned`, `image_centered`, `video_centered`). La date affichee est `changed`, format **`dm_long`** (`j F Y`), rendue en `<time datetime>` par `node--news.html.twig`.
   - **Alias** : `/actualites/[node:field_title]`, sous la page `all_news` servie a `/actualites` — seul type a porter un prefixe (cf. [ADR-011](../.claude/decisions/011-titre-affiche-et-alias.md)).
-  - `[OUVERT]` La date sort en **anglais** (« 17 August 2026 ») tant que le site n'est pas passe en francais — cf. section 7.
+  - La date sort « 17 aout 2026 » depuis la bascule du site en francais (2026-08-17).
 - [ ] Une actualite dispose d'une fonction publier / ne pas publier en back-office.
 
 ---
@@ -510,11 +510,41 @@ Perimetre livre en **une seule version (V1)** couvrant l'ensemble des features.
 
 > Elements a trancher avant/pendant la V1 (cf. `[A PRECISER]`) : outils analytics (Matomo/GA4) et consentement cookies ; champs du fichier « partenaires » ; modalites d'import du referentiel vehicules.
 
+### Bascule linguistique (2026-08-17)
+
+Le site est passe en **francais**, seule langue, sans traduction de contenu
+(decision #6). `language` + `locale` installes, francais par defaut, 15 309
+chaines importees depuis 27 projets ; les traductions de configuration vivent
+dans `config/sync/language/fr/`.
+
+Deux pieges rencontres, a connaitre avant de rejouer l'operation sur un autre
+environnement :
+
+1. **Le site devient inaccessible si un service de surcharge de configuration
+   injecte des dependances.** `config.factory` devient une dependance du
+   traducteur de chaines des que `locale` est installe : toute
+   `ConfigFactoryOverride` qui injecte un service referme la boucle et le
+   conteneur refuse de se construire (plus une page, plus de bootstrap Drush).
+   Corrige sur `drivematic_home`. Consequence secondaire : l'installation de
+   `locale` s'etait interrompue en cours de route, laissant le module enregistre
+   **sans aucune de ses tables ni sa configuration** — et sa desinstallation
+   echouait pour la meme raison.
+2. **La bascule casse toutes les URL.** Les alias sont enregistres avec le
+   langcode du contenu : passes en `fr`, ils ne sont plus trouves pour du contenu
+   reste en `en`, et chaque page retombe sur `/node/N`. Il faut repasser le
+   contenu existant en francais (nodes, medias, paragraphes), ce qui regenere les
+   alias, puis forcer ceux des nodes marques « alias defini manuellement »
+   (`pathauto = 0`), que rien ne regenere.
+
+`[OUVERT]` `pathauto.settings.ignore_words` reste une liste de mots-outils
+**anglais** : les alias francais gardent « un », « en », « de ». Reglage
+editorial, a arbitrer.
+
 ### Ecarts ouverts constates a l'implementation
 
 | # | Ecart | Decision concernee |
 |---|-------|--------------------|
-| 1 | **Le site tourne en anglais** : les modules `language` et `locale` ne sont pas installes, `system.site` est en `en`. Le francais visible ne vient que des libelles saisis a la main. Consequences : dates (« 17 August 2026 »), poids de fichiers (« 50 KB »), pagination, boutons de formulaire — tout le cœur sort en anglais. Chantier a part : installer le francais, le passer par defaut, importer les traductions. | #6 (site en francais uniquement) |
+| 1 | ~~Le site tourne en anglais~~ — **resolu le 2026-08-17** : `language` + `locale` installes, francais pose par defaut et seule langue du site, 15 309 chaines importees. Dates, poids de fichiers, barre d'administration et onglets locaux sont en francais. Deux pieges rencontres, decrits en section 7 (« Bascule linguistique »). | #6 (site en francais uniquement) |
 | 2 | **La page d'accueil n'a aucun `<h1>`** : le bloc titre de page y est masque et le titre visible vient du SDC `text_centered`, qui rend un `<h2>`. Non corrige car changer le niveau de titre du SDC toucherait toutes les pages qui l'utilisent — a trancher avec le placement du titre, a l'integration des maquettes. | #8 (RGAA / WCAG 2.1 AA) |
 | 3 | **Le titre de page est rendu apres le contenu**, dans un `<aside>` (region `sidebar_first` heritee du starterkit). A reprendre avec le shell de page en F2. | #8 |
 

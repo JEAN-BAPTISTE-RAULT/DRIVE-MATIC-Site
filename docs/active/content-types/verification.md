@@ -50,7 +50,7 @@
 
 ## Ecarts ouverts (non corriges)
 
-1. **Le site tourne en anglais** — dates, poids de fichiers, pagination. Chantier a part, lance.
+1. ~~Le site tourne en anglais~~ — **resolu le 2026-08-17** (cf. docs/PRD.md, section 7).
 2. **La page d'accueil n'a aucun `<h1>`** — antérieur a cette brique ; a trancher avec le
    placement du titre, a l'integration des maquettes.
 3. **Etiquetage du titre sur les 3 fragments** (`document`, `question`, `brand`) : pas de

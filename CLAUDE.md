@@ -106,6 +106,7 @@ Le formatage (indentation, guillemets, longueur de ligne) est gere par le linter
 - Ne jamais construire de requete SQL par concatenation : passer par l'API Database (requetes parametrees) ou l'Entity Query API.
 - Textes visibles par l'utilisateur : toujours traduisibles — `t()` / `\Drupal::translation()` cote PHP, filtre `|t` cote Twig.
 - Recuperer les services via l'injection de dependances dans les classes ; reserver `\Drupal::service()` au code procedural (`.module`, hooks).
+- **Exception : une `ConfigFactoryOverride` n'injecte rien.** Elle est construite par `config.factory`, qui devient une dependance du traducteur de chaines des que `locale` est installe : injecter un service y referme une boucle et **le conteneur refuse de se construire** — plus une page, plus meme de bootstrap Drush. Resoudre le service paresseusement dans la methode qui s'en sert, et declarer la derogation par un `phpcs:ignore` cible. Cas vecu sur `drivematic_home`.
 
 **Twig**
 
