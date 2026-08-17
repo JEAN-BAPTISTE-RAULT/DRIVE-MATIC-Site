@@ -28,14 +28,21 @@ final class FrontPageOverride implements ConfigFactoryOverrideInterface {
   private int|null|false $homepageNid = FALSE;
 
   /**
-   * Construit le service de surcharge.
+   * Le gestionnaire d'entites est resolu paresseusement, jamais injecte.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   *   Le gestionnaire de types d'entite.
+   * ⚠️ Une surcharge de configuration est construite par `config.factory`, qui
+   * est elle-meme une dependance du traducteur de chaines des que le module
+   * `locale` est installe. Injecter `@entity_type.manager` ferme donc la
+   * boucle — `config.factory` -> cette surcharge -> `entity_type.manager` ->
+   * `string_translation` -> `string_translator.locale.lookup` ->
+   * `config.factory` — et le conteneur refuse de se construire : plus aucune
+   * page, plus meme de bootstrap Drush. C'est la seule raison pour laquelle ce
+   * service deroge a la regle d'injection de dependances du projet.
    */
-  public function __construct(
-    private readonly EntityTypeManagerInterface $entityTypeManager,
-  ) {}
+  private function entityTypeManager(): EntityTypeManagerInterface {
+    // phpcs:ignore DrupalPractice.Objects.GlobalDrupal.GlobalDrupal
+    return \Drupal::entityTypeManager();
+  }
 
   /**
    * {@inheritdoc}
@@ -64,7 +71,7 @@ final class FrontPageOverride implements ConfigFactoryOverrideInterface {
     }
     $this->homepageNid = NULL;
     try {
-      $ids = $this->entityTypeManager->getStorage('node')->getQuery()
+      $ids = $this->entityTypeManager()->getStorage('node')->getQuery()
         ->accessCheck(FALSE)
         ->condition('type', 'homepage')
         ->condition('status', 1)

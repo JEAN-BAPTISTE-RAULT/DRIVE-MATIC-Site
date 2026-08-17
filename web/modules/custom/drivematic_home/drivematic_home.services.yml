@@ -1,6 +1,5 @@
 services:
   drivematic_home.front_page_override:
     class: Drupal\drivematic_home\FrontPageOverride
-    arguments: ['@entity_type.manager']
     tags:
       - { name: config.factory.override, priority: 5 }
