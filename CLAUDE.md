@@ -166,6 +166,7 @@ Les decisions architecturales posterieures au PRD sont dans `.claude/decisions/`
 - **Neutraliser une protection de securite** : desactiver l'auto-echappement Twig, le CSRF, le Flood control ou la sanitation d'entrees pour "faire marcher" une fonctionnalite.
 - **Placer du CSS ou du Twig hors d'un SDC** (hors fondations globales) : casse l'isolation et la reutilisabilite des composants.
 - **Contourner le pipeline images** : crops/dimensions en dur, `<img>` hors media-library / image styles, ou sortie non-WebP.
+- **Reactiver `gin_toolbar` ou le module core `navigation`** : les deux doivent rester desinstalles ([ADR-012](.claude/decisions/012-presentation-admin-front.md)). Le paquet `gin_toolbar` reste sur disque — `drupal/gin` l'exige en dependance ferme — donc rien n'empeche techniquement de l'activer : la barre d'administration du front changerait sans autre signe.
 - **Charger un asset front tiers via CDN** : toute librairie JS/CSS ou police tierce est **auto-hebergee / vendorisee** dans le theme (`vendor/`), jamais appelee depuis un CDN externe (RGPD ; cf. ADR-008 et PRD §6).
 
 ### Securite du code

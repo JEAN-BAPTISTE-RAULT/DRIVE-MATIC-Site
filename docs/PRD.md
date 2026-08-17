@@ -102,6 +102,22 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 **Criteres d'acceptation** :
 - [ ] Blocs presents : titre generique ; jusqu'a 3 jumbos (visuel + titre + CTA optionnel) ; bloc solutions auto-ecole & PMR (3 blocs produits avec liens) ; bloc configurateur ; bloc actualites (5 plus recentes + lien « voir toutes ») ; carrousel marques partenaires (ordre alpha, navigation fleches) ; bloc image a gauche fond gris ; accordeons SEO.
+  - **Composition faite** (maquette Figma `303-5967`), 8 blocs de haut en bas :
+
+    | Section de la maquette | Paragraphe |
+    |---|---|
+    | Titre « Equipements de conduite pour auto-ecoles et vehicules adaptes » | `text_centered` |
+    | Slider de 2 bannieres (fleche + points) | `jumbo_home` |
+    | « Nos solutions auto-ecole et PMR » — 3 vignettes titrees, 3/2/2 liens | `grid` |
+    | Bandeau « Configurez votre vehicule et obtenez votre tarif » | `image_text_100` |
+    | « Actualites Drive Matic Legrand » | `news_home` |
+    | « Nos marques partenaires » | `brands_home` |
+    | « Un savoir-faire et des certifications » (fond gris, image 1:1 a gauche) | `image_text_50` |
+    | Accordeons SEO | `accordion` |
+
+  - Les **ratios de la maquette confirment la bibliotheque** : bannieres 900x506 et vignettes 440x246 (16:9), visuel savoir-faire 510x510 (1:1).
+  - `[OUVERT]` **Huit liens sont des placeholders** vers `/` : banniere PMR, cinq des sept liens du bloc solutions, bouton configurateur, lien d'accordeon — leurs pages n'existent pas encore. Cables pour de vrai : banniere auto-ecole → page solution, « Double pedalier auto-ecole » → fiche produit, actualites → `/actualites`, marques → `/marques-partenaires`, savoir-faire → « Qui sommes-nous ».
+  - `[OUVERT]` Le visuel du configurateur sort au ratio de sa source (1440x640) et non au cadrage de la maquette (1,78) : `image_text_100` est un bloc **sans crop** (ADR-001).
 - [ ] Accordeons SEO : l'ouverture d'un accordeon ferme le precedent.
 - [ ] Jumbos : navigation par **fleches et points de pagination** ; **pas de boucle** (la fleche en bout de course disparait) ; la banniere suivante est visible en **apercu coupe** a droite.
 - [ ] Carrousel marques (integration maquette) : titre **centre**, rangee de **tuiles carrees** (logo centre, bordure fine, coins arrondis) defilant horizontalement, **fleche a chaque extremite** de la rangee, lien en **bouton gris centre** dessous. Le **nom** de la marque n'est pas affiche (la maquette ne montre que le logo) mais reste disponible pour les technologies d'assistance.
@@ -151,6 +167,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
   - **Structure d'un `document` — arbitre** : trois champs, tous obligatoires — un **titre administratif** (back-office : listes, recherche, autocompletion depuis la page Documentations ; jamais affiche en public), le **fichier**, et le **libelle du bouton de telechargement** (la description du fichier, [ADR-009](../.claude/decisions/009-telechargements-nommes.md)). Meme separation que `title` / `field_title` sur les types publics : un libelle pour l'administration, un pour le public. Le rendu est un lien portant le libelle, suivi du **format et du poids calcules**.
 - [ ] **Marques partenaires** : bloc informations generales + liste des marques sous forme de logos, **ordre alphabetique**.
   - **Mise en oeuvre** : Vue `brands` embarquee, tuiles `brand-logo` (les memes qu'en home) enveloppees par le SDC **`brands-grid`** — la page passe a la ligne la ou la home defile. Logos **non cliquables** (page canonique du fragment bloquee).
+  - **Jeu de demonstration** : **12 marques** portant les logos reels de la maquette Home (Aixam, BYD, Citroen, Cupra, Dacia, DS Automobiles, Fiat, Ford, Hyundai, Jeep, Lexus, Ligier). La maquette n'en fournit pas davantage : les quatre marques factices d'origine ont ete supprimees et trois autres renommees. Douze tuiles debordent toujours la rangee de la home, le test des fleches reste donc valable.
 
 ---
 
