@@ -57,16 +57,8 @@ content:
     third_party_settings: {  }
     weight: 3
     region: content
-  field_title:
-    type: string
-    label: hidden
-    settings:
-      link_to_entity: false
-      link_rel: canonical
-    third_party_settings: {  }
-    weight: 0
-    region: content
 hidden:
   field_background: true
   field_caption: true
   field_text_position: true
+  field_title: true

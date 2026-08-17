@@ -38,7 +38,7 @@
 | 21 | `product_cross` | Bloc :: Cross-selling produit | titre (obl), max 5 × `product_cross_element` (min 1) | — | — |
 | 22 | `triptych_element` | Élément :: Triptyque | texte au-dessus (opt), texte en gras (obl), texte au-dessous (opt) | — | — |
 | 23 | `triptych` | Bloc :: Triptyque | max 3 × `triptych_element` (min 1) | — | — |
-| 24 | `history_element` | Élément :: Histoire | titre (obl), description (opt), légende (opt) | **soit** image cropable **16:9** (obl) **soit** thumbnail vidéo cropable **16:9** (obl) + lien embed (obl) — **exclusif** | — |
+| 24 | `history_element` | Élément :: Histoire | titre (obl), description (opt), légende (opt) | image cropable **16:9** (obl) + lien embed (opt) — l'image **est** la miniature quand une vidéo est renseignée (cf. [ADR-006](../../../.claude/decisions/006-video-embed-facade.md)), d'où **un seul** champ image et non deux champs exclusifs | — |
 | 25 | `history` | Bloc :: Histoire | titre (obl), N× `history_element` (min 1, illimité) | — | **slideshow** si > 1 |
 
 ## Ratios de crop (entrée pour l'étude images, préalable #1)
@@ -47,6 +47,7 @@
 |-------|-----------------------|
 | **1:1** | `image_text_50` |
 | **16:9** | `grid_element`, `news_home` (image news), `jumbo_home_element`, `product_image_element`, `product_video_element` (thumbnail), `product_cross_element`, `history_element` (image ou thumbnail vidéo), `video_centered` (thumbnail) |
+| _(controle 2026-08-17)_ | Les 13 ratios ci-dessous sont **conformes en configuration** : chaque champ image est rendu au mode d'affichage média correspondant (`ratio_1_1` / `ratio_16_9` / `ratio_12_5` / `free`), chacun pointant sur son style responsive `dm_*`. ⚠️ Rappel : le recadrage etant **manuel**, un media non recadre sort au ratio de sa source sans erreur (cf. PRD, prealables images). |
 | **12:5** | `image_full` |
 | **SANS CROP** (largeur fixe maquette, hauteur proportionnelle) | `image_text_100`, `product_characteristics`, `image_centered` |
 
