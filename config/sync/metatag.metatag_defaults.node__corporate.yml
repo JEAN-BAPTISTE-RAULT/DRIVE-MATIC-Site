@@ -1,0 +1,9 @@
+uuid: 1288ef8a-0a1b-4719-8102-d3fba5674e8a
+langcode: en
+status: true
+dependencies: {  }
+id: node__corporate
+label: 'Page :: Corporate'
+tags:
+  title: '[node:field_title] | [site:name]'
+  description: '[node:summary]'

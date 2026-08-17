@@ -1,0 +1,32 @@
+uuid: 5a4fd1f8-2861-43a4-b237-722b5640d95d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.legals.field_paragraphs
+    - field.field.node.legals.field_title
+    - node.type.legals
+  module:
+    - entity_reference_revisions
+    - user
+id: node.legals.default
+targetEntityType: node
+bundle: legals
+mode: default
+content:
+  field_paragraphs:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  field_title: true

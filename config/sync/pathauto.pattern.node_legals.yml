@@ -1,0 +1,23 @@
+uuid: 608ccf52-f9bc-47a6-a61a-4836ef5c0393
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.legals
+  module:
+    - node
+id: node_legals
+label: 'Page :: Mentions légales'
+type: 'canonical_entities:node'
+pattern: '/[node:field_title]'
+selection_criteria:
+  99f96e53-9495-48b9-9f8c-19afc6a14f49:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      legals: legals
+selection_logic: and
+weight: 0
+relationships: {  }

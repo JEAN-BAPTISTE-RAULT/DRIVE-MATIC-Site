@@ -1,0 +1,21 @@
+uuid: aaa0532c-7d40-4462-8371-ff1eb20b8290
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_meta_tags
+    - node.type.corporate
+  module:
+    - metatag
+id: node.corporate.field_meta_tags
+field_name: field_meta_tags
+entity_type: node
+bundle: corporate
+label: 'Balises meta'
+description: 'Laisser vide pour le remplissage automatique : le titre alimente la balise « title », le corps de texte la « description ». Renseigner uniquement pour surcharger ce calcul.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: metatag

@@ -1,0 +1,24 @@
+uuid: eadd387d-2083-45aa-97f0-7b74a394b00b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.corporate
+  module:
+    - text
+id: node.corporate.body
+field_name: body
+entity_type: node
+bundle: corporate
+label: Corps
+description: 'Résumé de la page. Il n’est pas affiché : il alimente la méta description quand les balises meta ne sont pas surchargées.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: false
+  required_summary: false
+  allowed_formats: {  }
+field_type: text_with_summary

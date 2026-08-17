@@ -1,0 +1,23 @@
+uuid: bcb26661-f8b1-4078-8a65-b9b88879478b
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.corporate
+  module:
+    - node
+id: node_corporate
+label: 'Page :: Corporate'
+type: 'canonical_entities:node'
+pattern: '/[node:field_title]'
+selection_criteria:
+  1b884fe0-24d0-4fea-9600-71f9692b80fa:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      corporate: corporate
+selection_logic: and
+weight: 0
+relationships: {  }

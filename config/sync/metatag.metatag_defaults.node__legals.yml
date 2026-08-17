@@ -1,0 +1,8 @@
+uuid: 1cab33ef-dd84-4523-8dbb-5b9d27d8f329
+langcode: en
+status: true
+dependencies: {  }
+id: node__legals
+label: 'Page :: Mentions légales'
+tags:
+  title: '[node:field_title] | [site:name]'

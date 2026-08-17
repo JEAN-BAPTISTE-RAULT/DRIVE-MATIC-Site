@@ -1,0 +1,19 @@
+uuid: f138f1d1-fb04-40e3-b1c0-aead8f7c99d0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_title
+    - node.type.legals
+id: node.legals.field_title
+field_name: field_title
+entity_type: node
+bundle: legals
+label: Titre
+description: 'Titre affiché en haut de la page. Il alimente aussi l’adresse de la page et la balise « title » du navigateur.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
