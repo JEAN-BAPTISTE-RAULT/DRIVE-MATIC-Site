@@ -1,0 +1,18 @@
+uuid: ed707dd1-d7e4-410f-a08c-6cc19db541e1
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.news
+id: node.news.title
+field_name: title
+entity_type: node
+bundle: news
+label: 'Titre administratif'
+description: 'Nom de l’actualité dans le back-office (listes de contenu, recherche). Il n’est jamais affiché sur le site : le titre visible est saisi dans « Titre ».'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

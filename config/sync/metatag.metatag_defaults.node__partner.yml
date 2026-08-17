@@ -1,0 +1,9 @@
+uuid: aebc5da8-340d-429e-9edd-93960e1f113c
+langcode: en
+status: true
+dependencies: {  }
+id: node__partner
+label: 'Page :: Devenir partenaire'
+tags:
+  title: '[node:field_title] | [site:name]'
+  description: '[node:summary]'

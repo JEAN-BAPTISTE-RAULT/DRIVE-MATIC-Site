@@ -7,10 +7,47 @@
 
 declare(strict_types=1);
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\file\FileInterface;
+use Drupal\node\NodeInterface;
 use Drupal\paragraphs\ParagraphInterface;
+
+/**
+ * Implements hook_preprocess_HOOK() for page_title.
+ *
+ * Le `title` d'un node est un libelle d'administration (ADR-011) : le titre
+ * affiche est porte par `field_title`. Le bloc titre de page rendant le titre
+ * de route — donc le libelle du node —, on lui substitue la valeur du champ.
+ *
+ * Limite a la route canonique : sur les routes d'administration (edition,
+ * suppression, revisions) le titre de route est une phrase construite par le
+ * coeur, qu'il ne faut pas remplacer.
+ */
+function drive_matic_preprocess_page_title(array &$variables): void {
+  if (\Drupal::routeMatch()->getRouteName() !== 'entity.node.canonical') {
+    return;
+  }
+
+  $node = \Drupal::routeMatch()->getParameter('node');
+
+  if (!$node instanceof NodeInterface || !$node->hasField('field_title')) {
+    return;
+  }
+
+  $field_title = $node->get('field_title');
+
+  if ($field_title->isEmpty()) {
+    return;
+  }
+
+  $variables['title'] = ['#plain_text' => $field_title->value];
+  $variables['#cache']['tags'] = Cache::mergeTags(
+    $variables['#cache']['tags'] ?? [],
+    $node->getCacheTags()
+  );
+}
 
 /**
  * Implements hook_preprocess_HOOK() for paragraph.

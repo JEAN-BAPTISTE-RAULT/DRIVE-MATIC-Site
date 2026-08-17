@@ -15,6 +15,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-008](008-slideshow-swiper.md) | Slideshow — Swiper vendorise (librairie unique) | Accepte | 2026-08-13 |
 | [ADR-009](009-telechargements-nommes.md) | Telechargements nommes (bloc multi-documents) | Accepte | 2026-08-14 |
 | [ADR-010](010-metatags.md) | Metatags — defauts a tokens + champ de surcharge | Accepte | 2026-08-17 |
+| [ADR-011](011-titre-affiche-et-alias.md) | Titre affiche (`field_title`) distinct du libelle admin + motifs d'alias | Accepte | 2026-08-17 |
 
 ## Quand creer un ADR
 

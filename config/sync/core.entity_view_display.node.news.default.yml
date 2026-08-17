@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.news.field_caption
     - field.field.node.news.field_image
     - field.field.node.news.field_meta_tags
+    - field.field.node.news.field_title
     - node.type.news
   module:
     - text
@@ -48,3 +49,4 @@ content:
     region: content
 hidden:
   field_meta_tags: true
+  field_title: true

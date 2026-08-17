@@ -1,9 +1,10 @@
 {#
   Rendu d'une actualité en mode d'affichage `card` (lignes de la Vue news_home).
   Embarque le SDC `drive_matic:news-card` : titre + URL = props, image = slot.
+  Le titre affiché est `field_title`, pas le libellé du node (ADR-011).
 #}
 {% embed 'drive_matic:news-card' with {
-  title: label,
+  title: node.field_title.value,
   url: url,
 } %}
   {% block image %}{{ content.field_image }}{% endblock %}

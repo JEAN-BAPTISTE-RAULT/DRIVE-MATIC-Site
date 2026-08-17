@@ -1,0 +1,9 @@
+uuid: c0bb624a-5e71-4515-b1bb-67f10b7126c4
+langcode: en
+status: true
+dependencies: {  }
+id: node__contact
+label: 'Page :: Contact'
+tags:
+  title: '[node:field_title] | [site:name]'
+  description: '[node:summary]'

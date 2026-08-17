@@ -1,0 +1,9 @@
+uuid: acf0d38f-959d-4a84-ae48-88f63e8fb209
+langcode: en
+status: true
+dependencies: {  }
+id: node__news
+label: 'Page :: Détail d’une actualité'
+tags:
+  title: '[node:field_title] | [site:name]'
+  description: '[node:summary]'
