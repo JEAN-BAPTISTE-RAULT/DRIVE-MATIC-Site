@@ -1,0 +1,25 @@
+uuid: f664fbc2-1596-4d11-bf1b-33fc134d3089
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.document.field_file
+    - node.type.document
+  module:
+    - file
+    - user
+id: node.document.default
+targetEntityType: node
+bundle: document
+mode: default
+content:
+  field_file:
+    type: file_default
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  links: true

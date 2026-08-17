@@ -1,0 +1,13 @@
+{#
+  Lignes de la Vue « Marques — Liste complète ».
+  Les tuiles sont enveloppées dans le SDC `brands-grid` : contrairement à la
+  home, la page Marques ne défile pas, elle passe à la ligne.
+  @see views-view-unformatted.html.twig pour les variables disponibles.
+#}
+{% embed 'drive_matic:brands-grid' %}
+  {% block items %}
+    {% for row in rows %}
+      {{ row.content }}
+    {% endfor %}
+  {% endblock %}
+{% endembed %}

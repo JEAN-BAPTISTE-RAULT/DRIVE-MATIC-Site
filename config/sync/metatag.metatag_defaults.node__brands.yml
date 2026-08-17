@@ -1,0 +1,9 @@
+uuid: 8735314b-4d53-446f-8ac8-f3f743c5e2e0
+langcode: en
+status: true
+dependencies: {  }
+id: node__brands
+label: 'Page :: Marques'
+tags:
+  title: '[node:field_title] | [site:name]'
+  description: '[node:summary]'

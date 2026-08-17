@@ -1,0 +1,8 @@
+// SDC « Bloc :: Grille de marques ».
+// Structure seulement : les tuiles carrees de 118px reprises de la home,
+// disposees en grille fluide. L'integration fine reste a faire.
+.brands-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}

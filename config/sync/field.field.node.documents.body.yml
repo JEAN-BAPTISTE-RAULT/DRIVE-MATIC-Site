@@ -1,0 +1,24 @@
+uuid: cd8e228d-5b0b-4c66-9d67-278e28f86dbb
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.documents
+  module:
+    - text
+id: node.documents.body
+field_name: body
+entity_type: node
+bundle: documents
+label: Corps
+description: 'Texte d’introduction affiché au-dessus de la liste.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: false
+  required_summary: false
+  allowed_formats: {  }
+field_type: text_with_summary

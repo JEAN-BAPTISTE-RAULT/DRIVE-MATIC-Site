@@ -1,0 +1,18 @@
+uuid: 49272417-39e5-4859-afaa-0efcfcad6cb8
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.documents
+id: node.documents.title
+field_name: title
+entity_type: node
+bundle: documents
+label: 'Titre administratif'
+description: 'Nom de la page dans le back-office (listes de contenu, recherche). Il n’est jamais affiché sur le site : le titre visible est saisi dans « Titre ».'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

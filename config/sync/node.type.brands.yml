@@ -1,0 +1,11 @@
+uuid: 7ae5807f-ba92-456c-9b8c-c4ece9be8eab
+langcode: en
+status: true
+dependencies: {  }
+name: 'Page :: Marques'
+type: brands
+description: 'Page listant les marques partenaires, par ordre alphabétique. La liste est produite automatiquement à partir des contenus « Élément :: Marque ».'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

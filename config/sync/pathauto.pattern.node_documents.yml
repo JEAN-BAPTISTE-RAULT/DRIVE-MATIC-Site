@@ -1,0 +1,23 @@
+uuid: 6bf51458-d9ca-42d6-9ab8-7463b124f3e6
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.documents
+  module:
+    - node
+id: node_documents
+label: 'Page :: Documentation'
+type: 'canonical_entities:node'
+pattern: '/[node:field_title]'
+selection_criteria:
+  e15bae75-90b2-4b35-8622-7e0881de6b71:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      documents: documents
+selection_logic: and
+weight: 0
+relationships: {  }

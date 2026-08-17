@@ -1,0 +1,27 @@
+uuid: 1b18ec7f-9dc7-4238-9fe5-ade5b5851ba4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_documents_school
+    - node.type.document
+    - node.type.documents
+id: node.documents.field_documents_school
+field_name: field_documents_school
+entity_type: node
+bundle: documents
+label: Auto-écoles
+description: 'Documents de la section « Auto-écoles », dans l’ordre d’affichage souhaité.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      document: document
+    sort:
+      field: _none
+    auto_create: false
+field_type: entity_reference
