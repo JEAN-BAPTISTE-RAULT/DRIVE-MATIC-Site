@@ -1,0 +1,24 @@
+uuid: bf513d49-0b54-4539-9c8f-da4bbf621c61
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.all_news
+  module:
+    - text
+id: node.all_news.body
+field_name: body
+entity_type: node
+bundle: all_news
+label: Corps
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: false
+  required_summary: false
+  allowed_formats: {  }
+field_type: text_with_summary

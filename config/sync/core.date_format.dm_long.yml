@@ -1,0 +1,8 @@
+uuid: 7e955918-28fe-41f8-ba5d-adcf2f021955
+langcode: en
+status: true
+dependencies: {  }
+id: dm_long
+label: 'Date longue (12 juillet 2026)'
+locked: false
+pattern: 'j F Y'

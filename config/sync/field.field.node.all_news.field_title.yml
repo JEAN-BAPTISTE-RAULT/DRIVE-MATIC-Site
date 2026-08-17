@@ -1,0 +1,19 @@
+uuid: beb2a968-cb66-4d13-ba09-ee3fd5b5c54f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_title
+    - node.type.all_news
+id: node.all_news.field_title
+field_name: field_title
+entity_type: node
+bundle: all_news
+label: Titre
+description: 'Titre affiché en haut de la page. Il alimente aussi l’adresse de la page et la balise « title » du navigateur.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

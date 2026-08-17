@@ -1,0 +1,9 @@
+uuid: be75069f-993a-41fd-a58d-f451e30bc23c
+langcode: en
+status: true
+dependencies: {  }
+id: node__all_news
+label: 'Page :: Toutes les actualités'
+tags:
+  title: '[node:field_title] | [site:name]'
+  description: '[node:summary]'

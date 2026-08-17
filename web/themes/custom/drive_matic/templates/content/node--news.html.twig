@@ -1,0 +1,13 @@
+{#
+  Détail d'une actualité (F8). La date affichée est la dernière modification
+  (`changed`), décision du modèle éditorial : pas de champ date dédié.
+  Le titre est rendu par le bloc titre de page depuis `field_title` (ADR-011) ;
+  le reste (visuel 16:9, légende, corps, blocs) vient du view display.
+  @see node.html.twig pour la liste complète des variables.
+#}
+<article{{ attributes.addClass('node', 'node--type-news') }}>
+  <time class="node__date" datetime="{{ node.changed.value|date('c') }}">
+    {{ node.changed.value|format_date('dm_long') }}
+  </time>
+  {{ content }}
+</article>

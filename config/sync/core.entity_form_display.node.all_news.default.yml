@@ -1,20 +1,15 @@
-uuid: 6a44054f-795a-4c77-b56c-476b9b56c272
+uuid: 20a23528-2a22-466f-82f8-c31768d8f316
 langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.news.body
-    - field.field.node.news.field_caption
-    - field.field.node.news.field_image
-    - field.field.node.news.field_meta_tags
-    - field.field.node.news.field_paragraphs
-    - field.field.node.news.field_title
-    - node.type.news
+    - field.field.node.all_news.body
+    - field.field.node.all_news.field_meta_tags
+    - field.field.node.all_news.field_title
+    - node.type.all_news
   module:
     - field_group
-    - media_library
     - metatag
-    - paragraphs
     - path
     - text
 third_party_settings:
@@ -58,11 +53,8 @@ third_party_settings:
     group_content:
       children:
         - body
-        - field_image
         - langcode
-        - field_caption
         - revision_log
-        - field_paragraphs
       label: Contenu
       region: content
       parent_name: group_tabs
@@ -76,35 +68,20 @@ third_party_settings:
         formatter: closed
         description: ''
         required_fields: true
-id: node.news.default
+id: node.all_news.default
 targetEntityType: node
-bundle: news
+bundle: all_news
 mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 4
+    weight: 5
     region: content
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
       show_summary: false
-    third_party_settings: {  }
-  field_caption:
-    type: string_textfield
-    weight: 7
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_image:
-    type: media_library_widget
-    weight: 5
-    region: content
-    settings:
-      media_types: {  }
     third_party_settings: {  }
   field_meta_tags:
     type: metatag_firehose
@@ -113,24 +90,6 @@ content:
     settings:
       sidebar: true
       use_details: true
-    third_party_settings: {  }
-  field_paragraphs:
-    type: paragraphs
-    weight: 8
-    region: content
-    settings:
-      title: Bloc
-      title_plural: Blocs
-      edit_mode: closed
-      closed_mode: summary
-      autocollapse: none
-      closed_mode_threshold: 0
-      add_mode: button
-      form_display_mode: default
-      default_paragraph_type: ''
-      features:
-        collapse_edit_all: collapse_edit_all
-        duplicate: duplicate
     third_party_settings: {  }
   field_title:
     type: string_textfield

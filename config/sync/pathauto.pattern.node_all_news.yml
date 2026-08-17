@@ -1,0 +1,23 @@
+uuid: 1825dad1-191b-4f76-995c-a591377f65c7
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.all_news
+  module:
+    - node
+id: node_all_news
+label: 'Page :: Toutes les actualités'
+type: 'canonical_entities:node'
+pattern: '/[node:field_title]'
+selection_criteria:
+  f0f5a1c1-8a0e-4a53-9a3f-1c0c6b7d2e41:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      all_news: all_news
+selection_logic: and
+weight: 0
+relationships: {  }

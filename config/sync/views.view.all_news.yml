@@ -1,0 +1,130 @@
+uuid: f86e567c-ba3b-4c59-9f47-5150004c5fd7
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - filter.format.basic_html
+    - node.type.news
+  module:
+    - node
+    - user
+id: all_news
+label: 'Actualités — Liste complète'
+module: views
+description: ''
+tag: ''
+base_table: node_field_data
+base_field: nid
+display:
+  default:
+    id: default
+    display_title: Master
+    display_plugin: default
+    position: 0
+    display_options:
+      title: 'Actualités — Liste complète'
+      fields: {  }
+      pager:
+        type: full
+        options:
+          offset: 0
+          items_per_page: 10
+          total_pages: null
+          id: 0
+          tags:
+            next: 'Suivant ›'
+            previous: '‹ Précédent'
+            first: '« Premier'
+            last: 'Dernier »'
+          expose:
+            items_per_page: false
+            items_per_page_label: 'Éléments par page'
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- Tous -'
+            offset: false
+            offset_label: Décalage
+          quantity: 9
+      exposed_form:
+        type: basic
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      cache:
+        type: tag
+      empty:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          admin_label: ''
+          plugin_id: text_custom
+          empty: true
+          content: 'Aucune actualité n’est publiée pour le moment.'
+          tokenize: false
+      sorts:
+        changed:
+          id: changed
+          table: node_field_data
+          field: changed
+          group_type: group
+          entity_type: node
+          entity_field: changed
+          plugin_id: date
+          order: DESC
+      arguments: {  }
+      filters:
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          entity_type: node
+          entity_field: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
+        type:
+          id: type
+          table: node_field_data
+          field: type
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
+          value:
+            news: news
+          group: 1
+      style:
+        type: default
+      row:
+        type: 'entity:node'
+        options:
+          view_mode: teaser
+      query:
+        type: views_query
+      relationships: {  }
+      header: {  }
+      footer: {  }
+      display_extenders: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - 'user.node_grants:view'
+        - user.permissions
+      tags: {  }
+  block_1:
+    id: block_1
+    display_title: Block
+    display_plugin: block
+    position: 1
+    display_options:
+      display_extenders: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - 'user.node_grants:view'
+        - user.permissions
+      tags: {  }

@@ -1,0 +1,38 @@
+uuid: ff1291fa-deae-41f8-a555-7e539c8132ea
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_paragraphs
+    - node.type.news
+    - paragraphs.paragraphs_type.image_centered
+    - paragraphs.paragraphs_type.text_left_aligned
+    - paragraphs.paragraphs_type.video_centered
+id: node.news.field_paragraphs
+field_name: field_paragraphs
+entity_type: node
+bundle: news
+label: Blocs
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      text_left_aligned: text_left_aligned
+      image_centered: image_centered
+      video_centered: video_centered
+    target_bundles_drag_drop:
+      image_centered:
+        weight: 1
+        enabled: true
+      text_left_aligned:
+        weight: 0
+        enabled: true
+      video_centered:
+        weight: 2
+        enabled: true
+field_type: entity_reference_revisions

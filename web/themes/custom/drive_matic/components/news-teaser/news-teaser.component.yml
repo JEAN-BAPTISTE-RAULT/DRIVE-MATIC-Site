@@ -1,0 +1,26 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Teaser :: Actualité'
+status: stable
+props:
+  type: object
+  required:
+    - title
+    - url
+    - date
+    - datetime
+  properties:
+    title:
+      type: string
+      title: Titre
+    url:
+      type: string
+      title: URL du détail
+    date:
+      type: string
+      title: 'Date de publication, formatée'
+    datetime:
+      type: string
+      title: 'Date au format machine (attribut datetime)'
+slots:
+  image:
+    title: Image (16:9)

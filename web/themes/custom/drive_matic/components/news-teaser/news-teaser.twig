@@ -1,0 +1,14 @@
+{#
+  SDC « Teaser :: Actualité » — ligne de la liste des actualités (F8).
+  Contrairement a la carte de la home, le teaser affiche la date.
+  Props : title, url, date (formatee), datetime (attribut machine).
+  Slot : image (16:9).
+#}
+<article class="news-teaser">
+  <div class="news-teaser__media">{{ block('image') }}</div>
+  <div class="news-teaser__body">
+    <h2 class="news-teaser__title">{{ title }}</h2>
+    <time class="news-teaser__date" datetime="{{ datetime }}">{{ date }}</time>
+    <a class="news-teaser__more" href="{{ url }}">{{ 'Lire la suite'|t }}</a>
+  </div>
+</article>
