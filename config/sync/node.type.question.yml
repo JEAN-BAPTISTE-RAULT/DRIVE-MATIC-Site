@@ -1,0 +1,11 @@
+uuid: 430dc58e-06ac-4583-9d75-5424b16a9554
+langcode: en
+status: true
+dependencies: {  }
+name: 'Élément :: Question / Réponse'
+type: question
+description: 'Question de la FAQ. Fragment sans page publique : son adresse directe est bloquée, elle n’apparaît que dans la page FAQ.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

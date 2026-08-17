@@ -1,0 +1,51 @@
+uuid: 55ce0ff9-dff0-45c7-a487-fdb8d4274fdd
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.question.body
+    - field.field.node.question.field_category
+    - field.field.node.question.field_file
+    - field.field.node.question.field_link
+    - node.type.question
+  module:
+    - file
+    - link
+    - text
+    - user
+id: node.question.teaser
+targetEntityType: node
+bundle: question
+mode: teaser
+content:
+  body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_file:
+    type: file_default
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_link:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  field_category: true
+  links: true

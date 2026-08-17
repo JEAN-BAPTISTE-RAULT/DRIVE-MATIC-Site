@@ -1,0 +1,21 @@
+uuid: 9e7848d2-a8e3-499c-b2e1-2249cea945e4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_meta_tags
+    - node.type.faq
+  module:
+    - metatag
+id: node.faq.field_meta_tags
+field_name: field_meta_tags
+entity_type: node
+bundle: faq
+label: 'Balises meta'
+description: 'Laisser vide pour le remplissage automatique : le titre alimente la balise « title », le corps de texte la « description ». Renseigner uniquement pour surcharger ce calcul.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: metatag

@@ -1,0 +1,14 @@
+uuid: 240f96b2-a9a4-4e7e-9667-f29328717cfb
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.question
+id: node_type_question
+entity_type_id: node_type
+entity_id: question
+action: access_denied
+allow_override: 0
+redirect: ''
+redirect_code: 0
+redirect_fallback_action: access_denied

@@ -1,0 +1,9 @@
+uuid: 28838e70-df00-4860-93b5-c2a006bc54c2
+langcode: en
+status: true
+dependencies: {  }
+name: Catégories
+vid: categories
+description: 'Classement des questions de la FAQ : Général, Auto-école, PMR.'
+weight: 0
+new_revision: false

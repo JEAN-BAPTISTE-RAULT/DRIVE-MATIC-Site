@@ -1,0 +1,11 @@
+uuid: 6c785863-cd17-4aa5-86d4-1039489a6238
+langcode: en
+status: true
+dependencies: {  }
+name: 'Page :: FAQ'
+type: faq
+description: 'Page de foire aux questions. Le titre et le corps de texte se saisissent ici ; les questions sont des contenus « Élément :: Question / Réponse » listés automatiquement.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

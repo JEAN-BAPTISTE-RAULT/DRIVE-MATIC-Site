@@ -1,0 +1,9 @@
+uuid: 31eb732f-45b3-4055-96f4-d0c038e09ca2
+langcode: en
+status: true
+dependencies: {  }
+id: node__faq
+label: 'Page :: FAQ'
+tags:
+  title: '[node:field_title] | [site:name]'
+  description: '[node:summary]'
