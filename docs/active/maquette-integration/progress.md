@@ -47,8 +47,14 @@ Pour demarrer un bloc, il faut le **node id Figma** du frame ou de la region
 
 ## Etat du bac a sable (node 33)
 
-Enrichi bloc par bloc, non versionne (base locale). Ajouts de cette session :
-paragraphes `history` (4 entrees) et `product_characteristics`
-(6 caracteristiques + 2 documents), second PDF de demo
-`public://sandbox/dossier-general.pdf`, recadrages 16:9 sur les medias 3 et 4,
-descriptions de fichier saisies sur 3 des 9 champs fichier.
+Enrichi bloc par bloc, non versionne (base locale) : **17 paragraphes**, tous les
+blocs integres a ce jour y sont rejouables. Ajouts recents : `history`
+(4 entrees), `product_characteristics` (6 caracteristiques + 2 documents),
+`news_home` ; second PDF de demo `public://sandbox/dossier-general.pdf` ;
+recadrages 16:9 sur les medias 3 et 4 ; descriptions de fichier saisies sur 3
+des 9 champs fichier.
+
+`news_home` est aussi place sur la **page d'accueil** (node 31), son emplacement
+prevu par F3 — le bac a sable sert a le rejouer, la home a le composer. Regle a
+garder : **tout bloc integre doit etre ajoute au bac a sable**, meme quand il a
+deja ete verifie sur sa page reelle.
