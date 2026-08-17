@@ -1,13 +1,10 @@
 {#
   SDC « Élément :: Cross-selling produit » — carte produit liée.
-  Prop : title (obl). Slots : image (16:9), link (vers la fiche).
+  Slots : image (16:9), link (une seule ligne cliquable, cf. maquette : le titre
+  de l'Élément en est le libellé et son champ lien la destination — le lien est
+  composé en preprocess, `_drive_matic_titled_link()`).
 #}
 <article class="product-cross-element">
   <div class="product-cross-element__media">{{ block('image') }}</div>
-  <div class="product-cross-element__body">
-    <h3 class="product-cross-element__title">{{ title }}</h3>
-    {% if block('link') is not empty %}
-      <div class="product-cross-element__link">{{ block('link') }}</div>
-    {% endif %}
-  </div>
+  <h3 class="product-cross-element__title">{{ block('link') }}</h3>
 </article>

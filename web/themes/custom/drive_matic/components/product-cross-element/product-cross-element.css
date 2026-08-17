@@ -1,19 +1,44 @@
 .product-cross-element {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background: var(--dm-color-white);
+  gap: 12px;
 }
 .product-cross-element__media {
-  margin-bottom: 0.75rem;
+  overflow: hidden;
+  border-radius: 16px;
+}
+.product-cross-element__media :is(img, picture) {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 .product-cross-element__title {
-  margin: 0 0 0.5rem;
-  color: var(--dm-color-anthracite);
-  font-family: var(--dm-font-title);
-  font-size: var(--dm-h3-size);
-  line-height: var(--dm-h3-line);
+  margin: 0;
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  font-weight: 400;
+  line-height: var(--dm-body-line);
 }
-.product-cross-element__link {
-  margin-top: auto;
+.product-cross-element__title a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--dm-color-steel);
+  text-decoration: none;
+}
+.product-cross-element__title a::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: var(--dm-color-red);
+  -webkit-mask: url("../../images/icons/chevron-right.svg") no-repeat center;
+          mask: url("../../images/icons/chevron-right.svg") no-repeat center;
+}
+.product-cross-element__title a:hover {
+  text-decoration: underline;
+}
+.product-cross-element__title a:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 2px;
 }

@@ -7,21 +7,19 @@
 > bac a sable.
 >
 > Methode, capture et pieges : cf. memoire agent (`visual-integration-loop`).
-> Derniere mise a jour : 2026-08-17 (home terminee).
+> Derniere mise a jour : 2026-08-17 (chantier termine).
 
-## Reste a integrer
+## Etat : termine
 
-Ordre = les 18 blocs de la bibliotheque validee (ADR-001) ; les Elements sont
-stylises dans leur Bloc parent.
-
-La **home est terminee** (F3). Reste **un** bloc :
-
-| Bloc            | Page         | Point d'attention connu                                                  |
-| --------------- | ------------ | ------------------------------------------------------------------------ |
-| `product_cross` | Produit (F5) | Grille de cartes liees, plafonne 5. **Dernier bloc de la bibliotheque.** |
-
-Pour demarrer un bloc, il faut le **node id Figma** du frame ou de la region
+Les **18 blocs** de la bibliotheque validee (ADR-001) sont integres, Elements
+stylises dans leur Bloc parent. Detail par bloc dans `git log`
+(`feat(<bloc>): integration maquette`) ; valeurs de reference dans Figma
 (fileKey `ZmmVBSOWSsHVkok6EU2Ays`).
+
+Ce qui reste a faire **n'est plus de l'integration** : ce sont les reserves
+ci-dessous, plus la recette visuelle sur des medias reels (logos de marques,
+photos produit) et le controle sous Windows. Ce fichier disparait avec le bac a
+sable une fois ces reserves arbitrees.
 
 ## Reserves ouvertes (non bloquantes)
 
@@ -57,7 +55,7 @@ Enrichi bloc par bloc, non versionne (base locale) : **19 paragraphes**, tous le
 blocs integres a ce jour y sont rejouables. Ajouts recents : `history`
 (4 entrees), `product_characteristics` (6 caracteristiques + 2 documents),
 `news_home`, `brands_home`, `product_features` (3 diapositives dont une video en
-façade) ; second PDF de demo
+façade), `product_cross` (3 cartes, dont une qui passe a la ligne) ; second PDF de demo
 `public://sandbox/dossier-general.pdf` ; recadrages 16:9 sur les medias 3 et 4 ;
 descriptions de fichier saisies sur 3 des 9 champs fichier ; **16 marques** de
 demo (les 4 de test + 12 nommees) pour que la rangee deborde.

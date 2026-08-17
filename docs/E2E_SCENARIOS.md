@@ -90,6 +90,10 @@
 - Notice/documentation affichent **nom + format + poids** : le nom est la **description saisie en BO**, le format et le poids sont calcules.
 - **Aucun prix** n'est affiche sur la page produit publique.
 
+**Bloc `product_cross` (integration maquette)** :
+- Titre puis **grille de deux colonnes** de cartes de 440px espacees de 20 dans un conteneur de 900 centre ; la **3e carte passe a la ligne**.
+- Carte = visuel **16:9 arrondi 16px** puis **une seule ligne cliquable** : le **titre** de la carte suivi du chevron rouge. Le **libelle du champ lien n'est pas affiche** (le titre en tient lieu), mais la **cible d'ouverture** saisie en BO est conservee — a rejouer en cochant « nouvel onglet ».
+
 **Bloc `product_features` (integration maquette)** :
 - Diapositives de **900px** espacees de 20, calees a gauche sur le conteneur et **debordantes a droite** → diapositive suivante en **aperçu coupe**.
 - Chaque diapositive : visuel **16:9 arrondi 16px**, puis titre, description et **bouton gris** (le lien). Le champ **fichier** garde, lui, le bouton de telechargement global.
@@ -426,6 +430,7 @@
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
 | 2026-08-11 | Creation initiale a partir du PRD (F1-F18) | S1-S23 |
+| 2026-08-17 | F5 — integration maquette `product_cross` (Figma 396:11619). **Termine la bibliotheque : les 18 blocs sont integres.** Nouveau comportement a rejouer : la ligne cliquable d'une carte porte le **titre** de la carte, pas le libelle du champ lien — dont la **cible d'ouverture** reste respectee | S4 (fiche produit) |
 | 2026-08-17 | F5 — integration maquette `product_features` (Figma 396:11618). Nouveaux comportements a rejouer : **fleche centree sur le visuel** et non sur la diapositive, **façade video** (plaque translucide + glyphe, iframe au clic) dans une diapositive de slideshow, bouton gris issu du champ lien | S4 (fiche produit) |
 | 2026-08-17 | F3 — integration maquette `brands_home` (Figma 303:6307). **Termine la home.** Nouveaux comportements a rejouer : rangee de tuiles carrees, **fleche a chaque extremite**, tuiles qui **passent a la ligne** sans JS, et **nom de marque masque visuellement** mais lisible au lecteur d'ecran | S2 (blocs home), S6 (marques) |
 | 2026-08-17 | F3 — integration maquette `news_home` (Figma 303:6302). Nouveaux comportements a rejouer : titre **centre** + paire de fleches a droite dans le meme en-tete, **apercu coupe** de la carte suivante, lien « voir toutes » en **bouton gris centre** sous la piste, carte reduite au **visuel + titre** | S2 (blocs home) |

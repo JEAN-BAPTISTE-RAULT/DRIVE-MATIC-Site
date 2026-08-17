@@ -1,10 +1,11 @@
 {#
   Liaison paragraphe `product_cross_element` -> SDC `drive_matic:product-cross-element`.
-  Titre = prop ; image (16:9) et lien vers la fiche = slots.
+  Image (16:9) = slot. Le lien n'est pas rendu par son formatter : la maquette
+  n'affiche qu'une ligne cliquable, dont le libellé est le titre de l'Élément —
+  il est composé en preprocess (`_drive_matic_titled_link()`), ce qui conserve
+  les options du champ lien (dont la cible d'ouverture).
 #}
-{% embed 'drive_matic:product-cross-element' with {
-  title: paragraph.field_title.value,
-} %}
+{% embed 'drive_matic:product-cross-element' %}
   {% block image %}{{ content.field_image }}{% endblock %}
-  {% block link %}{{ content.field_link }}{% endblock %}
+  {% block link %}{{ card_link }}{% endblock %}
 {% endembed %}

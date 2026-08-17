@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\file\FileInterface;
 use Drupal\paragraphs\ParagraphInterface;
@@ -42,6 +43,37 @@ function drive_matic_preprocess_paragraph(array &$variables): void {
       $variables
     );
   }
+
+  if ($paragraph->bundle() === 'product_cross_element') {
+    $variables['card_link'] = _drive_matic_titled_link($paragraph);
+  }
+}
+
+/**
+ * Compose le lien d'une carte de cross-selling : titre + destination.
+ *
+ * La maquette n'affiche qu'une ligne cliquable par carte, alors que l'Element
+ * porte un titre ET un lien, tous deux obligatoires : le **titre** fournit le
+ * libelle, le **lien** la destination. On construit donc le lien ici plutot que
+ * de rendre le champ (qui afficherait son propre libelle) — en partant de
+ * l'objet Url du champ, pour conserver les options saisies en back-office,
+ * dont la cible d'ouverture (ADR-002).
+ *
+ * @param \Drupal\paragraphs\ParagraphInterface $paragraph
+ *   Le paragraphe `product_cross_element`.
+ *
+ * @return array
+ *   Tableau rendu du lien, ou tableau vide si un des deux champs manque.
+ */
+function _drive_matic_titled_link(ParagraphInterface $paragraph): array {
+  $item = $paragraph->get('field_link')->first();
+  $title = $paragraph->get('field_title')->value;
+
+  if ($item === NULL || $title === NULL || $title === '') {
+    return [];
+  }
+
+  return Link::fromTextAndUrl($title, $item->getUrl())->toRenderable();
 }
 
 /**

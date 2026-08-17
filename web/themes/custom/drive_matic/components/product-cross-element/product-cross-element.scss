@@ -1,23 +1,56 @@
-// SDC « Élément :: Cross-selling produit » — CSS scopé (BEM).
+// SDC « Élément :: Cross-selling produit » — visuel 16:9 puis ligne cliquable.
+// Maquette Figma 406:13178 : visuel arrondi à 16px, écart de 12px, puis le motif
+// « Lien » (texte 16/28 acier + chevron rouge de 24px).
 .product-cross-element {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background: var(--dm-color-white);
+  gap: 12px;
 
   &__media {
-    margin-bottom: 0.75rem;
+    overflow: hidden;
+    border-radius: 16px;
   }
 
+  &__media :is(img, picture) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  // Le titre est porté par le lien (cf. twig) : l'échelle est celle du motif
+  // « Lien », pas celle d'un titre.
   &__title {
-    margin: 0 0 0.5rem;
-    color: var(--dm-color-anthracite);
-    font-family: var(--dm-font-title);
-    font-size: var(--dm-h3-size);
-    line-height: var(--dm-h3-line);
+    margin: 0;
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    font-weight: 400;
+    line-height: var(--dm-body-line);
   }
 
-  &__link {
-    margin-top: auto;
+  &__title a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--dm-color-steel);
+    text-decoration: none;
+  }
+
+  // Chevron exporté de la maquette, teinté en rouge.
+  &__title a::after {
+    content: '';
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color: var(--dm-color-red);
+    mask: url('../../images/icons/chevron-right.svg') no-repeat center;
+  }
+
+  &__title a:hover {
+    text-decoration: underline;
+  }
+
+  &__title a:focus-visible {
+    outline: 2px solid var(--dm-color-red);
+    outline-offset: 2px;
   }
 }
