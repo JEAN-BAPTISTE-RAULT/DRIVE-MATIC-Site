@@ -299,12 +299,22 @@ l'œil) : colonne 1130, ligne 1130×183, visuel **325×183** (16:9, rayon 16), �
 texte **60**, colonne de texte 745, pas entre lignes **213** (= 183 + 30), lien **aligné en
 bas** de la ligne, titre → liste **113**. Tout tombe juste au pixel.
 
-**Pagination** : elle était configurée à 10 par page alors que la maquette en dessine
-**6**, et ses libellés portaient les chevrons en caractères (« Suivant › ») là où la
-maquette les veut en icône. Corrigé, et stylé en fondation (`_pager.scss`) : page courante
-en blanc sur pastille acier, numéros en gras acier, « Précédent »/« Suivant » en gris
-encadrés de chevrons. Vérifié en abaissant temporairement la pagination à 2 par page pour
-la voir, puis remise à 6.
+**Pagination** : ses libellés portaient les chevrons en caractères (« Suivant › ») là où
+la maquette les veut en icône. Corrigé, et stylé en fondation (`_pager.scss`) : page
+courante en blanc sur pastille acier, numéros en gras acier, « Précédent »/« Suivant » en
+gris encadrés de chevrons.
+
+⚠️ **Erreur commise et corrigée** : j'avais fait passer la Vue de 10 à **6 par page** parce
+que la maquette dessine 6 lignes. C'est une confusion entre **vérité visuelle** (la
+maquette) et **besoin fonctionnel** (les specs) : le PRD F8 écrit noir sur blanc
+« pagination **10 par page** ». Remis à 10. Le nombre de lignes dessinées dans un cadre
+Figma ne fait pas spécification.
+
+**Jeu de test** : 32 actualités publiées (26 créées le 2026-08-18), soit 4 pages à 10.
+Dates échelonnées d'une actualité tous les 3 jours en remontant — `node--news.html.twig`
+affichant `node.changed`, sans cela la liste n'aurait aucun ordre lisible. Les visuels
+réutilisent les 3 médias d'actualité existants, **déjà recadrés** : aucun média créé, donc
+aucun recadrage fabriqué par script (cf. règle du recadrage manuel).
 
 ⚠️ **À retenir pour les 12 autres pages** : ne pas conclure « conforme » sur la seule
 vérification du contenu. Une page n'est intégrée que si ses **mesures** ont été relevées
