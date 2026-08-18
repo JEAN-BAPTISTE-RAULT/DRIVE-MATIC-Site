@@ -439,3 +439,104 @@ textarea) {
     grid-column: span 2;
   }
 }
+.block-page-title-block {
+  -webkit-padding-before: 49px;
+          padding-block-start: 49px;
+  padding-inline: max(var(--dm-gutter), 50vw - 450px);
+}
+
+.page-title {
+  margin: 0;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h1-size);
+  line-height: var(--dm-h1-line);
+  font-weight: 700;
+  text-align: center;
+}
+
+.pager {
+  -webkit-padding-after: 99px;
+          padding-block-end: 99px;
+}
+
+.pager__items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pager__item {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+}
+
+.pager__item a {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
+.pager__item a:hover {
+  text-decoration: underline;
+}
+
+.pager__item a:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 2px;
+}
+
+.pager__item.is-active {
+  border-radius: 4px;
+  background-color: var(--dm-color-steel);
+  color: var(--dm-color-white);
+}
+
+.pager__item.is-active a {
+  color: var(--dm-color-white);
+}
+
+.pager__item--previous,
+.pager__item--next {
+  color: var(--dm-color-grey-text);
+  font-weight: 400;
+}
+
+.pager__item--previous a::before,
+.pager__item--next a::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: var(--dm-color-grey-text);
+  -webkit-mask: url("../images/icons/chevron-right.svg") no-repeat center;
+          mask: url("../images/icons/chevron-right.svg") no-repeat center;
+}
+
+.pager__item--previous a::before {
+  transform: scaleX(-1);
+}
+
+.pager__item--ellipsis {
+  font-size: var(--dm-body-size);
+  line-height: 1.5rem;
+}
+
+.pager__item--first,
+.pager__item--last {
+  display: none;
+}

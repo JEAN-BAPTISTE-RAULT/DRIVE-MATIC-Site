@@ -1,0 +1,13 @@
+{#
+  Lignes de la Vue « Actualités — Toutes ».
+  Les lignes sont enveloppées dans le SDC `news-list`, qui porte la colonne de
+  contenu et le rythme vertical ; la ligne est mesurée dans `news-teaser`.
+  @see views-view-unformatted.html.twig pour les variables disponibles.
+#}
+{% embed 'drive_matic:news-list' %}
+  {% block items %}
+    {% for row in rows %}
+      {{ row.content }}
+    {% endfor %}
+  {% endblock %}
+{% endembed %}

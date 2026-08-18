@@ -1,0 +1,103 @@
+// Pagination (markup du coeur, `pager.html.twig`) — meme derogation assumee que
+// `local-tasks`, `forms` et `page-title`.
+
+// Mesures relevees sur la maquette 438-10209 (composant `Pagination`, 493-14894) :
+// rangee centree de 45 de haut ; « Precedent » et « Suivant » en Inter Regular
+// 14/28 gris, encadres par un chevron a chaque extremite ; numeros en Inter Bold
+// 14/28 acier, la page courante en blanc sur une pastille acier de rayon 4.
+
+// Les classes viennent du coeur (`pager__item`, BEM non kebab-case) : le motif du
+// linter ne s'applique pas a du markup qu'on ne choisit pas.
+// stylelint-disable selector-class-pattern
+
+// La maquette laisse 99 entre la pagination et le footer (pagination a 1661,
+// haute de 45, footer a 1805).
+.pager {
+  padding-block-end: 99px;
+}
+
+.pager__items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pager__item {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+}
+
+.pager__item a {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
+.pager__item a:hover {
+  text-decoration: underline;
+}
+
+.pager__item a:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 2px;
+}
+
+// Page courante : pastille acier, texte blanc.
+.pager__item.is-active {
+  border-radius: 4px;
+  background-color: var(--dm-color-steel);
+  color: var(--dm-color-white);
+}
+
+.pager__item.is-active a {
+  color: var(--dm-color-white);
+}
+
+// « Precedent » / « Suivant » : gris, non gras, et leur chevron en asset.
+.pager__item--previous,
+.pager__item--next {
+  color: var(--dm-color-grey-text);
+  font-weight: 400;
+}
+
+.pager__item--previous a::before,
+.pager__item--next a::after {
+  content: '';
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  background-color: var(--dm-color-grey-text);
+  mask: url('../images/icons/chevron-right.svg') no-repeat center;
+}
+
+.pager__item--previous a::before {
+  transform: scaleX(-1);
+}
+
+.pager__item--ellipsis {
+  font-size: var(--dm-body-size);
+  line-height: 1.5rem;
+}
+
+// La maquette ne montre ni « Premier » ni « Dernier » : seuls les chevrons de
+// part et d'autre, portes par « Precedent » et « Suivant ».
+.pager__item--first,
+.pager__item--last {
+  display: none;
+}
+
+// stylelint-enable selector-class-pattern

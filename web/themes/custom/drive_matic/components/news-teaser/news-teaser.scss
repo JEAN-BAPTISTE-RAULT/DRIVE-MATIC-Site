@@ -1,15 +1,25 @@
 // SDC « Teaser :: Actualité » — ligne de la liste des actualités.
-// Structure seulement : visuel 16:9 arrondi a gauche, texte a droite.
-// L'integration fine (mesures de maquette) reste a faire.
+
+// Mesures relevées sur la maquette 438-10209 (Group 76 à 81) : ligne de 1130 sur
+// 183 de haut ; visuel 325x183 (16:9, rayon 16) à gauche, puis 60 d'écart, puis
+// une colonne de texte de 745. Dans cette colonne : titre H3 sur deux lignes (64),
+// date 14 plus bas, et le lien **aligné en bas** de la ligne — c'est ce qui tient
+// la hauteur de 183 quel que soit le nombre de lignes du titre.
+
 .news-teaser {
+  --dm-news-teaser-media: 325px;
+  --dm-news-teaser-gap: 60px;
+  --dm-news-teaser-height: 183px;
+
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 24px;
+  gap: var(--dm-space-element);
   align-items: start;
 
-  // A partir de `md` : visuel a gauche, texte a droite.
   @media (width >= 768px) {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-columns: var(--dm-news-teaser-media) minmax(0, 1fr);
+    gap: var(--dm-news-teaser-gap);
+    min-height: var(--dm-news-teaser-height);
   }
 
   &__media {
@@ -27,7 +37,10 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+
+    @media (width >= 768px) {
+      min-height: var(--dm-news-teaser-height);
+    }
   }
 
   &__title {
@@ -40,18 +53,21 @@
   }
 
   &__date {
-    color: var(--dm-color-text-grey);
+    margin-block-start: 14px;
+    color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
     font-size: var(--dm-body-size);
     line-height: var(--dm-body-line);
   }
 
-  // Lien texte + chevron rouge (motif « Lien » de la maquette).
+  // Lien texte + chevron rouge (motif « Lien » de la maquette). `margin-top:
+  // auto` le colle au bas de la ligne, comme la maquette.
   &__more {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    margin-top: 8px;
+    margin-block-start: auto;
+    padding-block-start: var(--dm-space-element);
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
     font-size: var(--dm-body-size);

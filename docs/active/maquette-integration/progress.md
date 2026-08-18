@@ -44,7 +44,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 4 | **FAQ** | 62 | `396-11620` | ✅ **intégrée** — titre « FAQ : Nous répondons à vos questions », motif Pathauto **supprimé**, alias en dur `/faq`, 301 depuis /questions-frequentes. Filtres Général/Auto-école/PMR rendus |
 | 5 | Documentations | 67 | `398-12119` | ✅ **restructurée** — type de node `document` supprimé, les 2 champs passés en **Fichier illimité**, titres de section en dur dans le Twig |
 | 6 | Les marques partenaires | 68 | `433-7148` | ✅ **conforme** — titre repris de la maquette, motif Pathauto supprimé, alias `/marques-partenaires` en dur. 12 logos alphabétiques dans `brands-grid` |
-| 7 | Actualités | 46 | `438-10209` | ✅ **conforme** — `body` masqué (aucun chapô dans la maquette), alias `/actualites` en dur. Pager configuré, ne s'affiche pas avec 6 items : normal |
+| 7 | Actualités | 46 | `438-10209` | ✅ **intégrée le 2026-08-18** (le « conforme » précédent portait sur le contenu, pas sur la mise en page — voir plus bas). Alias `/actualites` en dur, `body` masqué |
 | 8 | Une actualité | 17 | `438-10665` | ✅ **conforme** — l'écart demandé (`body` sous l'image, avant les blocs) était **déjà** la config : field_image(0), field_caption(1), body(2), field_paragraphs(3). Ajouté les 2 blocs manquants |
 | 9 | Contact | 1 | `433-7637`, `438-9060`, `438-9465`, `438-9456`, `438-9457` ✅ | **formulaire stylé et modales faites** (cf. « 9bis » plus bas). Les 4 frames restants n'étaient pas des « états du formulaire » : deux sont les **variantes SAV et question**, deux les **modales « carte grise »**. Reste hors formulaire : la ligne adresse + carte au-dessus de la carte grise du formulaire |
 | 10 | Devenir partenaire | 2 | `438-9838` | ✅ **conforme** — titre puis formulaire, `body` masqué (aucun chapô dans la maquette), mention « *Champs obligatoires » activée |
@@ -273,6 +273,42 @@ depuis Figma, les miens compris.
 Consigné dans [ADR-004](../../../.claude/decisions/004-pipeline-images.md) et dans les
 conventions (CLAUDE.md) : ne plus fabriquer de recadrage par script, signaler pour un
 passage éditorial.
+
+## ⚠️ « Conforme » ne voulait pas dire « intégrée » — reprise de la liste d'actualités
+
+Constat de l'utilisatrice le 2026-08-18 : la page `/actualites` était « n'importe quoi »,
+et la plupart des 13 pages « intégrées n'importe comment ». C'est fondé, et la cause est
+identifiable : les vérifications précédentes portaient sur le **contenu** (les bons blocs,
+les bons textes, un seul `<h1>`, les bons alias) et **jamais sur la mise en page**. Le SCSS
+de `news-teaser` le disait lui-même : « Structure seulement. L'intégration fine (mesures
+de maquette) reste à faire. » La ligne du suivi disait pourtant « conforme ».
+
+**Deux manques de fondation, qui touchent bien plus que cette page :**
+
+1. **Le bloc titre de page n'avait aucun CSS.** Les maquettes centrent le titre — vérifié
+   sur `438-10209`, `438-10665`, `436-8300`, `436-8578`, `433-7637` : il est **toujours**
+   centré (centre à 720 dans un cadre de 1440), à 49 sous le filet du header, dans une
+   colonne de 900. Le site le rendait collé à gauche, sans gouttière. Corrigé en fondation
+   (`src/scss/_page-title.scss`) : **toutes** les pages à titre de bloc en bénéficient.
+2. **La Vue `all_news` n'avait pas d'enveloppe SDC.** D'où des lignes à `x=0`, sans
+   colonne de contenu ni rythme vertical. Corrigé avec le SDC `news-list` embarqué par
+   `views-view-unformatted--all-news.html.twig`, comme `brands` et `faq`.
+
+**Mesures reprises de la maquette et vérifiées sur le rendu** (relevé au navigateur, pas à
+l'œil) : colonne 1130, ligne 1130×183, visuel **325×183** (16:9, rayon 16), écart visuel →
+texte **60**, colonne de texte 745, pas entre lignes **213** (= 183 + 30), lien **aligné en
+bas** de la ligne, titre → liste **113**. Tout tombe juste au pixel.
+
+**Pagination** : elle était configurée à 10 par page alors que la maquette en dessine
+**6**, et ses libellés portaient les chevrons en caractères (« Suivant › ») là où la
+maquette les veut en icône. Corrigé, et stylé en fondation (`_pager.scss`) : page courante
+en blanc sur pastille acier, numéros en gras acier, « Précédent »/« Suivant » en gris
+encadrés de chevrons. Vérifié en abaissant temporairement la pagination à 2 par page pour
+la voir, puis remise à 6.
+
+⚠️ **À retenir pour les 12 autres pages** : ne pas conclure « conforme » sur la seule
+vérification du contenu. Une page n'est intégrée que si ses **mesures** ont été relevées
+sur la maquette et **comparées au rendu**.
 
 ## Divergence titre (à arbitrer)
 

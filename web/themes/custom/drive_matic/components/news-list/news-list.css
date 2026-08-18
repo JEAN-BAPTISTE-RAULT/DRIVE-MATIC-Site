@@ -1,0 +1,10 @@
+.news-list {
+  --dm-news-list-gap: 30px;
+  --dm-news-list-offset: 113px;
+  --dm-news-list-tail: 103px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--dm-news-list-gap);
+  padding-block: var(--dm-news-list-offset) var(--dm-news-list-tail);
+  padding-inline: max(var(--dm-gutter), 50vw - 565px);
+}

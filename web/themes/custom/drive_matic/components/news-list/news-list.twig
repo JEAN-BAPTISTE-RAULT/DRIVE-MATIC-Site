@@ -1,0 +1,9 @@
+{#
+  SDC « Liste :: Actualités » — enveloppe des lignes de la page « Actualités ».
+  Slot : items (une suite de `news-teaser`).
+  Porte la colonne de contenu et le rythme vertical entre les lignes ; la ligne
+  elle-même est mesurée dans `news-teaser`.
+#}
+<div class="news-list">
+  {{ block('items') }}
+</div>

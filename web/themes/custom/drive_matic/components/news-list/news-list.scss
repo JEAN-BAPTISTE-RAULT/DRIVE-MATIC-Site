@@ -1,0 +1,19 @@
+// SDC « Liste :: Actualités ».
+
+// Mesures relevées sur la maquette 438-10209 : colonne de 1130 (x=155 dans un
+// cadre de 1440), lignes de 183 de haut posées à 310, 523, 736, 949, 1162, 1375 —
+// soit un pas de 213, donc un écart de 30 entre deux lignes. Le titre de page se
+// terminant à 197, la liste démarre 113 plus bas ; la dernière ligne s'achève à
+// 1558 et la pagination commence à 1661, d'où les 103 en pied.
+
+.news-list {
+  --dm-news-list-gap: 30px;
+  --dm-news-list-offset: 113px;
+  --dm-news-list-tail: 103px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--dm-news-list-gap);
+  padding-block: var(--dm-news-list-offset) var(--dm-news-list-tail);
+  padding-inline: max(var(--dm-gutter), calc(50vw - 565px));
+}

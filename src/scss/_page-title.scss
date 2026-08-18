@@ -1,0 +1,26 @@
+// Bloc titre de page (bloc du coeur, rendu sur toutes les pages sauf celles dont
+// le titre est porte par un paragraphe).
+
+// Meme derogation assumee que `local-tasks` et `forms` : le markup vient d'un
+// bloc du coeur, il n'appartient a aucun SDC. La reprise du shell de page (F2)
+// pourra l'absorber.
+
+// Mesures relevees sur les maquettes 438-10209, 438-10665, 436-8300, 436-8578 et
+// 433-7637 : le titre est **toujours centre**, a 49px sous le filet du header, et
+// s'inscrit dans une colonne de 900 (c'est la largeur ou il se coupe sur la page
+// de detail d'actualite, ou il fait trois lignes).
+
+.block-page-title-block {
+  padding-block-start: 49px;
+  padding-inline: max(var(--dm-gutter), calc(50vw - 450px));
+}
+
+.page-title {
+  margin: 0;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h1-size);
+  line-height: var(--dm-h1-line);
+  font-weight: 700;
+  text-align: center;
+}
