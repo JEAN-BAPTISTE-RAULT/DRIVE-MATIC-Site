@@ -14,13 +14,6 @@ targetEntityType: node
 bundle: all_news
 mode: default
 content:
-  body:
-    type: text_default
-    label: hidden
-    settings: {  }
-    third_party_settings: {  }
-    weight: 0
-    region: content
   links:
     settings: {  }
     third_party_settings: {  }
@@ -29,3 +22,4 @@ content:
 hidden:
   field_meta_tags: true
   langcode: true
+  body: true
