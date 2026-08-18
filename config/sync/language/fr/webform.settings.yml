@@ -6,7 +6,7 @@ settings:
   default_reset_button_label: Réinitialiser
   default_delete_button_label: Supprimer
   default_form_confidential_message: 'Ce formulaire est confidentiel. Vous devez vous <a href="[site:login-url]/logout?destination=[current-page:url:relative]">déconnecter</a> pour l''utiliser.'
-  default_form_required_label: 'Indique si le champs est requis'
+  default_form_required_label: '*Champs obligatoires'
   default_wizard_prev_button_label: '< Précédent'
   default_wizard_next_button_label: 'Suivant >'
   default_wizard_start_label: Début
