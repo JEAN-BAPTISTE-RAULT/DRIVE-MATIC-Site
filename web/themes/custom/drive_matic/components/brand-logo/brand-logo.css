@@ -17,7 +17,10 @@
   width: 100%;
   height: 100%;
 }
-.brand-logo__image :is(img, picture) {
+.brand-logo__image :is(div, article, picture) {
+  display: contents;
+}
+.brand-logo__image img {
   display: block;
   width: auto;
   height: auto;
