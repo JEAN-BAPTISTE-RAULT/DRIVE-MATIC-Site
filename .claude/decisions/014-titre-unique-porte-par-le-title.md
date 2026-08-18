@@ -73,6 +73,18 @@ rend le `<h1>`.
    une `image_full` sans titre.
 6. `drive_matic_preprocess_page_title()` est supprime : sans `field_title`, il
    n'avait plus rien a substituer.
+7. **`title` et `body` existent sur tous les types indexables pour le SEO** : le
+   `title` alimente la balise `title`, le `body` la meta description. Ce que chaque
+   type en **affiche** est en revanche propre au type, et ne se deduit pas :
+   - `transform` et `product` **n'affichent ni l'un ni l'autre** : toute la page est
+     composee de paragraphes, dont le contenu est **libre** — aucun champ du node n'y
+     est recopie ni force. C'est pourquoi le titre du heros (`image_full`,
+     `text_centered`) peut etre une accroche redigee sans rapport avec le `title`.
+   - Les autres types affichent **soit `title` seul, soit `title` + `body`**, au-dessus
+     de leurs paragraphes / Vues / webforms. `corporate` affiche les deux : son `body`
+     est le chapo (`label: hidden`, poids -1, libelle « Chapo »).
+   Corollaire : sur un type qui affiche deja son `title`, ne pas creer de paragraphe
+   pour reporter le titre ou le chapo — ce sont les champs de base qui les portent.
 
 Les trois titres divergents ont ete realignes sur leur ancienne valeur affichee
 (« Actualites », « Questions frequentes », « Configurez votre vehicule et obtenez

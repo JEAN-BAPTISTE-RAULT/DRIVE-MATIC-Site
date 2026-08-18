@@ -11,8 +11,8 @@ id: node.corporate.body
 field_name: body
 entity_type: node
 bundle: corporate
-label: Corps
-description: 'Résumé de la page. Il n’est pas affiché : il alimente la méta description quand les balises meta ne sont pas surchargées.'
+label: Chapô
+description: 'Texte d’introduction affiché sous le titre de la page. Il alimente aussi la méta description quand les balises meta ne sont pas surchargées.'
 required: true
 translatable: true
 default_value: {  }

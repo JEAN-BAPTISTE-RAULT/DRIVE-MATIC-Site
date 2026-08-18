@@ -40,7 +40,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 |---|------|------|---------------|------|
 | 1 | Accueil | 31 | `303-5967` | ✅ **conforme, rien à changer** — voir « Le lorem est celui des maquettes » |
 | 2 | Qui sommes-nous | 54 | `433-9747` | ✅ **reconstruite le 2026-08-18** — 6 blocs conformes |
-| 3 | Mentions légales | 55 | `469-11689` | à vérifier — 1 lien cassé, même bloc hors sujet |
+| 3 | **CGV** (type `legals`) | 55 | `469-11689` | ✅ **intégrée** — 15 sections `text_left_aligned`. Le frame s'appelle « Conditions générales de vente » : le type `legals` (« Page :: Mentions légales ») porte les CGV. Titre et alias changés, 301 auto depuis /mentions-legales |
 | 4 | Questions fréquentes | 62 | `396-11620` | à vérifier (contenu par Vue, 0 paragraphe) |
 | 5 | Documentations | 67 | `398-12119` | à vérifier (contenu par Vue) |
 | 6 | Marques partenaires | 68 | `433-7148` | à vérifier (contenu par Vue) |
@@ -78,11 +78,13 @@ maquette. Signalé à l'utilisatrice, non tranché.
 
 ## Ce que la reconstruction du node 54 a appris
 
-- **`corporate` a rejoint les bundles à titre-héros** : sa maquette groupe titre + chapô
-  en un `text_centered` centré, et `text_centered.field_title` est obligatoire — un chapô
-  seul est donc impossible. `_drive_matic_hero_title_bundles()` et la visibilité du bloc
-  titre listent désormais 4 bundles. Les 3 autres pages `corporate` (#11-13) devraient
-  suivre le même schéma — à confirmer sur leur maquette.
+- ⚠️ **Ne pas porter titre et chapô par un paragraphe.** J'avais créé un `text_centered`
+  pour les deux et ajouté `corporate` aux bundles à titre-héros : **erreur, corrigée**.
+  La règle du projet : tout type indexable **porte** `title` + `body` pour le SEO, mais ce
+  qu'il en **affiche** lui est propre. `transform` et `product` n'affichent ni l'un ni
+  l'autre (tout vient des paragraphes, contenu libre) ; les autres affichent `title` seul
+  ou `title` + `body`. `corporate` affiche les deux — son `body` est le chapô. Les bundles
+  à titre-héros restent **3** : homepage, transform, product.
 - Le titre de la maquette est « Qui sommes-nous **?** » : le point d'interrogation ne
   change pas l'alias (`/qui-sommes-nous`), Pathauto le retire.
 - Mapping utile : `triptych_element` = `field_text_top` / `field_title` (le grand chiffre)
