@@ -297,7 +297,14 @@ de maquette) reste à faire. » La ligne du suivi disait pourtant « conforme »
 **Mesures reprises de la maquette et vérifiées sur le rendu** (relevé au navigateur, pas à
 l'œil) : colonne 1130, ligne 1130×183, visuel **325×183** (16:9, rayon 16), écart visuel →
 texte **60**, colonne de texte 745, pas entre lignes **213** (= 183 + 30), lien **aligné en
-bas** de la ligne, titre → liste **113**. Tout tombe juste au pixel.
+bas** de la ligne. Tout tombe juste au pixel.
+
+**Respiration verticale — arbitrage de l'utilisatrice** : plutôt que les 113 / 103 / 99 de
+la maquette (titre → liste, liste → pagination, pagination → footer), un **rythme unique**
+égal à l'écart header → titre. D'où le token **`--dm-space-page` (49px)**, consommé par
+`.block-page-title-block` (padding-top), `.news-list` (padding-block) et `.pager`
+(padding-bottom) : les trois bougent ensemble, il n'y a plus de valeur à resynchroniser à
+la main.
 
 **Pagination** : ses libellés portaient les chevrons en caractères (« Suivant › ») là où
 la maquette les veut en icône. Corrigé, et stylé en fondation (`_pager.scss`) : page

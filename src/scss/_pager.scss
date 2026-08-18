@@ -10,10 +10,10 @@
 // linter ne s'applique pas a du markup qu'on ne choisit pas.
 // stylelint-disable selector-class-pattern
 
-// La maquette laisse 99 entre la pagination et le footer (pagination a 1661,
-// haute de 45, footer a 1805).
+// Meme respiration que le haut de page avant le footer : `--dm-space-page`, soit
+// l'ecart que le gabarit pose entre le header et le titre de page.
 .pager {
-  padding-block-end: 99px;
+  padding-block-end: var(--dm-space-page);
 }
 
 .pager__items {

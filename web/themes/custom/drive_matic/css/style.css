@@ -18,6 +18,7 @@
   --dm-space-block: 32px;
   --dm-gutter: 40px;
   --dm-space-element: 24px;
+  --dm-space-page: 49px;
   --dm-h1-size: 2.8125rem;
   --dm-h1-line: 3.625rem;
   --dm-h2-size: 1.875rem;
@@ -440,8 +441,8 @@ textarea) {
   }
 }
 .block-page-title-block {
-  -webkit-padding-before: 49px;
-          padding-block-start: 49px;
+  -webkit-padding-before: var(--dm-space-page);
+          padding-block-start: var(--dm-space-page);
   padding-inline: max(var(--dm-gutter), 50vw - 450px);
 }
 
@@ -456,8 +457,8 @@ textarea) {
 }
 
 .pager {
-  -webkit-padding-after: 99px;
-          padding-block-end: 99px;
+  -webkit-padding-after: var(--dm-space-page);
+          padding-block-end: var(--dm-space-page);
 }
 
 .pager__items {

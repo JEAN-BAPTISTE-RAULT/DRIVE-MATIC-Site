@@ -42,6 +42,12 @@
   // lisible. Ne pas le desaccorder bloc par bloc.
   --dm-space-element: 24px;
 
+  // Respiration verticale du gabarit de page, mesuree sur les maquettes comme
+  // l'ecart entre le filet du header et le titre de page. Elle cadence aussi ce
+  // qui suit le titre (liste d'actualites, pagination) : les trois valent le
+  // meme ecart, d'ou un token unique plutot que trois valeurs a resynchroniser.
+  --dm-space-page: 49px;
+
   // Echelle titres (taille / interligne) — PRD §6
   --dm-h1-size: 2.8125rem;
   --dm-h1-line: 3.625rem;

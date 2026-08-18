@@ -11,7 +11,7 @@
 // de detail d'actualite, ou il fait trois lignes).
 
 .block-page-title-block {
-  padding-block-start: 49px;
+  padding-block-start: var(--dm-space-page);
   padding-inline: max(var(--dm-gutter), calc(50vw - 450px));
 }
 
