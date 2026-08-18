@@ -1,0 +1,121 @@
+// SDC « Aide :: Modale illustrée » — déclencheur ⓘ sur la ligne du libellé,
+// modale montrant le visuel d'aide (maquettes 438-9456 et 438-9457).
+
+.help-modal {
+  // Le composant vit dans le <label> du champ : il ne prend pas de place dans
+  // le flux, c'est la ligne du libellé qui place ses enfants.
+  display: contents;
+
+  &__trigger {
+    // Révélé par help-modal.js : sans JS il n'ouvrirait rien.
+    display: none;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 24px;
+      background-color: var(--dm-color-grey-metal);
+      mask: url('../../images/icons/info.svg') no-repeat center;
+    }
+
+    &:hover::before {
+      background-color: var(--dm-color-steel);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--dm-color-red);
+      outline-offset: 2px;
+    }
+  }
+
+  // Repli sans JS : la phrase d'aide, à la place du déclencheur. `flex-basis`
+  // à 100 % la renvoie sous le libellé plutôt qu'à côté.
+  &__fallback {
+    flex: 0 0 100%;
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
+
+  &.is-ready &__trigger {
+    display: block;
+  }
+
+  &.is-ready &__fallback {
+    display: none;
+  }
+
+  // Le <dialog> est déplacé dans <body> par le JS : ses règles doivent donc
+  // sortir du bloc, sans quoi le sélecteur imbriqué ne l'atteindrait plus.
+  // `@at-root` les remonte à la racine tout en gardant l'écriture BEM.
+  @at-root {
+    &__dialog {
+      max-width: min(596px, calc(100vw - (2 * var(--dm-gutter))));
+      max-height: calc(100vh - (2 * var(--dm-space-block)));
+      padding: 30px 48px 48px;
+      border: 0;
+      border-radius: 24px;
+      background-color: var(--dm-color-white);
+
+      &::backdrop {
+        background-color: rgb(0 0 0 / 50%);
+      }
+    }
+
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--dm-space-element);
+      margin-bottom: 15px;
+    }
+
+    &__title {
+      margin: 0;
+      color: var(--dm-color-steel);
+      font-family: var(--dm-font-body);
+      font-size: var(--dm-body-size);
+      line-height: 1.5rem;
+      font-weight: 700;
+    }
+
+    &__close {
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+
+      &::before {
+        content: '';
+        display: block;
+        width: 24px;
+        height: 24px;
+        background-color: var(--dm-color-anthracite);
+        mask: url('../../images/icons/close.svg') no-repeat center;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--dm-color-red);
+        outline-offset: 2px;
+      }
+    }
+
+    &__image {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+}

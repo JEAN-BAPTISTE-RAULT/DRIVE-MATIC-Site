@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * Surcharge de l'aide d'un element Webform.
+ *
+ * Quand l'element a un visuel d'aide (cf. _drive_matic_help_visuals()), la
+ * maquette remplace l'infobulle texte par une modale illustree : on rend alors le
+ * SDC `help-modal` au lieu du `?` de Webform, et sa librairie d'infobulle n'est
+ * pas attachee.
+ *
+ * Sinon, on garde le rendu d'origine de Webform.
+ *
+ * Variables ajoutees :
+ * - help_modal : le SDC `help-modal`, present seulement si un visuel est mappe.
+ */
+#}
+{% apply spaceless %}
+  {% if help_modal %}
+    {{ help_modal }}
+  {% else %}
+    {{ attach_library('webform/webform.element.help') }}
+    <span{{ attributes }}><span aria-hidden="true">?</span></span>
+  {% endif %}
+{% endapply %}

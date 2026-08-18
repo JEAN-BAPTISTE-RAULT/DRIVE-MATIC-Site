@@ -1,0 +1,46 @@
+{#
+  SDC « Aide :: Modale illustrée ».
+
+  Rend l'aide d'un champ de formulaire sous la forme d'un déclencheur ⓘ posé sur
+  la ligne du libellé, qui ouvre une modale montrant le visuel d'aide.
+
+  La modale est enfermée dans un <template> : ce composant s'insère dans le
+  <label> du champ (c'est là que Webform place l'aide), et un <dialog> n'a pas le
+  droit d'y figurer alors qu'un <template> si. help-modal.js clone le contenu du
+  <template> dans <body> et le câble au déclencheur.
+
+  Amélioration progressive : sans JS le <template> ne rend rien, le déclencheur
+  est masqué et c'est `fallback` qui s'affiche.
+#}
+<span class="help-modal" data-help-modal="{{ id }}">
+  <button
+    type="button"
+    class="help-modal__trigger"
+    aria-haspopup="dialog"
+    data-help-modal-trigger
+  >
+    <span class="visually-hidden">{{ title }}</span>
+  </button>
+
+  <template data-help-modal-content>
+    <dialog class="help-modal__dialog" aria-labelledby="{{ id }}-title">
+      <div class="help-modal__header">
+        <p class="help-modal__title" id="{{ id }}-title">{{ title }}</p>
+        <button type="button" class="help-modal__close" data-help-modal-close>
+          <span class="visually-hidden">{{ 'Fermer'|t }}</span>
+        </button>
+      </div>
+      {% if image %}
+        <img
+          class="help-modal__image"
+          src="{{ image }}"
+          alt="{{ image_alt }}"
+          {% if image_width %}width="{{ image_width }}"{% endif %}
+          {% if image_height %}height="{{ image_height }}"{% endif %}
+        />
+      {% endif %}
+    </dialog>
+  </template>
+
+  <span class="help-modal__fallback">{{ fallback }}</span>
+</span>

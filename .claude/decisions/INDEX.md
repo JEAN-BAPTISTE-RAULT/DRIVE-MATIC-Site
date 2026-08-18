@@ -19,6 +19,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-012](012-presentation-admin-front.md) | Presentation de l'administration sur le front (gin_toolbar desinstalle, onglets locaux) | Accepte | 2026-08-17 |
 | [ADR-013](013-espacement-et-unites.md) | Systeme d'espacement (3 tokens) et unites px / rem | Accepte | 2026-08-17 |
 | [ADR-014](014-titre-unique-porte-par-le-title.md) | Titre unique porte par le `title` ; `<h1>` rendu par le bloc d'ouverture | Accepte | 2026-08-18 |
+| [ADR-015](015-habillage-des-formulaires.md) | Habillage des formulaires en fondation, grille declaree par le formulaire, modale d'aide en SDC | Accepte | 2026-08-18 |
 
 ## Quand creer un ADR
 

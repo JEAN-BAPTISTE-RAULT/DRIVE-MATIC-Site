@@ -24,13 +24,15 @@ title: Contact
 description: 'Basic email contact webform.'
 categories: {  }
 elements: |-
+  intro:
+    '#type': webform_markup
+    '#markup': '<p class="dm-form-intro">Une question, une demande de devis ou un besoin de service après-vente ?<br />Remplissez ce formulaire, notre équipe vous répondra rapidement.</p>'
   identite:
     '#type': fieldset
     '#title': 'Vous êtes'
     vous_etes:
       '#type': select
-      '#title': 'Vous êtes'
-      '#title_display': invisible
+      '#title': Sélectionner
       '#required': true
       '#empty_option': Sélectionner
       '#options':
@@ -45,6 +47,9 @@ elements: |-
         required:
           ':input[name="vous_etes"]':
             '!value': particulier
+      '#wrapper_attributes':
+        class:
+          - dm-form-row-start
     adresse:
       '#type': textfield
       '#title': Adresse
@@ -58,6 +63,9 @@ elements: |-
       '#required': true
       '#pattern': '\d{5}'
       '#placeholder': 'Ex : 13600'
+      '#wrapper_attributes':
+        class:
+          - dm-form-row-start
     ville:
       '#type': textfield
       '#title': Ville
@@ -70,6 +78,9 @@ elements: |-
       '#options':
         madame: Madame
         monsieur: Monsieur
+      '#wrapper_attributes':
+        class:
+          - dm-form-row-start
     prenom:
       '#type': textfield
       '#title': Prénom
@@ -83,128 +94,152 @@ elements: |-
       '#type': tel
       '#title': Téléphone
       '#required': true
+      '#wrapper_attributes':
+        class:
+          - dm-form-row-start
     email:
       '#type': email
       '#title': E-mail
       '#required': true
       '#placeholder': 'Ex : monemail@gmail.com'
-  demande_concerne:
-    '#type': select
+  demande:
+    '#type': fieldset
     '#title': 'Votre demande concerne'
-    '#required': true
-    '#empty_option': Sélectionner
-    '#options':
-      devis: 'Demande de devis'
-      sav: SAV
-      question: 'Une question'
-  marque:
-    '#type': webform_term_select
-    '#title': Marque
-    '#vocabulary': vehicle_brand
-    '#empty_option': Marque
-    '#states':
-      visible:
-        - ':input[name="demande_concerne"]':
+    demande_concerne:
+      '#type': select
+      '#title': Sélectionner
+      '#required': true
+      '#empty_option': Sélectionner
+      '#options':
+        devis: 'Demande de devis'
+        sav: SAV
+        question: 'Une question'
+    marque:
+      '#type': webform_term_select
+      '#title': Marque
+      '#vocabulary': vehicle_brand
+      '#empty_option': Marque
+      '#states':
+        visible:
+          - ':input[name="demande_concerne"]':
+              value: devis
+          - or
+          - ':input[name="demande_concerne"]':
+              value: sav
+        required:
+          - ':input[name="demande_concerne"]':
+              value: devis
+          - or
+          - ':input[name="demande_concerne"]':
+              value: sav
+      '#wrapper_attributes':
+        class:
+          - dm-form-row-start
+    modele:
+      '#type': webform_term_select
+      '#title': Modèle
+      '#vocabulary': vehicle_model
+      '#empty_option': Modèle
+      '#states':
+        visible:
+          - ':input[name="demande_concerne"]':
+              value: devis
+          - or
+          - ':input[name="demande_concerne"]':
+              value: sav
+        required:
+          - ':input[name="demande_concerne"]':
+              value: devis
+          - or
+          - ':input[name="demande_concerne"]':
+              value: sav
+    motorisation:
+      '#type': webform_term_select
+      '#title': Motorisation
+      '#vocabulary': motorisation
+      '#empty_option': Sélectionner
+      '#states':
+        visible:
+          - ':input[name="demande_concerne"]':
+              value: devis
+          - or
+          - ':input[name="demande_concerne"]':
+              value: sav
+        required:
+          - ':input[name="demande_concerne"]':
+              value: devis
+          - or
+          - ':input[name="demande_concerne"]':
+              value: sav
+    numero_chassis:
+      '#type': textfield
+      '#title': 'N° de châssis'
+      '#help': 'Voir la case E de votre certificat d’immatriculation.'
+      '#states':
+        visible:
+          - ':input[name="demande_concerne"]':
+              value: devis
+          - or
+          - ':input[name="demande_concerne"]':
+              value: sav
+        required:
+          - ':input[name="demande_concerne"]':
+              value: devis
+          - or
+          - ':input[name="demande_concerne"]':
+              value: sav
+      '#wrapper_attributes':
+        class:
+          - dm-form-row-start
+      '#help_title': 'Case E = numéro de châssis'
+      '#help_attributes':
+        data-dm-help-visual: chassis-numero
+    type_chassis:
+      '#type': textfield
+      '#title': 'Type de châssis'
+      '#help': 'Voir la case D.2.1 de votre certificat d’immatriculation.'
+      '#states':
+        visible:
+          ':input[name="demande_concerne"]':
             value: devis
-        - or
-        - ':input[name="demande_concerne"]':
-            value: sav
-      required:
-        - ':input[name="demande_concerne"]':
+        required:
+          ':input[name="demande_concerne"]':
             value: devis
-        - or
-        - ':input[name="demande_concerne"]':
+      '#help_title': 'Case D.2.1 = Type de châssis'
+      '#help_attributes':
+        data-dm-help-visual: chassis-type
+    document:
+      '#type': managed_file
+      '#title': 'Ajouter un document (jpg, pdf, 5 Mo max)'
+      '#uri_scheme': private
+      '#max_filesize': '5'
+      '#file_extensions': 'jpg jpeg pdf'
+      '#states':
+        visible:
+          ':input[name="demande_concerne"]':
             value: sav
-  modele:
-    '#type': webform_term_select
-    '#title': Modèle
-    '#vocabulary': vehicle_model
-    '#empty_option': Modèle
-    '#states':
-      visible:
-        - ':input[name="demande_concerne"]':
-            value: devis
-        - or
-        - ':input[name="demande_concerne"]':
-            value: sav
-      required:
-        - ':input[name="demande_concerne"]':
-            value: devis
-        - or
-        - ':input[name="demande_concerne"]':
-            value: sav
-  motorisation:
-    '#type': webform_term_select
-    '#title': Motorisation
-    '#vocabulary': motorisation
-    '#empty_option': Sélectionner
-    '#states':
-      visible:
-        - ':input[name="demande_concerne"]':
-            value: devis
-        - or
-        - ':input[name="demande_concerne"]':
-            value: sav
-      required:
-        - ':input[name="demande_concerne"]':
-            value: devis
-        - or
-        - ':input[name="demande_concerne"]':
-            value: sav
-  numero_chassis:
-    '#type': textfield
-    '#title': 'N° de châssis'
-    '#help': 'Voir la case E de votre carte grise.'
-    '#states':
-      visible:
-        - ':input[name="demande_concerne"]':
-            value: devis
-        - or
-        - ':input[name="demande_concerne"]':
-            value: sav
-      required:
-        - ':input[name="demande_concerne"]':
-            value: devis
-        - or
-        - ':input[name="demande_concerne"]':
-            value: sav
-  type_chassis:
-    '#type': textfield
-    '#title': 'Type châssis'
-    '#help': 'Voir la case D.2 de votre carte grise.'
-    '#states':
-      visible:
-        ':input[name="demande_concerne"]':
-          value: devis
-      required:
-        ':input[name="demande_concerne"]':
-          value: devis
-  document:
-    '#type': managed_file
-    '#title': 'Ajouter un document'
-    '#description': 'Formats : JPG, PDF. 5 Mo maximum.'
-    '#uri_scheme': private
-    '#max_filesize': '5'
-    '#file_extensions': 'jpg jpeg pdf'
-    '#states':
-      visible:
-        ':input[name="demande_concerne"]':
-          value: sav
-  message:
-    '#type': textarea
-    '#title': 'Votre message'
-    '#placeholder': 'Description de votre message'
-    '#states':
-      visible:
-        ':input[name="demande_concerne"]':
-          filled: true
-      required:
-        ':input[name="demande_concerne"]':
-          filled: true
+    message:
+      '#type': textarea
+      '#title': 'Votre message'
+      '#placeholder': 'Description de votre message'
+      '#states':
+        visible:
+          ':input[name="demande_concerne"]':
+            filled: true
+        required:
+          ':input[name="demande_concerne"]':
+            filled: true
+      '#wrapper_attributes':
+        class:
+          - dm-form-row-start
+          - dm-form-span-2
   consentement:
     '#type': checkbox
     '#title': "J'autorise ces informations à être utilisées par Drive Matic Legrand"
     '#required': true
+    '#wrapper_attributes':
+      class:
+        - dm-form-span-3
   captcha:
     '#type': captcha
     '#captcha_type': recaptcha_v3/default

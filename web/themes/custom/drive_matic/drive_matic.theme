@@ -7,6 +7,7 @@
 
 declare(strict_types=1);
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\file\FileInterface;
@@ -230,4 +231,81 @@ function drive_matic_preprocess_file_link(array &$variables): void {
 
   $description = trim((string) ($variables['description'] ?? ''));
   $variables['download_label'] = $description !== '' ? $description : t('Télécharger');
+}
+
+/**
+ * Visuels d'aide disponibles, par nom.
+ *
+ * Les maquettes 438-9456 et 438-9457 remplacent l'infobulle texte de Webform
+ * par une modale montrant un certificat d'immatriculation, la case concernee
+ * entouree.
+ *
+ * Un element de formulaire demande son visuel par nom, via
+ * `#help_attributes: { data-dm-help-visual: <nom> }` : la configuration nomme
+ * un besoin, le theme decide du fichier et de son alternative textuelle. Un
+ * nom inconnu (ou absent) laisse l'infobulle par defaut de Webform.
+ *
+ * @return array[]
+ *   Tableau indexe par nom de visuel : fichier dans `images/help/`, dimensions
+ *   intrinseques, alternative textuelle.
+ */
+function _drive_matic_help_visuals(): array {
+  return [
+    'chassis-numero' => [
+      'file' => 'carte-grise-case-e.webp',
+      'width' => 1000,
+      'height' => 1804,
+      'alt' => 'Certificat d’immatriculation : la case E, numéro de châssis, est entourée en rouge.',
+    ],
+    'chassis-type' => [
+      'file' => 'carte-grise-case-d21.webp',
+      'width' => 1000,
+      'height' => 1804,
+      'alt' => 'Certificat d’immatriculation : la case D.2.1, type de châssis, est entourée en rouge.',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for webform_element_help.
+ *
+ * Prepare la modale d'aide illustree quand l'element en a un visuel. Le rendu
+ * lui-meme est dans le SDC `help-modal`, embarque par le template surcharge
+ * webform-element-help.html.twig.
+ *
+ * A noter : ce hook de theme ne declare que `help`, `help_title` et
+ * `attributes` (WebformThemeHooks::theme()) — il n'y a pas de variable
+ * `element`, donc aucun moyen de retrouver le champ d'origine. D'ou le nom du
+ * visuel passe en attribut.
+ *
+ * Le repli sans JS reprend le texte de `#help`. Attention : quand c'est un
+ * tableau de rendu, le preprocess de Webform l'a deja rendu pour alimenter
+ * `data-webform-help` — il est donc marque `#printed` et le rendre a nouveau
+ * donnerait une chaine vide. On lit `#markup`, ou le rendu a ete depose.
+ */
+function drive_matic_preprocess_webform_element_help(array &$variables): void {
+  $name = (string) ($variables['attributes']['data-dm-help-visual'] ?? '');
+  $visual = _drive_matic_help_visuals()[$name] ?? NULL;
+  if ($visual === NULL) {
+    return;
+  }
+
+  $help = $variables['help'];
+  $fallback = is_string($help) ? $help : (string) ($help['#markup'] ?? '');
+
+  $theme_path = \Drupal::service('extension.list.theme')->getPath('drive_matic');
+
+  $variables['help_modal'] = [
+    '#type' => 'component',
+    '#component' => 'drive_matic:help-modal',
+    '#props' => [
+      'id' => Html::getUniqueId('help-' . $name),
+      'title' => (string) $variables['help_title'],
+      'fallback' => $fallback,
+      'image' => base_path() . $theme_path . '/images/help/' . $visual['file'],
+      'image_alt' => $visual['alt'],
+      'image_width' => $visual['width'],
+      'image_height' => $visual['height'],
+    ],
+  ];
 }

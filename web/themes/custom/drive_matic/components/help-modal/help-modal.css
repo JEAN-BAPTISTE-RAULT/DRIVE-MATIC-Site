@@ -1,0 +1,99 @@
+.help-modal {
+  display: contents;
+}
+.help-modal__trigger {
+  display: none;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.help-modal__trigger::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 24px;
+  background-color: var(--dm-color-grey-metal);
+  -webkit-mask: url("../../images/icons/info.svg") no-repeat center;
+          mask: url("../../images/icons/info.svg") no-repeat center;
+}
+.help-modal__trigger:hover::before {
+  background-color: var(--dm-color-steel);
+}
+.help-modal__trigger:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 2px;
+}
+.help-modal__fallback {
+  flex: 0 0 100%;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+.help-modal.is-ready .help-modal__trigger {
+  display: block;
+}
+.help-modal.is-ready .help-modal__fallback {
+  display: none;
+}
+.help-modal__dialog {
+  max-width: min(596px, 100vw - 2 * var(--dm-gutter));
+  max-height: calc(100vh - 2 * var(--dm-space-block));
+  padding: 30px 48px 48px;
+  border: 0;
+  border-radius: 24px;
+  background-color: var(--dm-color-white);
+}
+.help-modal__dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.help-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--dm-space-element);
+  margin-bottom: 15px;
+}
+
+.help-modal__title {
+  margin: 0;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: 1.5rem;
+  font-weight: 700;
+}
+
+.help-modal__close {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.help-modal__close::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 24px;
+  background-color: var(--dm-color-anthracite);
+  -webkit-mask: url("../../images/icons/close.svg") no-repeat center;
+          mask: url("../../images/icons/close.svg") no-repeat center;
+}
+.help-modal__close:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 2px;
+}
+
+.help-modal__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}

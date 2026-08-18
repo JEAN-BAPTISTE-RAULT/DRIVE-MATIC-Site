@@ -46,7 +46,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 6 | Les marques partenaires | 68 | `433-7148` | ✅ **conforme** — titre repris de la maquette, motif Pathauto supprimé, alias `/marques-partenaires` en dur. 12 logos alphabétiques dans `brands-grid` |
 | 7 | Actualités | 46 | `438-10209` | ✅ **conforme** — `body` masqué (aucun chapô dans la maquette), alias `/actualites` en dur. Pager configuré, ne s'affiche pas avec 6 items : normal |
 | 8 | Une actualité | 17 | `438-10665` | ✅ **conforme** — l'écart demandé (`body` sous l'image, avant les blocs) était **déjà** la config : field_image(0), field_caption(1), body(2), field_paragraphs(3). Ajouté les 2 blocs manquants |
-| 9 | Contact | 1 | `433-7637` ✅ / `438-9060`, `438-9465` ✅ / `438-9456`, `438-9457` ⏳ | page principale **conforme**. Les 4 frames restants ne sont pas des « états du formulaire » : deux sont les **variantes SAV et question** (vérifiées conformes, cf. « 9bis » plus bas), deux sont les **modales « carte grise »** — encore à faire |
+| 9 | Contact | 1 | `433-7637`, `438-9060`, `438-9465`, `438-9456`, `438-9457` ✅ | **formulaire stylé et modales faites** (cf. « 9bis » plus bas). Les 4 frames restants n'étaient pas des « états du formulaire » : deux sont les **variantes SAV et question**, deux les **modales « carte grise »**. Reste hors formulaire : la ligne adresse + carte au-dessus de la carte grise du formulaire |
 | 10 | Devenir partenaire | 2 | `438-9838` | ✅ **conforme** — titre puis formulaire, `body` masqué (aucun chapô dans la maquette), mention « *Champs obligatoires » activée |
 | 11 | Nos ateliers | **77** | `436-2486` | ✅ **créée** — titre, chapô (`body`), 2 `image_text_50` alternées. Alias `/nos-ateliers` |
 | 12 | Recherches et développement | **78** | `436-8300` | ✅ **créée** — titre, chapô (`body`), 2 `image_text_50` alternées, puis un `text_centered` (« Innover aujourd’hui… »). Alias `/recherches-et-developpement`. Visuels = placeholders (la maquette ne pose que des rectangles gris). Le titre retenu est celui de la maquette, pas le « Recherche & développement » du PRD F9 |
@@ -73,20 +73,43 @@ seul le réglage manquait. Ajouté dans `web/sites/default/settings.php` (gitign
 `$settings['file_private_path'] = dirname(DRUPAL_ROOT) . '/private';`.
 ⚠️ **À reporter sur chaque environnement** — préprod et prod n'ont pas ce fichier.
 
-**Reste ouvert (2 constats à arbitrer) :**
+**Le plafond de 5 Mo était déjà bon là où ça compte.** Le « Limité à 2 Mo » observé venait
+du PHP **CLI** (Homebrew, `upload_max_filesize = 2M`) utilisé par `drush runserver` — le
+vhost MAMP qui sert réellement le site est à 48M et affichait bien 5 Mo. Le piège est le
+banc de test, pas le site : **une vérification faite via `runserver` ne dit pas ce que
+voit un visiteur** dès qu'un réglage `php.ini` est en jeu. Le CLI a quand même été passé
+à 5M (sauvegarde `php.ini.bak-20260818`) pour que les deux chemins concordent.
 
-1. **Le plafond de taille réel est 2 Mo, pas 5.** Le webform annonce « Formats : JPG, PDF.
-   5 Mo maximum. » puis « Limité à 2 Mo. » : c'est `upload_max_filesize` de PHP (MAMP) qui
-   plafonne. Réglage serveur, pas applicatif — mais la spec dit 5 Mo.
-2. **Le formulaire n'est pas stylé.** Widgets natifs du navigateur, pas de carte grise de
-   fond, pas de grille 3 colonnes, aide rendue par le `?` de Webform et non par l'icône ⓘ
-   de la maquette. La conformité de la ligne 9 avait été jugée sur la structure et le
-   contenu ; l'habillage relève de F10 étape 7 et **n'est pas fait**. Les deux modales en
-   dépendent visuellement (position et style de leur déclencheur).
+**Formulaire stylé et modales faites le 2026-08-18** — acté dans
+[ADR-015](../../../.claude/decisions/015-habillage-des-formulaires.md).
 
-Écarts de libellé relevés au passage, non corrigés : le champ s'appelle « Type châssis »
-en config contre « Type de châssis » dans la maquette, et son aide dit « case D.2 » quand
-la maquette et le certificat disent « case **D.2.1** ».
+- Fondation `src/scss/_forms.scss` : carte `#F5F5F5` radius 24 padding 40/60, grille
+  3 colonnes gouttière 30, libellés Inter 16/28 acier, champs blancs bordure
+  `grey-metal` radius 8 hauteur 50, chevron des selects en `mask`, message sur
+  2 colonnes, case à cocher 20px, bouton rouge, mention déplacée en bas par `order`.
+- SDC `help-modal` : déclencheur ⓘ au bout de la ligne du libellé, `<dialog>` natif,
+  visuels annotés en WebP dans `images/help/`. Repli sans JS = la phrase d'aide.
+- Config du webform réalignée : intro H3, deux groupes (`identite` et `demande`) dont
+  les selects portent le libellé « Sélectionner », « Type de châssis » et « case D.2.1 »
+  corrigés, libellé du champ document repris de la maquette.
+
+Mesuré sur le rendu : colonnes à x = 215 / 562 / 908 sur 317 de large (maquette
+216/561/906 sur 315), libellé 28px puis champ de 50px à +31, icône ⓘ collée au bord de
+la colonne, modale 596×1019 avec le visuel à (48, 69) en 500×902 — la maquette dit
+596×1021 et (48, 69) en 500×902.
+
+**Reste ouvert :**
+
+1. **La pièce jointe du SAV ne part pas dans l'e-mail interne.** Le handler
+   `sav_interne` a `attachments: false`, alors que le plan F10 §4 dit « joint le
+   document si présent ». Jamais visible avant, le champ ne s'affichant pas. Une ligne
+   de config à basculer — pas fait, ça change un envoi sortant.
+2. **Le bouton d'envoi épouse son texte** (~95px) là où la maquette dessine un cadre de
+   171px. Choix de cohérence avec les autres boutons du site, déjà validés ainsi.
+3. **La ligne « adresse + carte » au-dessus du formulaire n'est pas mise en page** : la
+   maquette la veut sur deux colonnes (texte à gauche, carte à droite), le rendu
+   l'empile pleine largeur avec une photo en guise de carte. Hors périmètre du
+   formulaire.
 
 ## Divergence titre (à arbitrer)
 

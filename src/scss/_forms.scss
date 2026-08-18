@@ -1,179 +1,34 @@
-:root {
-  --dm-color-steel: #2f3a45;
-  --dm-color-anthracite: #1a1a1a;
-  --dm-color-red: #aa0000;
-  --dm-color-grey-light: #e8e8e8;
-  --dm-color-grey-lighter: #f5f5f5;
-  --dm-color-grey-metal: #b5b5b5;
-  --dm-color-grey-text: #666666;
-  --dm-color-grey-primary: #454444;
-  --dm-color-white: #ffffff;
-  --dm-status-todo: #aa0000;
-  --dm-status-order: #d97706;
-  --dm-status-done: #2e7d32;
-  --dm-font-title:
-    'Exo 2', system-ui, -apple-system, 'Segoe UI', roboto, sans-serif;
-  --dm-font-body:
-    inter, system-ui, -apple-system, 'Segoe UI', roboto, sans-serif;
-  --dm-space-block: 32px;
-  --dm-gutter: 40px;
-  --dm-space-element: 24px;
-  --dm-h1-size: 2.8125rem;
-  --dm-h1-line: 3.625rem;
-  --dm-h2-size: 1.875rem;
-  --dm-h2-line: 2.75rem;
-  --dm-h3-size: 1.375rem;
-  --dm-h3-line: 2rem;
-  --dm-body-size: 1rem;
-  --dm-body-line: 1.75rem;
-}
+// Habillage des formulaires publics du site.
 
-@font-face {
-  font-family: "Exo 2";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("../fonts/exo-2-latin-700.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Exo 2";
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url("../fonts/exo-2-latin-900.woff2") format("woff2");
-}
-@font-face {
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("../fonts/inter-latin-400.woff2") format("woff2");
-}
-@font-face {
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("../fonts/inter-latin-500.woff2") format("woff2");
-}
-@font-face {
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("../fonts/inter-latin-700.woff2") format("woff2");
-}
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+// Exception assumee a la regle « tout est SDC », de la meme nature que
+// `local-tasks` : le markup vient de l'API Form de Drupal et de Webform, pas
+// d'un composant — il n'existe donc pas de dossier de SDC ou poser ce CSS, et
+// l'habillage sert TOUS les formulaires du site (contact, devenir partenaire,
+// configurateur a venir). Le mettre en fondation evite de le dupliquer.
 
-body {
-  margin: 0;
-}
+// Reference : maquettes 433-7637 (devis), 438-9060 (SAV), 438-9465 (question).
 
-img,
-picture,
-video,
-svg {
-  max-width: 100%;
-  height: auto;
-}
-
-a {
-  color: inherit;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-body {
-  font-family: var(--dm-font-body);
-  font-size: var(--dm-body-size);
-  line-height: var(--dm-body-line);
-  color: var(--dm-color-anthracite);
-  font-feature-settings: "liga" off, "clig" off;
-}
-
-h1,
-h2,
-h3 {
-  font-family: var(--dm-font-title);
-  font-weight: 700;
-  color: var(--dm-color-anthracite);
-  margin: 0 0 0.5em;
-}
-
-h1 {
-  font-size: var(--dm-h1-size);
-  line-height: var(--dm-h1-line);
-}
-
-h2 {
-  font-size: var(--dm-h2-size);
-  line-height: var(--dm-h2-line);
-}
-
-h3 {
-  font-size: var(--dm-h3-size);
-  line-height: var(--dm-h3-line);
-}
-
-.text-formatted > :first-child {
-  margin-top: 0;
-}
-
-.text-formatted > :last-child {
-  margin-bottom: 0;
-}
-
-.block-local-tasks-block {
-  position: fixed;
-  z-index: 5;
-  inset-block-start: calc(var(--drupal-displace-offset-top, 0px) + 16px);
-  inset-inline-end: 0;
-  padding: 16px;
-  background-color: var(--dm-color-grey-light);
-}
-.block-local-tasks-block .tabs {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.block-local-tasks-block li {
-  display: block;
-  margin: 0;
-}
-.block-local-tasks-block a {
-  color: var(--dm-color-steel);
-  font-family: var(--dm-font-body);
-  font-size: var(--dm-body-size);
-  line-height: var(--dm-body-line);
-  text-decoration: none;
-}
-.block-local-tasks-block a:hover {
-  text-decoration: underline;
-}
-.block-local-tasks-block a:focus-visible {
-  outline: 2px solid var(--dm-color-red);
-  outline-offset: 2px;
-}
-
+// Gouttiere de la carte : meme plafond de largeur que les blocs de contenu
+// (1130px), pose en `padding-inline` sur le champ qui porte le formulaire — la
+// carte a un fond, ses bords doivent donc s'arreter la ou s'arrete le contenu.
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
 .field--type-webform {
-  padding-inline: max(var(--dm-gutter), 50vw - 565px);
+  padding-inline: max(var(--dm-gutter), calc(50vw - 565px));
 }
 
 .webform-submission-form {
+  // La maquette donne 40/60 pour la respiration interieure de la carte et 30
+  // entre les champs : aucune des trois valeurs de l'ADR-013 ne correspond, et
+  // ce sont des mesures propres a la carte, pas au rythme des blocs. On les
+  // nomme ici plutot que de les semer dans le fichier.
   --dm-form-card-padding-block: 40px;
   --dm-form-card-padding-inline: 60px;
   --dm-form-gap: 30px;
+
+  // Ecart libelle -> champ, et legende de groupe -> premier champ.
   --dm-form-label-gap: 3px;
   --dm-form-legend-gap: 13px;
+
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--dm-form-gap);
@@ -188,9 +43,12 @@ h3 {
 .webform-submission-form > .form-item-intro,
 .webform-submission-form > .form-actions,
 .webform-submission-form > .webform-required {
-  grid-column: 1/-1;
+  grid-column: 1 / -1;
 }
 
+// La maquette place la mention en bas de carte ; Webform la rend en tete. Un
+// simple `order` suffit : le texte n'est pas focusable, l'ordre de tabulation
+// n'est donc pas affecte.
 .webform-submission-form > .webform-required {
   order: 1;
   color: var(--dm-color-steel);
@@ -199,19 +57,24 @@ h3 {
   line-height: var(--dm-body-line);
 }
 
+// L'etoile de la maquette : un astérisque collé au libellé, de la meme couleur,
+// a la place du glyphe rouge du coeur.
 .webform-submission-form .form-required::after {
   width: auto;
   height: auto;
   margin: 0;
-  content: "*";
+  content: '*';
   vertical-align: baseline;
   background: none;
 }
 
+// Le texte de la mention commence deja par une etoile : on retire celle que le
+// coeur ajoute, sinon il y en a deux.
 .webform-submission-form > .webform-required .form-required::after {
   content: none;
 }
 
+// Intro de formulaire : niveau H3 de la maquette.
 .dm-form-intro {
   margin: 0;
   color: var(--dm-color-steel);
@@ -221,10 +84,14 @@ h3 {
   font-weight: 700;
 }
 
+// --- Groupes de champs. ----------------------------------------------------
+
 .webform-submission-form fieldset {
   margin: 0;
   padding: 0;
   border: 0;
+
+  // Un `fieldset` a une largeur minimale intrinseque qui deborderait la grille.
   min-inline-size: 0;
 }
 
@@ -250,10 +117,21 @@ h3 {
   align-items: start;
 }
 
-.webform-submission-form .fieldset-wrapper > div.js-form-wrapper:not(.js-webform-states-hidden),
-.webform-submission-form .fieldset-wrapper > div.js-form-wrapper > div[id=ajax-wrapper] {
+// Webform enveloppe le champ fichier de deux `div` techniques (l'etat
+// conditionnel, puis la cible AJAX) qui prendraient la place du champ dans la
+// grille. `display: contents` les rend transparentes. Le `:not()` laisse gagner
+// le `display: none` que Webform pose quand ses `#states` masquent l'element.
+.webform-submission-form
+  .fieldset-wrapper
+  > div.js-form-wrapper:not(.js-webform-states-hidden),
+.webform-submission-form
+  .fieldset-wrapper
+  > div.js-form-wrapper
+  > div[id='ajax-wrapper'] {
   display: contents;
 }
+
+// --- Champs. ---------------------------------------------------------------
 
 .webform-submission-form .form-item {
   margin: 0;
@@ -269,24 +147,32 @@ h3 {
   font-weight: 400;
 }
 
+// Le libelle devient une ligne : titre a gauche, declencheur d'aide a droite.
 .webform-submission-form .form-item > label:has(.help-modal) {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 }
 
+// stylelint-disable selector-class-pattern -- classe d'un SDC (BEM)
+// `order` avant `margin: auto` : le libelle etant une boite flex, l'etoile de
+// `.form-required::after` en est le dernier element. Sans cet ordre elle se
+// posait APRES l'icone d'aide, qui n'etait donc plus collee au bord.
 .webform-submission-form .help-modal__trigger {
   order: 1;
-  -webkit-margin-start: auto;
-          margin-inline-start: auto;
+  margin-inline-start: auto;
 }
+// stylelint-enable selector-class-pattern
 
-.webform-submission-form :is(input[type=text],
-input[type=email],
-input[type=tel],
-input[type=number],
-select,
-textarea) {
+.webform-submission-form
+  :is(
+    input[type='text'],
+    input[type='email'],
+    input[type='tel'],
+    input[type='number'],
+    select,
+    textarea
+  ) {
   inline-size: 100%;
   padding: 10px 20px;
   border: 1px solid var(--dm-color-grey-metal);
@@ -296,11 +182,6 @@ textarea) {
   font-family: var(--dm-font-body);
   font-size: var(--dm-body-size);
   line-height: var(--dm-body-line);
-}
-
-.webform-submission-form ::-moz-placeholder {
-  color: var(--dm-color-grey-text);
-  opacity: 1;
 }
 
 .webform-submission-form ::placeholder {
@@ -313,14 +194,19 @@ textarea) {
   outline-offset: 1px;
 }
 
+// Chevron des listes deroulantes : l'asset exporte de la maquette, en `mask` sur
+// un `::after` du conteneur du champ. Le `mask` ne peut pas etre pose sur le
+// `select` lui-meme (il masquerait tout le controle) ni sur un de ses
+// pseudo-elements (un `select` n'en a pas) : d'ou le passage par le conteneur,
+// que l'on rend inerte au clic pour ne pas voler le clic au champ.
 .webform-submission-form select {
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  -webkit-padding-end: 52px;
-          padding-inline-end: 52px;
+  appearance: none;
+  padding-inline-end: 52px;
 }
 
+// `> select` et non `select` : un `fieldset` porte lui aussi la classe
+// `form-item`, et il contient des listes deroulantes — sans le `>`, le chevron
+// se posait au coin du groupe entier.
 .webform-submission-form .form-item:has(> select) {
   position: relative;
 }
@@ -331,11 +217,10 @@ textarea) {
   inset-inline-end: 20px;
   width: 24px;
   height: 24px;
-  content: "";
+  content: '';
   pointer-events: none;
   background-color: var(--dm-color-grey-metal);
-  -webkit-mask: url("../images/icons/chevron-down.svg") no-repeat center;
-          mask: url("../images/icons/chevron-down.svg") no-repeat center;
+  mask: url('../images/icons/chevron-down.svg') no-repeat center;
 }
 
 .webform-submission-form textarea {
@@ -344,39 +229,38 @@ textarea) {
   resize: vertical;
 }
 
+// --- Case a cocher du consentement. ---------------------------------------
+
 .webform-submission-form .form-type-checkbox {
   display: flex;
   align-items: center;
   gap: 9px;
 }
 
-.webform-submission-form input[type=checkbox] {
+.webform-submission-form input[type='checkbox'] {
   flex: 0 0 auto;
   inline-size: 20px;
   block-size: 20px;
   margin: 0;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  appearance: none;
   border: 1px solid var(--dm-color-grey-metal);
   border-radius: 4px;
   background-color: var(--dm-color-white);
   cursor: pointer;
 }
 
-.webform-submission-form input[type=checkbox]:checked {
+.webform-submission-form input[type='checkbox']:checked {
   border-color: var(--dm-color-red);
   background-color: var(--dm-color-red);
 }
 
-.webform-submission-form input[type=checkbox]:checked::after {
+.webform-submission-form input[type='checkbox']:checked::after {
   display: block;
   width: 18px;
   height: 18px;
-  content: "";
+  content: '';
   background-color: var(--dm-color-white);
-  -webkit-mask: url("../images/icons/check.svg") no-repeat center;
-          mask: url("../images/icons/check.svg") no-repeat center;
+  mask: url('../images/icons/check.svg') no-repeat center;
 }
 
 .webform-submission-form .form-type-checkbox > label.option {
@@ -388,16 +272,19 @@ textarea) {
   font-weight: 400;
 }
 
+// --- Champ fichier. -------------------------------------------------------
+
+// La maquette met formats et poids dans le libelle : la description native ferait
+// doublon. On la garde pour les lecteurs d'ecran, sans l'afficher.
 .webform-submission-form .form-item-document > .description {
   position: absolute;
   overflow: hidden;
-  -webkit-clip-path: inset(50%);
-          clip-path: inset(50%);
+  clip-path: inset(50%);
   width: 1px;
   height: 1px;
 }
 
-.webform-submission-form input[type=file] {
+.webform-submission-form input[type='file'] {
   inline-size: 100%;
   padding: 10px 20px;
   border: 1px solid var(--dm-color-grey-metal);
@@ -408,6 +295,8 @@ textarea) {
   font-size: var(--dm-body-size);
   line-height: var(--dm-body-line);
 }
+
+// --- Bouton d'envoi (« Btn rouge » de la maquette). -----------------------
 
 .webform-submission-form .form-actions .form-submit {
   display: inline-block;
@@ -427,14 +316,25 @@ textarea) {
   background: var(--dm-color-anthracite);
 }
 
+// --- Grille desktop. -------------------------------------------------------
+
+// En dernier volontairement : ces regles ont la meme specificite que les regles
+// de base ci-dessus, c'est donc leur position dans le fichier qui les fait
+// gagner. Les remonter remettrait le formulaire sur une colonne.
+
 @media (width >= 992px) {
   .webform-submission-form,
   .webform-submission-form .fieldset-wrapper {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  // Les champs qui ouvrent une nouvelle ligne dans la maquette. La classe est
+  // posee par le formulaire (`#wrapper_attributes`) : la mise en page reste
+  // decrite la ou les champs sont definis, et ce CSS reste generique.
   .webform-submission-form .dm-form-row-start {
     grid-column-start: 1;
   }
+
   .webform-submission-form .dm-form-span-2 {
     grid-column: span 2;
   }
