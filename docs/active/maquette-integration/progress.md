@@ -111,6 +111,43 @@ la colonne, modale 596×1019 avec le visuel à (48, 69) en 500×902 — la maque
    l'empile pleine largeur avec une photo en guise de carte. Hors périmètre du
    formulaire.
 
+## Reprise de la page « Transformer un véhicule en auto-école » (2026-08-18)
+
+Trois écarts relevés par l'utilisatrice sur le node 52, tous corrigés.
+
+**1. Le recadrage 12:5 n'existait nulle part.** Le héros sortait en 1440×**960** (le 3:2 de
+la source) au lieu de 1440×600. Cause : `crop_crop` **n'est pas un recadrage automatique**,
+c'est l'application d'une entité `crop` posée sur le couple (fichier, type de recadrage).
+Sans cette entité il ne fait **rien** — l'image traverse le style et ne subit que le
+`scale`. Or la base ne contenait **aucune** entité `crop_12_5` : les **17 blocs `image_full`
+du site** étaient donc tous au ratio de leur source. Neuf entités `crop_16_9` et une
+`crop_1_1` existaient, ce qui rendait le trou invisible ailleurs.
+
+Corrigé en créant le recadrage manquant, **centré**, sur les 7 fichiers concernés. Le
+centrage n'est pas un choix par défaut : il a été **mesuré**. En glissant la bande du héros
+de la maquette (1440×614) sur la photo source (4096×2725) et en minimisant l'écart
+quadratique en niveaux de gris, le centre de bande tombe à 1362 px — le centre exact de
+l'image. ⚠️ La maquette dessine 1440×614, soit un ratio de 2,345 : le 12:5 (2,4) est bien
+l'intention, le 614 est un arrondi de maquette.
+
+**2. La photo du héros n'était pas celle de la maquette** : le node reprenait la bannière
+de la home (véhicule ECF jaune) là où la maquette montre un habitacle vu de la place du
+conducteur. Photo importée depuis Figma (média 29).
+
+**3. Le bloc configurateur portait des reliquats du bac à sable** : image `demo-1-1.png`,
+légende « BMW Série 1 équipée — démonstration » et notice PDF, aucun des trois n'étant dans
+la maquette. Les textes et le bouton, eux, étaient bons. Photo de la maquette importée
+(média 30), légende et fichier retirés.
+
+**4. Les accordéons des deux pages transform reviennent au lorem de la maquette.** L'écart
+signalé plus haut (« de vraies questions… non tranché ») est **tranché : on intègre à
+l'identique de la maquette**. Les nodes 52 et 76 portent désormais les 4 questions lorem et
+le bouton « Lien vers site » du premier panneau, comme la home et « Qui sommes-nous » qui
+avaient été jugés conformes pour cette raison. Le bouton pointe la FAQ (node 62).
+
+À surveiller, non traité : le bouton du premier panneau de l'accordéon du node 54 pointe
+encore `https://example.com`.
+
 ## Divergence titre (à arbitrer)
 
 Constat mesuré sur le rendu anonyme :
@@ -128,9 +165,10 @@ questions en lorem, mot pour mot**, que le site. Idem pour la description de
 l'`image_text_50` de la home (`303:6045`). Ces zones sont donc **conformes** : le lorem
 est un placeholder de la maquette, pas une dette d'intégration.
 
-⚠️ Conséquence : sur les pages transform (nodes 52 et 76), les questions de FAQ ont été
-remplacées par de **vraies** questions du référentiel — c'est allé **au-delà** de la
-maquette. Signalé à l'utilisatrice, non tranché.
+~~⚠️ Conséquence : sur les pages transform (nodes 52 et 76), les questions de FAQ ont été
+remplacées par de vraies questions du référentiel.~~ **Corrigé le 2026-08-18** : on intègre
+à l'identique de la maquette, lorem compris. La règle ne souffre pas d'exception — ne pas
+reproposer d'« améliorer » un placeholder de maquette.
 
 ## Ce que la reconstruction du node 54 a appris
 
