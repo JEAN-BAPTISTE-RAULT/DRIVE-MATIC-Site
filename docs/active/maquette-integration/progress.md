@@ -41,7 +41,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 1 | Accueil | 31 | `303-5967` | ✅ **conforme, rien à changer** — voir « Le lorem est celui des maquettes » |
 | 2 | Qui sommes-nous | 54 | `433-9747` | ✅ **reconstruite le 2026-08-18** — 6 blocs conformes |
 | 3 | **CGV** (type `legals`) | 55 | `469-11689` | ✅ **intégrée** — 15 sections `text_left_aligned`. Le frame s'appelle « Conditions générales de vente » : le type `legals` (« Page :: Mentions légales ») porte les CGV. Titre et alias changés, 301 auto depuis /mentions-legales |
-| 4 | Questions fréquentes | 62 | `396-11620` | à vérifier (contenu par Vue, 0 paragraphe) |
+| 4 | **FAQ** | 62 | `396-11620` | ✅ **intégrée** — titre « FAQ : Nous répondons à vos questions », motif Pathauto **supprimé**, alias en dur `/faq`, 301 depuis /questions-frequentes. Filtres Général/Auto-école/PMR rendus |
 | 5 | Documentations | 67 | `398-12119` | à vérifier (contenu par Vue) |
 | 6 | Marques partenaires | 68 | `433-7148` | à vérifier (contenu par Vue) |
 | 7 | Actualités (liste) | 46 | `438-10209` | à vérifier (contenu par Vue) |
@@ -97,6 +97,16 @@ maquette. Signalé à l'utilisatrice, non tranché.
   `field_link` est resté vide — à câbler après création.
 - La maquette porte une consigne éditoriale à ne pas prendre pour du contenu :
   « Mettre les différents logo Drive Matic avec leur date. » (`436:8975`).
+
+## Règle de titre et d'URL (validée le 2026-08-18)
+
+Le `title` prend le **libellé exact de la maquette**, accroche comprise. Quand cela donnerait
+une URL à rallonge sur un type à **exemplaire unique**, on **supprime son motif Pathauto** et
+on pose l'alias **en dur** sur le node. Fait pour `faq` (`/faq`) ; `configurator` (`/configurer`)
+suivait déjà ce schéma. Simple et standardisé — pas d'alias manuel sur un type multi-instances.
+
+⚠️ **Piège** : poser un alias à la main **ne supprime pas l'ancien**. Les deux répondent en 200
+et le node vit à deux URL. Supprimer l'entrée `path_alias` périmée et créer le 301 à la main.
 
 ## Autre constat à traiter
 
