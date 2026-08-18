@@ -1,27 +1,27 @@
-uuid: 6ae5cebb-b0ea-4afa-bca4-ec5c3b276772
-langcode: en
+uuid: 1f2e2ffb-469e-4034-8a0c-af4675a63203
+langcode: fr
 status: true
 dependencies:
   config:
     - field.storage.node.field_documents_pmr
-    - node.type.document
     - node.type.documents
+  module:
+    - file
 id: node.documents.field_documents_pmr
 field_name: field_documents_pmr
 entity_type: node
 bundle: documents
-label: PMR
-description: 'Documents de la section « PMR », dans l’ordre d’affichage souhaité.'
+label: 'Documents PMR'
+description: 'Fichiers listés dans l’ordre de saisie. La description de chaque fichier sert de libellé au bouton de téléchargement.'
 required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
-  handler: 'default:node'
-  handler_settings:
-    target_bundles:
-      document: document
-    sort:
-      field: _none
-    auto_create: false
-field_type: entity_reference
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: documents
+  file_extensions: 'pdf doc docx xls xlsx zip'
+  max_filesize: ''
+  description_field: true
+field_type: file

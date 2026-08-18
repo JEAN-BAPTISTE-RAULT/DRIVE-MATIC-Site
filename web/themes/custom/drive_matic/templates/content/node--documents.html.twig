@@ -1,12 +1,39 @@
 {#
-  Page « Documentations » (F6) — texte d'introduction, puis les deux sections
-  de documents. Chaque section est un champ référence dont le libellé sert de
-  titre de section (« Auto-écoles », « PMR ») ; un champ vide n'affiche rien.
-  Chaque document rend son bouton de téléchargement avec nom, format et poids
-  (ADR-009). Pas de titre de node : il est rendu par le bloc titre de page
-  depuis le `title` du node.
-  @see node.html.twig pour la liste complète des variables.
+/**
+ * @file
+ * Page « Documentations » (F6).
+ *
+ * Affiche le chapô (`body`), puis deux sections de fichiers. Les **titres de
+ * section sont en dur ici** — et non portés par les libellés des champs — pour
+ * que le gabarit de la page ne dépende pas de la configuration.
+ *
+ * Chaque champ est un champ **Fichier à itération illimitée** : les fichiers
+ * sont saisis en back-office dans leur ordre d'affichage. Le bouton de
+ * téléchargement porte la **description du fichier**, suivie du format et du
+ * poids calculés (ADR-009, `_drive_matic_document_downloads()` / file_link).
+ *
+ * Le titre de la page n'est pas rendu ici : il vient du bloc titre de page, qui
+ * est visible sur ce bundle (ADR-014). Le rendre ici le doublerait.
+ *
+ * Une section sans fichier n'affiche **rien** : pas de titre orphelin (F6).
+ *
+ * @see node.html.twig pour la liste complète des variables.
+ */
 #}
 <article{{ attributes.addClass('node', 'node--type-documents') }}>
-  {{ content }}
+  {{ content.body }}
+
+  {% set sections = [
+    { title: 'Auto-écoles'|t, files: content.field_documents_school },
+    { title: 'PMR'|t, files: content.field_documents_pmr },
+  ] %}
+
+  {% for section in sections %}
+    {% if section.files|render|trim is not empty %}
+      <section class="documents__section">
+        <h2 class="documents__section-title">{{ section.title }}</h2>
+        {{ section.files }}
+      </section>
+    {% endif %}
+  {% endfor %}
 </article>

@@ -76,7 +76,7 @@ Projet **Drupal 11** (`drupal/recommended-project`), docroot **`web/`**.
 
 | Type | Rôle | Particularités |
 |---|---|---|
-| `homepage` | Accueil | **seul public sans `field_title` ni alias** (titre porté par un paragraphe) ; servie à `/` |
+| `homepage` | Accueil | **seul public sans alias** ; son `<h1>` est porté par son premier paragraphe (ADR-014) ; servie à `/` |
 | `transform` | Solution auto-école / PMR (F4) | 7 paragraphes autorisés, dont `grid` |
 | `product` | Fiche produit (F5) | 10 paragraphes dont les 4 blocs V5 ; **pas de `grid`** ; aucun prix |
 | `corporate` | Éditorial Drive Matic (F9) | 9 paragraphes, dont `triptych`, `history`, `image_centered`, `video_centered` |
@@ -87,7 +87,7 @@ Projet **Drupal 11** (`drupal/recommended-project`), docroot **`web/`**.
 | `documents` | Documentations (F6) | 2 champs référence ordonnés (`field_documents_school`, `field_documents_pmr`) |
 | `brands` | Marques partenaires (F7) | Vue `brands` embarquée (ordre alpha), SDC `brands-grid` |
 | `contact`, `partner` | Formulaires (F10, F11) | Webform référencé |
-| `question`, `document`, `brand` | **fragments** | pas de page publique : Rabbit Hole → **403**, hors sitemap, sans alias ni métatags |
+| `question`, `brand` | **fragments** | pas de page publique : Rabbit Hole → **403**, hors sitemap, sans alias ni métatags. ⚠️ Tout fragment rendu dans une Vue ou un champ référence a besoin de **son propre template** : sinon `node.html.twig` affiche son libellé, en lien vers un 403 |
 | `page` | **Bac à sable paragraphes** | hors modèle : seul type autorisant les 18 blocs, un seul node (`33`), disparaît en fin de chantier |
 
 **Un seul titre : le `title`** ([ADR-014](.claude/decisions/014-titre-unique-porte-par-le-title.md), qui remplace l'ADR-011) : le `title` du node alimente l'affichage, le fil d'Ariane, l'alias et la balise `title`. `field_title` a été **supprimé des 12 types de contenu** (storage `field.storage.node.field_title` compris) ; ⚠️ `field.storage.paragraph.field_title` est un champ homonyme distinct — titre des blocs, 21 bundles — et reste en place. Tout rendu hors page canonique (carte, teaser, ligne de Vue) lit le `title`.

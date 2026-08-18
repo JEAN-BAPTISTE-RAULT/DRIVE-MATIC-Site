@@ -1,16 +1,20 @@
-uuid: e02460f2-d090-4188-8dd4-d50e1dd382ec
-langcode: en
+uuid: 8208a480-4273-4647-b213-0edec6a833b5
+langcode: fr
 status: true
 dependencies:
   module:
+    - file
     - node
 id: node.field_documents_pmr
 field_name: field_documents_pmr
 entity_type: node
-type: entity_reference
+type: file
 settings:
-  target_type: node
-module: core
+  target_type: file
+  display_field: false
+  display_default: false
+  uri_scheme: public
+module: file
 locked: false
 cardinality: -1
 translatable: true

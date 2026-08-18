@@ -1,16 +1,20 @@
-uuid: 1dbbb33c-003b-4d01-9f6a-9a1eec9749c5
-langcode: en
+uuid: ba2add79-7fd8-4b65-ae1d-588119be1637
+langcode: fr
 status: true
 dependencies:
   module:
+    - file
     - node
 id: node.field_documents_school
 field_name: field_documents_school
 entity_type: node
-type: entity_reference
+type: file
 settings:
-  target_type: node
-module: core
+  target_type: file
+  display_field: false
+  display_default: false
+  uri_scheme: public
+module: file
 locked: false
 cardinality: -1
 translatable: true

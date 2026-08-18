@@ -85,26 +85,6 @@ content:
       placeholder: ''
       show_summary: false
     third_party_settings: {  }
-  field_documents_pmr:
-    type: entity_reference_autocomplete
-    weight: 7
-    region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_documents_school:
-    type: entity_reference_autocomplete
-    weight: 6
-    region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
   field_meta_tags:
     type: metatag_firehose
     weight: 3
@@ -141,8 +121,24 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_documents_school:
+    type: file_generic
+    weight: 6
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  field_documents_pmr:
+    type: file_generic
+    weight: 7
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
 hidden:
   created: true
+  field_documents_pmr: true
+  field_documents_school: true
   promote: true
   simple_sitemap: true
   sticky: true
