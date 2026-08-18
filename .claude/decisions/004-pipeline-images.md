@@ -32,7 +32,22 @@ La decision #11 impose une gestion d'images industrialisee (media-library reutil
 - Les contenus/paragraphes referencent un **media image** et selectionnent le ratio via le **mode d'affichage media** (`free` / `ratio_*`). Reutilisable partout.
 - `contact` est desormais conforme ; `brand` (a venir) suivra le meme schema (mode `free`).
 - **`sizes`** : actuellement resolution-switching par breakpoint/multiplicateur ; a affiner par SDC (fraction d'affichage : 50 %, 1/3…) au moment des paragraphes.
-- **Crop optionnel** : si l'editeur ne recadre pas, l'image est seulement scalee (ratio non force). A reevaluer : rendre le crop **requis** par ratio, ou ajouter un fallback de crop automatique (focal point).
+- ~~**Crop optionnel**~~ → **TRANCHE le 2026-08-18 par l'utilisatrice : le recadrage est
+  OBLIGATOIRE et MANUEL.** « Quand j'ai demande un crop avec un ratio precis, il est
+  obligatoire et doit etre effectue manuellement par l'utilisateur a l'import de l'image
+  avant d'enregistrer son contenu. » La piste d'un **fallback automatique** (focal point)
+  est donc **ecartee** : le cadrage est une decision editoriale, pas une valeur par defaut.
+
+  C'est deja ce que le formulaire impose : `core.entity_form_display.media.image.default`
+  liste les trois types dans `crop_types_required`, et `ImageCrop::cropRequired()` bloque
+  l'enregistrement du media tant qu'un recadrage requis n'est pas applique. **Aucun
+  editeur ne peut donc contourner la regle.**
+
+  ⚠️ **Le seul contournement est la creation programmatique** : l'API entite ne valide pas
+  les formulaires. Tous les trous constates viennent de la — scripts de seed et imports
+  depuis Figma. Corollaire pour la suite : **un media cree par script n'est pas conforme
+  tant qu'un humain n'a pas cadre**, et un cadrage centre pose par script est une valeur
+  machine, pas la decision editoriale que la regle exige.
 
   **Constat du 2026-08-18 — le risque s'est realise trois fois.** Le recadrage etant
   porte par le couple **(fichier, type de crop)**, un media recadre pour un ratio et

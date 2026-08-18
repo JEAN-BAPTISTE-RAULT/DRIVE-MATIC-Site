@@ -133,6 +133,8 @@ Le formatage (indentation, guillemets, longueur de ligne) est gere par le linter
 **Media / images**
 
 - Toute image passe par la **media-library** et un **image style defini** (responsive, aligne sur les breakpoints du site), sortie **WebP**. Jamais de dimension/crop en dur ni de `<img>` hors image styles. Reference : etude images (docs/PRD.md §7).
+- **Le recadrage a ratio precis est OBLIGATOIRE et MANUEL** (regle posee par l'utilisatrice) : il est effectue **par l'editeur, a l'import du media**, avant d'enregistrer son contenu. Le formulaire l'impose deja (`crop_types_required` sur `crop_1_1`, `crop_16_9`, `crop_12_5`) — ne pas l'affaiblir. **Pas de recadrage automatique** (focal point ou autre) : le cadrage est une decision editoriale ([ADR-004](.claude/decisions/004-pipeline-images.md)).
+- **Ne pas fabriquer de recadrage par script.** L'API entite ne valide pas les formulaires : un media cree programmatiquement echappe a l'obligation, et un crop centre pose au passage est une valeur machine qui usurpe la decision de l'editeur. Si un media importe par script doit etre rendu a un ratio, **le signaler pour un passage en back-office** plutot que de cadrer a sa place. Le recadrage etant porte par le couple **(fichier, type de crop)**, un media recadre pour un ratio et reutilise a un autre ressort **non recadre, sans erreur ni log** — le controle ne peut donc pas etre visuel.
 
 ### Convention de formulaire back-office (TOUS les types de contenu)
 

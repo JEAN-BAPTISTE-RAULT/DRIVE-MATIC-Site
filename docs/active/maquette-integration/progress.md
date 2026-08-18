@@ -242,9 +242,37 @@ d'origine — c'est **voulu et documenté** ([ADR-004](../../../.claude/decision
 le rendu produit un `<picture>` dont les `<source>` sont en WebP et l'`<img src>` sert de
 repli aux navigateurs qui ne le gèrent pas.
 
-⚠️ Le constat est consigné dans l'ADR-004, dont le point ouvert « crop requis ou
-automatique ? » n'est plus théorique : **tant que le crop est optionnel, le contrôle doit
-être outillé** — aucun de ces trous n'était visible à l'œil.
+### Le point ouvert est tranché : recadrage obligatoire et manuel
+
+L'utilisatrice a tranché le 2026-08-18 : « quand j'ai demandé un crop avec un ratio
+précis, il est obligatoire et doit être effectué manuellement par l'utilisateur à l'import
+de l'image avant d'enregistrer son contenu ». La piste d'un recadrage **automatique** est
+donc écartée — le cadrage est une décision éditoriale.
+
+**C'était déjà implémenté** : le formulaire média liste les trois types dans
+`crop_types_required`, et `ImageCrop::cropRequired()` bloque l'enregistrement tant qu'un
+recadrage requis n'est pas appliqué. Aucun éditeur ne pouvait contourner la règle.
+
+⚠️ **Le seul contournement est la création programmatique** : l'API entité ne valide pas
+les formulaires. **Tous** les trous constatés viennent de là — scripts de seed et imports
+depuis Figma, les miens compris.
+
+État au regard de la règle, mesuré :
+
+- **Aucun** recadrage manquant parmi ceux qu'un emplacement consomme réellement → rien de
+  visible n'est en défaut aujourd'hui.
+- **67** recadrages que le formulaire exigerait à l'import mais qu'aucun emplacement ne
+  consomme : les 12 logos de marques (36), le visuel du configurateur, les deux logos de
+  certification, et les ratios inutilisés des photos produit. Sans impact visuel.
+- **35 recadrages existants** (11 en 1:1, 16 en 16:9, 8 en 12:5), dont la plupart **posés
+  par script, centrés** — une valeur machine, pas la décision éditoriale que la règle
+  demande. Seules exceptions mesurées sur la maquette : la console VOR (12:5 à y=714 et
+  1:1 à y=783), l'habitacle transform, et les deux cartes de renvoi (mesurées centrées).
+  **Ces cadrages méritent une relecture en back-office.**
+
+Consigné dans [ADR-004](../../../.claude/decisions/004-pipeline-images.md) et dans les
+conventions (CLAUDE.md) : ne plus fabriquer de recadrage par script, signaler pour un
+passage éditorial.
 
 ## Divergence titre (à arbitrer)
 
