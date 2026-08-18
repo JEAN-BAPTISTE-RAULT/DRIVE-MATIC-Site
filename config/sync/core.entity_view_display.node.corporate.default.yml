@@ -6,7 +6,6 @@ dependencies:
     - field.field.node.corporate.body
     - field.field.node.corporate.field_meta_tags
     - field.field.node.corporate.field_paragraphs
-    - field.field.node.corporate.field_title
     - node.type.corporate
   module:
     - entity_reference_revisions
@@ -33,4 +32,4 @@ content:
 hidden:
   body: true
   field_meta_tags: true
-  field_title: true
+  langcode: true

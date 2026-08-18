@@ -3,15 +3,15 @@ langcode: en
 status: true
 dependencies:
   module:
-    - system
+    - node
   theme:
     - drive_matic
 _core:
   default_config_hash: 6aOgWsNTXjqrDm98TXSAjP6qd2nCijD1xw45MrnbK-Y
 id: drive_matic_page_title
 theme: drive_matic
-region: sidebar_first
-weight: -5
+region: content
+weight: -10
 provider: null
 plugin: page_title_block
 settings:
@@ -20,8 +20,12 @@ settings:
   label_display: '0'
   provider: core
 visibility:
-  request_path:
-    id: request_path
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
     negate: true
-    context_mapping: {  }
-    pages: '<front>'
+    context_mapping:
+      node: '@node.node_route_context:node'
+    bundles:
+      homepage: homepage
+      transform: transform
+      product: product

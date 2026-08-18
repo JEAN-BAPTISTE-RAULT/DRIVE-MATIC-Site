@@ -9,7 +9,7 @@ dependencies:
 id: node_contact
 label: 'Page :: Contact'
 type: 'canonical_entities:node'
-pattern: '/[node:field_title]'
+pattern: '/[node:title]'
 selection_criteria:
   2953db0f-faf2-43e0-8cd0-4a74fbf89e68:
     id: 'entity_bundle:node'

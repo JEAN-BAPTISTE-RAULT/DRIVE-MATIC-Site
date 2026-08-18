@@ -5,5 +5,5 @@ dependencies: {  }
 id: node__brands
 label: 'Page :: Marques'
 tags:
-  title: '[node:field_title] | [site:name]'
+  title: '[node:title] | [site:name]'
   description: '[node:summary]'

@@ -5,5 +5,5 @@ dependencies: {  }
 id: node__documents
 label: 'Page :: Documentation'
 tags:
-  title: '[node:field_title] | [site:name]'
+  title: '[node:title] | [site:name]'
   description: '[node:summary]'

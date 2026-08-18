@@ -5,5 +5,5 @@ dependencies: {  }
 id: node__product
 label: 'Page :: Produit'
 tags:
-  title: '[node:field_title] | [site:name]'
+  title: '[node:title] | [site:name]'
   description: '[node:summary]'

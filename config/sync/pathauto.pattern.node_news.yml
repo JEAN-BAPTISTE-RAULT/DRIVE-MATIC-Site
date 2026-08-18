@@ -9,7 +9,7 @@ dependencies:
 id: node_news
 label: 'Page :: Détail d’une actualité'
 type: 'canonical_entities:node'
-pattern: '/actualites/[node:field_title]'
+pattern: '/actualites/[node:title]'
 selection_criteria:
   dd035d5d-8453-47c9-9054-4020c50030d0:
     id: 'entity_bundle:node'

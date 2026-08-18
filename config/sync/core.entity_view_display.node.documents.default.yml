@@ -7,7 +7,6 @@ dependencies:
     - field.field.node.documents.field_documents_pmr
     - field.field.node.documents.field_documents_school
     - field.field.node.documents.field_meta_tags
-    - field.field.node.documents.field_title
     - node.type.documents
   module:
     - text
@@ -49,4 +48,4 @@ content:
     region: content
 hidden:
   field_meta_tags: true
-  field_title: true
+  langcode: true

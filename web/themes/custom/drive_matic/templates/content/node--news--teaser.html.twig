@@ -1,12 +1,12 @@
 {#
   Rendu d'une actualité en mode d'affichage `teaser` (lignes de la Vue all_news).
   Embarque le SDC `drive_matic:news-teaser` : titre, URL et date = props,
-  image = slot. Le titre affiché est `field_title` (ADR-011) et la date est la
+  image = slot. Le titre affiché est le `title` du node et la date est la
   dernière modification du node (modèle éditorial ADR-002).
   @see node.html.twig pour la liste complète des variables.
 #}
 {% embed 'drive_matic:news-teaser' with {
-  title: node.field_title.value,
+  title: node.title.value,
   url: url,
   date: node.changed.value|format_date('dm_long'),
   datetime: node.changed.value|date('c'),

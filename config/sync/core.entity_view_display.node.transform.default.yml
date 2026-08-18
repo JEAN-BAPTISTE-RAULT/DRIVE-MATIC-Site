@@ -6,7 +6,6 @@ dependencies:
     - field.field.node.transform.body
     - field.field.node.transform.field_meta_tags
     - field.field.node.transform.field_paragraphs
-    - field.field.node.transform.field_title
     - node.type.transform
   module:
     - entity_reference_revisions
@@ -33,4 +32,4 @@ content:
 hidden:
   body: true
   field_meta_tags: true
-  field_title: true
+  langcode: true

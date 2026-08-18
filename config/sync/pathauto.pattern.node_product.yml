@@ -9,7 +9,7 @@ dependencies:
 id: node_product
 label: 'Page :: Produit'
 type: 'canonical_entities:node'
-pattern: '/[node:field_title]'
+pattern: '/[node:title]'
 selection_criteria:
   67c46ea8-3353-4299-a917-896b42df2ba2:
     id: 'entity_bundle:node'

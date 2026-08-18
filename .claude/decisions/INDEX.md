@@ -15,9 +15,10 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-008](008-slideshow-swiper.md) | Slideshow — Swiper vendorise (librairie unique) | Accepte | 2026-08-13 |
 | [ADR-009](009-telechargements-nommes.md) | Telechargements nommes (bloc multi-documents) | Accepte | 2026-08-14 |
 | [ADR-010](010-metatags.md) | Metatags — defauts a tokens + champ de surcharge | Accepte | 2026-08-17 |
-| [ADR-011](011-titre-affiche-et-alias.md) | Titre affiche (`field_title`) distinct du libelle admin + motifs d'alias | Accepte | 2026-08-17 |
+| [ADR-011](011-titre-affiche-et-alias.md) | Titre affiche (`field_title`) distinct du libelle admin + motifs d'alias | **Remplace par [ADR-014](014-titre-unique-porte-par-le-title.md)** | 2026-08-17 |
 | [ADR-012](012-presentation-admin-front.md) | Presentation de l'administration sur le front (gin_toolbar desinstalle, onglets locaux) | Accepte | 2026-08-17 |
 | [ADR-013](013-espacement-et-unites.md) | Systeme d'espacement (3 tokens) et unites px / rem | Accepte | 2026-08-17 |
+| [ADR-014](014-titre-unique-porte-par-le-title.md) | Titre unique porte par le `title` ; `<h1>` rendu par le bloc d'ouverture | Accepte | 2026-08-18 |
 
 ## Quand creer un ADR
 

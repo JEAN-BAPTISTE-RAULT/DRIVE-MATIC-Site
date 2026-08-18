@@ -5,4 +5,4 @@ dependencies: {  }
 id: node__legals
 label: 'Page :: Mentions légales'
 tags:
-  title: '[node:field_title] | [site:name]'
+  title: '[node:title] | [site:name]'

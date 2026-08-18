@@ -9,7 +9,7 @@ dependencies:
 id: node_documents
 label: 'Page :: Documentation'
 type: 'canonical_entities:node'
-pattern: '/[node:field_title]'
+pattern: '/[node:title]'
 selection_criteria:
   e15bae75-90b2-4b35-8622-7e0881de6b71:
     id: 'entity_bundle:node'

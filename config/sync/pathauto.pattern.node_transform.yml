@@ -9,7 +9,7 @@ dependencies:
 id: node_transform
 label: 'Page :: Transformer / Équiper'
 type: 'canonical_entities:node'
-pattern: '/[node:field_title]'
+pattern: '/[node:title]'
 selection_criteria:
   f55b88be-8bde-4a41-869a-c7f5ad17ac2c:
     id: 'entity_bundle:node'

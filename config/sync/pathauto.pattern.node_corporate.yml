@@ -9,7 +9,7 @@ dependencies:
 id: node_corporate
 label: 'Page :: Corporate'
 type: 'canonical_entities:node'
-pattern: '/[node:field_title]'
+pattern: '/[node:title]'
 selection_criteria:
   1b884fe0-24d0-4fea-9600-71f9692b80fa:
     id: 'entity_bundle:node'

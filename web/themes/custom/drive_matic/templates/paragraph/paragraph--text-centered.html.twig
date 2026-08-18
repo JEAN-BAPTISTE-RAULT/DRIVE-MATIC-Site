@@ -4,6 +4,7 @@
 #}
 {% embed 'drive_matic:text-centered' with {
   title: paragraph.field_title.value,
+  heading_level: heading_level,
 } %}
   {% block description %}{{ content.field_description }}{% endblock %}
   {% block actions %}{{ content.field_link }}{% endblock %}

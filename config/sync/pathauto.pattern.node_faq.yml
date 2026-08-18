@@ -9,7 +9,7 @@ dependencies:
 id: node_faq
 label: 'Page :: FAQ'
 type: 'canonical_entities:node'
-pattern: '/[node:field_title]'
+pattern: '/[node:title]'
 selection_criteria:
   b7c1e3a2-4d5f-4a6b-9c8d-0e1f2a3b4c5d:
     id: 'entity_bundle:node'

@@ -6,7 +6,6 @@ dependencies:
     - field.field.node.product.body
     - field.field.node.product.field_meta_tags
     - field.field.node.product.field_paragraphs
-    - field.field.node.product.field_title
     - node.type.product
   module:
     - field_group
@@ -35,7 +34,6 @@ third_party_settings:
     group_general:
       children:
         - title
-        - field_title
         - path
         - field_meta_tags
         - status
@@ -112,13 +110,12 @@ content:
         collapse_edit_all: collapse_edit_all
         duplicate: duplicate
     third_party_settings: {  }
-  field_title:
-    type: string_textfield
-    weight: 1
+  langcode:
+    type: language_select
+    weight: 2
     region: content
     settings:
-      size: 60
-      placeholder: ''
+      include_locked: true
     third_party_settings: {  }
   path:
     type: path

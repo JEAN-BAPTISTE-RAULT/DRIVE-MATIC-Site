@@ -8,7 +8,6 @@ dependencies:
     - field.field.node.news.field_image
     - field.field.node.news.field_meta_tags
     - field.field.node.news.field_paragraphs
-    - field.field.node.news.field_title
     - node.type.news
   module:
     - entity_reference_revisions
@@ -60,4 +59,4 @@ content:
     region: content
 hidden:
   field_meta_tags: true
-  field_title: true
+  langcode: true

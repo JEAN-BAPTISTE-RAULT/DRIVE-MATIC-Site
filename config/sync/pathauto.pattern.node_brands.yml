@@ -9,7 +9,7 @@ dependencies:
 id: node_brands
 label: 'Page :: Marques'
 type: 'canonical_entities:node'
-pattern: '/[node:field_title]'
+pattern: '/[node:title]'
 selection_criteria:
   7ded8701-1d46-48b6-b669-2518434837ae:
     id: 'entity_bundle:node'

@@ -8,7 +8,8 @@
   {% if title or block('actions') is not empty %}
     <div class="image-full__overlay">
       {% if title %}
-        <h2 class="image-full__title">{{ title }}</h2>
+        {% set tag = 'h' ~ (heading_level|default(2)) %}
+        <{{ tag }} class="image-full__title">{{ title }}</{{ tag }}>
       {% endif %}
       {% if block('actions') is not empty %}
         <div class="image-full__actions">{{ block('actions') }}</div>

@@ -2,7 +2,10 @@
 
 ## Statut
 
-Accepte
+**Remplace** par l'[ADR-014](014-titre-unique-porte-par-le-title.md) le
+2026-08-18 : `field_title` est supprime des types de contenu et le `title`
+redevient la source unique du titre affiche, de l'alias et du fil d'Ariane.
+Cet ADR est conserve pour le contexte historique — ne plus l'appliquer.
 
 ## Date
 

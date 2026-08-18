@@ -5,5 +5,5 @@ dependencies: {  }
 id: node__news
 label: 'Page :: Détail d’une actualité'
 tags:
-  title: '[node:field_title] | [site:name]'
+  title: '[node:title] | [site:name]'
   description: '[node:summary]'

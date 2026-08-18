@@ -7,7 +7,6 @@
 
 declare(strict_types=1);
 
-use Drupal\Core\Cache\Cache;
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\file\FileInterface;
@@ -15,38 +14,22 @@ use Drupal\node\NodeInterface;
 use Drupal\paragraphs\ParagraphInterface;
 
 /**
- * Implements hook_preprocess_HOOK() for page_title.
+ * Bundles dont le titre de page est porte par un de leurs paragraphes.
  *
- * Le `title` d'un node est un libelle d'administration (ADR-011) : le titre
- * affiche est porte par `field_title`. Le bloc titre de page rendant le titre
- * de route — donc le libelle du node —, on lui substitue la valeur du champ.
+ * Sur ces types, la maquette place le titre dans un bloc : banniere
+ * `image_full` pour un produit, `text_centered` sous la banniere pour les pages
+ * transform et la home. Le bloc titre de page y est donc masque.
  *
- * Limite a la route canonique : sur les routes d'administration (edition,
- * suppression, revisions) le titre de route est une phrase construite par le
- * coeur, qu'il ne faut pas remplacer.
+ * Cette liste double la condition de visibilite du bloc
+ * `block.block.drive_matic_page_title` (`entity_bundle:node`, negee) : les deux
+ * doivent rester alignees, sans quoi une page se retrouve avec deux `<h1>`
+ * ou aucun.
+ *
+ * @return string[]
+ *   Les machine names des bundles concernes.
  */
-function drive_matic_preprocess_page_title(array &$variables): void {
-  if (\Drupal::routeMatch()->getRouteName() !== 'entity.node.canonical') {
-    return;
-  }
-
-  $node = \Drupal::routeMatch()->getParameter('node');
-
-  if (!$node instanceof NodeInterface || !$node->hasField('field_title')) {
-    return;
-  }
-
-  $field_title = $node->get('field_title');
-
-  if ($field_title->isEmpty()) {
-    return;
-  }
-
-  $variables['title'] = ['#plain_text' => $field_title->value];
-  $variables['#cache']['tags'] = Cache::mergeTags(
-    $variables['#cache']['tags'] ?? [],
-    $node->getCacheTags()
-  );
+function _drive_matic_hero_title_bundles(): array {
+  return ['homepage', 'transform', 'product'];
 }
 
 /**
@@ -84,6 +67,56 @@ function drive_matic_preprocess_paragraph(array &$variables): void {
   if ($paragraph->bundle() === 'product_cross_element') {
     $variables['card_link'] = _drive_matic_titled_link($paragraph);
   }
+
+  $variables['heading_level'] = _drive_matic_heading_level($paragraph);
+}
+
+/**
+ * Determine le niveau de titre : 1 pour le paragraphe qui titre la page.
+ *
+ * Sur les bundles de DRIVE_MATIC_HERO_TITLE_BUNDLES, le bloc titre de page est
+ * masque : c'est un paragraphe qui porte le `<h1>`. Partout ailleurs le `<h1>`
+ * vient du bloc titre et les paragraphes restent en `<h2>`.
+ *
+ * On retient le **premier paragraphe qui porte effectivement un titre**, et non
+ * le premier paragraphe tout court : sur une page transform, la maquette place
+ * le titre sous la banniere, donc le bloc d'ouverture est une `image_full` sans
+ * titre et le `<h1>` revient au `text_centered` suivant. Seuls les bundles dont
+ * le SDC accepte la prop sont candidats.
+ *
+ * Le test porte sur le parent : un paragraphe imbrique (element de grille, de
+ * carrousel…) n'est jamais le titre de la page, meme premier de sa liste.
+ *
+ * @param \Drupal\paragraphs\ParagraphInterface $paragraph
+ *   Le paragraphe rendu.
+ *
+ * @return int
+ *   1 pour le paragraphe qui titre la page, 2 sinon.
+ */
+function _drive_matic_heading_level(ParagraphInterface $paragraph): int {
+  // Bundles dont le SDC expose la prop `heading_level`.
+  $candidates = ['image_full', 'text_centered'];
+  $parent = $paragraph->getParentEntity();
+
+  if (!$parent instanceof NodeInterface
+    || !in_array($parent->bundle(), _drive_matic_hero_title_bundles(), TRUE)
+    || !$parent->hasField('field_paragraphs')) {
+    return 2;
+  }
+
+  foreach ($parent->get('field_paragraphs') as $item) {
+    $candidate = $item->entity;
+
+    if (!$candidate instanceof ParagraphInterface
+      || !in_array($candidate->bundle(), $candidates, TRUE)
+      || $candidate->get('field_title')->isEmpty()) {
+      continue;
+    }
+
+    return (int) $candidate->id() === (int) $paragraph->id() ? 1 : 2;
+  }
+
+  return 2;
 }
 
 /**

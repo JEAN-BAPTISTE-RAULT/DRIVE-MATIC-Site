@@ -5,7 +5,8 @@
 #}
 <div class="text-centered">
   {% if title %}
-    <h2 class="text-centered__title">{{ title }}</h2>
+    {% set tag = 'h' ~ (heading_level|default(2)) %}
+    <{{ tag }} class="text-centered__title">{{ title }}</{{ tag }}>
   {% endif %}
   {% if block('description') is not empty %}
     <div class="text-centered__description">{{ block('description') }}</div>

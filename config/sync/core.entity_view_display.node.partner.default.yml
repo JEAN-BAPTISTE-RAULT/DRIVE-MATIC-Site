@@ -5,7 +5,6 @@ dependencies:
   config:
     - field.field.node.partner.body
     - field.field.node.partner.field_meta_tags
-    - field.field.node.partner.field_title
     - field.field.node.partner.field_webform
     - node.type.partner
   module:
@@ -40,4 +39,4 @@ content:
     region: content
 hidden:
   field_meta_tags: true
-  field_title: true
+  langcode: true

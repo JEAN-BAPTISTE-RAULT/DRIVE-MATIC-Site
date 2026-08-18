@@ -6,7 +6,6 @@ dependencies:
     - field.field.node.configurator.body
     - field.field.node.configurator.field_meta_tags
     - field.field.node.configurator.field_paragraphs
-    - field.field.node.configurator.field_title
     - node.type.configurator
   module:
     - entity_reference_revisions
@@ -33,5 +32,4 @@ content:
 hidden:
   body: true
   field_meta_tags: true
-  field_title: true
   langcode: true

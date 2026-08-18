@@ -5,5 +5,5 @@ dependencies: {  }
 id: node__all_news
 label: 'Page :: Toutes les actualités'
 tags:
-  title: '[node:field_title] | [site:name]'
+  title: '[node:title] | [site:name]'
   description: '[node:summary]'

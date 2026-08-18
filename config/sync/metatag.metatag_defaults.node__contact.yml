@@ -5,5 +5,5 @@ dependencies: {  }
 id: node__contact
 label: 'Page :: Contact'
 tags:
-  title: '[node:field_title] | [site:name]'
+  title: '[node:title] | [site:name]'
   description: '[node:summary]'

@@ -4,5 +4,5 @@ dependencies: {  }
 id: node__configurator
 label: 'Page :: Configurateur'
 tags:
-  title: '[node:field_title] | [site:name]'
+  title: '[node:title] | [site:name]'
   description: '[node:summary]'

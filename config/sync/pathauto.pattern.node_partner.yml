@@ -9,7 +9,7 @@ dependencies:
 id: node_partner
 label: 'Page :: Devenir partenaire'
 type: 'canonical_entities:node'
-pattern: '/[node:field_title]'
+pattern: '/[node:title]'
 selection_criteria:
   a8d35f6c-4daa-41f0-b2a0-cdf791b7dc65:
     id: 'entity_bundle:node'

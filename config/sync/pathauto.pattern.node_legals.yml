@@ -9,7 +9,7 @@ dependencies:
 id: node_legals
 label: 'Page :: Mentions légales'
 type: 'canonical_entities:node'
-pattern: '/[node:field_title]'
+pattern: '/[node:title]'
 selection_criteria:
   99f96e53-9495-48b9-9f8c-19afc6a14f49:
     id: 'entity_bundle:node'

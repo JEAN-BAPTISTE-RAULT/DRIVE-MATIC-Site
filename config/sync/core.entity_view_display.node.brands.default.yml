@@ -5,7 +5,6 @@ dependencies:
   config:
     - field.field.node.brands.body
     - field.field.node.brands.field_meta_tags
-    - field.field.node.brands.field_title
     - node.type.brands
   module:
     - text
@@ -29,4 +28,4 @@ content:
     region: content
 hidden:
   field_meta_tags: true
-  field_title: true
+  langcode: true

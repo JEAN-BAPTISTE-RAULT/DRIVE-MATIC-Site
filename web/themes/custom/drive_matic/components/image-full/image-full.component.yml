@@ -7,6 +7,12 @@ props:
     title:
       type: string
       title: Titre
+    heading_level:
+      type: integer
+      title: Niveau de titre
+      description: 'Mettre a 1 quand ce bloc porte le titre de la page (bloc titre masque sur le bundle) ; 2 sinon.'
+      enum: [1, 2]
+      default: 2
 slots:
   image:
     title: Image (média responsive 12:5)

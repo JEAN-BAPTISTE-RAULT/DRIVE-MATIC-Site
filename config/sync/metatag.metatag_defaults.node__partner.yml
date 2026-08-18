@@ -5,5 +5,5 @@ dependencies: {  }
 id: node__partner
 label: 'Page :: Devenir partenaire'
 tags:
-  title: '[node:field_title] | [site:name]'
+  title: '[node:title] | [site:name]'
   description: '[node:summary]'

@@ -4,7 +4,6 @@ status: true
 dependencies:
   config:
     - field.field.node.legals.field_paragraphs
-    - field.field.node.legals.field_title
     - node.type.legals
   module:
     - entity_reference_revisions
@@ -29,4 +28,4 @@ content:
     weight: 100
     region: content
 hidden:
-  field_title: true
+  langcode: true

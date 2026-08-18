@@ -8,8 +8,8 @@ id: node.faq.title
 field_name: title
 entity_type: node
 bundle: faq
-label: 'Titre administratif'
-description: 'Nom de la page dans le back-office (listes de contenu, recherche). Il n’est jamais affiché sur le site : le titre visible est saisi dans « Titre ».'
+label: Titre
+description: 'Titre de la page. Il alimente l’adresse de la page, le fil d’Ariane et la balise « title » du navigateur.'
 required: true
 translatable: true
 default_value: {  }

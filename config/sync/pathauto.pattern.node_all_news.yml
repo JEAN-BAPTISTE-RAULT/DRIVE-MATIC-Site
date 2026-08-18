@@ -9,7 +9,7 @@ dependencies:
 id: node_all_news
 label: 'Page :: Toutes les actualités'
 type: 'canonical_entities:node'
-pattern: '/[node:field_title]'
+pattern: '/[node:title]'
 selection_criteria:
   f0f5a1c1-8a0e-4a53-9a3f-1c0c6b7d2e41:
     id: 'entity_bundle:node'

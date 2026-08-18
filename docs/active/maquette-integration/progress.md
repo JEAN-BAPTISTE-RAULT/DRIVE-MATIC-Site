@@ -1,77 +1,71 @@
-# Progression — integration des maquettes (stylisation bloc par bloc)
+# Intégration des maquettes — progression
 
-> Point de reprise, pas une source de verite. L'etat des blocs **deja integres**
-> se lit dans `git log` (commits `feat(<bloc>): integration maquette`) ; les
-> valeurs de reference sont dans Figma. Ce fichier ne contient que ce qui n'est
-> derivable de nulle part ailleurs. **A supprimer en fin de chantier**, avec le
-> bac a sable.
->
-> Methode, capture et pieges : cf. memoire agent (`visual-integration-loop`).
-> Derniere mise a jour : 2026-08-17 (chantier termine).
+> Chantier ouvert le 2026-08-18. Fichier Figma : `ZmmVBSOWSsHVkok6EU2Ays`.
+> Reprise après `/clear` : lire ce fichier, puis `CLAUDE.md` et la mémoire auto.
 
-## Etat : termine
+## Décision prise le 2026-08-18 : suppression de `field_title` (remplace l'ADR-011)
 
-Les **18 blocs** de la bibliotheque validee (ADR-001) sont integres, Elements
-stylises dans leur Bloc parent. Detail par bloc dans `git log`
-(`feat(<bloc>): integration maquette`) ; valeurs de reference dans Figma
-(fileKey `ZmmVBSOWSsHVkok6EU2Ays`).
+`field_title` **côté node** disparaît des 12 types de contenu ; le `title` (ex-« titre
+administratif ») devient la source unique du titre affiché, du breadcrumb et du motif d'URL.
+⚠️ `field.storage.paragraph.field_title` (21 bundles, 21 templates SDC) **reste intact** :
+c'est le titre des blocs, ne pas confondre.
 
-Ce qui reste a faire **n'est plus de l'integration** : ce sont les reserves
-ci-dessous, plus la recette visuelle sur des medias reels (logos de marques,
-photos produit) et le controle sous Windows. Ce fichier disparait avec le bac a
-sable une fois ces reserves arbitrees.
+Titres réalignés pour préserver les alias existants (validé) :
+node 46 → « Actualités », node 62 → « Questions fréquentes »,
+node 69 → « Configurez votre véhicule et obtenez votre tarif ».
 
-## Reserves ouvertes (non bloquantes)
+Où s'affiche le `<h1>` :
+- `homepage`, `transform`, `product` → le **premier paragraphe** le porte (prop `heading_level`),
+  et le bloc titre de page est masqué sur ces bundles. `image-full` et `text-centered` affichaient
+  déjà leur titre à la taille H1 : le changement est purement sémantique.
+- tous les autres types → le bloc titre de page rend le `title` en `<h1>`, au-dessus du contenu.
 
-- ~~Fleches de navigation dupliquees~~ — **resolu** (2026-08-17) : l'apparence est
-  portee par deux assets exportes de la maquette
-  (`images/icons/slideshow-{next,prev}.svg`), les cinq blocs ne declarant plus que
-  taille, position et asset. La duplication restante (~10 lignes par bloc) tient
-  au **placement**, qui differe reellement d'un bloc a l'autre : plus rien a
-  factoriser, l'ADR envisage n'a plus d'objet.
-- **Contraste de la fleche sur photo** : la plaque grise a 80 % passe moins bien
-  sur un visuel clair que la variante blanche que la maquette prevoyait pour le
-  jumbo. Consigne assumee (« meme fleche partout »), mais a regarder en recette
-  sur les vrais visuels de banniere.
-- **Full-bleed et barre de defilement** : voir README (« Idiome pleine largeur »).
-  A verifier sous Windows en recette ; concerne `image_full`,
-  `product_characteristics`, `jumbo_home`, `history`.
-- **Format en majuscules** (« PDF ») dans les boutons de telechargement, la ou
-  la maquette ecrit « pdf » : ecart assume pour rester coherent sur tout le site
-  (ADR-009).
-- **Visuel de `product_characteristics` centre verticalement** dans sa colonne,
-  la ou la maquette le place ~40px plus haut : choix robuste quand la colonne de
-  droite s'allonge.
-- **Ratio des visuels** : ne juger un rendu que sur des medias **recadres** pour
-  le ratio concerne (cf. PRD, prealables images). Les medias 3 et 4 du bac a
-  sable ont un `crop_16_9`.
+Corrigé au passage : le bloc titre était en région `sidebar_first`, rendue **après** le contenu
+par `page.html.twig` → d'où un `<h1>` en bas de page. Déplacé en région `content`, poids -10.
 
-## Etat du bac a sable (node 33)
+**LIVRÉ le 2026-08-18** — acté dans [ADR-014](../../../.claude/decisions/014-titre-unique-porte-par-le-title.md),
+CLAUDE.md, README, PRD (écarts #2 et #3 passés en résolus). 91 fichiers de config,
+`npm run lint` et `format:check` à 0, `config:status` en phase.
+Vérifié : **exactement un `<h1>`** sur les 10 types rendus, alias tous préservés,
+`<title>` et fil d'Ariane alimentés par le `title`.
 
-Le type `page` est desormais **« Page :: Bac à sable paragraphes »** et ne porte
-plus **que** le node 33 : les 11 autres pages de test (recettes V4/V5, tests
-video/frise, page interne) ont ete supprimees le 2026-08-17, avec purge des
-35 paragraphes devenus orphelins.
+Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.value` →
+**500 sur la home** après suppression du champ. Corrigés en `node.title.value`. Le premier
+`grep` les avait manqués : sa sortie était tronquée par un `head -20`. Vérifier
+`grep -c` avant de conclure qu'une référence est isolée.
 
-⚠️ Conséquence : les **cas de repli a un seul element** (ex-node 28 « jumbo 1
-element », ex-node 30 « features 1 element ») n'ont plus de fixture. Les rejouer
-demande de re-semer un node avec un bloc a un seul element — les traces de la
-recette d'origine restent dans `docs/active/paragraphs*/verification*.md`.
+## Pages à vérifier / intégrer
 
-Enrichi bloc par bloc, non versionne (base locale) : **19 paragraphes**, tous les
-blocs integres a ce jour y sont rejouables. Ajouts recents : `history`
-(4 entrees), `product_characteristics` (6 caracteristiques + 2 documents),
-`news_home`, `brands_home`, `product_features` (3 diapositives dont une video en
-façade), `product_cross` (3 cartes, dont une qui passe a la ligne) ; second PDF de demo
-`public://sandbox/dossier-general.pdf` ; recadrages 16:9 sur les medias 3 et 4 ;
-descriptions de fichier saisies sur 3 des 9 champs fichier ; **16 marques** de
-demo (les 4 de test + 12 nommees) pour que la rangee deborde.
+| # | Page | Node | Node-id Figma | État |
+|---|------|------|---------------|------|
+| 1 | Accueil | 31 | `303-5967` | à vérifier — accordéon encore en lorem, aucun `<h1>` |
+| 2 | Qui sommes-nous | 54 | `433-9747` | à vérifier — 2 liens cassés, bloc « Un accompagnement sur mesure » hors maquette |
+| 3 | Mentions légales | 55 | `469-11689` | à vérifier — 1 lien cassé, même bloc hors sujet |
+| 4 | Questions fréquentes | 62 | `396-11620` | à vérifier (contenu par Vue, 0 paragraphe) |
+| 5 | Documentations | 67 | `398-12119` | à vérifier (contenu par Vue) |
+| 6 | Marques partenaires | 68 | `433-7148` | à vérifier (contenu par Vue) |
+| 7 | Actualités (liste) | 46 | `438-10209` | à vérifier (contenu par Vue) |
+| 8 | Une actualité | 17 | `438-10665` | à vérifier — **écart demandé** : ajouter le `body` sous l'image principale et **avant** le `text_left_aligned` |
+| 9 | Contact | 1 | `433-7637`, `438-9060`, `438-9465`, `438-9456`, `438-9457` | à vérifier (5 frames : formulaire + états) |
+| 10 | Devenir partenaire | 2 | `438-9838` | à vérifier |
+| 11 | **Nos ateliers** | — | `436-2486` | **à créer** (`corporate`) |
+| 12 | **Recherches et développement** | — | `436-8300` | **à créer** (`corporate`) — PRD F9 l'appelle « Recherche & développement » |
+| 13 | **Savoir-faire et certifications** | — | `436-8578` | **à créer** (`corporate`) |
 
-⚠️ Les medias de demo ne sont **pas des logos** (une photo et une capture) : la
-tuile de marque est verifiee sur sa geometrie, pas sur son rendu final. Prevoir
-de vrais logos avant la recette visuelle des marques.
+Déjà conformes (vérifiées le 2026-08-18) : node 52 (`363-9316`), node 76 (`389-10805`), node 75 (`390-11137`).
+Les 6 produits sans maquette (53, 70-74) portent un `image_full` seul, conformément à la consigne.
 
-`news_home` est aussi place sur la **page d'accueil** (node 31), son emplacement
-prevu par F3 — le bac a sable sert a le rejouer, la home a le composer. Regle a
-garder : **tout bloc integre doit etre ajoute au bac a sable**, meme quand il a
-deja ete verifie sur sa page reelle.
+## Divergence titre (à arbitrer)
+
+Constat mesuré sur le rendu anonyme :
+
+- **La home n'a aucun `<h1>`** — PRD écart #2, qui renvoie explicitement l'arbitrage à « l'intégration des maquettes ».
+- **Les pages transform et produit ont deux titres** : un `<h1>` issu de `field_title` (ADR-011) **plus** un `<h2>` issu du bloc héros. Sur la VOR c'est deux fois le même texte (« Télécommande VOR Auto-école » / « Télécommande VOR auto-école »). Les maquettes n'affichent **qu'un** titre.
+- PRD écart #3 : ce `<h1>` est rendu **après** le contenu, dans un `<aside>` (région `sidebar_first` du starterkit), à reprendre avec le shell de page en F2.
+
+Options soumises à l'utilisatrice : masquer le bloc titre de page / retirer le titre des blocs héros / faire rendre le titre du héros en `<h1>` et masquer le bloc titre.
+
+## Autre constat à traiter
+
+Les libellés d'accessibilité du thème sortent **en anglais** : `Main navigation`, `User account menu`
+(`<h2>` masqués). Le site est en français depuis le 2026-08-17. À reprendre, probablement avec F2.
