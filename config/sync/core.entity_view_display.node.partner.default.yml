@@ -16,13 +16,6 @@ targetEntityType: node
 bundle: partner
 mode: default
 content:
-  body:
-    type: text_default
-    label: hidden
-    settings: {  }
-    third_party_settings: {  }
-    weight: 1
-    region: content
   field_webform:
     type: webform_entity_reference_entity_view
     label: hidden
@@ -40,3 +33,4 @@ content:
 hidden:
   field_meta_tags: true
   langcode: true
+  body: true
