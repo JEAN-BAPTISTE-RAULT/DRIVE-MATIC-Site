@@ -197,8 +197,18 @@ le même média 7, « Home — solutions : commandes »).
 ⚠️ La source de la bannière ne fait que **1179 px de large** : les styles ne sur-échelonnant
 pas (`upscale: false`), la plus grande dérivée s'arrête là au lieu des 2560 habituels.
 
-Restent des photos de la home sur cette page, hors de la demande : les deux visuels de
-`product_features` et les cartes de `product_cross`.
+**Les cinq visuels restants ont suivi** : les 3 diapos de `product_features` et les
+2 cartes de `product_cross`, toutes en `crop_16_9` centré. Les deux cartes ont été
+mesurées par corrélation (centre pile dans les deux cas) ; la 1re diapo n'avait pas de
+question de cadrage, sa source étant déjà en 16:9 ; les 2e et 3e diapos sont **hors cadre
+dans la maquette** — le carrousel n'en laisse dépasser qu'une lisière de 364 px, leur
+cadrage n'y est donc pas observable et le centrage est un choix par défaut assumé.
+
+Les cartes de renvoi montrent désormais le bon produit (double pédalier, rétroviseur)
+là où les deux affichaient la même photo de la home.
+
+Ne reste que `home-configurateur.png` sur la page — et c'est normal : le bloc
+configurateur est le même composant dans toutes les maquettes.
 
 ## Divergence titre (à arbitrer)
 
