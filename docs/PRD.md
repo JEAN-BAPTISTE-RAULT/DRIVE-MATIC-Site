@@ -469,6 +469,28 @@ drive_matic.xxl:
     - 2x
 ```
 
+### Rythme et espacement
+
+Systeme acte dans [ADR-013](../.claude/decisions/013-espacement-et-unites.md),
+porte par trois tokens :
+
+| Token | Valeur | Role |
+|---|---|---|
+| `--dm-space-element` | 24px | ecart entre les elements d'un meme bloc |
+| `--dm-space-block` | 32px | respiration verticale d'un bloc, donc **64px** entre deux blocs |
+| `--dm-gutter` | 40px | gouttiere laterale |
+
+La gouttiere est toujours un **`padding-inline`** : `margin-inline: auto` ne fait
+que centrer une largeur plafonnee et ne garantit aucun ecart au bord en dessous
+de ce plafond. Exceptions dictees par le design : gouttiere d'un seul cote quand
+une piste de slideshow deborde volontairement, bloc pleine largeur quand le fond
+court d'un bord a l'autre.
+
+**Unites : espacement en `px`, typographie en `rem`.** Les tailles de police
+suivent ainsi la preference du navigateur (WCAG 1.4.4, decision #8) sans que la
+mise en page bouge : a 20px de police racine, le H1 passe de 45 a 56,25px et le
+corps de 16 a 20px, gouttiere et padding inchanges.
+
 ### Charte graphique
 Source : maquettes Figma Passerelle (fichier `ZmmVBSOWSsHVkok6EU2Ays` — Drive Matic Legrand ; le logotype vit dans le meme fichier). Tokens extraits :
 
