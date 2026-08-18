@@ -1,9 +1,12 @@
 // SDC « Bloc :: Jumbo Homepage » — bannière d'accueil en slideshow (Swiper).
 // Sans JS : la piste Swiper s'empile (tout visible) et les flèches sont masquées.
 .jumbo-home {
-  max-width: 1360px;
+  // Decolle du bord gauche a toute largeur (la piste deborde a droite).
+  // `max-width` seule laissait la banniere toucher la fenetre sous 1360px.
+  max-width: calc(1360px + 2 * var(--dm-gutter));
   margin-inline: auto;
-  padding-block: 2.5rem;
+  padding-block: var(--dm-space-block);
+  padding-left: var(--dm-gutter);
 
   // Diapositives à largeur fixe (peek du suivant) — slidesPerView: auto.
   & .swiper-slide {
@@ -78,7 +81,7 @@
     display: flex;
     gap: 10px;
     justify-content: center;
-    margin-top: 18px;
+    margin-top: var(--dm-space-element);
   }
 
   & .swiper-pagination-bullet {

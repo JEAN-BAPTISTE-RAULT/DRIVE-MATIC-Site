@@ -1,10 +1,11 @@
 .grid {
-  max-width: 1360px;
+  max-width: calc(1360px + 2 * var(--dm-gutter));
   margin-inline: auto;
-  padding-block: 2.5rem;
+  padding-block: var(--dm-space-block);
+  padding-inline: var(--dm-gutter);
 }
 .grid__title {
-  margin: 0 0 2.5rem;
+  margin: 0;
   color: var(--dm-color-steel);
   font-family: var(--dm-font-title);
   font-size: var(--dm-h1-size);
@@ -12,10 +13,13 @@
   font-weight: 700;
   text-align: center;
 }
+.grid__title:not(:last-child) {
+  margin-bottom: var(--dm-space-element);
+}
 .grid__items {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.5rem 20px;
+  gap: var(--dm-space-element) 20px;
 }
 .grid__items > * {
   display: contents;

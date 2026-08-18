@@ -1,12 +1,14 @@
 // SDC « Bloc :: Texte aligné à gauche » — CSS scopé (BEM), consomme les tokens globaux.
 
 .text-left-aligned {
-  max-width: 960px;
-  padding-block: 2.5rem;
+  max-width: calc(960px + 2 * var(--dm-gutter));
+  margin-inline: auto;
+  padding-block: var(--dm-space-block);
+  padding-inline: var(--dm-gutter);
   text-align: left;
 
   &__title {
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
     color: var(--dm-color-steel);
     font-family: var(--dm-font-title);
     font-size: var(--dm-h3-size);
@@ -27,8 +29,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
-    margin-top: 1.75rem;
+    gap: 16px;
+    margin-top: 28px;
   }
 
   // Bouton lien : contour + icône globe.
@@ -37,14 +39,14 @@
   &__actions a {
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.7rem 1.5rem;
+    gap: 12px;
+    padding: 11px 24px;
     border: 1.5px solid var(--dm-color-steel);
     border-radius: 10px;
     background: var(--dm-color-white);
     color: var(--dm-color-anthracite);
     font-family: var(--dm-font-body);
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 500;
     line-height: 28px;
     text-align: center;

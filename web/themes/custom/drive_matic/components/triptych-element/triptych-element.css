@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 2.5rem;
+  padding: 40px;
   border-radius: 16px;
   background: var(--dm-color-white);
   text-align: left;
@@ -19,7 +19,7 @@
   margin: 0;
   color: var(--dm-color-steel);
   font-family: var(--dm-font-title);
-  font-size: 60px;
+  font-size: 3.75rem;
   line-height: 58px;
   font-weight: 900;
 }

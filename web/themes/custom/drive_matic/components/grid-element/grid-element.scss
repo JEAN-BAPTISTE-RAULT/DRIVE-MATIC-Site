@@ -4,7 +4,7 @@
 .grid-element {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--dm-space-element);
 
   &__media {
     overflow: hidden;

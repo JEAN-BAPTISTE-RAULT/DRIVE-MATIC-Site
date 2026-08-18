@@ -1,7 +1,8 @@
 .jumbo-home {
-  max-width: 1360px;
+  max-width: calc(1360px + 2 * var(--dm-gutter));
   margin-inline: auto;
-  padding-block: 2.5rem;
+  padding-block: var(--dm-space-block);
+  padding-left: var(--dm-gutter);
 }
 .jumbo-home .swiper-slide {
   width: min(900px, 82%);
@@ -46,7 +47,7 @@
   display: flex;
   gap: 10px;
   justify-content: center;
-  margin-top: 18px;
+  margin-top: var(--dm-space-element);
 }
 .jumbo-home .swiper-pagination-bullet {
   width: 12px;

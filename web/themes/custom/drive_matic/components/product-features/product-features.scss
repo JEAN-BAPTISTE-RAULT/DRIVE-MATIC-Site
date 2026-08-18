@@ -9,9 +9,10 @@
   // résoudrait sur la hauteur du conteneur et non sur sa largeur.
   --dm-features-slide: min(900px, 70vw);
 
-  max-width: 1130px;
+  max-width: calc(1130px + 2 * var(--dm-gutter));
   margin-inline: auto;
-  padding-block: 2.5rem;
+  padding-block: var(--dm-space-block);
+  padding-left: var(--dm-gutter);
 
   // La piste garde le calage gauche du conteneur mais déborde à droite jusqu'au
   // bord de la fenêtre. `.swiper` est répété : le bundle pose

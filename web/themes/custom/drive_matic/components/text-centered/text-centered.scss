@@ -1,18 +1,27 @@
 // SDC « Bloc :: Texte centré » — CSS scopé (BEM), consomme les tokens globaux.
 
 .text-centered {
-  max-width: 960px;
+  max-width: calc(960px + 2 * var(--dm-gutter));
   margin-inline: auto;
-  padding-block: 2.5rem;
+  padding-block: var(--dm-space-block);
+  padding-inline: var(--dm-gutter);
   text-align: center;
 
   &__title {
-    margin-bottom: 1.5rem;
+    // Le reset ne neutralise que les marges du `body` : sans ce `margin: 0`,
+    // le titre reprendrait celles du navigateur quand il est le seul element.
+    margin: 0;
     color: var(--dm-color-steel);
     font-family: var(--dm-font-title);
     font-size: var(--dm-h1-size);
     line-height: var(--dm-h1-line);
     font-weight: 700;
+  }
+
+  // L'ecart ne se pose que s'il y a un element en dessous : un titre peut
+  // etre le dernier affiche quand les champs suivants sont vides.
+  &__title:not(:last-child) {
+    margin-bottom: var(--dm-space-element);
   }
 
   &__description {
@@ -28,8 +37,8 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
-    margin-top: 2rem;
+    gap: 16px;
+    margin-top: var(--dm-space-element);
   }
 
   // Bouton rouge « primaire » (Figma BtnRouge) : Inter Medium 15px, padding 14×16.
@@ -40,7 +49,7 @@
     background: var(--dm-color-red);
     color: var(--dm-color-white);
     font-family: var(--dm-font-body);
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 500;
     text-decoration: none;
   }

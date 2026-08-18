@@ -5,12 +5,13 @@
 // « précédent » et déborde à droite (dernière tuile coupée).
 // Sans JS : les tuiles passent à la ligne (tout visible), flèches masquées.
 .brands-home {
-  max-width: 1360px;
+  max-width: calc(1360px + 2 * var(--dm-gutter));
   margin-inline: auto;
-  padding-block: 2.5rem;
+  padding-block: var(--dm-space-block);
+  padding-inline: var(--dm-gutter);
 
   &__title {
-    margin: 0 0 40px;
+    margin: 0 0 var(--dm-space-element);
     color: var(--dm-color-steel);
     text-align: center;
   }
@@ -21,13 +22,14 @@
     position: relative;
   }
 
-  // La piste laisse la place de la flèche « précédent » à gauche (66px = calage
-  // de la maquette) et déborde à droite jusqu'au bord de la fenêtre.
+  // La piste laisse la même place aux deux flèches : la dernière tuile visible
+  // s'arrête donc à la même distance de la flèche droite que la première de la
+  // flèche gauche. Elle ne déborde plus jusqu'au bord de la fenêtre, ce qui
+  // faisait passer les tuiles sous la flèche de droite.
   // `.swiper` est répété : le bundle pose `margin-left/right: auto` à la même
   // spécificité que notre BEM et il est chargé après.
   &__viewport.swiper {
-    margin-left: 66px;
-    margin-right: calc(50% - 50vw);
+    margin-inline: 66px;
   }
 
   // Tuiles à largeur fixe — slidesPerView: auto.
@@ -79,12 +81,50 @@
     display: block;
   }
 
+  // Dégradé d'estompage : il dit que la rangée continue et que la flèche sert à
+  // quelque chose. Posé en `mask` plutôt qu'en aplat blanc, pour rester
+  // indépendant du fond.
+  // Chaque côté est piloté par sa propre variable, à 0 par défaut : un arrêt
+  // net à 0 ne produit aucun dégradé. Les deux règles conditionnelles plus bas
+  // n'ouvrent le dégradé que du côté où il reste quelque chose à faire défiler.
+  &__viewport {
+    --dm-brands-fade-start: 0px;
+    --dm-brands-fade-end: 0px;
+
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--dm-brands-fade-start),
+      #000 calc(100% - var(--dm-brands-fade-end)),
+      transparent 100%
+    );
+  }
+
+  // Déclarées après les règles simples : `:has()` est plus spécifique, et
+  // Stylelint (no-descending-specificity) exige cet ordre.
+  // La double condition est nécessaire : hors slideshow démarré, les flèches ne
+  // portent pas encore `swiper-button-disabled`, et le seul `:not()` ouvrirait
+  // les deux dégradés à tort.
+  &:has(&__viewport.swiper-initialized):has(
+      &__nav-button--prev:not(.swiper-button-disabled)
+    )
+    &__viewport {
+    --dm-brands-fade-start: 32px;
+  }
+
+  &:has(&__viewport.swiper-initialized):has(
+      &__nav-button--next:not(.swiper-button-disabled)
+    )
+    &__viewport {
+    --dm-brands-fade-end: 32px;
+  }
+
   // « Marques partenaires » : bouton gris de la maquette, centré sous la rangée.
   // Le wrapper de champ Drupal est neutralisé pour centrer le lien.
   &__more {
     display: flex;
     justify-content: center;
-    margin-top: 54px;
+    margin-top: var(--dm-space-element);
 
     > * {
       display: contents;
@@ -97,7 +137,7 @@
     background: var(--dm-color-grey-light);
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 500;
     line-height: 18px;
     text-decoration: none;

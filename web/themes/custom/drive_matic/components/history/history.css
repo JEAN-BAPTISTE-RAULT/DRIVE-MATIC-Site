@@ -1,13 +1,14 @@
 .history {
-  max-width: 1130px;
+  max-width: calc(1130px + 2 * var(--dm-gutter));
   margin-inline: auto;
-  padding-block: 2.5rem;
+  padding-block: var(--dm-space-block);
+  padding-left: var(--dm-gutter);
 }
 .history__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 16px;
   margin-right: calc(50% - 50vw);
   padding-right: calc(50vw - 50%);
   padding-bottom: 32px;
@@ -46,7 +47,7 @@
 }
 .history__viewport.swiper {
   position: relative;
-  margin-top: 32px;
+  margin-top: var(--dm-space-element);
   margin-right: calc(50% - 50vw);
 }
 .history .swiper-slide {

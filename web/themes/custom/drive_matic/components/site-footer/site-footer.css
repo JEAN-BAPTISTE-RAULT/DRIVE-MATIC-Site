@@ -7,11 +7,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 24px;
   flex-wrap: wrap;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 1rem;
+  padding: 32px 24px 16px;
 }
 .site-footer__brand {
   margin: 0;
@@ -26,7 +26,7 @@
 .site-footer__copyright {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 1.5rem 2rem;
+  padding: 0 24px 32px;
   font-size: 0.875rem;
   color: var(--dm-color-grey-metal);
 }

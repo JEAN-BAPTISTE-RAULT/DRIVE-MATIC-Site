@@ -13,9 +13,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem;
+    gap: var(--dm-space-element);
     width: 100%;
-    padding: 1.25rem 0;
+    padding: 20px 0;
     border: 0;
     background: none;
     color: var(--dm-color-steel);
@@ -85,7 +85,7 @@
   }
 
   &__body {
-    padding-bottom: 1.5rem;
+    padding-bottom: 24px;
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
     font-size: var(--dm-body-size);
@@ -97,8 +97,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    gap: 16px;
+    margin-top: var(--dm-space-element);
   }
 
   // Bouton lien « pilule » (Figma Btn formation) : contour #B5B5B5 + globe.
@@ -112,7 +112,7 @@
     background: var(--dm-color-white);
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 700;
     text-decoration: none;
 

@@ -6,10 +6,15 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2rem;
-  max-width: 1130px;
-  margin-inline: auto;
-  padding-block: 2.5rem;
+  gap: var(--dm-space-element);
+
+  // Bord a bord : le fond (gris ou blanc) court sur toute la largeur de la
+  // fenetre, le contenu reste cale sur le conteneur de 1130px. Idiome
+  // full-bleed du projet, comme `image_full` et `product_characteristics`.
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  padding-block: var(--dm-space-block);
+  padding-inline: max(var(--dm-gutter), calc(50vw - 565px));
 
   @media (width >= 992px) {
     flex-wrap: nowrap;
@@ -30,7 +35,7 @@
 
   // Légende ferrée sous l'image, en bas à droite (convention globale du site).
   &__caption {
-    margin-top: 0.5rem;
+    margin-top: 8px;
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
     font-size: 0.9rem;
@@ -66,8 +71,11 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
-    margin-top: 0.75rem;
+    gap: 16px;
+
+    // Le conteneur pose deja un `gap` de 10px entre ses enfants : on le
+    // deduit pour que l'ecart total soit exactement celui du token.
+    margin-top: calc(var(--dm-space-element) - 10px);
   }
 
   // Bouton lien « gris » (Figma Btn) : fond #E8E8E8, Inter Medium 15px steel.
@@ -78,7 +86,7 @@
     background: var(--dm-color-grey-light);
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 500;
     text-decoration: none;
   }
@@ -91,10 +99,8 @@
     }
   }
 
-  // Modificateur : fond gris. Bande contenue (le plein écran + coins arrondis
-  // relève de l'assemblage de page, pas du bloc isolé).
+  // Modificateur : fond gris, sur toute la largeur (cf. full-bleed ci-dessus).
   &--bg-grey {
-    padding-inline: 2.5rem;
     background: var(--dm-color-grey-light);
   }
 

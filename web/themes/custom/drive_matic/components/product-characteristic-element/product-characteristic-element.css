@@ -14,7 +14,7 @@
 .product-characteristic-element__description {
   color: var(--dm-color-white);
   font-family: var(--dm-font-body);
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: var(--dm-body-line);
 }
 .product-characteristic-element__description :is(p):first-child {

@@ -3,14 +3,15 @@
 // vertical gris (#B5B5B5) sur écran large. Pas de cartouche de fond.
 
 .product-arguments {
-  max-width: 960px;
+  max-width: calc(960px + 2 * var(--dm-gutter));
   margin-inline: auto;
-  padding-block: 2.5rem;
+  padding-block: var(--dm-space-block);
+  padding-inline: var(--dm-gutter);
 
   &__list {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--dm-space-element);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -25,7 +26,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-inline: 2rem;
     color: var(--dm-color-anthracite);
     font-family: var(--dm-font-title);
     font-size: var(--dm-h2-size);
@@ -35,7 +35,7 @@
 
     @media (width >= 768px) {
       flex: 1 1 0;
-      padding-block: 1rem;
+      padding-block: 16px;
 
       & + & {
         border-left: 1px solid var(--dm-color-grey-metal);

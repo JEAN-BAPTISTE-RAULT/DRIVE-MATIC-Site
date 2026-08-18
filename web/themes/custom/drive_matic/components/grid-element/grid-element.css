@@ -1,7 +1,7 @@
 .grid-element {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--dm-space-element);
 }
 .grid-element__media {
   overflow: hidden;

@@ -37,3 +37,16 @@ h3 {
   font-size: var(--dm-h3-size);
   line-height: var(--dm-h3-line);
 }
+
+// Champ texte riche : le premier et le dernier enfant ne portent pas de marge.
+// Le `<p>` du corps a 16px en haut et en bas ; additionnees a l'ecart pose par
+// le bloc, elles gonflaient les espacements internes (titre -> texte a 26px au
+// lieu de 10, texte -> bouton a 40 au lieu de 22 sur le bloc configurateur).
+// L'ecart entre elements appartient au bloc, pas au contenu saisi.
+.text-formatted > :first-child {
+  margin-top: 0;
+}
+
+.text-formatted > :last-child {
+  margin-bottom: 0;
+}

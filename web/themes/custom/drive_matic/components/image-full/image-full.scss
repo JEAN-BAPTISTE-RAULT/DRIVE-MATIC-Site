@@ -24,8 +24,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
-    padding-inline: 1rem;
+    gap: 24px;
+    padding-inline: 16px;
     text-align: center;
   }
 
@@ -50,7 +50,7 @@
     background: var(--dm-color-red);
     color: var(--dm-color-white);
     font-family: var(--dm-font-body);
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 500;
     text-decoration: none;
   }
