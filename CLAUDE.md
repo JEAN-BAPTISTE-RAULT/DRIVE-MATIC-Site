@@ -163,6 +163,7 @@ Les decisions architecturales posterieures au PRD sont dans `.claude/decisions/`
 ### Ce que Claude ne doit JAMAIS faire
 
 - Remettre en question les decisions d'architecture verrouillees (voir docs/PRD.md)
+- **Travailler ailleurs que sur `main`** : pas de branche de feature, pas de worktree (`.claude/worktrees/`), pas d'isolation `worktree` pour un sous-agent. `main` est la seule branche du depot ; tout commit s'y fait directement. Regle posee par l'utilisatrice.
 - **Modifier le core ou le code contrib** (`web/core/`, `web/modules/contrib/`, `web/themes/contrib/`) : passer exclusivement par hooks, plugins, event subscribers ou sous-theme. Si un patch contrib est indispensable, le gerer via `composer-patches`.
 - **Se fier au frontend pour l'autorisation partenaire** : toute route ou ressource reservee re-verifie les droits cote serveur (permission, `hook_ENTITY_access`, `_custom_access`). Masquer un lien en Twig n'est pas un controle d'acces.
 - **Exposer des donnees partenaire a un utilisateur anonyme** ou les injecter dans `drupalSettings` / le markup rendu au public.
