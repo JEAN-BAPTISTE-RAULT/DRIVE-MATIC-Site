@@ -179,11 +179,26 @@ Corrigé au passage : le média 30 créé la veille pour le bloc configurateur d
 faisait **doublon** avec le média 10 (même fichier, même empreinte MD5). Node 52 repointé
 sur le 10, doublon supprimé.
 
-**Reste à faire sur cette page — trois photos ne sont pas celles de la maquette**, toutes
-remplacées par le média 7 (« Home — solutions : commandes ») : la bannière (`390:11148`
-montre la télécommande VOR dans la console centrale), le visuel de l'`image_text_50`
-(`392:11485`) et le visuel des caractéristiques (`393:11517`, un détouré du produit). Non
-traité : l'utilisatrice n'a signalé que le **ratio** de l'image, pas la photo elle-même.
+**Les trois photos de la maquette ont été importées** (les trois emplacements affichaient
+le même média 7, « Home — solutions : commandes »).
+
+- La bannière (`390:11148`) et l'`image_text_50` (`392:11485`) sont **deux cadrages de la
+  même photo** : un seul média (31, la télécommande sur la console centrale) et deux
+  entités `crop`. C'est exactement ce que le modèle « un crop par couple (fichier, type) »
+  permet — inutile de dupliquer le fichier.
+- Centres verticaux **mesurés** par corrélation avec les bandes de la maquette : 714 px
+  pour le 12:5, 783 px pour le 1:1, sur une source de 1571 de haut. Le 1:1 tombe donc
+  quasiment au centre (786) mais **pas** le 12:5, qui cadre 72 px plus haut.
+- Le visuel des caractéristiques (`393:11517`) est un **détouré** : ses marges
+  transparentes ont été rognées (`imagecropauto`) puis rétablies aux proportions de la
+  maquette (381×418) en transparence pure, le bloc l'affichant « sans crop ». Source
+  ramenée à 1100 px de large : l'original faisait 3072×4096 pour un affichage à ~380.
+
+⚠️ La source de la bannière ne fait que **1179 px de large** : les styles ne sur-échelonnant
+pas (`upscale: false`), la plus grande dérivée s'arrête là au lieu des 2560 habituels.
+
+Restent des photos de la home sur cette page, hors de la demande : les deux visuels de
+`product_features` et les cartes de `product_cross`.
 
 ## Divergence titre (à arbitrer)
 
