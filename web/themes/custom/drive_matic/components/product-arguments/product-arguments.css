@@ -1,5 +1,5 @@
 .product-arguments {
-  max-width: calc(960px + 2 * var(--dm-gutter));
+  max-width: calc(858px + 2 * var(--dm-gutter));
   margin-inline: auto;
   padding-block: var(--dm-space-block);
   padding-inline: var(--dm-gutter);
@@ -34,7 +34,13 @@
     flex: 1 1 0;
     padding-block: 16px;
   }
+  .product-arguments__item:not(:last-child) {
+    -webkit-padding-end: 16px;
+            padding-inline-end: 16px;
+  }
   .product-arguments__item + .product-arguments__item {
+    -webkit-padding-start: 16px;
+            padding-inline-start: 16px;
     border-left: 1px solid var(--dm-color-grey-metal);
   }
 }

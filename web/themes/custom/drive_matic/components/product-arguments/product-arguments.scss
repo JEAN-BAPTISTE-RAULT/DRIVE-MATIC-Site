@@ -2,8 +2,13 @@
 // Maquette : 1 à 3 titres centrés (Exo 2 Bold 30/44), séparés par un filet
 // vertical gris (#B5B5B5) sur écran large. Pas de cartouche de fond.
 
+// Mesures relevées sur `392:11481` (maquette 390-11137) : le bloc fait 858 de
+// large, les filets tombent aux tiers, et le texte s'en écarte de 16px de part
+// et d'autre. Les textes des colonnes extrêmes, eux, affleurent les bords du
+// bloc : l'écart de 16px appartient au filet, pas à la colonne.
+
 .product-arguments {
-  max-width: calc(960px + 2 * var(--dm-gutter));
+  max-width: calc(858px + 2 * var(--dm-gutter));
   margin-inline: auto;
   padding-block: var(--dm-space-block);
   padding-inline: var(--dm-gutter);
@@ -37,7 +42,14 @@
       flex: 1 1 0;
       padding-block: 16px;
 
+      // L'écart de 16px se pose de chaque côté du filet, jamais aux extrémités
+      // du bloc : les colonnes de bord affleurent, comme dans la maquette.
+      &:not(:last-child) {
+        padding-inline-end: 16px;
+      }
+
       & + & {
+        padding-inline-start: 16px;
         border-left: 1px solid var(--dm-color-grey-metal);
       }
     }

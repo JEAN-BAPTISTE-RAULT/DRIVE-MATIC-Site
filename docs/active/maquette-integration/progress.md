@@ -148,6 +148,43 @@ avaient été jugés conformes pour cette raison. Le bouton pointe la FAQ (node 
 À surveiller, non traité : le bouton du premier panneau de l'accordéon du node 54 pointe
 encore `https://example.com`.
 
+## Reprise de la page « Télécommande VOR auto-école » (2026-08-18)
+
+Quatre écarts relevés par l'utilisatrice sur le node 75 (maquette `390-11137`).
+
+**1. Filets de l'argumentaire produit.** Le bloc `product_arguments` (que la maquette
+dessine comme un triptyque) faisait 960 de large avec des textes collés aux filets.
+Mesuré sur `392:11481` : bloc de **858**, filets à **280** et **577** du bord, et **16px**
+de dégagement de chaque côté du filet — les colonnes extrêmes, elles, **affleurent** les
+bords du bloc. Corrigé, et le rendu retombe à 280/577 au pixel près.
+
+**2. Le recadrage 1:1 manquait aussi.** Même cause que le 12:5 de la veille : une seule
+entité `crop_1_1` existait en base (`home-savoir-faire.png`). L'image de l'`image_text_50`
+sortait donc en 3:2. Recadrage centré semé sur les 9 fichiers servis en 1:1 ; l'image fait
+désormais 1440×1440.
+
+**3. Les deux boutons de téléchargement** des caractéristiques n'étaient pas alimentés.
+`field_file_notice` et `field_file_doc` existaient et le SDC savait déjà les rendre :
+seuls les fichiers manquaient. Les PDF de démonstration ont été **copiés hors du bac à
+sable** vers `public://documents/`, celui-ci ayant vocation à disparaître en fin de
+chantier. Libellés « Notice technique » et « Dossier général », le format et le poids
+étant calculés par le thème.
+
+**4. Le `text_centered` manquant** (« Obtenir la télécommande VOR auto-école » + bouton
+rouge) est créé et placé juste après les caractéristiques. Son titre s'était retrouvé sur
+le bloc configurateur, qui reprend donc les siens (« Configurez votre véhicule et obtenez
+votre tarif »), sans quoi la page aurait affiché deux fois le même titre.
+
+Corrigé au passage : le média 30 créé la veille pour le bloc configurateur du node 52
+faisait **doublon** avec le média 10 (même fichier, même empreinte MD5). Node 52 repointé
+sur le 10, doublon supprimé.
+
+**Reste à faire sur cette page — trois photos ne sont pas celles de la maquette**, toutes
+remplacées par le média 7 (« Home — solutions : commandes ») : la bannière (`390:11148`
+montre la télécommande VOR dans la console centrale), le visuel de l'`image_text_50`
+(`392:11485`) et le visuel des caractéristiques (`393:11517`, un détouré du produit). Non
+traité : l'utilisatrice n'a signalé que le **ratio** de l'image, pas la photo elle-même.
+
 ## Divergence titre (à arbitrer)
 
 Constat mesuré sur le rendu anonyme :
