@@ -44,8 +44,8 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 4 | **FAQ** | 62 | `396-11620` | ✅ **intégrée** — titre « FAQ : Nous répondons à vos questions », motif Pathauto **supprimé**, alias en dur `/faq`, 301 depuis /questions-frequentes. Filtres Général/Auto-école/PMR rendus |
 | 5 | Documentations | 67 | `398-12119` | ✅ **restructurée** — type de node `document` supprimé, les 2 champs passés en **Fichier illimité**, titres de section en dur dans le Twig |
 | 6 | Les marques partenaires | 68 | `433-7148` | ✅ **conforme** — titre repris de la maquette, motif Pathauto supprimé, alias `/marques-partenaires` en dur. 12 logos alphabétiques dans `brands-grid` |
-| 7 | Actualités (liste) | 46 | `438-10209` | à vérifier (contenu par Vue) |
-| 8 | Une actualité | 17 | `438-10665` | à vérifier — **écart demandé** : ajouter le `body` sous l'image principale et **avant** le `text_left_aligned` |
+| 7 | Actualités | 46 | `438-10209` | ✅ **conforme** — `body` masqué (aucun chapô dans la maquette), alias `/actualites` en dur. Pager configuré, ne s'affiche pas avec 6 items : normal |
+| 8 | Une actualité | 17 | `438-10665` | ✅ **conforme** — l'écart demandé (`body` sous l'image, avant les blocs) était **déjà** la config : field_image(0), field_caption(1), body(2), field_paragraphs(3). Ajouté les 2 blocs manquants |
 | 9 | Contact | 1 | `433-7637`, `438-9060`, `438-9465`, `438-9456`, `438-9457` | à vérifier (5 frames : formulaire + états) |
 | 10 | Devenir partenaire | 2 | `438-9838` | à vérifier |
 | 11 | **Nos ateliers** | — | `436-2486` | **à créer** (`corporate`) |
@@ -138,6 +138,12 @@ la bibliothèque de médias), et `field.storage.node.field_file` aussi (encore u
 
 Après suppression d'un champ, `field_purge_batch()` est nécessaire avant de recréer un champ
 du même nom — sinon la création échoue sur le nom encore réservé.
+
+## À surveiller : la date d'une actualité vient de `changed`
+
+`node--news.html.twig` affiche `node.changed` — décision du modèle éditorial, pas de champ
+date dédié. Conséquence : **modifier une vieille actualité la redate**. Vu en direct, le node 17
+est passé au 18/08/2026 en le sauvegardant. À rediscuter si l'ordre chronologique compte.
 
 ## Autre constat à traiter
 
