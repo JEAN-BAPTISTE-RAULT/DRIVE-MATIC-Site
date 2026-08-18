@@ -168,7 +168,10 @@
 - Le lien **« Voir toutes les actualites »** de la home mene bien a `/actualites`.
 - **0 actualite publiee** → « Aucune actualite n'est publiee pour le moment. », sans bloc casse.
 - **Depublier une actualite** doit la retirer de la liste **sans vidage de cache**.
-- ⚠️ La date sort aujourd'hui en **anglais** (« 17 August 2026 ») : ecart de langue du site, cf. PRD section 7.
+- ~~La date sort en anglais~~ — resolu avec la bascule linguistique du 2026-08-17.
+- **Jeu de test en place depuis le 2026-08-18** : **32 actualites publiees**, soit **4 pages**. La pagination est donc verifiable pour de vrai (« Precedent » absent en page 1, « Suivant » absent en derniere, numeros cliquables).
+- **Mise en page de la liste** (integration du 2026-08-18, maquette `438-10209`) : titre de page **centre** ; lignes dans une colonne de **1130** ; chaque ligne = visuel **325x183 (16:9, coins arrondis)** a gauche, puis titre, date et « Lire la suite » **aligne en bas** de la ligne ; **30** entre deux lignes. La pagination est centree, la page courante en **blanc sur pastille acier**, « Precedent »/« Suivant » en gris encadres d'un chevron.
+- ⚠️ **A rejouer en mesurant, pas a l'oeil** : c'est precisement ce controle qui manquait quand la page avait ete declaree conforme (cf. PRD, ecart #4).
 
 ---
 
@@ -208,12 +211,17 @@
 3. Cocher l'autorisation, resoudre le captcha, envoyer.
 
 **Resultats attendus** :
-- Les champs `*` sont obligatoires ; l'infobulle « carte grise » s'affiche sur les champs chassis.
+- Les champs `*` sont obligatoires ; l'**aide ⓘ** des champs chassis ouvre une **modale** montrant la case concernee du certificat d'immatriculation.
 - La soumission est **enregistree en back-office** (consultable).
 - Deux e-mails partent (accuse au demandeur + notification `info@`), conformes au modele « demande de devis ».
 
 **Cas limites** :
 - « Vous etes = particulier » → le nom d'entreprise n'est **pas** obligatoire.
+
+**Mise en oeuvre (a rejouer)** — habillage du 2026-08-18, maquettes `433-7637` / `438-9060` / `438-9465` :
+- Carte grise clair a coins arrondis, **trois colonnes** de champs, deux groupes titres (« Vous etes », « Votre demande concerne »), mention « *Champs obligatoires » **en bas** de la carte.
+- **Sans JS** : le declencheur ⓘ disparait et la phrase d'aide s'affiche a sa place — le champ reste utilisable.
+- **Les trois variantes** (devis / SAV / question) doivent etre rejouees : elles ne different que par les champs affiches, mais c'est la que se voient les ruptures de ligne de la grille.
 
 ---
 
@@ -223,13 +231,19 @@
 
 **Etapes** :
 1. Choisir « demande de SAV », renseigner marque/modele/motorisation, n° de chassis, message.
-2. Joindre un document valide (PDF/JPG, <= 5 Mo), envoyer.
+2. Ouvrir l'**aide ⓘ** du champ « N° de chassis » : une **modale** montre le certificat d'immatriculation, case E entouree. La fermer par la croix, par Echap et par un clic sur le fond.
+3. Joindre un document valide (PDF/JPG, <= 5 Mo), envoyer.
 
 **Resultats attendus** :
 - Soumission stockee + e-mails SAV (demandeur + `info@`) avec la piece jointe referencee.
 
 **Cas limites** :
 - Document hors format ou > 5 Mo → **rejet avec message d'erreur** ; tentative d'ajouter un 2e document → bloquee (1 max). `[INFERE]`
+
+**Mise en oeuvre (a rejouer)** :
+- ⚠️ **Verifier d'abord que le champ « Ajouter un document » existe.** Sans `file_private_path` configure, Drupal retire l'element **silencieusement** — pas de log, pas de message : le champ n'apparait simplement pas. A controler apres tout deploiement, `settings.php` n'etant pas versionne.
+- Le plafond affiche (« 5 Mo maximum ») est **borne par `upload_max_filesize`** du PHP qui sert le site : si le formulaire annonce « Limite a 2 Mo », c'est le PHP, pas la configuration Webform. ⚠️ Un controle via `drush runserver` interroge le PHP **CLI**, pas celui du vhost — il ne dit pas ce que voit un visiteur.
+- ⚠️ **Ecart connu** : la piece jointe **n'est pas jointe** a l'e-mail interne (`attachments: false` sur le handler `sav_interne`), alors que le plan F10 le prevoit.
 
 ---
 
@@ -473,6 +487,10 @@
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-08-18 | **F10 — le formulaire de contact est habille** ([ADR-015](../.claude/decisions/015-habillage-des-formulaires.md)) : carte claire, grille 3 colonnes, deux groupes titres, mention obligatoire en pied, et les infobulles « carte grise » remplacees par une **modale illustree**. Rejouer les **trois variantes** (devis / SAV / question) et le **repli sans JS**. ⚠️ Deux prealables d'environnement decouverts : `file_private_path` (sans lui le champ document **n'existe pas**, en silence) et `upload_max_filesize` du PHP qui sert le site | S8, S9, S10 |
+| 2026-08-18 | **F8 — la liste d'actualites est integree** (maquette `438-10209`) : titre de page **centre** (le bloc n'avait aucun CSS, sur **toutes** les pages), colonne de 1130, ligne visuel 325x183 + texte, pagination stylee. Jeu de test porte a **32 actualites**, soit 4 pages : la pagination devient verifiable | S7, transverse (titre de page) |
+| 2026-08-18 | **Recadrages remis a plat** : aucune entite `crop_12_5` n'existait, donc les 17 blocs `image_full` du site sortaient au ratio de leur source. Audit sur les 10 emplacements a ratio impose : 45 couples (fichier, ratio) conformes, 31 images verifiees sur les 29 pages publiques, 0 ecart. ⚠️ **A rejouer en mesurant** `width`/`height` sur le `<img>` : un heros 12:5 en 1440 doit faire **600** de haut, jamais 960 | Transverse, S2 a S7 |
+| 2026-08-18 | **Pages 12 et 13 creees** (« Recherches et developpement », « Savoir-faire et certifications ») et **pages transform/produit recalees** sur leurs maquettes : photos importees de Figma, accordeons revenus au lorem de la maquette, blocs manquants ajoutes (`text_centered` de la page VOR, telechargements des caracteristiques) | S3, S4 |
 | 2026-08-17 | **Rythme visuel** ([ADR-013](../.claude/decisions/013-espacement-et-unites.md)) : ecarts internes uniformises a 24px, blocs separes de 64px, gouttiere de 40px garantie **a toute largeur**. A rejouer : (1) **en responsive** — aucun bloc ne doit toucher le bord, y compris le jumbo, la grille et les actualites, dont la piste deborde a droite par construction ; (2) un bloc dont **seul le titre** est rempli ne doit pas laisser de blanc en dessous ; (3) le degrade du carrousel de marques ne s'affiche **que du cote ou la fleche est active** ; (4) avec une **police de navigateur agrandie**, le texte grossit et la mise en page ne bouge pas | Transverse, S2 en premier lieu |
 | 2026-08-17 | **Le site passe en francais** (decision #6) : dates d'actualites (« 17 aout 2026 »), poids de fichiers (« 50 Ko »), barre d'administration, onglets locaux et fil d'Ariane sont desormais en francais. Le fil d'Ariane affiche le **titre affiche** et non le libelle d'administration. ⚠️ **A rejouer apres tout transfert de base** : les alias portent le langcode du contenu, une base venue d'un site en anglais fait retomber **toutes** les pages sur `/node/N` (cf. PRD section 7) | Transverse, S1 a S24 |
 | 2026-08-17 | **Administration sur le front** ([ADR-012](../.claude/decisions/012-presentation-admin-front.md)) : `gin_toolbar` desinstalle — la barre du front redevient celle du cœur (noire « Gerer / admin » + menu horizontal d'Admin Toolbar) —, et les onglets locaux passent en **carte grise fixe en haut a droite**, qui suit le defilement. A rejouer **connectee en administration** sur une page publique. Le crayon qui surmonte la carte vient des liens contextuels, il n'apparait qu'au survol | Transverse, toute page publique |

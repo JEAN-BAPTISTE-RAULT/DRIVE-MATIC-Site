@@ -121,10 +121,11 @@ Le formatage (indentation, guillemets, longueur de ligne) est gere par le linter
 
 **SCSS / SDC**
 
-- Tout composant front est un **SDC** (Single Directory Component) : Twig + CSS (+ JS) co-localises et scopes dans le dossier du composant. Rien hors SDC, hormis les **fondations globales** (reset, tokens/variables, typographie).
+- Tout composant front est un **SDC** (Single Directory Component) : Twig + CSS (+ JS) co-localises et scopes dans le dossier du composant. Rien hors SDC, hormis les **fondations globales** (reset, tokens/variables, typographie) et le markup qu'on **ne choisit pas** — celui du coeur ou d'un module, qui n'appartient a aucun composant : `_local-tasks.scss`, `_forms.scss`, `_page-title.scss`, `_pager.scss`. Toute nouvelle derogation se commente dans `style.scss`, avec sa raison.
+- **Les classes du coeur ne passent pas le motif kebab-case de Stylelint** (`pager__item`, `field--type-webform`) : poser un `stylelint-disable selector-class-pattern` **cible et commente**, jamais desactiver la regle globalement. Meme chose pour une classe de SDC citee depuis une fondation — a l'interieur d'un SDC, l'ecriture `&__element` passe sans exemption.
 - Nommage **BEM** (`.block__element--modifier`) a l'interieur de chaque composant.
 - Pas de couleurs/tailles en dur : utiliser les tokens (variables SCSS / custom properties).
-- **Espacement — trois tokens, trois roles** ([ADR-013](.claude/decisions/013-espacement-et-unites.md)) : `--dm-space-element` (entre elements d'un bloc), `--dm-space-block` (`padding-block` du bloc), `--dm-gutter` (`padding-inline`). Ne jamais reintroduire de valeur d'espacement en dur.
+- **Espacement — trois tokens, trois roles** ([ADR-013](.claude/decisions/013-espacement-et-unites.md)) : `--dm-space-element` (entre elements d'un bloc), `--dm-space-block` (`padding-block` du bloc), `--dm-gutter` (`padding-inline`). Ne jamais reintroduire de valeur d'espacement en dur. Un quatrieme token cadence le **gabarit de page** : `--dm-space-page` (bloc titre, liste d'actualites, pagination). Quand une mesure de maquette n'entre dans aucun de ces roles, la **nommer** en custom property locale plutot que de la semer en dur.
 - **Gouttiere = `padding-inline`, jamais `margin-inline: auto`** : celui-ci ne fait que **centrer** une largeur plafonnee et ne garantit aucun ecart au bord sous ce plafond. Le plafond vaut « contenu + 2 gouttieres ». Exceptions : gouttiere d'un seul cote quand la piste deborde volontairement, et bloc full-bleed quand le fond court d'un bord a l'autre.
 - **Unites : espacement en `px`, typographie en `rem`.** Une gouttiere ne grossit pas parce que le texte grossit ; les tailles de police, elles, doivent suivre la preference du navigateur (WCAG 1.4.4). Reserver `em` a ce qui est lie au texte lui-meme.
 - **Un ecart appartient au bloc, pas au contenu saisi** : les marges du premier et du dernier enfant d'un champ texte riche sont neutralisees dans les fondations (`.text-formatted`). Et une marge ne se pose que s'il y a un element en dessous (`:not(:last-child)`) — les champs etant optionnels, un titre peut etre le dernier element affiche.
@@ -213,6 +214,23 @@ Quand l'utilisateur invoque `/sync`, passer en revue **toute** la documentation 
 - `CLAUDE.md` — regles, conventions, pieges
 - `.claude/decisions/` — ADR manquants
 - Memoire auto — apprentissages de la session
+
+#### Integration d'une maquette : « conforme » n'est pas « integree »
+
+Regle nee d'une erreur reelle (PRD, ecart #4) : plusieurs pages avaient ete notees
+« conformes » alors que **seul leur contenu** avait ete verifie — bons blocs, bons textes,
+un seul `<h1>`, bons alias — sans qu'aucune **mesure de mise en page** ne soit relevee.
+
+Une page n'est integree que si :
+
+1. les mesures ont ete **relevees sur la maquette** (`get_metadata` pour la geometrie,
+   `get_design_context` pour couleurs/typo/rayons) ;
+2. elles ont ete **comparees au rendu**, au navigateur (`getBoundingClientRect`,
+   `getComputedStyle`), et non a l'oeil sur une capture ;
+3. les ecarts restants sont **ecrits**, pas tus.
+
+⚠️ Un commentaire de code qui dit « integration fine a faire » vaut plus que la ligne de
+suivi qui dit « conforme » : verifier le code avant de conclure.
 
 #### Apres chaque implementation : self-review
 

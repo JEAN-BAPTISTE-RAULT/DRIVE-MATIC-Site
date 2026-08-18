@@ -222,11 +222,17 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - [ ] Les champs marques par `*` sont obligatoires ; captcha requis ; case d'autorisation des donnees requise.
 - [ ] Les e-mails suivent les modeles des specs (objet, expediteur `no-reply`, contenu) pour chacun des 3 cas.
 
+- **Mise en oeuvre — integration du 2026-08-18** ([ADR-015](../.claude/decisions/015-habillage-des-formulaires.md)) : deux groupes symetriques (`identite` « Vous etes », `demande` « Votre demande concerne »), dont les listes deroulantes portent le libelle « Selectionner » comme la maquette. Les **infobulles « carte grise »** sont remplacees par une **modale illustree** (SDC `help-modal`) montrant le certificat d'immatriculation, la case entouree. La mention « *Champs obligatoires » est rendue en tete par Webform et **descendue en pied** par `order`, l'ordre de tabulation n'etant pas affecte (texte non focusable).
+
 **Cas limites** :
 - « Vous etes = particulier » → le nom d'entreprise n'est pas obligatoire.
 - Document SAV hors format/taille → rejet avec message d'erreur. `[INFERE]`
+- ⚠️ **Sans `file_private_path` configure, le champ document n'existe pas** : Drupal retire silencieusement tout element en `#uri_scheme: private`, sans log ni message. Reglage a poser sur **chaque** environnement (`settings.php` n'etant pas versionne).
+- Le plafond de taille annonce (5 Mo) est **borne par `upload_max_filesize`** du PHP qui sert le site. ⚠️ Un controle fait via `drush runserver` interroge le PHP **CLI**, pas celui du vhost : il ne dit pas ce que voit un visiteur.
 
 > NB : cette « demande de devis » publique est un **e-mail de demande** (pas de chiffrage) — distincte du devis chiffre du configurateur partenaire (F14/F15).
+
+> ⚠️ **Reste ouvert** : la piece jointe du SAV **ne part pas** dans l'e-mail interne — le handler `sav_interne` a `attachments: false`, alors que le plan F10 §4 prevoit qu'elle soit jointe. Jamais visible avant, le champ ne s'affichant pas.
 
 ---
 
@@ -569,6 +575,8 @@ editorial, a arbitrer.
 | 1 | ~~Le site tourne en anglais~~ — **resolu le 2026-08-17** : `language` + `locale` installes, francais pose par defaut et seule langue du site, 15 309 chaines importees. Dates, poids de fichiers, barre d'administration et onglets locaux sont en francais. Deux pieges rencontres, decrits en section 7 (« Bascule linguistique »). | #6 (site en francais uniquement) |
 | 2 | ~~La page d'accueil n'a aucun `<h1>`~~ — **resolu le 2026-08-18** ([ADR-014](../.claude/decisions/014-titre-unique-porte-par-le-title.md)) : les SDC `text_centered` et `image_full` portent une prop `heading_level`, mise a 1 pour le premier paragraphe titre des bundles a titre-heros. Un seul `<h1>` par page, verifie sur 10 types. | #8 (RGAA / WCAG 2.1 AA) |
 | 3 | ~~Le titre de page est rendu apres le contenu, dans un `<aside>`~~ — **resolu le 2026-08-18** : le bloc `drive_matic_page_title` est passe en region `content`, poids -10, donc au-dessus du contenu. La region `sidebar_first` ne porte plus que le bloc d'aide. | #8 |
+| 4 | **« Conforme » a ete confondu avec « integree »** — constate le 2026-08-18 sur `/actualites`. Les pages du chantier d'integration etaient validees sur leur **contenu** (bons blocs, bons textes, un seul `<h1>`, bons alias) sans qu'aucune **mesure de mise en page** ne soit relevee. Le bloc titre de page n'avait aucun CSS et la Vue `all_news` aucune enveloppe SDC. **Regle de recette qui en decoule** : une page n'est integree que si ses mesures ont ete relevees sur la maquette **et comparees au rendu**. Les 12 autres pages du chantier restent a reprendre sur ce protocole. | #10 (SDC-first), decision #11 |
+| 5 | ~~Le recadrage est optionnel~~ — **tranche le 2026-08-18** : obligatoire et **manuel**, effectue par l'editeur a l'import (cf. [ADR-004](../.claude/decisions/004-pipeline-images.md)). Le formulaire l'imposait deja ; le seul contournement etait la **creation programmatique**, d'ou provenaient tous les trous (aucune entite `crop_12_5` en base, donc 17 blocs `image_full` rendus au ratio de leur source). Audit remis a plat : 45 couples (fichier, ratio) conformes, 31 images verifiees sur les 29 pages publiques, 0 ecart. | #11 (gestion des images) |
 
 ### Prealables techniques (avant le developpement front)
 

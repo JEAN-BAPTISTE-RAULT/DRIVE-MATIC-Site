@@ -126,3 +126,12 @@ Contenu : récap identité + champs du cas (cf. specs §2.14). Échapper toutes 
 - [x] Décisions tranchées (§11)
 - [x] Référentiel véhicules (ADR-003)
 - [x] Implémenté (chunks 1-5) — vérifié via Mailpit + navigateur
+- [x] **Étape 7 (thème, accessibilité, infobulles) — faite le 2026-08-18** ([ADR-015](../../.claude/decisions/015-habillage-des-formulaires.md)) : habillage en fondation `_forms.scss`, mise en page déclarée par le formulaire (`#wrapper_attributes`), infobulles châssis remplacées par le SDC `help-modal` (`<dialog>` natif, repli sans JS).
+- [x] **Étape 4 (upload SAV) — enfin vérifiable** : le champ ne s'affichait pas, `file_private_path` n'étant pas configuré. Drupal retire silencieusement tout élément en `#uri_scheme: private`. Réglage posé en local, **à reporter sur chaque environnement**.
+
+**Écarts restant à traiter :**
+
+1. ⚠️ **La pièce jointe du SAV ne part pas dans l'e-mail interne** — `attachments: false` sur le handler `sav_interne`, alors que le §4 ci-dessus prévoit « joint le document si présent ». Une ligne de config, non basculée : cela change un envoi sortant.
+2. Le plafond de 5 Mo est borné par `upload_max_filesize` du PHP qui sert le site. ⚠️ Un contrôle via `drush runserver` interroge le PHP **CLI**, pas celui du vhost.
+3. La **ligne « adresse + carte »** au-dessus du formulaire n'est pas mise en page (la maquette la veut sur deux colonnes) — hors périmètre du formulaire.
+4. Le bouton d'envoi **épouse son texte** là où la maquette dessine un cadre de 171px : choix de cohérence avec les autres boutons du site.
