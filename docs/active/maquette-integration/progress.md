@@ -48,7 +48,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 8 | Une actualité | 17 | `438-10665` | ✅ **conforme** — l'écart demandé (`body` sous l'image, avant les blocs) était **déjà** la config : field_image(0), field_caption(1), body(2), field_paragraphs(3). Ajouté les 2 blocs manquants |
 | 9 | Contact | 1 | `433-7637` ✅ / `438-9060`, `438-9465`, `438-9456`, `438-9457` ⏳ | page principale **conforme** ; les **4 frames d'états du formulaire** (validation, confirmation…) restent à traiter, ils relèvent de F10 |
 | 10 | Devenir partenaire | 2 | `438-9838` | ✅ **conforme** — titre puis formulaire, `body` masqué (aucun chapô dans la maquette), mention « *Champs obligatoires » activée |
-| 11 | **Nos ateliers** | — | `436-2486` | **à créer** (`corporate`) |
+| 11 | Nos ateliers | **77** | `436-2486` | ✅ **créée** — titre, chapô (`body`), 2 `image_text_50` alternées. Alias `/nos-ateliers` |
 | 12 | **Recherches et développement** | — | `436-8300` | **à créer** (`corporate`) — PRD F9 l'appelle « Recherche & développement » |
 | 13 | **Savoir-faire et certifications** | — | `436-8578` | **à créer** (`corporate`) |
 
