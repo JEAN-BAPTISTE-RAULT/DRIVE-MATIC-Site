@@ -1,0 +1,37 @@
+uuid: 8dd1d1ac-dd76-4835-869f-a4d4c1749d89
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.configurator.body
+    - field.field.node.configurator.field_meta_tags
+    - field.field.node.configurator.field_paragraphs
+    - field.field.node.configurator.field_title
+    - node.type.configurator
+  module:
+    - entity_reference_revisions
+    - user
+id: node.configurator.default
+targetEntityType: node
+bundle: configurator
+mode: default
+content:
+  field_paragraphs:
+    type: entity_reference_revisions_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  body: true
+  field_meta_tags: true
+  field_title: true
+  langcode: true

@@ -1,0 +1,11 @@
+uuid: c5f3e865-0db0-4035-81c8-b4fba64dfb80
+langcode: fr
+status: true
+dependencies: {  }
+name: 'Page :: Configurateur'
+type: configurator
+description: "Page du configurateur de véhicule. Exemplaire unique, adresse fixe /configurer (pas de motif d'alias)."
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

@@ -1,0 +1,18 @@
+uuid: 0eaf457f-a7c6-468b-90e0-6498175e7fd1
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.configurator
+id: node.configurator.title
+field_name: title
+entity_type: node
+bundle: configurator
+label: 'Titre administratif'
+description: 'Nom de la page dans le back-office (listes de contenu, recherche). Il n’est jamais affiché sur le site : le titre visible est saisi dans « Titre ».'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

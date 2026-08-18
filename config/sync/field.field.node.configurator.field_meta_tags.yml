@@ -1,0 +1,21 @@
+uuid: 7654991f-9132-49c0-b16e-b0b5e554b71c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_meta_tags
+    - node.type.configurator
+  module:
+    - metatag
+id: node.configurator.field_meta_tags
+field_name: field_meta_tags
+entity_type: node
+bundle: configurator
+label: 'Balises meta'
+description: 'Laisser vide pour le remplissage automatique : le titre alimente la balise « title », le corps de texte la « description ». Renseigner uniquement pour surcharger ce calcul.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: metatag
