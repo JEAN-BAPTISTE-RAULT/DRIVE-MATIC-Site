@@ -210,6 +210,42 @@ là où les deux affichaient la même photo de la home.
 Ne reste que `home-configurateur.png` sur la page — et c'est normal : le bloc
 configurateur est le même composant dans toutes les maquettes.
 
+## Audit des recadrages sur tout le site (2026-08-18)
+
+Vérification demandée après les trois trous trouvés au fil des pages. Méthode : partir
+des **modes d'affichage** pour déduire le ratio imposé à chaque emplacement, puis
+contrôler l'existence du crop pour chaque fichier référencé — l'inverse (partir des
+médias) ne dit pas à quels ratios ils sont rendus.
+
+**Périmètre couvert** : 10 emplacements à ratio imposé (`image_full` 12:5 ;
+`grid_element`, `history_element`, `jumbo_home_element`, `news`, `product_cross_element`,
+`product_image_element`, `product_video_element`, `video_centered` en 16:9 ;
+`image_text_50` en 1:1) et 6 emplacements « sans crop » assumés (`brand`, `contact`,
+`image_centered`, `image_text_100`, `product_characteristics`). Vérifié qu'**aucun champ
+n'est rendu à deux ratios différents** selon le mode d'affichage — ce qui aurait créé un
+angle mort dans l'audit.
+
+**Résultat** : 45 couples (fichier, ratio), **1 seul recadrage manquant** —
+`home-savoir-faire.png`, recadré en 1:1 pour la home mais pas en 16:9 alors que la frise
+« Notre histoire » le rend à ce ratio. Créé, centré (la maquette `corporate` ne pose que
+des rectangles gris).
+
+**Contrôle de bout en bout** : les 29 pages publiques ont été récupérées en anonyme et
+les dimensions de chaque `<img>` comparées au ratio attendu de son style — **31 images à
+ratio imposé, 0 écart**. Les 1,776 relevés au lieu de 1,778 sont l'arrondi entier sur des
+sources à largeur impaire, pas un défaut de cadrage.
+
+**Conformité au PRD (§7, décision #11)** : ratios 1:1 / 16:9 / 12:5 + sans-crop ✅ ;
+44 styles dimensionnés convertissant en WebP ✅ ; 4 responsive styles mappés sur les
+**6 breakpoints × 2 multiplicateurs** ✅. Les 4 styles `*_fallback` restent au format
+d'origine — c'est **voulu et documenté** ([ADR-004](../../../.claude/decisions/004-pipeline-images.md)) :
+le rendu produit un `<picture>` dont les `<source>` sont en WebP et l'`<img src>` sert de
+repli aux navigateurs qui ne le gèrent pas.
+
+⚠️ Le constat est consigné dans l'ADR-004, dont le point ouvert « crop requis ou
+automatique ? » n'est plus théorique : **tant que le crop est optionnel, le contrôle doit
+être outillé** — aucun de ces trous n'était visible à l'œil.
+
 ## Divergence titre (à arbitrer)
 
 Constat mesuré sur le rendu anonyme :

@@ -33,4 +33,19 @@ La decision #11 impose une gestion d'images industrialisee (media-library reutil
 - `contact` est desormais conforme ; `brand` (a venir) suivra le meme schema (mode `free`).
 - **`sizes`** : actuellement resolution-switching par breakpoint/multiplicateur ; a affiner par SDC (fraction d'affichage : 50 %, 1/3…) au moment des paragraphes.
 - **Crop optionnel** : si l'editeur ne recadre pas, l'image est seulement scalee (ratio non force). A reevaluer : rendre le crop **requis** par ratio, ou ajouter un fallback de crop automatique (focal point).
+
+  **Constat du 2026-08-18 — le risque s'est realise trois fois.** Le recadrage etant
+  porte par le couple **(fichier, type de crop)**, un media recadre pour un ratio et
+  reutilise a un autre ressort **non recadre**, sans erreur ni log. Releve a l'audit :
+  aucune entite `crop_12_5` n'existait (17 blocs `image_full` rendus au ratio de leur
+  source), une seule `crop_1_1`, et un `crop_16_9` manquant sur un media partage entre
+  la home et la frise « Notre histoire ». Rien de tout cela n'etait visible sans mesurer.
+
+  Audit remis a plat le meme jour : les 45 couples (fichier, ratio) du site sont
+  recadres, et les 31 images a ratio impose des 29 pages publiques sortent au bon ratio.
+  La question « crop requis ou automatique » reste ouverte, mais elle n'est plus
+  theorique : **tant qu'il est optionnel, le controle doit etre outille**, un controle
+  visuel ne le detecte pas. Methode : partir des modes d'affichage pour deduire le ratio
+  impose de chaque emplacement, puis verifier l'existence du crop pour chaque fichier
+  reference — et non l'inverse.
 - **Prod** : dérives generes a la demande ; regeneration via `drush image:flush` au besoin.
