@@ -42,7 +42,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 2 | Qui sommes-nous | 54 | `433-9747` | ✅ **reconstruite le 2026-08-18** — 6 blocs conformes |
 | 3 | **CGV** (type `legals`) | 55 | `469-11689` | ✅ **intégrée** — 15 sections `text_left_aligned`. Le frame s'appelle « Conditions générales de vente » : le type `legals` (« Page :: Mentions légales ») porte les CGV. Titre et alias changés, 301 auto depuis /mentions-legales |
 | 4 | **FAQ** | 62 | `396-11620` | ✅ **intégrée** — titre « FAQ : Nous répondons à vos questions », motif Pathauto **supprimé**, alias en dur `/faq`, 301 depuis /questions-frequentes. Filtres Général/Auto-école/PMR rendus |
-| 5 | Documentations | 67 | `398-12119` | à vérifier (contenu par Vue) |
+| 5 | Documentations | 67 | `398-12119` | ✅ **conforme** — F6 était déjà implémenté (2 champs référence, libellés = titres de section). Corrigé : le fragment `document` affichait son libellé d'administration, en lien vers un 403 |
 | 6 | Marques partenaires | 68 | `433-7148` | à vérifier (contenu par Vue) |
 | 7 | Actualités (liste) | 46 | `438-10209` | à vérifier (contenu par Vue) |
 | 8 | Une actualité | 17 | `438-10665` | à vérifier — **écart demandé** : ajouter le `body` sous l'image principale et **avant** le `text_left_aligned` |
@@ -107,6 +107,17 @@ suivait déjà ce schéma. Simple et standardisé — pas d'alias manuel sur un 
 
 ⚠️ **Piège** : poser un alias à la main **ne supprime pas l'ancien**. Les deux répondent en 200
 et le node vit à deux URL. Supprimer l'entrée `path_alias` périmée et créer le 301 à la main.
+
+## Fragments : toujours prévoir leur template de rendu
+
+`node.html.twig` rend `{{ label }}` dès que `view_mode != "full"`, **et en lien vers la page
+canonique**. Sur un fragment (`rabbit_hole` en `access_denied`) cela donne un titre parasite
+pointant vers un 403 — vu sur `document`, où le titre est un libellé d'administration jamais
+public (PRD F6). Corrigé par `node--document.html.twig`, qui ne rend que `{{ content }}`.
+Vérifié : `question` et `brand` ne fuitaient pas. **Tout nouveau fragment rendu dans une Vue
+ou un champ référence a besoin de son propre template**, sans quoi son libellé fuite.
+
+Contrôle utile : `href="/node/<id>"` dans `<main>` doit toujours renvoyer zéro résultat.
 
 ## Autre constat à traiter
 
