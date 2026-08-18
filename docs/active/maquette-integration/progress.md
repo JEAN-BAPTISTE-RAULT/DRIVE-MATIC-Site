@@ -38,8 +38,8 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 
 | # | Page | Node | Node-id Figma | État |
 |---|------|------|---------------|------|
-| 1 | Accueil | 31 | `303-5967` | à vérifier — accordéon encore en lorem, aucun `<h1>` |
-| 2 | Qui sommes-nous | 54 | `433-9747` | à vérifier — 2 liens cassés, bloc « Un accompagnement sur mesure » hors maquette |
+| 1 | Accueil | 31 | `303-5967` | ✅ **conforme, rien à changer** — voir « Le lorem est celui des maquettes » |
+| 2 | Qui sommes-nous | 54 | `433-9747` | ✅ **reconstruite le 2026-08-18** — 6 blocs conformes |
 | 3 | Mentions légales | 55 | `469-11689` | à vérifier — 1 lien cassé, même bloc hors sujet |
 | 4 | Questions fréquentes | 62 | `396-11620` | à vérifier (contenu par Vue, 0 paragraphe) |
 | 5 | Documentations | 67 | `398-12119` | à vérifier (contenu par Vue) |
@@ -64,6 +64,37 @@ Constat mesuré sur le rendu anonyme :
 - PRD écart #3 : ce `<h1>` est rendu **après** le contenu, dans un `<aside>` (région `sidebar_first` du starterkit), à reprendre avec le shell de page en F2.
 
 Options soumises à l'utilisatrice : masquer le bloc titre de page / retirer le titre des blocs héros / faire rendre le titre du héros en `<h1>` et masquer le bloc titre.
+
+## Le lorem est celui des maquettes — ne pas le « corriger »
+
+Vérifié sur le symbole `317:6612` (l'accordéon FAQ) : la maquette contient **les 4 mêmes
+questions en lorem, mot pour mot**, que le site. Idem pour la description de
+l'`image_text_50` de la home (`303:6045`). Ces zones sont donc **conformes** : le lorem
+est un placeholder de la maquette, pas une dette d'intégration.
+
+⚠️ Conséquence : sur les pages transform (nodes 52 et 76), les questions de FAQ ont été
+remplacées par de **vraies** questions du référentiel — c'est allé **au-delà** de la
+maquette. Signalé à l'utilisatrice, non tranché.
+
+## Ce que la reconstruction du node 54 a appris
+
+- **`corporate` a rejoint les bundles à titre-héros** : sa maquette groupe titre + chapô
+  en un `text_centered` centré, et `text_centered.field_title` est obligatoire — un chapô
+  seul est donc impossible. `_drive_matic_hero_title_bundles()` et la visibilité du bloc
+  titre listent désormais 4 bundles. Les 3 autres pages `corporate` (#11-13) devraient
+  suivre le même schéma — à confirmer sur leur maquette.
+- Le titre de la maquette est « Qui sommes-nous **?** » : le point d'interrogation ne
+  change pas l'alias (`/qui-sommes-nous`), Pathauto le retire.
+- Mapping utile : `triptych_element` = `field_text_top` / `field_title` (le grand chiffre)
+  / `field_text_bottom` → colle exactement aux cartes de chiffres (« Plus de » / « 2500 »
+  / « véhicules équipés par an »).
+- Les visuels des maquettes `corporate` sont des **rectangles gris** : aucun média n'est
+  spécifié, ceux posés sont des placeholders.
+- **Lien en attente** : le bouton de la section « La qualité certifiée » (`436:8978`) doit
+  pointer vers la page « Savoir-faire et certifications » (#13), qui n'existe pas encore.
+  `field_link` est resté vide — à câbler après création.
+- La maquette porte une consigne éditoriale à ne pas prendre pour du contenu :
+  « Mettre les différents logo Drive Matic avec leur date. » (`436:8975`).
 
 ## Autre constat à traiter
 

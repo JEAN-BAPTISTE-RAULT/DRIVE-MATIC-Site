@@ -17,8 +17,8 @@ use Drupal\paragraphs\ParagraphInterface;
  * Bundles dont le titre de page est porte par un de leurs paragraphes.
  *
  * Sur ces types, la maquette place le titre dans un bloc : banniere
- * `image_full` pour un produit, `text_centered` sous la banniere pour les pages
- * transform et la home. Le bloc titre de page y est donc masque.
+ * `image_full` pour un produit, `text_centered` pour la home, les pages
+ * transform et les pages corporate. Le bloc titre de page y est donc masque.
  *
  * Cette liste double la condition de visibilite du bloc
  * `block.block.drive_matic_page_title` (`entity_bundle:node`, negee) : les deux
@@ -29,7 +29,7 @@ use Drupal\paragraphs\ParagraphInterface;
  *   Les machine names des bundles concernes.
  */
 function _drive_matic_hero_title_bundles(): array {
-  return ['homepage', 'transform', 'product'];
+  return ['homepage', 'transform', 'product', 'corporate'];
 }
 
 /**
@@ -74,7 +74,7 @@ function drive_matic_preprocess_paragraph(array &$variables): void {
 /**
  * Determine le niveau de titre : 1 pour le paragraphe qui titre la page.
  *
- * Sur les bundles de DRIVE_MATIC_HERO_TITLE_BUNDLES, le bloc titre de page est
+ * Sur les bundles de _drive_matic_hero_title_bundles(), le bloc titre est
  * masque : c'est un paragraphe qui porte le `<h1>`. Partout ailleurs le `<h1>`
  * vient du bloc titre et les paragraphes restent en `<h2>`.
  *
