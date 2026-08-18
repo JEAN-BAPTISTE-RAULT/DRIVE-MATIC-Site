@@ -1,8 +1,24 @@
 // SDC « Bloc :: Grille de marques ».
-// Structure seulement : les tuiles carrees de 118px reprises de la home,
-// disposees en grille fluide. L'integration fine reste a faire.
+
+// Mesures relevées sur la maquette 433-7148 : 7 tuiles carrées de 144,15 par
+// rangée, dans la colonne de contenu du site (x=156 → 1283 dans un cadre de
+// 1440), séparées de 19,8 horizontalement et de 21,9 verticalement.
+
+// Le nombre de colonnes n'est pas écrit en dur. `minmax(132px, 1fr)` donne
+// exactement 7 colonnes dans la colonne de 1130 — huit en exigeraient 1196, et
+// sept en tiennent 1130 — puis en retire une à chaque fois que la fenêtre se
+// resserre, sans media query à resynchroniser. Toute valeur sous 124 ferait
+// basculer le grand écran à 8 tuiles, toute valeur au-dessus de 144 à 6.
+// Le `min(…, 100%)` évite le débordement quand la fenêtre passe sous 132.
+
+// La respiration au-dessus et au-dessous reprend `--dm-space-page`, comme la
+// liste d'actualités (choix de l'utilisatrice : un rythme unique plutôt que les
+// 65 et 188 de la maquette).
+
 .brands-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(132px, 100%), 1fr));
+  gap: 22px 20px; // rangée, puis colonne
+  padding-block: var(--dm-space-page);
+  padding-inline: max(var(--dm-gutter), calc(50vw - 565px));
 }

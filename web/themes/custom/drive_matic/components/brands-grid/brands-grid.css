@@ -1,5 +1,7 @@
 .brands-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(132px, 100%), 1fr));
+  gap: 22px 20px;
+  padding-block: var(--dm-space-page);
+  padding-inline: max(var(--dm-gutter), 50vw - 565px);
 }

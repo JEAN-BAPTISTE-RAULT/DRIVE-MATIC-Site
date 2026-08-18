@@ -1,0 +1,16 @@
+// SDC « Bloc :: Chapô de page ».
+
+// Mesures relevées sur les maquettes 433-7148 et 436-2486, identiques sur les
+// deux : colonne de 900 (x=270 dans un cadre de 1440) — la même que le bloc
+// titre de page —, texte centré en gris texte. La taille et l'interligne
+// (16/28) sont ceux du corps de texte : rien à redéclarer.
+
+// L'écart au titre reprend `--dm-space-page`, le rythme unique du gabarit
+// (la maquette pose 40 ; cf. le même arbitrage sur la liste d'actualités).
+
+.page-intro {
+  padding-block-start: var(--dm-space-page);
+  padding-inline: max(var(--dm-gutter), calc(50vw - 450px));
+  color: var(--dm-color-grey-text);
+  text-align: center;
+}

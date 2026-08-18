@@ -1,0 +1,7 @@
+.page-intro {
+  -webkit-padding-before: var(--dm-space-page);
+          padding-block-start: var(--dm-space-page);
+  padding-inline: max(var(--dm-gutter), 50vw - 450px);
+  color: var(--dm-color-grey-text);
+  text-align: center;
+}

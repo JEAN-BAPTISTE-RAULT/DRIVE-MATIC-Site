@@ -1,0 +1,9 @@
+{#
+  SDC « Bloc :: Chapô de page » — le texte d'introduction qui suit le titre de
+  page, dans la même colonne que lui. Le titre reste rendu par le bloc titre de
+  page (ADR-014) : ce composant ne porte que le chapô.
+  Slot : text.
+#}
+<div class="page-intro">
+  {{ block('text') }}
+</div>

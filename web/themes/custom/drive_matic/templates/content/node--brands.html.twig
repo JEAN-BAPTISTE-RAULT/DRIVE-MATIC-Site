@@ -1,12 +1,18 @@
 {#
-  Page « Marques partenaires » (F7) — texte d'introduction, puis la Vue
-  `brands` : toutes les marques publiées, en ordre alphabétique. Les logos ne
-  sont pas cliquables (la page canonique du fragment `brand` est bloquée).
+  Page « Marques partenaires » (F7) — chapô, puis la Vue `brands` : toutes les
+  marques publiées, en ordre alphabétique. Les logos ne sont pas cliquables (la
+  page canonique du fragment `brand` est bloquée).
   Pas de titre de node : il est rendu par le bloc titre de page depuis
   le `title` du node.
+  Le chapô est optionnel : sans texte, pas d'enveloppe — sinon elle poserait sa
+  respiration au-dessus de la grille pour rien.
   @see node.html.twig pour la liste complète des variables.
 #}
 <article{{ attributes.addClass('node', 'node--type-brands') }}>
-  {{ content }}
+  {% if content.body|render|trim is not empty %}
+    {% embed 'drive_matic:page-intro' %}
+      {% block text %}{{ content.body }}{% endblock %}
+    {% endembed %}
+  {% endif %}
   {{ drupal_view('brands', 'block_1') }}
 </article>

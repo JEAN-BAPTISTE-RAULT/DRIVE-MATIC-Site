@@ -43,7 +43,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 3 | **CGV** (type `legals`) | 55 | `469-11689` | ✅ **intégrée** — 15 sections `text_left_aligned`. Le frame s'appelle « Conditions générales de vente » : le type `legals` (« Page :: Mentions légales ») porte les CGV. Titre et alias changés, 301 auto depuis /mentions-legales |
 | 4 | **FAQ** | 62 | `396-11620` | ✅ **intégrée** — titre « FAQ : Nous répondons à vos questions », motif Pathauto **supprimé**, alias en dur `/faq`, 301 depuis /questions-frequentes. Filtres Général/Auto-école/PMR rendus |
 | 5 | Documentations | 67 | `398-12119` | ✅ **restructurée** — type de node `document` supprimé, les 2 champs passés en **Fichier illimité**, titres de section en dur dans le Twig |
-| 6 | Les marques partenaires | 68 | `433-7148` | ✅ **conforme** — titre repris de la maquette, motif Pathauto supprimé, alias `/marques-partenaires` en dur. 12 logos alphabétiques dans `brands-grid` |
+| 6 | Les marques partenaires | 68 | `433-7148` | ✅ **intégrée le 2026-08-18** (le « conforme » précédent portait sur le contenu : la grille sortait en **une colonne de tuiles de 1440px**, page de 17 910px de haut — voir « 6bis » plus bas). Titre repris de la maquette, motif Pathauto supprimé, alias `/marques-partenaires` en dur. **27** logos alphabétiques dans `brands-grid` |
 | 7 | Actualités | 46 | `438-10209` | ✅ **intégrée le 2026-08-18** (le « conforme » précédent portait sur le contenu, pas sur la mise en page — voir plus bas). Alias `/actualites` en dur, `body` masqué |
 | 8 | Une actualité | 17 | `438-10665` | ✅ **conforme** — l'écart demandé (`body` sous l'image, avant les blocs) était **déjà** la config : field_image(0), field_caption(1), body(2), field_paragraphs(3). Ajouté les 2 blocs manquants |
 | 9 | Contact | 1 | `433-7637`, `438-9060`, `438-9465`, `438-9456`, `438-9457` ✅ | **formulaire stylé et modales faites** (cf. « 9bis » plus bas). Les 4 frames restants n'étaient pas des « états du formulaire » : deux sont les **variantes SAV et question**, deux les **modales « carte grise »**. Reste hors formulaire : la ligne adresse + carte au-dessus de la carte grise du formulaire |
@@ -54,6 +54,78 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 
 Déjà conformes (vérifiées le 2026-08-18) : node 52 (`363-9316`), node 76 (`389-10805`), node 75 (`390-11137`).
 Les 6 produits sans maquette (53, 70-74) portent un `image_full` seul, conformément à la consigne.
+
+## « 6bis » — Marques partenaires, intégration réelle (mesuré le 2026-08-18)
+
+**État trouvé.** `.brands-grid` était en `flex-wrap` avec `gap: 16px` et sans colonne,
+face à un `.brand-logo` en `width: 100%` + `aspect-ratio: 1` : chaque tuile prenait les
+1440px du conteneur et passait à la ligne. **12 tuiles de 1440×1440, page de 17 910px.**
+Le chapô sortait pleine largeur, aligné à gauche, en `#1A1A1A`. Le SCSS le disait
+(« L'integration fine reste a faire ») pendant que le suivi disait « conforme ».
+
+**Mesures de la maquette.** 7 tuiles carrées de 144,15 par rangée, colonne x=156→1283
+dans un cadre de 1440, écarts 19,8 (colonne) et 21,9 (rangée — la 1re rangée de la
+maquette est à 26,9, décalage du calque, les deux autres à 21,9). Chapô à x=270, l=900,
+Inter 16/28 en `#666`, centré — **identique sur `436-2486` (Nos ateliers)**, d'où un SDC
+et non une règle propre à cette page. Tuile : rayon 10,98, bordure 0,686, fond blanc.
+
+**Rendu obtenu** (navigateur, viewport 1440) : colonnes à x = 155 / 319,3 / 483,6 / 647,9
+/ 812,1 / 976,4 / 1140,7 (maquette 156 / 319,8 / 483,7 / 647,5 / 811,3 / 975,2 / 1139),
+tuile 144,28 (maquette 144,15), `gap: 22px 20px`, rangées à y = 496 / 663 / 829 / 995
+(pas de 166, celui de la maquette), chapô à x=270 l=900 h=112 centré `#666`,
+un seul `<h1>`, zéro lien vers un 403, page de 1 400px, aucun débordement horizontal.
+
+**Le nombre de colonnes n'est pas écrit en dur** : `minmax(min(132px, 100%), 1fr)` donne
+exactement 7 colonnes dans la colonne de 1130 (huit en exigeraient 1196) et en retire une
+à chaque resserrement — vérifié à 4 colonnes à 768 et 2 à 375, sans media query.
+
+**Bug corrigé au passage dans `brand-logo` (partagé avec la home).** Drupal empile quatre
+conteneurs entre `.brand-logo__image` et l'image (champ > media > champ > `<picture>`) :
+le `max-height: 100%` de l'image se résolvait donc contre une hauteur `auto` et ne
+contraignait **rien**. Seule la largeur plafonnait — elle se propage d'elle-même, un bloc
+de largeur `auto` remplissant son parent — ce qui masquait le trou tant que **tous** les
+logos étaient en paysage. Le premier logo en portrait (Škoda, 210×240) débordait sa tuile
+de 9,7px. Corrigé en `display: contents` sur les conteneurs intermédiaires. Débordement
+maximal désormais **0** sur les 27 tuiles, page Marques **et** carrousel de la home.
+
+**Contenu.** 15 marques ajoutées (Audi, BMW, Maxus, Mazda, Mercedes-Benz, Opel, Peugeot,
+Renault, Seat, Škoda, Smart, Toyota, Volkswagen, Volvo, XPeng) — logos exportés de la
+maquette, médias 38→52, fragments 106→120, tous en 403 anonyme. Rendus en mode `free`
+(style `dm_free`) : **aucun ratio imposé, donc aucune entité `crop` en jeu** — la règle du
+recadrage manuel n'est pas contournée. Le chapô a été repris de la maquette, lorem
+compris, à la place de la phrase rédigée qui s'y trouvait.
+
+### Écarts assumés, à ne pas redécouvrir comme des bugs
+
+- **Rythme vertical à 49 partout** (`--dm-space-page`) là où la maquette pose 40 sous le
+  titre, 65 au-dessus de la grille et 188 en dessous. Même arbitrage que sur la liste
+  d'actualités, reconduit explicitement par l'utilisatrice.
+- **Bordure de tuile à 1px** là où la maquette dit 0,686 : le groupe de la maquette est un
+  calque mis à l'échelle (210px × 0,686). Un filet sous le pixel n'est pas rendu de façon
+  fiable, et la home est déjà à 1px.
+- **Taille des logos dans la tuile** : la maquette place chaque logo à sa taille propre
+  (de 44 % à 90 % de la tuile) ; le composant ne peut que plafonner. Le `padding: 16px`
+  existant donne 76,4 %, soit la densité moyenne relevée sur les 27 logos.
+- **Hors périmètre, mais fausse la page** : le **header** fait 143,4px de haut au lieu de
+  90 (le menu s'écrase sur 116px de large — le shell de page F2 n'est pas intégré), le
+  **footer** 140 au lieu de 324, et le **fil d'Ariane** ajoute 36px entre le header et le
+  titre (contenu réel, absent des maquettes). L'écart header→titre mesure donc 85 au lieu
+  de 49 : les 49 sont bien posés, les 36 viennent du fil d'Ariane.
+
+### Auto-revue
+
+1. **Décision la plus difficile** — où loger le CSS du chapô. C'est du markup de champ du
+   cœur, ce qui plaidait pour une fondation type `_page-title.scss` ; mais une règle
+   globale sur `.field--name-body` aurait aussi attrapé le corps de texte des actualités,
+   qui n'est pas un chapô. Le SDC `page-intro`, embarqué depuis le template de node, donne
+   la même portée sans effet de bord.
+2. **Alternatives rejetées** — (a) `repeat(7, 1fr)` avec quatre media queries : exact mais
+   quatre valeurs à resynchroniser ; (b) reproduire les 40/65/188 de la maquette :
+   désaccorde cette page des Actualités ; (c) styler `.node--type-brands .field--name-body`
+   dans une fondation : une règle de page dans un fichier global.
+3. **Le moins sûr** — le seuil de 132px. Il tient parce que la colonne vaut 1130 ; si cette
+   colonne change, le nombre de colonnes bascule sans prévenir. La fourchette qui donne 7
+   est écrite dans le commentaire du SCSS (124 → 144).
 
 ## « 9bis » — les 4 frames restants du Contact (mesuré le 2026-08-18)
 
