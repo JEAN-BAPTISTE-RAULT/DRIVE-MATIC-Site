@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 name: 'Page :: Bac à sable paragraphes'
 type: page
-description: 'Hôte de test des paragraphes : un seul node (« BAC A SABLE - paragraphes »), utilisé pour contrôler les composants. À supprimer avec son node en fin de chantier — hors modèle éditorial (ADR-002).'
+description: ''
 help: null
 new_revision: true
 preview_mode: 1

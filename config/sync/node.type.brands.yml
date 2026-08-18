@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 name: 'Page :: Marques'
 type: brands
-description: 'Page listant les marques partenaires, par ordre alphabétique. La liste est produite automatiquement à partir des contenus « Élément :: Marque ».'
+description: ''
 help: null
 new_revision: true
 preview_mode: 1

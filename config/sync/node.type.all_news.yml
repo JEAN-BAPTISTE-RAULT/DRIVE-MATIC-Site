@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 name: 'Page :: Toutes les actualités'
 type: all_news
-description: 'Page de liste des actualités. Le titre, le corps de texte et les métadonnées se saisissent ici ; la liste paginée est produite automatiquement.'
+description: ''
 help: null
 new_revision: true
 preview_mode: 1

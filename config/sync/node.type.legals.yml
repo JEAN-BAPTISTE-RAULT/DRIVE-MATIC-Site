@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 name: 'Page :: Mentions légales'
 type: legals
-description: 'Page légale (CGV, CGU, mentions légales, données personnelles). Ni corps de texte ni balises meta : tout se saisit en blocs de texte.'
+description: ''
 help: null
 new_revision: true
 preview_mode: 1

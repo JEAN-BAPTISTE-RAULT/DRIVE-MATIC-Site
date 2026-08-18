@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 name: 'Page :: Produit'
 type: product
-description: 'Fiche produit. La page se compose de blocs ; aucun prix n’y est affiché.'
+description: ''
 help: null
 new_revision: true
 preview_mode: 1

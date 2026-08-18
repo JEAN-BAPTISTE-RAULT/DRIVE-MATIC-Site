@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 name: 'Page :: Configurateur'
 type: configurator
-description: "Page du configurateur de véhicule. Exemplaire unique, adresse fixe /configurer (pas de motif d'alias)."
+description: ''
 help: null
 new_revision: true
 preview_mode: 1

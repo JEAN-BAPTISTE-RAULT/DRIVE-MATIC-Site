@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 name: 'Élément :: Question / Réponse'
 type: question
-description: 'Question de la FAQ. Fragment sans page publique : son adresse directe est bloquée, elle n’apparaît que dans la page FAQ.'
+description: ''
 help: null
 new_revision: true
 preview_mode: 1

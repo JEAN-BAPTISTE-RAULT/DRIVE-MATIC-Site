@@ -4,7 +4,7 @@ status: true
 dependencies: {  }
 name: 'Page :: Documentation'
 type: documents
-description: 'Page listant les documents téléchargeables, en deux sections : auto-écoles et PMR. L’ordre de chaque section se règle à la main.'
+description: ''
 help: null
 new_revision: true
 preview_mode: 1
