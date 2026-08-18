@@ -46,14 +46,47 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 6 | Les marques partenaires | 68 | `433-7148` | ✅ **conforme** — titre repris de la maquette, motif Pathauto supprimé, alias `/marques-partenaires` en dur. 12 logos alphabétiques dans `brands-grid` |
 | 7 | Actualités | 46 | `438-10209` | ✅ **conforme** — `body` masqué (aucun chapô dans la maquette), alias `/actualites` en dur. Pager configuré, ne s'affiche pas avec 6 items : normal |
 | 8 | Une actualité | 17 | `438-10665` | ✅ **conforme** — l'écart demandé (`body` sous l'image, avant les blocs) était **déjà** la config : field_image(0), field_caption(1), body(2), field_paragraphs(3). Ajouté les 2 blocs manquants |
-| 9 | Contact | 1 | `433-7637` ✅ / `438-9060`, `438-9465`, `438-9456`, `438-9457` ⏳ | page principale **conforme** ; les **4 frames d'états du formulaire** (validation, confirmation…) restent à traiter, ils relèvent de F10 |
+| 9 | Contact | 1 | `433-7637` ✅ / `438-9060`, `438-9465` ✅ / `438-9456`, `438-9457` ⏳ | page principale **conforme**. Les 4 frames restants ne sont pas des « états du formulaire » : deux sont les **variantes SAV et question** (vérifiées conformes, cf. « 9bis » plus bas), deux sont les **modales « carte grise »** — encore à faire |
 | 10 | Devenir partenaire | 2 | `438-9838` | ✅ **conforme** — titre puis formulaire, `body` masqué (aucun chapô dans la maquette), mention « *Champs obligatoires » activée |
 | 11 | Nos ateliers | **77** | `436-2486` | ✅ **créée** — titre, chapô (`body`), 2 `image_text_50` alternées. Alias `/nos-ateliers` |
-| 12 | **Recherches et développement** | — | `436-8300` | **à créer** (`corporate`) — PRD F9 l'appelle « Recherche & développement » |
-| 13 | **Savoir-faire et certifications** | — | `436-8578` | **à créer** (`corporate`) |
+| 12 | Recherches et développement | **78** | `436-8300` | ✅ **créée** — titre, chapô (`body`), 2 `image_text_50` alternées, puis un `text_centered` (« Innover aujourd’hui… »). Alias `/recherches-et-developpement`. Visuels = placeholders (la maquette ne pose que des rectangles gris). Le titre retenu est celui de la maquette, pas le « Recherche & développement » du PRD F9 |
+| 13 | Savoir-faire et certifications | **79** | `436-8578` | ✅ **créée** — titre, chapô, 2 `image_text_50` **toutes deux image à gauche** (pas d'alternance ici). Logos UTAC et ISO 9001 exportés de la maquette (médias 27 et 28). Alias `/savoir-faire-et-certifications`. Le lien en attente du node 54 est câblé |
 
 Déjà conformes (vérifiées le 2026-08-18) : node 52 (`363-9316`), node 76 (`389-10805`), node 75 (`390-11137`).
 Les 6 produits sans maquette (53, 70-74) portent un `image_full` seul, conformément à la consigne.
+
+## « 9bis » — les 4 frames restants du Contact (mesuré le 2026-08-18)
+
+Les 4 frames en attente ne sont pas ce que cette page annonçait : `438-9060` est la
+variante **SAV**, `438-9465` la variante **question**, `438-9456` / `438-9457` les deux
+**modales « carte grise »**. Aucun n'est un état de validation ou de confirmation.
+
+**Variantes SAV et question : conformes.** Vérifié en pilotant le `select` « Votre demande
+concerne » dans le navigateur et en relevant la visibilité réelle de chaque élément.
+SAV → marque, modèle, motorisation, n° de châssis, document, message ; type de châssis
+masqué. Question → message seul. C'est exactement ce que décrivent les maquettes.
+
+**Bug trouvé et corrigé : le champ « Ajouter un document » n'existait pas dans le rendu.**
+`#uri_scheme: private` sans `file_private_path` configuré → Drupal **retire l'élément
+silencieusement**, sans log ni message. Le dossier `private/` existait déjà (gitignoré),
+seul le réglage manquait. Ajouté dans `web/sites/default/settings.php` (gitignoré) :
+`$settings['file_private_path'] = dirname(DRUPAL_ROOT) . '/private';`.
+⚠️ **À reporter sur chaque environnement** — préprod et prod n'ont pas ce fichier.
+
+**Reste ouvert (2 constats à arbitrer) :**
+
+1. **Le plafond de taille réel est 2 Mo, pas 5.** Le webform annonce « Formats : JPG, PDF.
+   5 Mo maximum. » puis « Limité à 2 Mo. » : c'est `upload_max_filesize` de PHP (MAMP) qui
+   plafonne. Réglage serveur, pas applicatif — mais la spec dit 5 Mo.
+2. **Le formulaire n'est pas stylé.** Widgets natifs du navigateur, pas de carte grise de
+   fond, pas de grille 3 colonnes, aide rendue par le `?` de Webform et non par l'icône ⓘ
+   de la maquette. La conformité de la ligne 9 avait été jugée sur la structure et le
+   contenu ; l'habillage relève de F10 étape 7 et **n'est pas fait**. Les deux modales en
+   dépendent visuellement (position et style de leur déclencheur).
+
+Écarts de libellé relevés au passage, non corrigés : le champ s'appelle « Type châssis »
+en config contre « Type de châssis » dans la maquette, et son aide dit « case D.2 » quand
+la maquette et le certificat disent « case **D.2.1** ».
 
 ## Divergence titre (à arbitrer)
 
@@ -92,9 +125,10 @@ maquette. Signalé à l'utilisatrice, non tranché.
   / « véhicules équipés par an »).
 - Les visuels des maquettes `corporate` sont des **rectangles gris** : aucun média n'est
   spécifié, ceux posés sont des placeholders.
-- **Lien en attente** : le bouton de la section « La qualité certifiée » (`436:8978`) doit
-  pointer vers la page « Savoir-faire et certifications » (#13), qui n'existe pas encore.
-  `field_link` est resté vide — à câbler après création.
+- ~~**Lien en attente**~~ : le bouton de la section « La qualité certifiée » (`436:8978`)
+  pointe désormais vers la page #13 (node 79). ⚠️ Son libellé est **« En savoir plus »** :
+  le nom de calque Figma disait « Demander un devis », mais c'est le nom **du composant**,
+  pas le texte de l'instance. Sur une `<instance>`, lire le texte, jamais le nom de calque.
 - La maquette porte une consigne éditoriale à ne pas prendre pour du contenu :
   « Mettre les différents logo Drive Matic avec leur date. » (`436:8975`).
 
