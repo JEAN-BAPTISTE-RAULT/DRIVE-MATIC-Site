@@ -43,7 +43,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 3 | **CGV** (type `legals`) | 55 | `469-11689` | ✅ **intégrée** — 15 sections `text_left_aligned`. Le frame s'appelle « Conditions générales de vente » : le type `legals` (« Page :: Mentions légales ») porte les CGV. Titre et alias changés, 301 auto depuis /mentions-legales |
 | 4 | **FAQ** | 62 | `396-11620` | ✅ **intégrée** — titre « FAQ : Nous répondons à vos questions », motif Pathauto **supprimé**, alias en dur `/faq`, 301 depuis /questions-frequentes. Filtres Général/Auto-école/PMR rendus |
 | 5 | Documentations | 67 | `398-12119` | ✅ **restructurée** — type de node `document` supprimé, les 2 champs passés en **Fichier illimité**, titres de section en dur dans le Twig |
-| 6 | Marques partenaires | 68 | `433-7148` | à vérifier (contenu par Vue) |
+| 6 | Les marques partenaires | 68 | `433-7148` | ✅ **conforme** — titre repris de la maquette, motif Pathauto supprimé, alias `/marques-partenaires` en dur. 12 logos alphabétiques dans `brands-grid` |
 | 7 | Actualités (liste) | 46 | `438-10209` | à vérifier (contenu par Vue) |
 | 8 | Une actualité | 17 | `438-10665` | à vérifier — **écart demandé** : ajouter le `body` sous l'image principale et **avant** le `text_left_aligned` |
 | 9 | Contact | 1 | `433-7637`, `438-9060`, `438-9465`, `438-9456`, `438-9457` | à vérifier (5 frames : formulaire + états) |
@@ -100,10 +100,15 @@ maquette. Signalé à l'utilisatrice, non tranché.
 
 ## Règle de titre et d'URL (validée le 2026-08-18)
 
-Le `title` prend le **libellé exact de la maquette**, accroche comprise. Quand cela donnerait
-une URL à rallonge sur un type à **exemplaire unique**, on **supprime son motif Pathauto** et
-on pose l'alias **en dur** sur le node. Fait pour `faq` (`/faq`) ; `configurator` (`/configurer`)
-suivait déjà ce schéma. Simple et standardisé — pas d'alias manuel sur un type multi-instances.
+Le `title` prend le **libellé exact de la maquette**, accroche comprise. Sur un type à
+**exemplaire unique**, on **supprime son motif Pathauto** et on pose l'alias **en dur** sur le
+node, pour garder une URL courte. Fait : `configurator` → `/configurer`, `faq` → `/faq`,
+`brands` → `/marques-partenaires`. Restent à traiter sur ce schéma : `documents`, `all_news`,
+`contact`, `partner`. Pas d'alias manuel sur un type multi-instances (`corporate`, `product`,
+`transform`, `news`, `legals`) : leur motif reste.
+
+Les coquilles de maquette sont corrigées, pas reproduites : le calque disait « Les marques
+partenaire » au singulier, le frame « Les marques partenaires ». Retenu : le pluriel.
 
 ⚠️ **Piège** : poser un alias à la main **ne supprime pas l'ancien**. Les deux répondent en 200
 et le node vit à deux URL. Supprimer l'entrée `path_alias` périmée et créer le 301 à la main.
