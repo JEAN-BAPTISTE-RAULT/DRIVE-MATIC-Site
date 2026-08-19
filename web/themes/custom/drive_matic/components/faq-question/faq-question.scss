@@ -1,0 +1,149 @@
+// SDC « Ligne :: FAQ » — CSS scopé (BEM), consomme les tokens globaux.
+// Amélioration progressive : la réponse est OUVERTE par défaut (lisible sans
+// JS). Sous `html.js`, elle est fermée tant que le behavior ne l'ouvre pas —
+// pas de flash.
+
+// Mesures relevées sur la maquette 396-11620 et sur le symbole `317:6612` qui
+// la définit. Aucune n'entre dans les trois rôles d'espacement de l'ADR-013 :
+// elles sont donc nommées ici plutôt que semées en dur.
+
+.faq-question {
+  // Respiration au-dessus et au-dessous de la ligne : 54 + 2 x 16 + 1 de filet
+  // = les 87px qui séparent deux filets sur la maquette.
+  --dm-faq-row-padding: 16px;
+
+  // Sous une ligne OUVERTE, la maquette resserre à 12px avant la réponse.
+  --dm-faq-row-padding-open: 12px;
+
+  // Gouttière entre le texte de la question et le cercle : elle laisse
+  // exactement les 785px de la maquette au texte (900 - 61 - 54).
+  --dm-faq-row-gap: 61px;
+  --dm-faq-icon-size: 54px;
+
+  // Réponse -> bouton, et dernier élément -> filet.
+  --dm-faq-answer-space: 16px;
+
+  border-bottom: 1px solid var(--dm-color-grey-light);
+
+  &__header {
+    margin: 0;
+  }
+
+  &__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--dm-faq-row-gap);
+    width: 100%;
+    padding: var(--dm-faq-row-padding) 0;
+    border: 0;
+    background: none;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--dm-color-red);
+      outline-offset: 2px;
+    }
+
+    &[aria-expanded='true'] {
+      padding-bottom: var(--dm-faq-row-padding-open);
+    }
+  }
+
+  // Cercle 54px (blanc, bordure grise) portant le glyphe.
+  &__icon {
+    position: relative;
+    flex: 0 0 auto;
+    width: var(--dm-faq-icon-size);
+    height: var(--dm-faq-icon-size);
+    border: 1px solid var(--dm-color-grey-metal);
+    border-radius: 50%;
+    background: var(--dm-color-white);
+
+    // Fermé : le « + » de la maquette (14px d'arête, trait de 2 arrondi).
+    // Posé en `mask` sur l'asset exporté, pour hériter d'un token de couleur.
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 16px;
+      height: 16px;
+      transform: translate(-50%, -50%);
+      background-color: var(--dm-color-grey-metal);
+      mask: url('../../images/icons/plus.svg') no-repeat center / contain;
+    }
+  }
+
+  // Ouvert : la maquette ne fait pas pivoter le « + », elle pose une croix
+  // distincte — 12px d'arête contre 14. Deux assets, donc, pas une rotation.
+  &__trigger[aria-expanded='true'] &__icon::before {
+    width: 14px;
+    height: 14px;
+    mask-image: url('../../images/icons/close.svg');
+  }
+
+  &__panel {
+    // Ouvert par défaut (repli sans JS). Fermé seulement sous `html.js`.
+    :where(html.js) & {
+      display: none;
+
+      &.is-open {
+        display: block;
+      }
+    }
+  }
+
+  // La réponse s'aligne sur le texte de la question : elle s'arrête là où
+  // commence la colonne du cercle.
+  &__body {
+    padding-bottom: var(--dm-faq-answer-space);
+    padding-inline-end: calc(var(--dm-faq-row-gap) + var(--dm-faq-icon-size));
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
+
+  // Rangée boutons de la réponse : lien (pilule) + téléchargement.
+  &__cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-top: var(--dm-faq-answer-space);
+  }
+
+  // Bouton lien « pilule » (Figma `Btn formation`, 643:15659) : contour
+  // #B5B5B5 + globe, Inter Bold 14/28. Le cadre de la maquette fait 44 de haut
+  // (et non les 46 de son auto-layout) : d'où 7px de respiration verticale.
+  &__actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 15px;
+    border: 1px solid var(--dm-color-grey-metal);
+    border-radius: 30px;
+    background: var(--dm-color-white);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+
+    &::before {
+      content: '';
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      background-color: currentcolor;
+      mask: url('../../images/icons/globe.svg') no-repeat center / contain;
+    }
+  }
+}

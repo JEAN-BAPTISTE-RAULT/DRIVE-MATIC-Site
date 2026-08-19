@@ -5,7 +5,9 @@
 // cœur, qui ne sont pas un composant du site. En faire un SDC imposerait un
 // template pour l'embarquer ; la regle tient en quelques declarations.
 // Meme raisonnement pour `forms` : le markup vient de l'API Form et de Webform,
-// et l'habillage sert tous les formulaires du site.
+// et l'habillage sert tous les formulaires du site. Et pour `views-faq` : le
+// filtre et la zone « aucun resultat » de la FAQ viennent de Views et de Better
+// Exposed Filters, ils n'appartiennent a aucun composant.
 
 @use 'tokens';
 @use 'fonts';
@@ -13,5 +15,6 @@
 @use 'typography';
 @use 'local-tasks';
 @use 'forms';
+@use 'views-faq';
 @use 'page-title';
 @use 'pager';

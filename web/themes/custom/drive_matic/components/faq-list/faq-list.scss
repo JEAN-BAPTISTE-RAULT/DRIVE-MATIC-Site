@@ -1,0 +1,13 @@
+// SDC « Liste :: FAQ » — CSS scopé (BEM), consomme les tokens globaux.
+// La ligne elle-même est mesurée dans le SDC `faq-question`.
+
+// Rythme du gabarit : `--dm-space-page`, comme `news-list` et `brands-grid`.
+// Pas de `padding-block-start` : le filtre exposé, juste au-dessus, pose déjà
+// cet écart en bas — deux paddings ne s'additionnent pas (cf. CLAUDE.md).
+
+.faq-list {
+  max-width: calc(900px + 2 * var(--dm-gutter));
+  margin-inline: auto;
+  padding-block-end: var(--dm-space-page);
+  padding-inline: var(--dm-gutter);
+}

@@ -1,11 +1,11 @@
 {#
   Rendu d'une question en mode d'affichage `teaser` (lignes de la Vue faq).
-  Embarque le SDC `drive_matic:accordion-element` : la question est l'en-tête,
-  la réponse le panneau. Le fragment `question` n'ayant pas de page publique,
-  son titre de node fait office de titre affiché (ADR-011).
+  Embarque le SDC `drive_matic:faq-question` : la question est l'en-tête, la
+  réponse le panneau. Le fragment `question` n'ayant pas de page publique, son
+  titre de node fait office de titre affiché (ADR-014).
   @see node.html.twig pour la liste complète des variables.
 #}
-{% embed 'drive_matic:accordion-element' with {
+{% embed 'drive_matic:faq-question' with {
   title: label,
   id: 'question-' ~ node.id,
 } %}

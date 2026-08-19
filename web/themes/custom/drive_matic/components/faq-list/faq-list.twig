@@ -1,0 +1,13 @@
+{#
+  SDC « Liste :: FAQ » — enveloppe des lignes de la Vue `faq`.
+  Slot : items (une suite de `faq-question`).
+
+  Distinct du SDC `accordion`, qui habille le paragraphe éditorial du même nom :
+  la FAQ est une liste de contenus `question` filtrable, pas un bloc composé en
+  back-office. Les deux ne doivent pas se déplacer ensemble.
+
+  Porte la colonne de contenu et le comportement de dépliage (faq-list.js).
+#}
+<div class="faq-list" data-faq-list>
+  {{ block('items') }}
+</div>

@@ -1,0 +1,50 @@
+{#
+  SDC « Ligne :: FAQ » — une question dépliable de la Vue `faq`.
+  Props : title, id. Slots (via embed/block) : description, actions, download.
+
+  La question est rendue en `<h2>` : le seul titre au-dessus est le `<h1>` de la
+  page. L'échelle typographique reste celle nommée « Titre H3 » dans la maquette
+  (22/32) — c'est un style, pas un niveau de titre.
+
+  Amélioration progressive : le markup serveur rend la réponse OUVERTE et sans
+  `aria-expanded`/`hidden`. C'est le behavior `driveMaticFaqList` qui pose les
+  attributs ARIA et l'état fermé au chargement. Sans JS, tout reste lisible ;
+  avec JS, le CSS (sous `html.js`) ferme les panneaux avant peinture (pas de
+  flash). Voir faq-list.js + faq-question.scss.
+#}
+{% set eid = 'faq-question-' ~ id %}
+<div class="faq-question">
+  <h2 class="faq-question__header">
+    <button
+      type="button"
+      class="faq-question__trigger"
+      id="{{ eid }}-trigger"
+      aria-controls="{{ eid }}-panel"
+    >
+      <span class="faq-question__label">{{ title }}</span>
+      <span class="faq-question__icon" aria-hidden="true"></span>
+    </button>
+  </h2>
+  <div
+    class="faq-question__panel"
+    id="{{ eid }}-panel"
+    role="region"
+    aria-labelledby="{{ eid }}-trigger"
+  >
+    <div class="faq-question__body">
+      {% if block('description') is not empty %}
+        <div class="faq-question__description">{{ block('description') }}</div>
+      {% endif %}
+      {% if block('actions') is not empty or block('download') is not empty %}
+        <div class="faq-question__cta-row">
+          {% if block('actions') is not empty %}
+            <div class="faq-question__actions">{{ block('actions') }}</div>
+          {% endif %}
+          {% if block('download') is not empty %}
+            <div class="faq-question__download">{{ block('download') }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

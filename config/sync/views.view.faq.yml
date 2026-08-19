@@ -36,7 +36,7 @@ display:
         type: bef
         options:
           submit_button: Filtrer
-          reset_button: true
+          reset_button: false
           reset_button_label: 'Toutes les catégories'
           exposed_sorts_label: 'Trier par'
           expose_sort_order: false

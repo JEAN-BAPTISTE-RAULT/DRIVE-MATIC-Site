@@ -41,7 +41,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 1 | Accueil | 31 | `303-5967` | ✅ **conforme, rien à changer** — voir « Le lorem est celui des maquettes » |
 | 2 | Qui sommes-nous | 54 | `433-9747` | ✅ **reconstruite le 2026-08-18** — 6 blocs conformes |
 | 3 | **CGV** (type `legals`) | 55 | `469-11689` | ✅ **intégrée** — 15 sections `text_left_aligned`. Le frame s'appelle « Conditions générales de vente » : le type `legals` (« Page :: Mentions légales ») porte les CGV. Titre et alias changés, 301 auto depuis /mentions-legales |
-| 4 | **FAQ** | 62 | `396-11620` | ✅ **intégrée** — titre « FAQ : Nous répondons à vos questions », motif Pathauto **supprimé**, alias en dur `/faq`, 301 depuis /questions-frequentes. Filtres Général/Auto-école/PMR rendus |
+| 4 | **FAQ** | 62 | `396-11620` | ✅ **intégrée le 2026-08-19** (le « intégrée » précédent portait sur le contenu : filtre en liste verticale à puces collée au bord gauche, pas de 95px au lieu de 87 — voir « 4bis » plus bas). Titre « FAQ : Nous répondons à vos questions », motif Pathauto **supprimé**, alias en dur `/faq`, 301 depuis /questions-frequentes |
 | 5 | Documentations | 67 | `398-12119` | ✅ **restructurée** — type de node `document` supprimé, les 2 champs passés en **Fichier illimité**, titres de section en dur dans le Twig |
 | 6 | Les marques partenaires | 68 | `433-7148` | ✅ **intégrée le 2026-08-18** (le « conforme » précédent portait sur le contenu : la grille sortait en **une colonne de tuiles de 1440px**, page de 17 910px de haut — voir « 6bis » plus bas). Titre repris de la maquette, motif Pathauto supprimé, alias `/marques-partenaires` en dur. **27** logos alphabétiques dans `brands-grid` |
 | 7 | Actualités | 46 | `438-10209` | ✅ **intégrée le 2026-08-18** (le « conforme » précédent portait sur le contenu, pas sur la mise en page — voir plus bas). Alias `/actualites` en dur, `body` masqué |
@@ -54,6 +54,60 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 
 Déjà conformes (vérifiées le 2026-08-18) : node 52 (`363-9316`), node 76 (`389-10805`), node 75 (`390-11137`).
 Les 6 produits sans maquette (53, 70-74) portent un `image_full` seul, conformément à la consigne.
+
+## « 4bis » — FAQ, intégration réelle (mesuré le 2026-08-19)
+
+**Découplage d'abord** (consigne de l'utilisatrice). La page empruntait les SDC
+`accordion` / `accordion-element`, ceux des **paragraphes** du même nom utilisés par la home
+et les pages transform. Or la FAQ est une **liste de contenus `question` filtrable**, pas un
+bloc éditorial : elle a désormais ses propres composants, `faq-list` (enveloppe + behavior
+`driveMaticFaqList`) et `faq-question` (la ligne), sur le modèle `news-list` / `news-teaser`.
+`accordion*` n'a pas été touché — la home reste à 95px de pas, glyphe `#1A1A1A`, mesuré après
+coup. Contrepartie assumée : la logique de dépliage et la pilule de CTA sont dupliquées.
+
+**État trouvé.** Le filtre sortait en **liste verticale à puces, collée au bord gauche**
+(204px de haut, x=0), libellé « Catégorie » visible, 4 entrées (« - Tout - » en tête, puis
+l'ordre alphabétique) et un bouton « Toutes les catégories » dès qu'une catégorie était
+choisie. Le chapô du node s'affichait alors que la maquette n'en a pas. L'accordéon était au
+pas de 95px au lieu de 87, gouttière 24 au lieu de 61, réponse sur 900 au lieu de 785,
+glyphe redessiné en deux barres de 22×2 en `#1A1A1A` au lieu des assets `+`/`×` en `#B5B5B5`.
+
+**Décidé avec l'utilisatrice** : 3 onglets comme la maquette, **aucun actif à l'arrivée** ;
+le retour à « toutes les catégories » se fait en recliquant l'onglet actif (lien natif BEF,
+il pointe déjà sur `/faq`). L'entrée « tout » est retirée dans
+`drive_matic_preprocess_bef_links()` — côté **variables du template**, jamais `#options`,
+sinon la validation « choix illégal » du Form API rejette la valeur `All` par défaut.
+
+**Rendu obtenu** (navigateur, viewport 1440, anonyme) — maquette entre parenthèses :
+barre 525×54 centrée sur 720 (526×54), onglets 169×42 à x = 463,5 / 635,5 / 807,5
+(463 / 635 / 808), colonne 900 à x=270,
+**pas entre filets 87** (87), cercle 54, glyphe fermé `plus.svg` 16 en `#B5B5B5` et ouvert
+`close.svg` 14 (14×14 et 12×12 d'arête dans la maquette), ligne → réponse 12 (12), largeur
+de réponse 785 (785), réponse → CTA 16 (16), dernier élément → filet 16 (16).
+Un seul `<h1>`, questions en `<h2>` (elles étaient en `<h3>` sous le `<h1>`), aucun
+débordement horizontal.
+
+**Deux valeurs viennent du symbole `317:6612`, pas de la page** : celle-ci pose 83px sur
+certains pas et 87 sur d'autres (décalages de calque). Le symbole, qui définit le composant,
+dit 87 — et 16px sous le dernier élément là où la page dit 18 à 20.
+
+**Le gabarit vertical ne suit PAS la maquette, par décision de l'utilisatrice** (2026-08-19) :
+la charpente de toutes les pages est cadencée par le seul `--dm-space-page` (49px) — au-dessus
+du titre, au-dessus **et** au-dessous du filtre, au-dessous de la liste. La maquette posait
+63 sous le titre et 84 avant la première question ; les actualités avaient déjà tranché de la
+même façon (113/103 ramenés à 49). ⚠️ Corollaire : `faq-list` n'a **pas** de
+`padding-block-start` — le filtre a déjà posé l'écart, deux paddings ne s'additionnent pas.
+Règle consignée dans CLAUDE.md et le README.
+
+**Trou comblé au passage** : quand aucune question ne correspond, Views rend `view-empty`
+**à la place** des lignes, donc **sans** passer par le template qui pose `faq-list` — le
+message sortait pleine largeur, collé au bord gauche. Habillé dans `src/scss/_views-faq.scss`
+avec la même colonne que la liste qu'il remplace.
+
+⚠️ **La Vue trie sur `changed` décroissant** : re-sauvegarder une question la fait remonter
+en tête de page. Vécu en testant l'état vide (dépublication/republication des 2 questions
+PMR) ; ordre d'affichage rétabli à la main. Si l'ordre doit être éditorial, il faudra autre
+chose qu'un tri sur la date de modification.
 
 ## « 6bis » — Marques partenaires, intégration réelle (mesuré le 2026-08-18)
 

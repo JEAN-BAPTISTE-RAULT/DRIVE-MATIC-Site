@@ -1,0 +1,110 @@
+// Habillage de la Vue « FAQ — Questions » : la barre d'onglets et la zone
+// « aucun resultat ». Les questions, elles, sont des SDC (`faq-list`,
+// `faq-question`).
+
+// Exception assumee a la regle « tout est SDC », de la meme nature que
+// `forms` : le markup vient de Views et de Better Exposed Filters, pas d'un
+// composant — il n'existe donc pas de dossier de SDC ou poser ce CSS. La portee
+// est volontairement limitee a `.view-faq` : c'est la seule Vue du site qui
+// expose un filtre en liens (verifie sur `config/sync/views.view.*.yml`).
+
+// Reference : maquette 396-11620. Barre de 526x54 centree, trois onglets de
+// 169x42, rayon 4, onglet actif en bleu acier. L'entree « tout » de BEF est
+// retiree en amont (drive_matic_preprocess_bef_links) et le libelle du filtre
+// est masque visuellement (drive_matic_form_views_exposed_form_alter).
+
+.view-faq {
+  // Rythme du gabarit de page : `--dm-space-page` au-dessus et au-dessous du
+  // filtre, comme au-dessus du titre et sous la liste. La maquette pose 63 et
+  // 84 a cet endroit ; on retient le rythme unique, meme choix que sur les
+  // actualites (113/103 de maquette ramenes a 49). En padding et non en marge :
+  // une marge se propagerait hors du conteneur de la Vue.
+  .view-filters {
+    padding-block: var(--dm-space-page);
+    padding-inline: var(--dm-gutter);
+  }
+
+  // La barre est centree dans la page, quelle que soit sa largeur.
+  .views-exposed-form {
+    display: flex;
+    justify-content: center;
+  }
+
+  // Pas de `gap` ici : la classe `clearfix` du coeur pose un `::after` qui
+  // devient un element de la grille flex et decalerait la barre a gauche.
+  // stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+  .form--inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Le coeur pose 16px de marge verticale et 8px a droite sur tout element de
+  // formulaire : ils s'ajouteraient aux ecarts releves et decentreraient la
+  // barre.
+  .view-filters .js-form-item {
+    margin: 0;
+  }
+
+  // Le cadre de la barre : 526x54 bordure comprise, d'ou 5px de respiration
+  // interieure (54 = 2 de bordure + 10 + 42 d'onglet).
+  .bef-links {
+    padding: 5px;
+    border: 1px solid var(--dm-color-grey-metal);
+    border-radius: 4px;
+    background-color: var(--dm-color-white);
+  }
+
+  .bef-links ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // Un onglet : 169x42 (28 d'interligne + 2 x 7 de respiration).
+  .bef-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 169px;
+    padding: 7px 15px;
+    border-radius: 4px;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+    text-align: center;
+    text-decoration: none;
+  }
+
+  // stylelint-disable-next-line selector-class-pattern -- classe de BEF
+  .bef-link--selected {
+    background-color: var(--dm-color-steel);
+    color: var(--dm-color-white);
+  }
+
+  .bef-link:focus-visible {
+    outline: 2px solid var(--dm-color-red);
+    outline-offset: 2px;
+  }
+
+  // Aucun resultat : Views rend cette zone A LA PLACE des lignes, donc sans
+  // passer par le template qui pose le SDC `faq-list`. Sans cette regle le
+  // message sortait sur toute la largeur de la fenetre, colle au bord gauche.
+  // Meme colonne et meme respiration que la liste qu'il remplace.
+  .view-empty {
+    max-width: calc(900px + 2 * var(--dm-gutter));
+    margin-inline: auto;
+    padding-block-end: var(--dm-space-page);
+    padding-inline: var(--dm-gutter);
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
+}

@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\file\FileInterface;
@@ -308,4 +309,42 @@ function drive_matic_preprocess_webform_element_help(array &$variables): void {
       'image_height' => $visual['height'],
     ],
   ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for bef_links.
+ *
+ * La maquette de la FAQ (396-11620) ne pose que les trois categories, sans
+ * entree « tout » : on retire donc le lien que BEF ajoute en tete de liste. Le
+ * retour a « toutes les categories » reste possible en recliquant l'onglet
+ * actif — son lien pointe deja vers la page sans parametre.
+ *
+ * On agit sur les variables du template, PAS sur `#options` : la valeur du
+ * filtre vaut `All` tant que rien n'est filtre, et retirer l'option ferait
+ * echouer la validation « choix illegal » du Form API.
+ */
+function drive_matic_preprocess_bef_links(array &$variables): void {
+  if (($variables['element']['#name'] ?? '') !== 'categorie') {
+    return;
+  }
+
+  unset($variables['element']['All'], $variables['links']['All']);
+  $variables['children'] = array_values(
+    array_diff($variables['children'], ['All'])
+  );
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for views_exposed_form.
+ *
+ * La maquette de la FAQ n'affiche pas de libelle au-dessus des onglets. On le
+ * masque visuellement plutot que de le supprimer : il reste le seul intitule
+ * du groupe de liens pour un lecteur d'ecran.
+ */
+function drive_matic_form_views_exposed_form_alter(array &$form, FormStateInterface $form_state, string $form_id): void {
+  if (($form['#id'] ?? '') !== 'views-exposed-form-faq-block-1') {
+    return;
+  }
+
+  $form['categorie']['#title_display'] = 'invisible';
 }

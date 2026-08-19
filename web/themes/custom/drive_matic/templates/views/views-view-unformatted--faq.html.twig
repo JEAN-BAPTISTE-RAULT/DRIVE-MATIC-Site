@@ -1,12 +1,12 @@
 {#
   Lignes de la Vue « FAQ — Questions ».
-  Les questions sont enveloppées dans le SDC `accordion` : c'est lui qui porte
-  `.accordion` / `[data-accordion]`, donc le behavior `driveMaticAccordion`
-  (fermeture du précédent, ARIA, clavier) s'applique sans JS supplémentaire.
-  Le formulaire exposé, rendu par la Vue en amont, reste hors de l'accordéon.
+  Les questions sont enveloppées dans le SDC `faq-list` : c'est lui qui porte
+  `.faq-list` / `[data-faq-list]`, donc le behavior `driveMaticFaqList`
+  (fermeture de la précédente, ARIA, clavier) s'applique sans JS supplémentaire.
+  Le formulaire exposé, rendu par la Vue en amont, reste hors de la liste.
   @see views-view-unformatted.html.twig pour les variables disponibles.
 #}
-{% embed 'drive_matic:accordion' %}
+{% embed 'drive_matic:faq-list' %}
   {% block items %}
     {% for row in rows %}
       {{ row.content }}

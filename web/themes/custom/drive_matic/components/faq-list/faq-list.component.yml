@@ -1,0 +1,11 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Liste :: FAQ'
+status: stable
+libraryOverrides:
+  dependencies:
+    - core/drupal
+    - core/once
+slots:
+  items:
+    title: Questions
+    description: 'Suite de SDC `faq-question`, une par question remontée par la Vue.'
