@@ -179,9 +179,16 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - [ ] **Liste** : derniere publiee/modifiee en tete ; chaque item = photo principale + titre + date + lien « Lire la suite » ; pagination **10 par page**.
   - **Mise en oeuvre** : node `all_news` (titre, corps, metatags) + Vue `all_news` embarquee par `drupal_view()`. Ligne = SDC **`news-teaser`** (visuel 16:9, titre, date, « Lire la suite ») en mode d'affichage `teaser` — a distinguer de `news-card`, la carte du bloc home, qui n'affiche **pas** la date. Liste vide → message « Aucune actualite n'est publiee pour le moment. ».
 - [ ] **Detail** : titre, date, visuel principal, blocs (titre/texte/lien/document/video optionnels), possibilite d'ajouter des paragraphes texte/image/video.
-  - **Mise en oeuvre** : `news` porte `field_paragraphs` (allowlist `text_left_aligned`, `image_centered`, `video_centered`). La date affichee est `changed`, format **`dm_long`** (`j F Y`), rendue en `<time datetime>` par `node--news.html.twig`.
+  - **Mise en oeuvre** : `news` porte `field_paragraphs` (allowlist `text_left_aligned`, `image_centered`, `video_centered`). La date affichee est `changed`, format **`dm_long`** (`j F Y`), rendue en `<time datetime>`. Le titre vient du bloc titre de page ; le reste est enveloppe par le SDC **`news-article`** (integration maquette 438-10665, 2026-08-19).
+  - **Ordre d'affichage** : titre, date **centree**, visuel + legende **ferree en bas a droite**, corps de texte, puis les blocs. Le corps ne figure pas sur la maquette : il est affiche a la demande de l'utilisatrice, entre la legende et les blocs.
+  - **Le visuel est affiche sans recadrage** (mode d'affichage media `free`, largeur de la colonne, hauteur proportionnelle) : ses proportions sont celles du fichier envoye, le ratio devient donc une **decision editoriale au choix du fichier**. Le recadrage 16:9 exige a l'import ne sert plus qu'aux **vignettes** des listes (`teaser`, `card`) et du carrousel home.
+  - **Colonne unique de 960** sur ce gabarit, contre 900 ailleurs : cf. [ADR-016](../.claude/decisions/016-colonne-de-contenu.md).
   - **Alias** : `/actualites/[node:title]`, sous la page `all_news` servie a `/actualites` — seul type a porter un prefixe (cf. [ADR-014](../.claude/decisions/014-titre-unique-porte-par-le-title.md)).
   - La date sort « 17 aout 2026 » depuis la bascule du site en francais (2026-08-17).
+- **Cas limites du detail** `[VERIFIE 2026-08-19]` :
+  - Actualite **sans legende** → pas de `<figcaption>` orphelin.
+  - Actualite **sans bloc** → c'est l'enveloppe des champs du node qui pose l'ecart au pied de page (deux paddings de gabarit ne s'additionnent pas).
+  - Visuel **en portrait** → le rendu est tres haut, sans debordement : consequence assumee du « sans recadrage ».
 - [ ] Une actualite dispose d'une fonction publier / ne pas publier en back-office.
 
 ---
@@ -492,6 +499,13 @@ de ce plafond. Exceptions dictees par le design : gouttiere d'un seul cote quand
 une piste de slideshow deborde volontairement, bloc pleine largeur quand le fond
 court d'un bord a l'autre.
 
+Deux tokens de gabarit completent ces trois-la :
+
+| Token | Valeur | Role |
+|---|---|---|
+| `--dm-space-page` | 49px | rythme vertical de la charpente de page (au-dessus du titre, autour d'un filtre expose, sous une liste, avant le pied de page) |
+| `--dm-content-column` | 900px | largeur de la colonne de contenu, **retunable par gabarit** — 960px sur le detail d'une actualite (cf. [ADR-016](../.claude/decisions/016-colonne-de-contenu.md)) |
+
 **Unites : espacement en `px`, typographie en `rem`.** Les tailles de police
 suivent ainsi la preference du navigateur (WCAG 1.4.4, decision #8) sans que la
 mise en page bouge : a 20px de police racine, le H1 passe de 45 a 56,25px et le
@@ -575,7 +589,7 @@ editorial, a arbitrer.
 | 1 | ~~Le site tourne en anglais~~ — **resolu le 2026-08-17** : `language` + `locale` installes, francais pose par defaut et seule langue du site, 15 309 chaines importees. Dates, poids de fichiers, barre d'administration et onglets locaux sont en francais. Deux pieges rencontres, decrits en section 7 (« Bascule linguistique »). | #6 (site en francais uniquement) |
 | 2 | ~~La page d'accueil n'a aucun `<h1>`~~ — **resolu le 2026-08-18** ([ADR-014](../.claude/decisions/014-titre-unique-porte-par-le-title.md)) : les SDC `text_centered` et `image_full` portent une prop `heading_level`, mise a 1 pour le premier paragraphe titre des bundles a titre-heros. Un seul `<h1>` par page, verifie sur 10 types. | #8 (RGAA / WCAG 2.1 AA) |
 | 3 | ~~Le titre de page est rendu apres le contenu, dans un `<aside>`~~ — **resolu le 2026-08-18** : le bloc `drive_matic_page_title` est passe en region `content`, poids -10, donc au-dessus du contenu. La region `sidebar_first` ne porte plus que le bloc d'aide. | #8 |
-| 4 | **« Conforme » a ete confondu avec « integree »** — constate le 2026-08-18 sur `/actualites`. Les pages du chantier d'integration etaient validees sur leur **contenu** (bons blocs, bons textes, un seul `<h1>`, bons alias) sans qu'aucune **mesure de mise en page** ne soit relevee. Le bloc titre de page n'avait aucun CSS et la Vue `all_news` aucune enveloppe SDC. **Regle de recette qui en decoule** : une page n'est integree que si ses mesures ont ete relevees sur la maquette **et comparees au rendu**. Les 12 autres pages du chantier restent a reprendre sur ce protocole. | #10 (SDC-first), decision #11 |
+| 4 | **« Conforme » a ete confondu avec « integree »** — constate le 2026-08-18 sur `/actualites`. Les pages du chantier d'integration etaient validees sur leur **contenu** (bons blocs, bons textes, un seul `<h1>`, bons alias) sans qu'aucune **mesure de mise en page** ne soit relevee. Le bloc titre de page n'avait aucun CSS et la Vue `all_news` aucune enveloppe SDC. **Regle de recette qui en decoule** : une page n'est integree que si ses mesures ont ete relevees sur la maquette **et comparees au rendu**. Reprises sur ce protocole a ce jour : la liste d'actualites et les marques partenaires (2026-08-18), la FAQ et le detail d'une actualite (2026-08-19) — soit 4 des 13 pages du chantier. Suivi page par page dans `docs/active/maquette-integration/progress.md`. | #10 (SDC-first), decision #11 |
 | 5 | ~~Le recadrage est optionnel~~ — **tranche le 2026-08-18** : obligatoire et **manuel**, effectue par l'editeur a l'import (cf. [ADR-004](../.claude/decisions/004-pipeline-images.md)). Le formulaire l'imposait deja ; le seul contournement etait la **creation programmatique**, d'ou provenaient tous les trous (aucune entite `crop_12_5` en base, donc 17 blocs `image_full` rendus au ratio de leur source). Audit remis a plat : 45 couples (fichier, ratio) conformes, 31 images verifiees sur les 29 pages publiques, 0 ecart. | #11 (gestion des images) |
 
 ### Prealables techniques (avant le developpement front)
