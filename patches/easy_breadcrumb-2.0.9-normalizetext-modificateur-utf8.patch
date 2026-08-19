@@ -1,0 +1,29 @@
+Fil d'Ariane : un caractere accentue casse le titre de la derniere miette.
+
+EasyBreadcrumbBuilder::normalizeText() reduit les suites d'espaces avec
+`preg_replace('/\s{2,}/', ...)`, SANS le modificateur `u`. En mode 8 bits, les
+tables PCRE de PHP classent l'octet 0xA0 parmi les caracteres blancs : dans
+« repondons a vos », la sequence `20 C3 A0 20` (espace, « a » accentue, espace)
+est vue comme « espace + deux blancs », les deux blancs sont fusionnes en un
+seul espace et il ne reste que l'octet `C3` orphelin. La chaine n'est plus de
+l'UTF-8 valide, et Html::escape() la rend en U+FFFD (le losange noir).
+
+Le modificateur `u` fait interpreter le sujet comme de l'UTF-8 : `\s` cesse de
+mordre sur le second octet d'un caractere accentue, tout en continuant de
+reduire les vraies suites de blancs (espace, tabulation, espace insecable).
+
+Constate sur DRIVE-MATIC avec le titre « FAQ : Nous repondons a vos questions »
+(easy_breadcrumb 2.0.9). Concerne tout titre contenant un caractere dont le
+second octet UTF-8 vaut 0xA0 — en francais, le « a » accentué grave.
+
+--- a/src/EasyBreadcrumbBuilder.php
++++ b/src/EasyBreadcrumbBuilder.php
+@@ -1023,7 +1023,7 @@
+ 
+     // Transform '-hello--world_javascript-' to 'hello world javascript'.
+     $normalized_text = trim($raw_text);
+-    $normalized_text = preg_replace('/\s{2,}/', ' ', $normalized_text);
++    $normalized_text = preg_replace('/\s{2,}/u', ' ', $normalized_text);
+ 
+     // Gets the flag saying the capitalizator mode.
+     $capitalizator_mode = $this->config->get(EasyBreadcrumbConstants::CAPITALIZATOR_MODE);

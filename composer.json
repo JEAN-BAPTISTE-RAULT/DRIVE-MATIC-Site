@@ -70,7 +70,11 @@
   },
   "extra": {
     "composer-exit-on-patch-failure": true,
-    "patches": {},
+    "patches": {
+      "drupal/easy_breadcrumb": {
+        "Fil d'Ariane : preg_replace sans modificateur u casse un titre accentue (le « a » grave sort en U+FFFD)": "patches/easy_breadcrumb-2.0.9-normalizetext-modificateur-utf8.patch"
+      }
+    },
     "drupal-scaffold": {
       "locations": {
         "web-root": "web/"
