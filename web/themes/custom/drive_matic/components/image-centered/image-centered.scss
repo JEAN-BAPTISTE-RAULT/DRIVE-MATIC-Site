@@ -2,8 +2,14 @@
 // Maquette : image centrée pleine largeur du contenu (radius 16, sans crop),
 // légende ferrée sous l'image en bas à droite (convention globale).
 
+// Même traitement que `video-centered` : la colonne passe par
+// `--dm-content-column` (960 sur le détail d'une actualité, où ce bloc est
+// autorisé), et `margin-block: 0` neutralise le `margin: 1em` que le navigateur
+// pose sur tout `figure` et que le reset global ne couvre pas.
+
 .image-centered {
-  max-width: calc(900px + 2 * var(--dm-gutter));
+  max-width: calc(var(--dm-content-column) + 2 * var(--dm-gutter));
+  margin-block: 0;
   margin-inline: auto;
   padding-block: var(--dm-space-block);
   padding-inline: var(--dm-gutter);

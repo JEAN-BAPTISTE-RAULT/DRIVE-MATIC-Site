@@ -19,6 +19,7 @@
   --dm-gutter: 40px;
   --dm-space-element: 24px;
   --dm-space-page: 49px;
+  --dm-content-column: 900px;
   --dm-h1-size: 2.8125rem;
   --dm-h1-line: 3.625rem;
   --dm-h2-size: 1.875rem;
@@ -27,6 +28,10 @@
   --dm-h3-line: 2rem;
   --dm-body-size: 1rem;
   --dm-body-line: 1.75rem;
+}
+
+body.page-node-type-news {
+  --dm-content-column: 960px;
 }
 
 @font-face {
@@ -509,7 +514,7 @@ textarea) {
 .block-page-title-block {
   -webkit-padding-before: var(--dm-space-page);
           padding-block-start: var(--dm-space-page);
-  padding-inline: max(var(--dm-gutter), 50vw - 450px);
+  padding-inline: max(var(--dm-gutter), 50vw - var(--dm-content-column) / 2);
 }
 
 .page-title {

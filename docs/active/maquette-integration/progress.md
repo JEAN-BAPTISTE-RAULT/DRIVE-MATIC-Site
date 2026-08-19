@@ -45,7 +45,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 5 | Documentations | 67 | `398-12119` | ✅ **restructurée** — type de node `document` supprimé, les 2 champs passés en **Fichier illimité**, titres de section en dur dans le Twig |
 | 6 | Les marques partenaires | 68 | `433-7148` | ✅ **intégrée le 2026-08-18** (le « conforme » précédent portait sur le contenu : la grille sortait en **une colonne de tuiles de 1440px**, page de 17 910px de haut — voir « 6bis » plus bas). Titre repris de la maquette, motif Pathauto supprimé, alias `/marques-partenaires` en dur. **27** logos alphabétiques dans `brands-grid` |
 | 7 | Actualités | 46 | `438-10209` | ✅ **intégrée le 2026-08-18** (le « conforme » précédent portait sur le contenu, pas sur la mise en page — voir plus bas). Alias `/actualites` en dur, `body` masqué |
-| 8 | Une actualité | 17 | `438-10665` | ✅ **conforme** — l'écart demandé (`body` sous l'image, avant les blocs) était **déjà** la config : field_image(0), field_caption(1), body(2), field_paragraphs(3). Ajouté les 2 blocs manquants |
+| 8 | Une actualité | 17 | `438-10665` | ✅ **intégrée le 2026-08-19** (le « conforme » précédent portait sur l'ordre des champs : la page rendait la date, la légende et le corps **collés au bord gauche**, et le visuel sur 1440 recadré en 16:9 — voir « 8bis » plus bas). SDC `news-article`, visuel sans recadrage, colonne unique de 960 |
 | 9 | Contact | 1 | `433-7637`, `438-9060`, `438-9465`, `438-9456`, `438-9457` ✅ | **formulaire stylé et modales faites** (cf. « 9bis » plus bas). Les 4 frames restants n'étaient pas des « états du formulaire » : deux sont les **variantes SAV et question**, deux les **modales « carte grise »**. Reste hors formulaire : la ligne adresse + carte au-dessus de la carte grise du formulaire |
 | 10 | Devenir partenaire | 2 | `438-9838` | ✅ **conforme** — titre puis formulaire, `body` masqué (aucun chapô dans la maquette), mention « *Champs obligatoires » activée |
 | 11 | Nos ateliers | **77** | `436-2486` | ✅ **créée** — titre, chapô (`body`), 2 `image_text_50` alternées. Alias `/nos-ateliers` |
@@ -54,6 +54,83 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 
 Déjà conformes (vérifiées le 2026-08-18) : node 52 (`363-9316`), node 76 (`389-10805`), node 75 (`390-11137`).
 Les 6 produits sans maquette (53, 70-74) portent un `image_full` seul, conformément à la consigne.
+
+## « 8bis » — Détail d'une actualité, intégration réelle (mesuré le 2026-08-19)
+
+**État trouvé.** La page était le **seul rendu `news` sans SDC** : `node--news.html.twig`
+déversait `{{ content }}` sans enveloppe, et aucune règle n'existait pour `.node--type-news`
+ni `.node__date`. La date, la légende et le corps sortaient donc à **x = 0**, sans gouttière ;
+le visuel occupait les **1440px de la fenêtre, recadré en 16:9**. Seuls les paragraphes
+portaient une colonne — et pas la même : 960 pour `text_left_aligned`, 900 pour
+`video_centered`. Le suivi disait « conforme » parce qu'il n'avait vérifié que l'ordre des
+champs.
+
+**Mesures de la maquette** (frame `438:10665`, cadre 1440) : titre `x=270 w=900` centré en
+Exo 2 Bold **45/58** `#2F3A45`, à **49px** sous le filet de l'en-tête ; date centrée en Inter
+**16/28** `#666666` ; visuel `x=270..1170` **rayon 16** (nœud `438:10992`) ; légende ferrée à
+droite en **14/28** `#666666`. Écarts de boîte à boîte : titre → date **16**,
+date → visuel **35**, visuel → légende **5**, légende → bloc **11**.
+
+**Déjà conforme, rien à changer** : `.page-title` était exactement aux valeurs de la maquette
+(les tokens `--dm-h1-size`/`--dm-h1-line` valent 45/58, `--dm-color-steel` vaut #2F3A45,
+`--dm-space-page` vaut 49). Idem pour la date et la légende : `--dm-body-size`/`--dm-body-line`
+valent 16/28 et `--dm-color-grey-text` vaut #666666. Aucune valeur typographique redéclarée.
+
+**Trois décisions de l'utilisatrice.**
+
+1. **Le visuel tient la colonne**, pas la fenêtre — « pleine largeur » = largeur du contenu.
+2. **La colonne de cette page vaut 960, pas 900** : `text_left_aligned` reste sur son état
+   consigné (960, partagé avec les CGV, « Qui sommes-nous » et les pages produit) et **tout le
+   reste de la page s'aligne sur lui**, plutôt que faire cohabiter deux colonnes.
+   D'où un token `--dm-content-column` (900 par défaut) **retuné à 960 sur
+   `body.page-node-type-news`** : le titre de page est un **frère** du contenu, la valeur ne
+   pouvait pas vivre sur le SDC.
+3. **Les écarts internes reprennent `--dm-space-element` (24)**, pas les 16 et 35 de la
+   maquette.
+
+**Le visuel sans recadrage n'a demandé aucune config nouvelle** : le view mode média `free`
+(→ responsive image style `dm_free` : `image_scale` sur la largeur, `height: null`,
+`upscale: false`, WebP, **aucun `crop_crop`**) existait déjà et servait 6 autres displays.
+Une ligne : `ratio_16_9` → `free`. ⚠️ Les vignettes des listes et du carrousel home restent
+en `ratio_16_9` : **l'obligation de recadrage à l'import ne bouge pas**, seule la description
+du champ a été reformulée pour dire à l'éditeur que la page de détail affiche l'original.
+
+**Rendu obtenu** (navigateur, viewport 1440, anonyme) — maquette entre parenthèses :
+colonne **240..1200 (960)** pour les **sept** éléments — titre, date, visuel, légende, corps,
+titre du bloc texte, cadre vidéo ; **49** entre le haut de `main` et le titre (49) ;
+titre → date **24** (16), date → visuel **24** (35), visuel → légende **8** (5),
+légende → corps **24**, corps → titre du bloc **32**, bloc texte → cadre vidéo **64**
+(2 × `--dm-space-block`, la maquette dit 50). Légende ferrée à **1200**, comme celle de la
+vidéo. Visuel servi au ratio **2.107** du fichier source (2048×972) et non en 16:9 (1.778) :
+le recadrage a bien disparu. Un seul `<h1>`, aucun débordement horizontal.
+
+**Deux accidents corrigés au passage.**
+
+- `video-centered` et `image-centered` sont des `<figure>`, et le reset global ne couvre pas
+  `figure` : le navigateur y posait **`margin: 1em`**, soit 16px parasites au-dessus et
+  au-dessous. L'écart bloc texte → bloc vidéo faisait donc **80** au lieu des 64 du rythme
+  documenté. `margin-block: 0` dans les deux. Vérifié sur le bac à sable (node 33) : leur
+  colonne reste à **270..1170 (900)**, seul l'écart vertical change.
+- Le test `{% if block('x') is not empty %}` **ne suffit pas** dans un SDC : un champ vide
+  rend un slot fait d'espaces, que `empty` laisse passer — d'où une enveloppe vide et sa
+  marge. Il faut **`|trim`**. Constaté sur `news-article` en rendant le node 18 sans visuel ni
+  corps *en mémoire* (`renderInIsolation`, sans `save()` — sauvegarder aurait **redaté** le
+  node et l'aurait fait remonter dans les Vues). `text_left_aligned` n'a **pas** le problème :
+  un champ sans valeur n'y produit aucun `content.field_*`, le slot est vraiment vide.
+
+**Cas limites rejoués** : sans légende → pas de `<figcaption>` orphelin ; sans bloc (node 18)
+→ c'est `.news-article__lede:last-child` qui pose l'écart au pied de page, mesuré à **49** ;
+sans visuel ni corps → aucune enveloppe vide. Non-régression vérifiée sur `/qui-sommes-nous`
+et le node 33 (colonne toujours 900), `/actualites` et la home (toujours `dm_16_9`).
+
+**Écarts assumés, écrits.** Le **fil d'Ariane** est rendu alors que la maquette n'en montre
+aucun (élément de shell de page, à trancher avec F2, comme l'en-tête et le pied de page).
+Les écarts internes sont à 24 au lieu de 16 et 35 (décision 3). `dm_free` est dimensionné
+pour la pleine fenêtre : servi dans une colonne de 960 ses dérivés sont surdimensionnés
+(dette `sizes`, ADR-004). `links` reste visible dans le view display `default` (poids 100)
+alors qu'il est masqué sur `teaser` — sans effet en anonyme. Et le contenu du 1er bloc du
+node 17 dit « En savoir plus » / « Dossier de presse » là où la maquette dit « Lien vers
+site » / « Télécharger » : saisie éditoriale sur un node de test, hors intégration.
 
 ## « 4bis » — FAQ, intégration réelle (mesuré le 2026-08-19)
 
@@ -559,3 +636,22 @@ Le site étant monolingue français, **c'est toujours la surcharge `fr` qui est 
 
 Les libellés d'accessibilité du thème sortent **en anglais** : `Main navigation`, `User account menu`
 (`<h2>` masqués). Le site est en français depuis le 2026-08-17. À reprendre, probablement avec F2.
+
+## Self-review — détail d'une actualité (2026-08-19)
+
+1. **Décision la plus difficile** : où poser la largeur de colonne. La maquette dit 900, mais
+   `text_left_aligned` tient 960 et il est partagé avec quatre autres pages. Trois issues
+   possibles (aligner le bloc sur 900 et rejouer les autres pages / laisser deux colonnes
+   cohabiter sur la page / aligner la page sur le bloc) ; l'utilisatrice a tranché pour la
+   troisième. Reste la question technique : le titre de page est un **frère** du contenu, la
+   valeur ne pouvait donc pas vivre sur le SDC — d'où un token retuné sur le `<body>`.
+2. **Alternatives rejetées** : (a) un modificateur `--news` sur les SDC de blocs — deux
+   largeurs pour un même bloc selon le contexte, plus dur à suivre qu'un token de gabarit ;
+   (b) appliquer la colonne à la racine du SDC plutôt qu'à un `__lede` — les paragraphes
+   auraient subi une **seconde** gouttière et leur texte serait tombé à 880 ; (c) créer un
+   style d'image « sans crop » — inutile, `dm_free` / view mode `free` existaient déjà.
+3. **Point de moindre confiance** : le `<figcaption>` reçoit une chaîne (prop) alors que le
+   `body` reste un render array — deux régimes dans le même composant. C'est la convention du
+   dépôt (identique à `video_centered`) et les métadonnées de cache du champ légende sont
+   perdues, mais un champ `string` n'en porte pas d'utile. Second point : `dm_free` sert des
+   dérivés surdimensionnés dans une colonne de 960 (dette `sizes`, ADR-004) — non traité.

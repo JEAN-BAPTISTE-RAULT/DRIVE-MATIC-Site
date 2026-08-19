@@ -10,9 +10,15 @@
 // s'inscrit dans une colonne de 900 (c'est la largeur ou il se coupe sur la page
 // de detail d'actualite, ou il fait trois lignes).
 
+// La colonne passe par `--dm-content-column` : elle vaut 900 partout, sauf sur
+// le detail d'une actualite ou elle est retunee a 960 (cf. `_tokens.scss`).
+
 .block-page-title-block {
   padding-block-start: var(--dm-space-page);
-  padding-inline: max(var(--dm-gutter), calc(50vw - 450px));
+  padding-inline: max(
+    var(--dm-gutter),
+    calc(50vw - var(--dm-content-column) / 2)
+  );
 }
 
 .page-title {

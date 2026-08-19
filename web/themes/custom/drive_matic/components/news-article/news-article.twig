@@ -1,0 +1,36 @@
+{#
+  SDC « Bloc :: Détail d’une actualité » (F8) — enveloppe des champs du node sur
+  sa page canonique. Le titre n'est pas rendu ici : il vient du bloc titre de
+  page, visible sur ce bundle (ADR-014).
+  Props : date, datetime, caption. Slots : media, body, blocks.
+
+  Maquette 438-10665 : date centrée sous le titre, visuel sur toute la colonne
+  de contenu, légende ferrée en bas à droite. Le corps de texte ne figure pas
+  sur la maquette — il est demandé en plus, sous la légende et avant les blocs.
+
+  Les champs du node partagent la colonne dans `__lede` ; les paragraphes
+  portent la leur, ils restent donc en dehors — sinon ils subiraient une
+  seconde gouttière.
+#}
+<article class="news-article">
+  <div class="news-article__lede">
+    <time class="news-article__date" datetime="{{ datetime }}">{{ date }}</time>
+
+    {# `|trim` est indispensable : un champ vide rend un slot fait d'espaces, que
+       le test `is not empty` laisse passer — d'où une enveloppe vide et sa marge. #}
+    {% if block('media')|trim is not empty %}
+      <figure class="news-article__figure">
+        {{ block('media') }}
+        {% if caption %}
+          <figcaption class="news-article__caption">{{ caption }}</figcaption>
+        {% endif %}
+      </figure>
+    {% endif %}
+
+    {% if block('body')|trim is not empty %}
+      <div class="news-article__body">{{ block('body') }}</div>
+    {% endif %}
+  </div>
+
+  {{ block('blocks') }}
+</article>

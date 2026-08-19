@@ -1,13 +1,18 @@
 {#
-  Détail d'une actualité (F8). La date affichée est la dernière modification
-  (`changed`), décision du modèle éditorial : pas de champ date dédié.
-  Le titre est rendu par le bloc titre de page depuis le `title` du node ;
-  le reste (visuel 16:9, légende, corps, blocs) vient du view display.
+  Détail d'une actualité (F8), maquette 438-10665.
+  La date affichée est la dernière modification (`changed`), décision du modèle
+  éditorial : pas de champ date dédié.
+  Le titre est rendu par le bloc titre de page depuis le `title` du node
+  (ADR-014) ; le visuel, le corps et les blocs viennent du view display.
+  `field_caption` est passé en prop, il est donc `hidden` dans le view display.
   @see node.html.twig pour la liste complète des variables.
 #}
-<article{{ attributes.addClass('node', 'node--type-news') }}>
-  <time class="node__date" datetime="{{ node.changed.value|date('c') }}">
-    {{ node.changed.value|format_date('dm_long') }}
-  </time>
-  {{ content }}
-</article>
+{% embed 'drive_matic:news-article' with {
+  date: node.changed.value|format_date('dm_long'),
+  datetime: node.changed.value|date('c'),
+  caption: node.field_caption.value,
+} %}
+  {% block media %}{{ content.field_image }}{% endblock %}
+  {% block body %}{{ content.body }}{% endblock %}
+  {% block blocks %}{{ content.field_paragraphs }}{% endblock %}
+{% endembed %}

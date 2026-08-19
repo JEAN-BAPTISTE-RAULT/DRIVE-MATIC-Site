@@ -1,0 +1,71 @@
+// SDC « Bloc :: Détail d’une actualité » — CSS scopé (BEM), consomme les tokens.
+
+// Mesures relevées sur la maquette 438-10665 (cadre 1440) : visuel sur toute la
+// colonne de contenu (x=270 → 1170), rayon 16 (nœud 438:10992), date centrée
+// 16/28 en gris texte, légende ferrée en bas à droite en 14/28.
+// La typographie ne redéclare rien : les tokens du corps valent déjà 16/28 et
+// `--dm-color-grey-text` vaut #666666, les deux couleurs de la maquette.
+
+// La colonne vaut `--dm-content-column`, retunée à 960 sur ce gabarit pour
+// s'aligner sur le bloc `text_left_aligned` (cf. `_tokens.scss`). L'idiome est
+// celui de `video-centered` : c'est ce qui garantit l'alignement au pixel avec
+// le bloc vidéo de la maquette.
+
+// Arbitrage assumé (décision de l'utilisatrice) : les écarts internes reprennent
+// `--dm-space-element`, l'écart intra-bloc unique du projet, là où la maquette
+// pose 16 sous le titre et 35 sous la date.
+
+.news-article {
+  &__lede {
+    max-width: calc(var(--dm-content-column) + 2 * var(--dm-gutter));
+    margin-inline: auto;
+    padding-block-start: var(--dm-space-element);
+    padding-inline: var(--dm-gutter);
+
+    // Sans bloc en dessous, c'est ce conteneur qui pose l'écart au pied de page.
+    // Avec des blocs, c'est le dernier d'entre eux : deux paddings de gabarit ne
+    // s'additionnent pas.
+    &:last-child {
+      padding-block-end: var(--dm-space-page);
+    }
+  }
+
+  // Un `<time>` est inline : sans `display: block`, `text-align` du parent
+  // suffirait mais toute marge verticale serait ignorée.
+  &__date {
+    display: block;
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+    text-align: center;
+  }
+
+  // Le reset global ne neutralise pas les marges de `figure` : sans ce zéro, le
+  // navigateur pose 1em en haut et en bas, et 40px de chaque côté.
+  &__figure {
+    margin: var(--dm-space-element) 0 0;
+  }
+
+  &__figure :is(img, picture) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+  }
+
+  // Légende ferrée sous le visuel, en bas à droite (convention globale).
+  // La maquette pose 5px ici et 11px sous la vidéo — du bruit de calque : les
+  // 8px de la convention sont ce qui rend les deux légendes de la page égales.
+  &__caption {
+    margin-top: 8px;
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    text-align: right;
+  }
+
+  &__body {
+    margin-block-start: var(--dm-space-element);
+  }
+}

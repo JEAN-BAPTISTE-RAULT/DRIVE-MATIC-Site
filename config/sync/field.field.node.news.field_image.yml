@@ -11,7 +11,7 @@ field_name: field_image
 entity_type: node
 bundle: news
 label: Image
-description: 'Image recadrée au format 16:9 (crop à l’import).'
+description: 'Affichée sans recadrage sur la page de l’actualité : ses proportions sont celles du fichier envoyé. Le recadrage 16:9 demandé à l’import sert aux vignettes des listes et de la page d’accueil.'
 required: true
 translatable: true
 default_value: {  }

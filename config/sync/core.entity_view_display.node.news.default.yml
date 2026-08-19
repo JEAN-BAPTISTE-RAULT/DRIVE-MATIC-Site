@@ -25,20 +25,11 @@ content:
     third_party_settings: {  }
     weight: 2
     region: content
-  field_caption:
-    type: string
-    label: hidden
-    settings:
-      link_to_entity: false
-      link_rel: canonical
-    third_party_settings: {  }
-    weight: 1
-    region: content
   field_image:
     type: entity_reference_entity_view
     label: hidden
     settings:
-      view_mode: ratio_16_9
+      view_mode: free
       link: false
     third_party_settings: {  }
     weight: 0
@@ -58,5 +49,6 @@ content:
     weight: 100
     region: content
 hidden:
+  field_caption: true
   field_meta_tags: true
   langcode: true

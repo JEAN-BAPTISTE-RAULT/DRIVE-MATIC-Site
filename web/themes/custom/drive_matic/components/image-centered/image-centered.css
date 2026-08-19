@@ -1,5 +1,6 @@
 .image-centered {
-  max-width: calc(900px + 2 * var(--dm-gutter));
+  max-width: calc(var(--dm-content-column) + 2 * var(--dm-gutter));
+  margin-block: 0;
   margin-inline: auto;
   padding-block: var(--dm-space-block);
   padding-inline: var(--dm-gutter);

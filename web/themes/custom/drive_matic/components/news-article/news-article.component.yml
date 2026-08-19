@@ -1,0 +1,27 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Détail d’une actualité'
+status: stable
+props:
+  type: object
+  required:
+    - date
+    - datetime
+  properties:
+    date:
+      type: string
+      title: 'Date de dernière modification, formatée'
+    datetime:
+      type: string
+      title: 'Date au format machine (attribut datetime)'
+    caption:
+      type: string
+      title: 'Légende du visuel'
+slots:
+  media:
+    title: Visuel
+    description: 'Média image en mode d’affichage `free` : aucun recadrage, hauteur proportionnelle.'
+  body:
+    title: 'Corps de texte'
+  blocks:
+    title: 'Blocs ajoutés en back-office'
+    description: 'Paragraphes du champ `field_paragraphs` — ils portent leur propre colonne.'

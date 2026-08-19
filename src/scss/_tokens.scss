@@ -48,6 +48,11 @@
   // meme ecart, d'ou un token unique plutot que trois valeurs a resynchroniser.
   --dm-space-page: 49px;
 
+  // Largeur de la colonne de contenu, hors gouttieres. 900 est la mesure
+  // commune aux maquettes : titre de page, chapo, blocs image et video centres
+  // s'y inscrivent tous (x=270 dans un cadre de 1440).
+  --dm-content-column: 900px;
+
   // Echelle titres (taille / interligne) — PRD §6
   --dm-h1-size: 2.8125rem;
   --dm-h1-line: 3.625rem;
@@ -57,6 +62,18 @@
   --dm-h3-line: 2rem;
   --dm-body-size: 1rem;
   --dm-body-line: 1.75rem;
+}
+
+// Retune par gabarit — la colonne du detail d'une actualite vaut 960.
+// La maquette 438-10665 pose 900, mais le bloc `text_left_aligned` qui figure
+// sur cette page tient 960 depuis son integration, et il est partage avec les
+// CGV, « Qui sommes-nous » et les pages produit. Decision de l'utilisatrice :
+// laisser le bloc sur son etat consigne et aligner TOUTE la page sur lui,
+// plutot que faire cohabiter deux colonnes. Le titre de page etant un frere du
+// contenu (bloc du coeur, region `content`), la valeur doit vivre sur le
+// `<body>` — d'ou ce selecteur et pas une declaration sur le SDC.
+body.page-node-type-news {
+  --dm-content-column: 960px;
 }
 
 // Miroir SCSS (pour calculs/mixins eventuels)

@@ -2,8 +2,15 @@
 // Maquette : thumbnail 16:9 (radius 16) + bouton lecture blanc arrondi centré
 // (70px, opacité 70%, triangle sombre) ; légende ferrée bas-droite.
 
+// La colonne passe par `--dm-content-column` : 900 partout, 960 sur le détail
+// d'une actualité, où ce bloc doit s'aligner sur le reste de la page.
+// `margin-block: 0` neutralise le `margin: 1em` que le navigateur pose sur tout
+// `figure` et que le reset global ne couvre pas — il ajoutait 16px parasites
+// au-dessus et au-dessous du bloc.
+
 .video-centered {
-  max-width: calc(900px + 2 * var(--dm-gutter));
+  max-width: calc(var(--dm-content-column) + 2 * var(--dm-gutter));
+  margin-block: 0;
   margin-inline: auto;
   padding-block: var(--dm-space-block);
   padding-inline: var(--dm-gutter);
