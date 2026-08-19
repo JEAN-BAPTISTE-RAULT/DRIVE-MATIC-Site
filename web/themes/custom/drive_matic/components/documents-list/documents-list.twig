@@ -1,0 +1,32 @@
+{#
+  SDC « Liste :: Documentations » — deux sections de fichiers téléchargeables.
+  Prop : sections (liste de { title, files: [{ label, url, format, size }] }).
+  Une section sans fichier n'est pas incluse par l'appelant (F6) : ce
+  composant n'a pas à tester l'emptiness, il ne reçoit que des sections
+  pleines.
+  Chaque ligne est un unique lien cliquable sur toute sa largeur (décision de
+  l'utilisatrice) : le libellé « Télécharger » et son icône ne sont que du
+  contenu visuel à l'intérieur, pas un second élément interactif.
+#}
+<div class="documents-list">
+  {% for section in sections %}
+    <section class="documents-list__section">
+      <h2 class="documents-list__section-title">{{ section.title }}</h2>
+      <ul class="documents-list__files">
+        {% for file in section.files %}
+          <li class="documents-list__item">
+            <a class="documents-list__file" href="{{ file.url }}" download>
+              <span class="documents-list__file-label">
+                {{ file.label }} ({{ file.format }} {{ file.size }})
+              </span>
+              <span class="documents-list__file-download">
+                <span class="documents-list__file-download-label">{{ 'Télécharger'|t }}</span>
+                <span class="documents-list__file-download-icon" aria-hidden="true"></span>
+              </span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endfor %}
+</div>

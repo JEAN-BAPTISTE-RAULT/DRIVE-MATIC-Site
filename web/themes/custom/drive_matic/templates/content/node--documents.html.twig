@@ -1,39 +1,30 @@
 {#
 /**
  * @file
- * Page « Documentations » (F6).
+ * Page « Documentations » (F6), maquette 398-12119.
  *
- * Affiche le chapô (`body`), puis deux sections de fichiers. Les **titres de
- * section sont en dur ici** — et non portés par les libellés des champs — pour
- * que le gabarit de la page ne dépende pas de la configuration.
- *
- * Chaque champ est un champ **Fichier à itération illimitée** : les fichiers
- * sont saisis en back-office dans leur ordre d'affichage. Le bouton de
- * téléchargement porte la **description du fichier**, suivie du format et du
- * poids calculés (ADR-009, `_drive_matic_document_downloads()` / file_link).
+ * Affiche le chapô (`body`) dans le SDC `page-intro`, puis le SDC
+ * `documents-list` pour les deux sections de fichiers. Les fichiers ne
+ * passent plus par leur formatter de champ : `sections` est construit en
+ * preprocess (`drive_matic_preprocess_node()`) à partir des champs bruts, une
+ * ligne par fichier restant à télécharger en entier (nom + format + poids,
+ * calculés).
  *
  * Le titre de la page n'est pas rendu ici : il vient du bloc titre de page, qui
  * est visible sur ce bundle (ADR-014). Le rendre ici le doublerait.
  *
- * Une section sans fichier n'affiche **rien** : pas de titre orphelin (F6).
+ * Une section sans fichier n'est pas dans `sections` : pas de titre orphelin (F6).
  *
  * @see node.html.twig pour la liste complète des variables.
+ * @see drive_matic_preprocess_node()
  */
 #}
 <article{{ attributes.addClass('node', 'node--type-documents') }}>
-  {{ content.body }}
+  {% if content.body|render|trim is not empty %}
+    {% embed 'drive_matic:page-intro' %}
+      {% block text %}{{ content.body }}{% endblock %}
+    {% endembed %}
+  {% endif %}
 
-  {% set sections = [
-    { title: 'Auto-écoles'|t, files: content.field_documents_school },
-    { title: 'PMR'|t, files: content.field_documents_pmr },
-  ] %}
-
-  {% for section in sections %}
-    {% if section.files|render|trim is not empty %}
-      <section class="documents__section">
-        <h2 class="documents__section-title">{{ section.title }}</h2>
-        {{ section.files }}
-      </section>
-    {% endif %}
-  {% endfor %}
+  {{ include('drive_matic:documents-list', { sections: sections }) }}
 </article>

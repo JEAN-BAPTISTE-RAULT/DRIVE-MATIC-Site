@@ -1,0 +1,62 @@
+.documents-list {
+  max-width: calc(var(--dm-content-column) + 2 * var(--dm-gutter));
+  margin-inline: auto;
+  padding-block: var(--dm-space-page);
+  padding-inline: var(--dm-gutter);
+}
+.documents-list__section:not(:last-child) {
+  margin-bottom: var(--dm-space-block);
+}
+.documents-list__section-title {
+  margin-bottom: var(--dm-space-element);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+  font-weight: 700;
+}
+.documents-list__files {
+  --documents-list-row-gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--documents-list-row-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.documents-list__item {
+  border-radius: 8px;
+}
+.documents-list__item:nth-child(odd) {
+  background: var(--dm-color-grey-lighter);
+}
+.documents-list__file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 12px 24px;
+  color: var(--dm-color-steel);
+  text-decoration: none;
+}
+.documents-list__file-label {
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+.documents-list__file-download {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+.documents-list__file-download-icon {
+  width: 24px;
+  height: 24px;
+  background-color: currentcolor;
+  -webkit-mask: url("../../images/icons/download.svg") no-repeat center/contain;
+          mask: url("../../images/icons/download.svg") no-repeat center/contain;
+}

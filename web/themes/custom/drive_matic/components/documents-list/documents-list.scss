@@ -1,0 +1,90 @@
+// SDC « Liste :: Documentations » — CSS scopé (BEM), consomme les tokens globaux.
+
+// Mesures relevées sur la maquette 398-12119 (cadre 1440) : colonne de 900
+// (x=270), lignes de 58 de haut, rayon 8, fond `--dm-color-grey-lighter` un
+// rang sur deux (zébrage), titre de section en Titre H3 (Exo 2 Bold 22/32).
+
+// Respiration au-dessus et au-dessous de la liste : `--dm-space-page`, comme
+// `news-list` / `brands-grid` / `faq-list` (rythme unique du gabarit, plutôt
+// que les 82/40 mesurés sur cette maquette). Écart entre sections :
+// `--dm-space-block`, le rôle le plus proche des ~40px relevés entre
+// « Auto-écoles » et « PMR » (ADR-013). Écart entre lignes d'une même section
+// (~7px relevés) ne correspond à aucun des trois rôles ADR-013 : nommé en
+// custom property locale plutôt que semé en dur.
+
+.documents-list {
+  max-width: calc(var(--dm-content-column) + 2 * var(--dm-gutter));
+  margin-inline: auto;
+  padding-block: var(--dm-space-page);
+  padding-inline: var(--dm-gutter);
+
+  &__section:not(:last-child) {
+    margin-bottom: var(--dm-space-block);
+  }
+
+  &__section-title {
+    margin-bottom: var(--dm-space-element);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+    font-weight: 700;
+  }
+
+  &__files {
+    --documents-list-row-gap: 8px;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--documents-list-row-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // Le fond zébré vit sur l'item : c'est lui qu'on compte pour la parité, le
+  // lien à l'intérieur reste transparent.
+  &__item {
+    border-radius: 8px;
+
+    &:nth-child(odd) {
+      background: var(--dm-color-grey-lighter);
+    }
+  }
+
+  // Ligne entière cliquable (choix de l'utilisatrice) : le libellé
+  // « Télécharger » et son icône ne sont qu'un second bloc visuel à
+  // l'intérieur du même lien, pas un élément interactif imbriqué.
+  &__file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 12px 24px;
+    color: var(--dm-color-steel);
+    text-decoration: none;
+  }
+
+  &__file-label {
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
+
+  &__file-download {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
+
+  &__file-download-icon {
+    width: 24px;
+    height: 24px;
+    background-color: currentcolor;
+    mask: url('../../images/icons/download.svg') no-repeat center / contain;
+  }
+}

@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
@@ -203,6 +204,93 @@ function _drive_matic_document_downloads(ParagraphInterface $paragraph, array $f
   }
 
   return $downloads;
+}
+
+/**
+ * Construit les tuples de telechargement d'un champ fichier multi-valeur.
+ *
+ * Distinct de _drive_matic_document_downloads() : celle-ci boucle plusieurs
+ * champs mono-valeur nommes (un bouton par champ), celle-ci boucle les deltas
+ * d'un **seul** champ a cardinalite illimitee (un bouton par fichier saisi).
+ * Meme construction du tuple (libelle/format/poids/cache tags) que l'autre
+ * fonction, dupliquee plutot que fusionnee : les deux iterations n'ont pas la
+ * meme forme et _drive_matic_document_downloads() sert deja un appelant qui
+ * fonctionne (`product_characteristics`).
+ *
+ * @param \Drupal\Core\Field\FieldItemListInterface $field
+ *   Le champ fichier (cardinalite illimitee, description_field actif).
+ * @param array $variables
+ *   Variables du template, pour y attacher les cache tags des fichiers.
+ *
+ * @return array
+ *   Liste de tableaux `label`, `url`, `format`, `size` (deltas vides ignores).
+ */
+function _drive_matic_field_downloads(FieldItemListInterface $field, array &$variables): array {
+  $downloads = [];
+
+  foreach ($field as $item) {
+    $file = $item->entity;
+    if (!$file instanceof FileInterface) {
+      continue;
+    }
+
+    // Libelle editorial ; repli sur le nom du fichier prive de son extension.
+    $label = trim((string) $item->description);
+    if ($label === '') {
+      $label = pathinfo($file->getFilename(), PATHINFO_FILENAME);
+    }
+
+    $downloads[] = [
+      'label' => $label,
+      'url' => \Drupal::service('file_url_generator')->generateString($file->getFileUri()),
+      'format' => mb_strtoupper(pathinfo($file->getFilename(), PATHINFO_EXTENSION)),
+      'size' => ByteSizeMarkup::create((int) $file->getSize()),
+    ];
+
+    // Le fichier n'est pas rendu par son formatter : ses cache tags ne
+    // remontent pas tout seuls.
+    $variables['#cache']['tags'] = array_merge(
+      $variables['#cache']['tags'] ?? [],
+      $file->getCacheTags()
+    );
+  }
+
+  return $downloads;
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for node.
+ *
+ * Bundle `documents` (F6) uniquement : les deux champs fichier a iteration
+ * illimitee (`field_documents_school`, `field_documents_pmr`) ne passent pas
+ * par leur formatter — la maquette rend chaque fichier en ligne cliquable
+ * (nom + format + poids, « Telecharger » a droite), pas par le bouton pilule
+ * partage `.file-download` (cf. drive_matic_preprocess_file_link()). Les
+ * titres de section restent en dur, comme avant ce chantier, pour que le
+ * gabarit ne depende pas de la configuration ; une section sans fichier est
+ * simplement absente du tableau `sections`.
+ */
+function drive_matic_preprocess_node(array &$variables): void {
+  $node = $variables['node'];
+
+  if (!$node instanceof NodeInterface || $node->bundle() !== 'documents') {
+    return;
+  }
+
+  $sections = [
+    [
+      'title' => t('Auto-écoles'),
+      'files' => _drive_matic_field_downloads($node->get('field_documents_school'), $variables),
+    ],
+    [
+      'title' => t('PMR'),
+      'files' => _drive_matic_field_downloads($node->get('field_documents_pmr'), $variables),
+    ],
+  ];
+
+  $variables['sections'] = array_filter($sections, static function (array $section): bool {
+    return $section['files'] !== [];
+  });
 }
 
 /**

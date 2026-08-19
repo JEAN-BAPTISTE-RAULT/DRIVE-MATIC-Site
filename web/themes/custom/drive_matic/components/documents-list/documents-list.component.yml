@@ -1,0 +1,33 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Liste :: Documentations'
+status: stable
+props:
+  type: object
+  properties:
+    sections:
+      type: array
+      title: Sections
+      items:
+        type: object
+        properties:
+          title:
+            type: string
+            title: Titre de la section
+          files:
+            type: array
+            title: Fichiers
+            items:
+              type: object
+              properties:
+                label:
+                  type: string
+                  title: Libellé du fichier
+                url:
+                  type: string
+                  title: URL du fichier
+                format:
+                  type: string
+                  title: Format (ex. PDF)
+                size:
+                  type: string
+                  title: Poids formaté
