@@ -121,6 +121,16 @@ depose ne garantit pas.
   (`.component.yml`, `.twig`, `.scss`),
   `templates/paragraph/paragraph--product-characteristics.html.twig`,
   `images/icons/download.svg`.
-- Reutilisable tel quel par **F6 Documentations** (meme besoin de nommer les
-  documents) — c'est le point d'entree a reprendre plutot que d'inventer un
-  troisieme rendu.
+- ~~Reutilisable tel quel par **F6 Documentations**~~ — **corrige le
+  2026-08-19** : la maquette reelle de F6 (Figma 398-12119), non revue au
+  moment de cette decision, ne porte pas le bouton « contour + icone »
+  d'Option C mais une **ligne de liste zebree entierement cliquable**. Un
+  troisieme rendu visuel existe donc bien, contrairement a ce
+  qu'anticipait cette clause. Ce qui est repris a l'identique, c'est le
+  **mecanisme** (Option C/D : tuple `label`/`url`/`format`/`size` calcule hors
+  formatter, cache tags reattaches, libelle = description du fichier) — via
+  une fonction sœur, `_drive_matic_field_downloads()`, plutot qu'un appel a
+  `_drive_matic_document_downloads()` : celle-ci boucle plusieurs champs
+  **mono-valeur nommes** (un bouton par champ), F6 porte deux champs a
+  **cardinalite illimitee** (un bouton par delta) — la forme de l'iteration
+  differe, pas seulement le style. Voir `components/documents-list/`.

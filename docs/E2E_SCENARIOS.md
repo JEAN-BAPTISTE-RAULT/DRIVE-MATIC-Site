@@ -122,11 +122,16 @@
 - Documents presentes avec nom/format/poids, dans l'ordre defini en back-office.
 - Le telechargement fonctionne.
 
+**Integration maquette (Figma `398-12119`, 2026-08-19)** :
+- Chapo centre dans la colonne de contenu (SDC `page-intro`), puis deux sections en liste **zebree** (SDC `documents-list`) : fond gris clair un rang sur deux, radius 8px.
+- Chaque fichier est une **ligne entierement cliquable** (decision de l'utilisatrice) : nom + format + poids a gauche, « Telecharger » + icone a droite — un seul lien par ligne, pas un second element interactif imbrique.
+- Ecart entre les deux sections et avant/apres la liste sur le rythme unique du gabarit (`--dm-space-page`, `--dm-space-block`), pas les valeurs brutes de la maquette (convention transverse, cf. CLAUDE.md).
+
 **Mise en oeuvre (a rejouer)** :
-- La page porte **deux champs reference ordonnes** ; les **libelles de champ** font les titres de section (« Auto-ecoles », « PMR »). Reordonner en BO doit reordonner la page.
-- **Section vide** → ni titre de section, ni espace mort.
-- Un document est un **fragment** : `/node/<id>` d'un document doit repondre **403** en anonyme.
-- Le libelle du bouton est la **description du fichier** (ADR-009), pas le titre du node — d'ou une saisie du nom a deux endroits, point ouvert du PRD (F6).
+- La page porte **deux champs Fichier a cardinalite illimitee** (`field_documents_school`, `field_documents_pmr`) — **pas** des references vers un node `document` (type supprime le 2026-08-18). Les **titres de section restent en dur** dans `node--documents.html.twig` (« Auto-ecoles », « PMR »), pas pilotes par un libelle de champ. Reordonner les fichiers en BO doit reordonner la liste.
+- **Section vide** → ni titre de section, ni espace mort (le SDC `documents-list` ne recoit que des sections non vides, filtrees en preprocess).
+- Le libelle de chaque ligne est la **description du fichier** (ADR-009), saisie a l'upload ; repli sur le nom du fichier si vide. Format et poids restent calcules.
+- ⚠️ Les deux champs ne passent plus par leur formatter (`file_default`) : ils sont **masques** dans le view display, leur rendu vient de `drive_matic_preprocess_node()`. Modifier la description ou remplacer un fichier en back-office doit se refleter **sans** `drush cr` (cache tags du fichier reattaches explicitement).
 
 ---
 
@@ -491,6 +496,7 @@
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-08-19 | **F6 — la page Documentations est integree** (maquette `398-12119`) : chapo dans `page-intro`, sections en **liste zebree** (SDC `documents-list`), chaque fichier en **ligne entierement cliquable**. Les deux champs Fichier ne passent plus par leur formatter — masques dans le view display, rendus par `drive_matic_preprocess_node()` (nouveau helper `_drive_matic_field_downloads()`, cache tags des fichiers reattaches). ⚠️ Rendu distinct du bouton contour+icone de `product_characteristics`, malgre la reutilisation anticipee par [ADR-009](../.claude/decisions/009-telechargements-nommes.md) (addendum 2026-08-19) : la maquette reelle n'avait pas ete revue au moment de cette decision | S5 |
 | 2026-08-19 | **F8 — le detail d'une actualite est integre** (maquette `438-10665`) : SDC `news-article`, date centree, legende ferree a droite, corps de texte ajoute (absent de la maquette), et une **seule colonne de 960** pour toute la page ([ADR-016](../.claude/decisions/016-colonne-de-contenu.md)). Nouveaux comportements a rejouer : **le visuel du detail n'est plus recadre** (ratio du fichier source) alors que la vignette de la liste et de la home reste en 16:9 — donc **deux ratios pour une meme image, ce n'est pas un bug** ; et l'ecart entre deux blocs passe de 80 a **64** partout ou un `<figure>` etait racine de SDC (`video_centered`, `image_centered`), le `margin: 1em` du navigateur n'etant pas couvert par le reset | S7, S3 et S4 (blocs video/image centres) |
 | 2026-08-18 | **F10 — le formulaire de contact est habille** ([ADR-015](../.claude/decisions/015-habillage-des-formulaires.md)) : carte claire, grille 3 colonnes, deux groupes titres, mention obligatoire en pied, et les infobulles « carte grise » remplacees par une **modale illustree**. Rejouer les **trois variantes** (devis / SAV / question) et le **repli sans JS**. ⚠️ Deux prealables d'environnement decouverts : `file_private_path` (sans lui le champ document **n'existe pas**, en silence) et `upload_max_filesize` du PHP qui sert le site | S8, S9, S10 |
 | 2026-08-18 | **F8 — la liste d'actualites est integree** (maquette `438-10209`) : titre de page **centre** (le bloc n'avait aucun CSS, sur **toutes** les pages), colonne de 1130, ligne visuel 325x183 + texte, pagination stylee. Jeu de test porte a **32 actualites**, soit 4 pages : la pagination devient verifiable | S7, transverse (titre de page) |
