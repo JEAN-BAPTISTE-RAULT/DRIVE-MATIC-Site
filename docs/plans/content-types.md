@@ -5,7 +5,7 @@
 ## Resolution
 L'arbitrage a ete **fourni directement par l'utilisatrice** (liste complete des 15 types + 2 conventions transverses). Le modele est donc acte sans passer par les etapes d'inventaire/proposition initialement prevues.
 
-- Modele de reference : `docs/active/content-types/model.md`
+- Modele de reference : `docs/content-model.md`
 - Decision : [ADR-002](../../.claude/decisions/002-types-de-contenu.md)
 - Precise ADR-001 (champ « lien » interne/externe + cible ; « fichier telechargeable » nom/format/poids)
 - PRD : §5 (modele de donnees) pointe vers le modele

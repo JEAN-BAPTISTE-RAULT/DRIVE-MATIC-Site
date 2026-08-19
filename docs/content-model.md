@@ -4,8 +4,29 @@
 > ainsi que la taxonomie `categories`. Detail des tranches et de la recette :
 > `docs/plans/content-types-complet.md`.
 
+> ⚠️ **Trois passages sont perimes** (constate le 2026-08-19, en promouvant ce fichier depuis
+> `docs/active/content-types/`). Il n'a pas ete re-audite depuis l'ADR-014 : lire ces points
+> dans leur source a jour, pas ici.
+>
+> 1. **`field_title` cote node n'existe plus.** L'[ADR-014](../.claude/decisions/014-titre-unique-porte-par-le-title.md)
+>    remplace l'ADR-011 : le `title` est la source unique du titre affiche, de l'alias, du fil
+>    d'Ariane et de la balise `title`. Toute la section « Titre affiche vs libelle
+>    d'administration » et chaque mention de `field_title` **ne decrivent plus le code** —
+>    ⚠️ **ne pas recreer ce champ**. Etat courant : `CLAUDE.md` et l'ADR-014. (Le
+>    `field_title` des **paragraphes** est un champ homonyme et distinct, toujours en place.)
+> 2. **Le fragment `document` a ete supprime** le 2026-08-18 : `documents` porte desormais
+>    deux champs **Fichier a iteration illimitee**, et non des references a des nodes
+>    `document`. Les lignes qui le citent encore sont a lire au passe.
+> 3. **`news.field_image`** : le recadrage 16:9 reste **obligatoire a l'import**, mais la page
+>    de detail affiche le visuel **sans recadrage** (mode d'affichage media `free`) ; le 16:9
+>    ne sert plus qu'aux vignettes des listes et de la home (F8,
+>    [ADR-016](../.claude/decisions/016-colonne-de-contenu.md)).
+>
+> Le reste (types, champs, allowlists de paragraphes, conventions de formulaire, sitemap) n'a
+> pas ete verifie ligne par ligne a cette date. Une reprise complete reste a faire.
 
-> Liste **validee par l'utilisatrice** (arbitrage direct). Reference d'implementation. Actee dans [ADR-002](../../../.claude/decisions/002-types-de-contenu.md). S'appuie sur la bibliotheque de paragraphes [ADR-001](../../../.claude/decisions/001-bibliotheque-paragraphes.md).
+
+> Liste **validee par l'utilisatrice** (arbitrage direct). Reference d'implementation. Actee dans [ADR-002](../.claude/decisions/002-types-de-contenu.md). S'appuie sur la bibliotheque de paragraphes [ADR-001](../.claude/decisions/001-bibliotheque-paragraphes.md).
 >
 > **Convention de nommage** : `Page :: X` = **node public** (URL, sitemap, metatags) ; `Element :: X` = **node « fragment »** sans page publique (hors sitemap, **URL directe bloquee** via Rabbit Hole ou equivalent), reutilisable et listable en vue.
 
@@ -88,7 +109,7 @@ Tous les types de contenu presentent **le meme formulaire** : deux **onglets hor
 
 ### Titre affiché vs libellé d'administration (2026-08-17)
 
-Voir [ADR-011](../../../.claude/decisions/011-titre-affiche-et-alias.md). Le `title` du node est
+Voir [ADR-011](../.claude/decisions/011-titre-affiche-et-alias.md). Le `title` du node est
 un **libellé d'administration** (relabellisé « Titre administratif » via
 `core.base_field_override.node.<bundle>.title`) ; le **titre affiché** est porté par
 **`field_title`** (string, obligatoire).

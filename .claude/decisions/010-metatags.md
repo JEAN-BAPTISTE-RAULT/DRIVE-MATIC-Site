@@ -12,7 +12,7 @@ Accepte
 
 Le modele editorial demande, par type de node, de mapper **titre → meta title**
 et **body → meta description** (tokens), sauf `legals`
-(`docs/active/content-types/model.md`).
+(`docs/content-model.md`).
 
 Le module Metatag etait installe et des defauts a tokens configures, mais
 **aucun champ** n'existait sur les types de contenu : les balises partaient bien

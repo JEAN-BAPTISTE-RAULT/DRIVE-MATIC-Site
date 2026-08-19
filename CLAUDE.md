@@ -89,6 +89,9 @@ Regle : ne JAMAIS considerer le travail termine si l'une de ces commandes echoue
 | **README.md** | Documentation technique de reprise | Architecture, structure, commandes, IDs, pipeline, workflow, points d'attention |
 | **docs/PRD.md** | Specifications fonctionnelles | Features, modele de donnees, milestones, interface, tests, cas limites |
 | **docs/E2E_SCENARIOS.md** | Scenarios E2E de non-regression | Parcours utilisateur a rejouer |
+| **docs/content-model.md** | Reference du modele editorial | Types de contenu, champs, allowlists de paragraphes, conventions de formulaire (acte par ADR-002) |
+| **docs/active/`<feature>`/** | Chantier **en cours** | `progress.md` (point de reprise), `verification.md` (self-review) |
+| **docs/archive/** | Traces d'audit de features **livrees** | Non maintenu : decrit l'etat au moment de la recette, jamais l'etat courant |
 | **.claude/decisions/** | Decisions architecturales (ADR) | Decisions posterieures au PRD, avec contexte et raisonnement |
 | **.claude/rules/*.md** | Regles modulaires path-scoped | Regles specifiques a un sous-dossier (monorepos) |
 
@@ -162,7 +165,7 @@ Regle posee par l'utilisatrice, a appliquer **a chaque nouveau type de contenu**
 - **Nouveau type « fragment »** (contenu reutilisable sans page publique) : pas de `field_meta_tags`, pas de motif Pathauto, **pas** de reglage sitemap, et un `rabbit_hole.behavior_settings.node_type_<bundle>` en `access_denied`. Verifier le 403 en anonyme sur `/node/<id>`, jamais seulement l'absence de lien.
 - Un champ ajoute a un type de contenu **doit etre range dans un des deux onglets** : sans groupe, il apparait hors onglets, en haut du formulaire.
 
-Detail et raisons dans `docs/active/content-types/model.md`.
+Detail et raisons dans `docs/content-model.md`.
 
 ### Regles metier critiques
 

@@ -27,7 +27,7 @@ Apres la bibliotheque de paragraphes (ADR-001), il fallait definir le **modele d
 - **1 taxonomie** : `categories` (Général / Auto-école / PMR — vocabulaire unifie, l'incoherence `faq_categories` des specs est ecartee).
 - `product` : **pas de champ categorie** (contenu 100% manuel).
 - `news` : date affichee = **derniere modification** (`changed`).
-- Modele de reference complet (champs, paragraphes, vues) : `docs/active/content-types/model.md`.
+- Modele de reference complet (champs, paragraphes, vues) : `docs/content-model.md`.
 
 Cet ADR **precise ADR-001** sur deux conventions transverses :
 - **Champ « lien »** : Link interne (node) ou externe, cible onglet courant / nouvel onglet au choix de l'admin.

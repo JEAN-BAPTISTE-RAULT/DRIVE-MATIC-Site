@@ -174,7 +174,7 @@ réutilise `brand-logo`.
 
 ## 6. Cohérence avec les spécifications
 
-Conforme à ADR-002 / `docs/active/content-types/model.md`. Ne contredit aucune décision verrouillée.
+Conforme à ADR-002 / `docs/content-model.md`. Ne contredit aucune décision verrouillée.
 **Écarts et arbitrages tranchés** (à répercuter dans le modèle) :
 
 - **Convention de titre** (§0) : nouvelle, elle amende le modèle pour les 11 types publics
