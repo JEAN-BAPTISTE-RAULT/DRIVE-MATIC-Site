@@ -94,7 +94,7 @@ Projet **Drupal 11** (`drupal/recommended-project`), docroot **`web/`**.
 | `transform` | Solution auto-école / PMR (F4) | 7 paragraphes autorisés, dont `grid` |
 | `product` | Fiche produit (F5) | 10 paragraphes dont les 4 blocs V5 ; **pas de `grid`** ; aucun prix |
 | `corporate` | Éditorial Drive Matic (F9) | 9 paragraphes, dont `triptych`, `history`, `image_centered`, `video_centered` |
-| `legals` | Pages légales (CGV, CGU, mentions légales, données personnelles) | `title` + `body` + `field_meta_tags`, comme les autres types publics ; **plus de paragraphes** (`text_left_aligned` retiré le 2026-08-20, contenu CGV migré dans `body`) |
+| `legals` | Pages légales (CGV, CGU, mentions légales, données personnelles) | `title` + `body` + `field_meta_tags`, comme les autres types publics ; **plus de paragraphes** (`text_left_aligned` retiré le 2026-08-20, contenu CGV migré dans `body` — [ADR-019](.claude/decisions/019-legals-body-metatags.md)) |
 | `news` | Détail d'actualité (F8) | image **16:9** + légende ; date = `changed` ; alias `/actualites/…` ; 3 paragraphes |
 | `all_news` | Liste des actualités (F8) | Vue `all_news` embarquée, **10 par page**, tri `changed` desc |
 | `faq` | FAQ (F9) | Vue `faq` embarquée, filtre **BEF** par catégorie, rendu en accordéon |

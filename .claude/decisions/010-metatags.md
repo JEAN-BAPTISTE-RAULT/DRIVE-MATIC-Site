@@ -12,7 +12,8 @@ Accepte
 
 Le modele editorial demande, par type de node, de mapper **titre → meta title**
 et **body → meta description** (tokens), sauf `legals`
-(`docs/content-model.md`).
+(`docs/content-model.md`) — exception levee le 2026-08-20, voir
+[ADR-019](019-legals-body-metatags.md).
 
 Le module Metatag etait installe et des defauts a tokens configures, mais
 **aucun champ** n'existait sur les types de contenu : les balises partaient bien
@@ -56,7 +57,8 @@ L'utilisatrice a signale l'absence du champ.
    balises partent dans le `<head>`, pas dans le contenu). Texte d'aide :
    « vide = remplissage automatique ». Pose sur les nodes publics existants
    (`homepage`, `news`, `contact`, `partner`) ; **a ajouter a chaque nouveau
-   node public**, jamais sur `legals`, les fragments, ni le bac a sable.
+   node public**, y compris `legals` depuis le 2026-08-20 ([ADR-019](019-legals-body-metatags.md))
+   — jamais sur les fragments, ni le bac a sable.
 
 ## Consequences
 

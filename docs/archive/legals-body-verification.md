@@ -3,6 +3,7 @@
 > Session interrompue par un clear accidentel en cours d'implementation ; reprise et cloturee
 > le 2026-08-20. La config avait deja ete editee et importee (`drush cim`) avant le clear —
 > cette trace documente la verification faite a la reprise, pas l'implementation initiale.
+> Voir [ADR-019](../../.claude/decisions/019-legals-body-metatags.md).
 
 ## Commandes executees
 
@@ -27,7 +28,7 @@
 - **Perte du contenu CGV (node 55, 15 sections `text_left_aligned`) lors de la suppression du champ.** Mitigation : le contenu avait ete migre dans `body` avant l'import de la config supprimant le champ (verifie : `body` = 12 151 caracteres, texte reel des CGV, pas un placeholder). Verifie en base que `node__field_paragraphs`/`node_revision__field_paragraphs` ne portent plus aucune ligne `bundle = 'legals'` (purge Drupal effective, pas de donnee residuelle a recuperer autrement que par backup).
 - **Risque de collision d'alias** : le node 55 avait auparavant l'alias `/mentions-legales` (avant son renommage en CGV). Verifie qu'aucune redirection ni alias perime ne pointe plus vers `/mentions-legales` avant la creation du node « Mentions legales » (122) — celui-ci a bien recu cet alias sans suffixe `-0`, donc pas de collision.
 - **Fabrication de contenu editorial par script** : les 3 nouveaux nodes (CGU, Mentions legales, Donnees personnelles) sont volontairement laisses avec un `body` vide plutot que d'y ecrire un texte invente — conforme a la regle du projet (le contenu editorial n'est pas fabrique par l'agent).
-- **Documentation perimee non signalee** : `docs/content-model.md` et `README.md` decrivaient encore `legals` comme « sans body ni metatags ». Corrige (bloc d'erratum existant de `content-model.md` complete en 5eme point ; lignes README direct).
+- **Documentation perimee non signalee** : `docs/content-model.md` et `README.md` decrivaient encore `legals` comme « sans body ni metatags ». Corrige (bloc d'erratum existant de `content-model.md` complete en 5eme point, avec lien vers l'ADR-019 ; lignes README direct).
 
 ## Edge cases testes
 

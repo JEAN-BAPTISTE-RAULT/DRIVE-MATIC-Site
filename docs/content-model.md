@@ -31,9 +31,10 @@
 >    ne reste une reference media que pour `image_centered`, `image_text_100` et
 >    `product_characteristics` (sans ratio impose) — inchanges.
 > 5. **`legals` porte desormais `body` + `field_meta_tags`**, comme tout autre type public
->    (2026-08-20) : ses paragraphes (`text_left_aligned`) sont retires, le contenu de la
->    page CGV (node 55) migre dans `body`. Les mentions « pas de body ni metatags » /
->    « Types sans metatags : legals » plus bas (lignes 55, 92, 99, 178) sont perimees. Les
+>    ([ADR-019](../.claude/decisions/019-legals-body-metatags.md), 2026-08-20) : ses
+>    paragraphes (`text_left_aligned`) sont retires, le contenu de la page CGV (node 55)
+>    migre dans `body`. Les mentions « pas de body ni metatags » / « Types sans metatags :
+>    legals » plus bas (lignes 55, 92, 99, 178) sont perimees. Les
 >    3 autres pages legales du footer (CGU, mentions legales, donnees personnelles — F2)
 >    existent desormais comme nodes `legals` distincts, body encore vide (contenu editorial
 >    a saisir).

@@ -35,9 +35,9 @@ Cet ADR **precise ADR-001** sur deux conventions transverses :
 
 ## Consequences
 - Chaque node de type « page composable » porte un champ de reference de **paragraphes** avec liste de types autorisee (voir matrice du model.md) ; chaque paragraphe = 1 SDC (decision #10).
-- **Metatag** : mapping body → meta description, titre → meta title par type (sauf `legals`).
+- **Metatag** : mapping body → meta description, titre → meta title par type (sauf `legals` — exception levee par l'[ADR-019](019-legals-body-metatags.md), 2026-08-20).
 - **Sitemap** : nodes publics inclus ; nodes « fragments » (question/document/brand) exclus + URL canonique bloquee (module Rabbit Hole ou equivalent).
 - **Vues** : `faq` (BEF par `categories`), `brands` (alpha), `all_news` (paginee 10/page) + les vues home `news_home` / `brands_home` (ADR-001) → declarer les list cache tags.
 - **Images sans crop** : `contact`, `brand` s'ajoutent aux paragraphes concernes → entree pour l'etude images.
 - **PRD** : §5 (modele de donnees) et F4-F9 pointent vers ce modele.
-- `legals` : **indexable, dans le sitemap, sans metatags** (tranche).
+- `legals` : **indexable, dans le sitemap, sans metatags** (tranche) — revu par l'[ADR-019](019-legals-body-metatags.md) : porte desormais `body` + `field_meta_tags` comme les autres types publics.
