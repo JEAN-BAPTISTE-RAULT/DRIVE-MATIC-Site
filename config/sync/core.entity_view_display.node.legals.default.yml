@@ -3,22 +3,21 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.legals.field_paragraphs
+    - field.field.node.legals.body
+    - field.field.node.legals.field_meta_tags
     - node.type.legals
   module:
-    - entity_reference_revisions
+    - text
     - user
 id: node.legals.default
 targetEntityType: node
 bundle: legals
 mode: default
 content:
-  field_paragraphs:
-    type: entity_reference_revisions_entity_view
+  body:
+    type: text_default
     label: hidden
-    settings:
-      view_mode: default
-      link: ''
+    settings: {  }
     third_party_settings: {  }
     weight: 0
     region: content
@@ -28,4 +27,6 @@ content:
     weight: 100
     region: content
 hidden:
+  field_meta_tags: true
+  field_paragraphs: true
   langcode: true

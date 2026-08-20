@@ -34,6 +34,10 @@ body.page-node-type-news {
   --dm-content-column: 960px;
 }
 
+body.page-node-type-legals {
+  --dm-content-column: 960px;
+}
+
 @font-face {
   font-family: "Exo 2";
   font-style: normal;

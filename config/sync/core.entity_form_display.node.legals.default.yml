@@ -3,12 +3,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.legals.field_paragraphs
+    - field.field.node.legals.body
+    - field.field.node.legals.field_meta_tags
     - node.type.legals
   module:
     - field_group
-    - paragraphs
+    - metatag
     - path
+    - text
 third_party_settings:
   field_group:
     group_tabs:
@@ -31,6 +33,7 @@ third_party_settings:
       children:
         - title
         - path
+        - field_meta_tags
         - status
       label: 'Informations générales'
       region: content
@@ -47,9 +50,9 @@ third_party_settings:
         required_fields: true
     group_content:
       children:
+        - body
         - langcode
         - revision_log
-        - field_paragraphs
       label: Contenu
       region: content
       parent_name: group_tabs
@@ -68,23 +71,23 @@ targetEntityType: node
 bundle: legals
 mode: default
 content:
-  field_paragraphs:
-    type: paragraphs
-    weight: 6
+  body:
+    type: text_textarea_with_summary
+    weight: 5
     region: content
     settings:
-      title: Bloc
-      title_plural: Blocs
-      edit_mode: closed
-      closed_mode: summary
-      autocollapse: none
-      closed_mode_threshold: 0
-      add_mode: button
-      form_display_mode: default
-      default_paragraph_type: ''
-      features:
-        collapse_edit_all: collapse_edit_all
-        duplicate: duplicate
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+      show_summary: false
+    third_party_settings: {  }
+  field_meta_tags:
+    type: metatag_firehose
+    weight: 3
+    region: content
+    settings:
+      sidebar: true
+      use_details: true
     third_party_settings: {  }
   langcode:
     type: language_select
@@ -116,6 +119,7 @@ content:
     third_party_settings: {  }
 hidden:
   created: true
+  field_paragraphs: true
   promote: true
   simple_sitemap: true
   sticky: true

@@ -4,7 +4,7 @@
 > ainsi que la taxonomie `categories`. Detail des tranches et de la recette :
 > `docs/plans/content-types-complet.md`.
 
-> ⚠️ **Trois passages sont perimes** (constate le 2026-08-19, en promouvant ce fichier depuis
+> ⚠️ **Quatre passages sont perimes** (constate le 2026-08-19, en promouvant ce fichier depuis
 > `docs/active/content-types/`). Il n'a pas ete re-audite depuis l'ADR-014 : lire ces points
 > dans leur source a jour, pas ici.
 >
@@ -30,6 +30,13 @@
 >    `image_widget_crop` scope au seul ratio du bundle, un fichier par usage). `field_image`
 >    ne reste une reference media que pour `image_centered`, `image_text_100` et
 >    `product_characteristics` (sans ratio impose) — inchanges.
+> 5. **`legals` porte desormais `body` + `field_meta_tags`**, comme tout autre type public
+>    (2026-08-20) : ses paragraphes (`text_left_aligned`) sont retires, le contenu de la
+>    page CGV (node 55) migre dans `body`. Les mentions « pas de body ni metatags » /
+>    « Types sans metatags : legals » plus bas (lignes 55, 92, 99, 178) sont perimees. Les
+>    3 autres pages legales du footer (CGU, mentions legales, donnees personnelles — F2)
+>    existent desormais comme nodes `legals` distincts, body encore vide (contenu editorial
+>    a saisir).
 >
 > Le reste (types, champs, allowlists de paragraphes, conventions de formulaire, sitemap) n'a
 > pas ete verifie ligne par ligne a cette date. Une reprise complete reste a faire.

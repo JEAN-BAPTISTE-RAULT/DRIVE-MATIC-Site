@@ -1,0 +1,21 @@
+uuid: a36bb9d6-305a-48a2-a8b4-b4b9036283ce
+langcode: fr
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_meta_tags
+    - node.type.legals
+  module:
+    - metatag
+id: node.legals.field_meta_tags
+field_name: field_meta_tags
+entity_type: node
+bundle: legals
+label: 'Balises meta'
+description: 'Laisser vide pour le remplissage automatique : le titre alimente la balise « title », le texte la « description ». Renseigner uniquement pour surcharger ce calcul.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: metatag

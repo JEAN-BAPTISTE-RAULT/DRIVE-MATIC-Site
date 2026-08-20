@@ -6,3 +6,4 @@ id: node__legals
 label: 'Page :: Mentions légales'
 tags:
   title: '[node:title] | [site:name]'
+  description: '[node:summary]'

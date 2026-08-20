@@ -76,6 +76,12 @@ body.page-node-type-news {
   --dm-content-column: 960px;
 }
 
+// Pages legales (CGV, CGU, mentions legales, donnees personnelles) : meme
+// alignement sur 960, pour la meme raison que ci-dessus.
+body.page-node-type-legals {
+  --dm-content-column: 960px;
+}
+
 // Miroir SCSS (pour calculs/mixins eventuels)
 $dm-color-steel: #2f3a45;
 $dm-color-anthracite: #1a1a1a;
