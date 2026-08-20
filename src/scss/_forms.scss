@@ -19,6 +19,16 @@
   padding-block-end: var(--dm-space-page);
 }
 
+// Ecart apres le titre : sur `contact`, deja pose par le `padding-block-start`
+// du bloc `contact-intro` qui precede le formulaire (deux paddings ne
+// s'additionnent pas, ADR-013). Sur `partner`, le body est masque et le
+// formulaire est le premier — et seul — element du contenu : sans son propre
+// `padding-block-start`, il colle au titre (ecart mesure : 0px).
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.field--type-webform:first-child {
+  padding-block-start: var(--dm-space-page);
+}
+
 .webform-submission-form {
   // La maquette donne 40/60 pour la respiration interieure de la carte et 30
   // entre les champs : aucune des trois valeurs de l'ADR-013 ne correspond, et
@@ -230,6 +240,72 @@
   display: block;
   block-size: 92px;
   resize: vertical;
+}
+
+// --- Question binaire (radios). --------------------------------------------
+
+// La legende de « Etes-vous amenageur... » n'est pas un titre de regroupement
+// comme « Vous etes » : la maquette la rend en texte courant, pas en H3. Classe
+// posee par le formulaire (`#wrapper_attributes`), pas un selecteur nommant le
+// champ (meme logique que les ruptures de grille, ADR-015 §2).
+.webform-submission-form .dm-form-question .fieldset-legend {
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  font-weight: 400;
+}
+
+// `#options_display: side_by_side` (Webform) pose une marge en `em`, contraire
+// a l'ADR-013 (espacement en px) : neutralisee au profit d'un `gap` en token.
+.webform-submission-form .webform-options-display-side-by-side {
+  display: flex;
+  gap: var(--dm-space-element);
+}
+
+.webform-submission-form .webform-options-display-side-by-side > div {
+  margin: 0;
+}
+
+.webform-submission-form .form-type-radio {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.webform-submission-form input[type='radio'] {
+  flex: 0 0 auto;
+  inline-size: 20px;
+  block-size: 20px;
+  margin: 0;
+  appearance: none;
+  border: 1px solid var(--dm-color-grey-metal);
+  border-radius: 50%;
+  background-color: var(--dm-color-white);
+  cursor: pointer;
+}
+
+.webform-submission-form input[type='radio']:checked {
+  border-color: var(--dm-color-red);
+}
+
+.webform-submission-form input[type='radio']:checked::after {
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin: 4px;
+  content: '';
+  border-radius: 50%;
+  background-color: var(--dm-color-red);
+}
+
+.webform-submission-form .form-type-radio > label.option {
+  margin: 0;
+  color: var(--dm-color-grey-primary);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  font-weight: 400;
 }
 
 // --- Case a cocher du consentement. ---------------------------------------

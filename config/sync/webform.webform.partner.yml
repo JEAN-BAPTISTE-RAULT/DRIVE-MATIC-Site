@@ -38,7 +38,6 @@ elements: |-
       '#title': 'Code postal'
       '#required': true
       '#pattern': '\d{5}'
-      '#placeholder': 'Ex : 13600'
     ville:
       '#type': textfield
       '#title': Ville
@@ -51,6 +50,9 @@ elements: |-
       '#options':
         madame: Madame
         monsieur: Monsieur
+      '#wrapper_attributes':
+        class:
+          - dm-form-row-start
     prenom:
       '#type': textfield
       '#title': Prénom
@@ -59,7 +61,6 @@ elements: |-
       '#type': textfield
       '#title': Nom
       '#required': true
-      '#placeholder': 'Votre nom'
     telephone:
       '#type': tel
       '#title': Téléphone
@@ -68,23 +69,31 @@ elements: |-
       '#type': email
       '#title': E-mail
       '#required': true
-      '#placeholder': 'Ex : monemail@gmail.com'
   amenageur:
     '#type': radios
     '#title': 'Êtes-vous aménageur qualifié véhicule auto-école ?'
     '#required': true
+    '#options_display': side_by_side
     '#options':
       oui: Oui
       non: Non
+    '#wrapper_attributes':
+      class:
+        - dm-form-question
   message:
     '#type': textarea
     '#title': 'Votre message'
     '#required': true
-    '#placeholder': 'Description de votre message'
+    '#wrapper_attributes':
+      class:
+        - dm-form-span-2
   consentement:
     '#type': checkbox
     '#title': "J'autorise ces informations à être utilisées par Drive Matic Legrand"
     '#required': true
+    '#wrapper_attributes':
+      class:
+        - dm-form-span-3
   captcha:
     '#type': captcha
     '#captcha_type': recaptcha_v3/default
