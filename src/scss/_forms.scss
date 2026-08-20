@@ -11,9 +11,12 @@
 // Gouttiere de la carte : meme plafond de largeur que les blocs de contenu
 // (1130px), pose en `padding-inline` sur le champ qui porte le formulaire — la
 // carte a un fond, ses bords doivent donc s'arreter la ou s'arrete le contenu.
+// Le formulaire est le dernier bloc de la page avant le footer (maquette
+// 438-9465) : meme respiration que le pager, `--dm-space-page` (ADR-013).
 // stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
 .field--type-webform {
   padding-inline: max(var(--dm-gutter), calc(50vw - 565px));
+  padding-block-end: var(--dm-space-page);
 }
 
 .webform-submission-form {

@@ -4,13 +4,14 @@ status: true
 dependencies:
   config:
     - field.field.node.contact.body
-    - field.field.node.contact.field_image
     - field.field.node.contact.field_meta_tags
+    - field.field.node.contact.field_photo
     - field.field.node.contact.field_webform
+    - image.style.thumbnail
     - node.type.contact
   module:
     - field_group
-    - media_library
+    - image_widget_crop
     - metatag
     - path
     - text
@@ -55,7 +56,7 @@ third_party_settings:
     group_content:
       children:
         - body
-        - field_image
+        - field_photo
         - langcode
         - field_webform
         - revision_log
@@ -87,13 +88,6 @@ content:
       placeholder: ''
       show_summary: false
     third_party_settings: {  }
-  field_image:
-    type: media_library_widget
-    weight: 5
-    region: content
-    settings:
-      media_types: {  }
-    third_party_settings: {  }
   field_meta_tags:
     type: metatag_firehose
     weight: 3
@@ -101,6 +95,22 @@ content:
     settings:
       sidebar: true
       use_details: true
+    third_party_settings: {  }
+  field_photo:
+    type: image_widget_crop
+    weight: 5
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+      crop_preview_image_style: crop_thumbnail
+      crop_list:
+        - crop_16_9
+      crop_types_required:
+        - crop_16_9
+      warn_multiple_usages: false
+      show_crop_area: true
+      show_default_crop: true
     third_party_settings: {  }
   field_webform:
     type: webform_entity_reference_select

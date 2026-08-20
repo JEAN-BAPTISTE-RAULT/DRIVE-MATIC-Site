@@ -1,0 +1,21 @@
+{#
+/**
+ * @file
+ * Page « Contact » (F10), maquettes 433-7637 (devis), 438-9060 (SAV) et
+ * 438-9465 (question).
+ *
+ * Le titre vient du bloc titre de page (ADR-014), non rendu ici. `body`
+ * (adresse/horaires) et `field_photo` (visuel recadré 16:9) sont composés
+ * côte à côte par le SDC `contact-intro`, au-dessus du formulaire.
+ *
+ * @see node.html.twig pour la liste complète des variables.
+ */
+#}
+<article{{ attributes.addClass('node', 'node--type-contact') }}>
+  {% embed 'drive_matic:contact-intro' %}
+    {% block text %}{{ content.body }}{% endblock %}
+    {% block image %}{{ content.field_photo }}{% endblock %}
+  {% endembed %}
+
+  {{ content.field_webform }}
+</article>

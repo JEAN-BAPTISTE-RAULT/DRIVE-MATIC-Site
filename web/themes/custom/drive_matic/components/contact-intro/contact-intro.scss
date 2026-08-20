@@ -1,0 +1,35 @@
+// SDC « Bloc :: Coordonnées de contact » — adresse/horaires + visuel (16:9)
+// côte à côte au-dessus du formulaire. Maquettes 433-7637 / 438-9060 / 438-9465.
+// Même plafond de largeur que la carte du formulaire (cf. `_forms.scss`) et
+// même gap que le bloc « image + texte 50/50 » : deux blocs image/texte
+// distincts, même rythme visuel.
+
+.contact-intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dm-space-element);
+  padding-block: var(--dm-space-block);
+  padding-inline: max(var(--dm-gutter), calc(50vw - 565px));
+
+  @media (width >= 992px) {
+    flex-wrap: nowrap;
+    gap: 110px;
+  }
+
+  &__text {
+    flex: 1 1 300px;
+    color: var(--dm-color-grey-text);
+  }
+
+  &__media {
+    flex: 1 1 300px;
+
+    :is(img, picture) {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+    }
+  }
+}

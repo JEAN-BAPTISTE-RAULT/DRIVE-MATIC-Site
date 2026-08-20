@@ -1,0 +1,9 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Coordonnées de contact'
+status: stable
+slots:
+  text:
+    title: Adresse / horaires
+    description: 'Le champ `body` du node, rendu en texte riche.'
+  image:
+    title: 'Visuel (recadré 16:9)'

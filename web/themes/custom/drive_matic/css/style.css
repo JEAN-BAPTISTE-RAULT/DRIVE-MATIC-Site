@@ -176,6 +176,8 @@ h3 {
 
 .field--type-webform {
   padding-inline: max(var(--dm-gutter), 50vw - 565px);
+  -webkit-padding-after: var(--dm-space-page);
+          padding-block-end: var(--dm-space-page);
 }
 
 .webform-submission-form {

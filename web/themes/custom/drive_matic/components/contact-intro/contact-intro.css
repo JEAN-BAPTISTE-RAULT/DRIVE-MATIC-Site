@@ -1,0 +1,27 @@
+.contact-intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dm-space-element);
+  padding-block: var(--dm-space-block);
+  padding-inline: max(var(--dm-gutter), 50vw - 565px);
+}
+@media (width >= 992px) {
+  .contact-intro {
+    flex-wrap: nowrap;
+    gap: 110px;
+  }
+}
+.contact-intro__text {
+  flex: 1 1 300px;
+  color: var(--dm-color-grey-text);
+}
+.contact-intro__media {
+  flex: 1 1 300px;
+}
+.contact-intro__media :is(img, picture) {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+}

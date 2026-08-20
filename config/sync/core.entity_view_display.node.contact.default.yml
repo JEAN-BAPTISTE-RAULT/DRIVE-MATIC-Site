@@ -4,11 +4,13 @@ status: true
 dependencies:
   config:
     - field.field.node.contact.body
-    - field.field.node.contact.field_image
     - field.field.node.contact.field_meta_tags
+    - field.field.node.contact.field_photo
     - field.field.node.contact.field_webform
     - node.type.contact
+    - responsive_image.styles.dm_16_9
   module:
+    - responsive_image
     - text
     - user
     - webform
@@ -24,12 +26,14 @@ content:
     third_party_settings: {  }
     weight: 1
     region: content
-  field_image:
-    type: entity_reference_entity_view
+  field_photo:
+    type: responsive_image
     label: hidden
     settings:
-      view_mode: free
-      link: false
+      responsive_image_style: dm_16_9
+      image_link: ''
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
     weight: 0
     region: content
