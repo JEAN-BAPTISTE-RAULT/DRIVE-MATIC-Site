@@ -83,6 +83,13 @@
       }
     }
 
+    // Le coeur Drupal pose `.menu-item { padding-top: 0.2em }` (rythme d'une
+    // liste verticale) : neutralise ici, l'espacement est deja porte par le
+    // `gap` ci-dessus.
+    .menu-item {
+      padding: 0;
+    }
+
     a {
       color: var(--dm-color-grey-metal);
       font-size: 0.75rem; // 12px
@@ -130,6 +137,12 @@
       flex-direction: column;
       gap: var(--site-footer-item-gap);
       list-style: none;
+
+      // Le coeur Drupal pose `.menu-item { padding-top: 0.2em }` (rythme
+      // d'une liste verticale) : neutralise, sans quoi le titre de colonne
+      // (span) se decale de 3,2px sous "Restons connectes" (un <p>, sans ce
+      // padding). L'espacement est deja porte par le `gap` ci-dessus.
+      padding: 0;
 
       > span {
         font-weight: 700;

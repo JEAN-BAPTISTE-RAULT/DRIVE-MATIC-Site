@@ -73,6 +73,9 @@
     flex-direction: row;
   }
 }
+.site-footer__legal .menu-item {
+  padding: 0;
+}
 .site-footer__legal a {
   color: var(--dm-color-grey-metal);
   font-size: 0.75rem;
@@ -112,6 +115,7 @@
   flex-direction: column;
   gap: var(--site-footer-item-gap);
   list-style: none;
+  padding: 0;
 }
 .site-footer__columns > .menu--footer-solutions .menu-item > span {
   font-weight: 700;
