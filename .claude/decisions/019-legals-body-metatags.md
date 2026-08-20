@@ -71,3 +71,32 @@ la regle du projet (le contenu editorial ne se fabrique pas par script).
 - Reste hors perimetre : la redaction du contenu juridique des 3 nouvelles pages, et le
   footer riche qui les liera (F2, a venir). Trace de verification :
   `docs/archive/legals-body-verification.md`.
+
+## Addendum du 20/08 : la maquette CGV mesure 1130px, pas les 960px decides ci-dessus
+
+En integrant le rendu du body d'apres la maquette CGV (469-11689), l'ecart de colonne
+« alignee sur 960, comme `text_left_aligned` » (§ Decision) ne correspondait pas a la
+mesure reelle : les sections de texte y font ~1130px de large (x=153 dans un cadre de
+1440), le meme plafond que `news-list`/`brands-grid` et la carte des formulaires
+(`calc(50vw - 565px)`), pas 960+2×gouttiere. Confirmation explicite obtenue avant d'agir
+(meme reflexe que l'addendum ADR-018 du 20/08 : un classement deja arrete ne se corrige
+pas silencieusement sur la seule foi d'une mesure).
+
+**Decision** : le SDC `legal-text` (nouveau, `node--legals.html.twig`) suit la maquette —
+plafond 1130 en litteral, comme `news-list`/`brands-grid` — plutot que de consommer
+`--dm-content-column`. Le retune `body.page-node-type-legals { --dm-content-column:
+960px; }` pose par la decision initiale **reste en config, mais n'est desormais consomme
+par rien** : signale en commentaire dans `_tokens.scss` plutot que supprime, la mise a
+jour de cette section de l'ADR valant decision explicite de le laisser en l'etat pour
+l'instant (aucun autre composant `legals` n'existe qui aurait besoin du token).
+
+**Corrige au meme moment** : le contenu du node 55 (CGV), migre par cette meme ADR,
+avait perdu ses balises `<p>` pendant la transcription (texte brut + `<h2>` uniquement,
+que le navigateur aplatit en fusionnant les phrases distinctes). Reinsere par script
+verifie (round-trip automatique avant enregistrement, aucun mot modifie) — 15 sections,
+38 paragraphes, frontieres reprises de `get_design_context` sur la maquette.
+
+**Fichiers impactes** : `web/themes/custom/drive_matic/components/legal-text/` (nouveau),
+`web/themes/custom/drive_matic/templates/content/node--legals.html.twig` (nouveau),
+`src/scss/_tokens.scss` (commentaire de signalement, pas de suppression), contenu du
+node 55 (base, non versionne).

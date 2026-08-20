@@ -40,14 +40,14 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 |---|------|------|---------------|------|
 | 1 | Accueil | 31 | `303-5967` | ✅ **conforme, rien à changer** — voir « Le lorem est celui des maquettes » |
 | 2 | Qui sommes-nous | 54 | `433-9747` | ✅ **mesurée le 2026-08-19** (le « 6 blocs conformes » du 18/08 portait sur le contenu, pas la mise en page — voir « 11bis » plus bas). 2 vraies photos de la maquette réintégrées, logo UTAC sur le bloc « qualité certifiée » |
-| 3 | **CGV** (type `legals`) | 55 | `469-11689` | ✅ **intégrée** — 15 sections `text_left_aligned`. Le frame s'appelle « Conditions générales de vente » : le type `legals` (« Page :: Mentions légales ») porte les CGV. Titre et alias changés, 301 auto depuis /mentions-legales |
+| 3 | **CGV** (type `legals`) | 55 | `469-11689` | ✅ **intégrée le 2026-08-20** (l'« intégrée » précédent décrivait l'ancien schéma `text_left_aligned`, remplacé depuis par `body` + SDC dédié — voir ADR-019 ; le body sortait brut sans colonne ni typo avant ce jour — voir « Page Legals intégrée » plus bas). Titre et alias changés, 301 auto depuis /mentions-legales |
 | 4 | **FAQ** | 62 | `396-11620` | ✅ **intégrée le 2026-08-19** (le « intégrée » précédent portait sur le contenu : filtre en liste verticale à puces collée au bord gauche, pas de 95px au lieu de 87 — voir « 4bis » plus bas). Titre « FAQ : Nous répondons à vos questions », motif Pathauto **supprimé**, alias en dur `/faq`, 301 depuis /questions-frequentes |
 | 5 | Documentations | 67 | `398-12119` | ✅ **restructurée** — type de node `document` supprimé, les 2 champs passés en **Fichier illimité**, titres de section en dur dans le Twig |
 | 6 | Les marques partenaires | 68 | `433-7148` | ✅ **intégrée le 2026-08-18** (le « conforme » précédent portait sur le contenu : la grille sortait en **une colonne de tuiles de 1440px**, page de 17 910px de haut — voir « 6bis » plus bas). Titre repris de la maquette, motif Pathauto supprimé, alias `/marques-partenaires` en dur. **27** logos alphabétiques dans `brands-grid` |
 | 7 | Actualités | 46 | `438-10209` | ✅ **intégrée le 2026-08-18** (le « conforme » précédent portait sur le contenu, pas sur la mise en page — voir plus bas). Alias `/actualites` en dur, `body` masqué |
 | 8 | Une actualité | 17 | `438-10665` | ✅ **intégrée le 2026-08-19** (le « conforme » précédent portait sur l'ordre des champs : la page rendait la date, la légende et le corps **collés au bord gauche**, et le visuel sur 1440 recadré en 16:9 — voir « 8bis » plus bas). SDC `news-article`, visuel sans recadrage, colonne unique de 960 |
 | 9 | Contact | 1 | `433-7637`, `438-9060`, `438-9465`, `438-9456`, `438-9457` ✅ | **formulaire stylé et modales faites** (cf. « 9bis » plus bas). Les 4 frames restants n'étaient pas des « états du formulaire » : deux sont les **variantes SAV et question**, deux les **modales « carte grise »**. Reste hors formulaire : la ligne adresse + carte au-dessus de la carte grise du formulaire |
-| 10 | Devenir partenaire | 2 | `438-9838` | ✅ **conforme** — titre puis formulaire, `body` masqué (aucun chapô dans la maquette), mention « *Champs obligatoires » activée |
+| 10 | Devenir partenaire | 2 | `438-9838` | ✅ **intégrée le 2026-08-20** (le « conforme » précédent portait sur le contenu, pas sur la mise en page : la grille n'avait pas ses `#wrapper_attributes`, l'écart titre → formulaire était nul, les radios n'étaient pas stylées — voir « Page Devenir partenaire intégrée » plus bas). Titre puis formulaire, `body` masqué (aucun chapô dans la maquette), mention « *Champs obligatoires » activée |
 | 11 | Nos ateliers | **77** | `436-2486` | ✅ **mesurée le 2026-08-19** — titre, chapô (`body`), 2 `image_text_50` alternées. 1 vraie photo de la maquette réintégrée (bloc 1), le bloc 2 reste un placeholder bibliothèque (grey rectangle réel dans la maquette). Alias `/nos-ateliers` |
 | 12 | Recherches et développement | **78** | `436-8300` | ✅ **mesurée le 2026-08-19** — titre, chapô (`body`), 2 `image_text_50` alternées (placeholders bibliothèque confirmés — les deux blocs sont de vrais rectangles gris dans la maquette), puis un `text_centered` (« Innover aujourd’hui… »). Alias `/recherches-et-developpement`. Le titre retenu est celui de la maquette, pas le « Recherche & développement » du PRD F9 |
 | 13 | Savoir-faire et certifications | **79** | `436-8578` | ✅ **mesurée le 2026-08-19** — titre, chapô, 2 `image_text_50` **toutes deux image à gauche** (pas d'alternance ici). Logos UTAC et ISO 9001 exportés de la maquette (médias 27 et 28). Alias `/savoir-faire-et-certifications`. Le lien en attente du node 54 est câblé |
@@ -868,3 +868,97 @@ sort du circuit « médiathèque sans ratio » (ADR-018 addendum). Le fichier se
    choix délibéré de suivre le rythme unique déjà en place ailleurs sur le site
    plutôt que la valeur de cette maquette précise, mais pas mesuré contre une
    maquette qui l'exigerait au pixel.
+
+## Page Devenir partenaire intégrée (2026-08-20) — maquette 438-9838
+
+Le formulaire héritait déjà de l'habillage générique `_forms.scss` (ADR-015) mais
+`webform.webform.partner.yml` ne portait aucun `#wrapper_attributes` (contrairement à
+`contact`) : la grille sortait en flux naturel sans les ruptures de ligne voulues par la
+maquette (Civilité tombait dans la ligne Code postal/Ville au lieu d'ouvrir sa propre
+ligne, message et consentement ne prenaient pas leur largeur). Corrigé par les mêmes
+classes (`dm-form-row-start`, `dm-form-span-2/3`) que `contact`, plus
+`#options_display: side_by_side` (mécanisme natif Webform) pour les radios Oui/Non.
+
+`partner` est le **seul** webform du site à utiliser `#type: radios` : aucun style
+`input[type='radio']` n'existait avant ce jour. Ajouté sur le modèle de la checkbox déjà
+stylée. La légende de la question (« Etes-vous aménageur... ») utilisait par défaut le
+style H3 des légendes de regroupement (« Vous êtes ») — la maquette la voulait en texte
+courant : neutralisée par une classe dédiée (`dm-form-question`), posée côté
+configuration comme les ruptures de grille.
+
+Second écart, découvert seulement en mesurant (pas en regardant la capture) : l'écart
+titre → formulaire était **nul**. `.field--type-webform` n'avait qu'un
+`padding-block-end` (l'écart avant le footer) ; sur `contact`, l'écart après le titre est
+fourni par le `padding-block-start` de `contact-intro`, qui précède toujours le
+formulaire — masquant l'absence de règle sur le champ lui-même. `partner` n'a pas
+d'intro (`body` masqué) : le formulaire, premier et seul enfant du contenu, collait au
+titre. Corrigé par `.field--type-webform:first-child { padding-block-start:
+var(--dm-space-page); }` (vérifié : sans effet sur `contact`, où le champ n'est pas
+`:first-child`).
+
+Les 4 placeholders restants du formulaire ont été retirés à la demande de l'utilisatrice.
+
+### Self-review
+
+1. **Décision la plus difficile** : établir l'ordre exact de la grille à partir des
+   positions absolues de la maquette (x/y par champ) plutôt que de deviner — la
+   Civilité/Prénom/Nom d'une part, Téléphone/Email d'autre part ne remplissent pas
+   toujours 3 colonnes complètes, contrairement au premier bloc adresse.
+2. **Alternative rejetée** : garder l'infobulle native de Webform pour l'état coché des
+   radios plutôt que de le styliser — écarté car la maquette montre un composant
+   entièrement custom (rond 20px, bordure token) pour l'état par défaut, incohérent avec
+   un rendu natif au clic.
+3. **Point de moindre confiance** : l'état **coché** des radios (bordure + pastille
+   rouges) n'est repris d'aucune référence Figma — la maquette ne montre que l'état non
+   coché des deux options. Complété par cohérence avec la checkbox existante, à confirmer
+   si l'utilisatrice a un rendu différent en tête.
+
+## Page Legals (CGV) intégrée (2026-08-20) — maquette 469-11689
+
+Depuis l'ADR-019, `legals` porte `body` (WYSIWYG) au lieu de paragraphes — mais aucun
+template dédié n'avait suivi : le contenu sortait brut du `node.html.twig` générique,
+sans colonne, sans padding, sans typographie propre. Nouveau
+`node--legals.html.twig` + SDC `legal-text` (même patron que `page-intro`/`news-article`).
+
+**Conflit de largeur tranché avec l'utilisatrice** : l'ADR-019 décidait un alignement sur
+960px (comme `text_left_aligned`), déjà posé en retune `--dm-content-column` dans
+`_tokens.scss` — mais la maquette CGV mesure ses sections de texte à ~1130px, le même
+plafond que `news-list`/`brands-grid`/la carte des formulaires. Décision : suivre la
+maquette (plafond 1130 en littéral), laisser le retune 960px en config mais signalé comme
+non consommé (commentaire dans `_tokens.scss` + addendum ADR-019), plutôt que de le
+supprimer sans arbitrage.
+
+Titres de section en bleu acier 22/32 (« Titre H3 » de la maquette) sur `h1` à `h4`
+uniformément — le contenu réel du node 55 utilise des `<h2>`, pas des `<h3>`. Écart
+titre de section → paragraphe 10px (nouvelle custom property locale, aucun des 3 tokens
+ADR-013 n'en est proche), écart section → section 32px (`--dm-space-block`, le plus
+proche des 30px mesurés), aucun écart entre deux paragraphes consécutifs.
+
+**Bug de contenu découvert et corrigé** : le body du node 55, migré par script lors de
+l'ADR-019, ne portait **aucune balise `<p>`** — juste des `<h2>` et du texte brut que le
+navigateur aplatit, fusionnant des phrases distinctes en une seule ligne (visible dès la
+première section : les 2 phrases du PREAMBULE s'enchaînaient sans retour à la ligne).
+Corrigé par un script ponctuel (non versionné) qui ne retape aucun mot : le texte de
+chaque section vient de la base, les frontières de paragraphe viennent de
+`get_design_context` sur la maquette (chaque section y est explicitement découpée en
+plusieurs `<p>`) ; un marqueur de fin de phrase (quelques mots, copiés depuis la base
+elle-même) sert uniquement à localiser la coupure. Double vérification automatique avant
+écriture (round-trip par section + comparaison globale du texte brut) : le script
+s'arrête sans rien enregistrer si l'une des deux échoue. Résultat : 15 sections, 38
+paragraphes, aucun mot changé (nouvelle révision du node 55).
+
+### Self-review
+
+1. **Décision la plus difficile** : trancher le conflit de largeur 960 vs 1130 plutôt
+   que de deviner — demandé explicitement plutôt que de présumer que la maquette avait
+   raison contre une décision d'ADR déjà actée.
+2. **Alternative rejetée** : reprendre `page-intro` pour le body de `legals` (même
+   famille de composant, déjà là) — écarté parce que `page-intro` est centré et pensé
+   pour un court chapô, pas pour un texte juridique long et justifié à gauche avec
+   plusieurs niveaux de titre.
+3. **Point de moindre confiance** : la réinsertion des balises `<p>` sur le node 55 —
+   bien que vérifiée automatiquement (round-trip + comparaison globale), c'est une
+   modification directe du contenu en base par script, hors du circuit éditorial
+   normal ; à confirmer visuellement par l'utilisatrice que le résultat correspond à ce
+   qu'elle attendait. Les 3 autres pages `legals` (body vide) devront être vérifiées de
+   la même façon le jour où leur contenu sera rédigé.
