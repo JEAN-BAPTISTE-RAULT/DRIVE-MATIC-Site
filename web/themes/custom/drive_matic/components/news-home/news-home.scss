@@ -75,9 +75,12 @@
   // bord de la fenêtre (la carte suivante est coupée par le viewport).
   // `.swiper` est répété : le bundle pose `margin-right: auto` à la même
   // spécificité que notre BEM et il est chargé après.
+  // ⚠️ Le `%` se résout contre le bloc de contenu de `.news-home` (padding-left
+  // seul plus haut, pas de padding-right), plus étroit de `gutter` que sa
+  // largeur totale centrée — d'où la correction `+ gutter/2` (cf. history.scss).
   &__viewport.swiper {
     position: relative;
-    margin-right: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw + (var(--dm-gutter) / 2));
   }
 
   // Cartes à largeur fixe (aperçu de la suivante) — slidesPerView: auto.

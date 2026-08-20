@@ -7,7 +7,7 @@
 }
 .product-features__viewport.swiper {
   position: relative;
-  margin-right: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw + var(--dm-gutter) / 2);
 }
 .product-features .swiper-slide {
   width: var(--dm-features-slide);

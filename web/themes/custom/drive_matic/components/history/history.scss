@@ -13,13 +13,17 @@
   // Le filet suit la piste jusqu'au bord de la fenêtre : la boîte est élargie à
   // droite, puis le contenu ramené dans le conteneur par un padding de même
   // valeur (les deux `calc` se compensent, même base de pourcentage).
+  // ⚠️ Le `%` de ces `calc` se résout contre le bloc de contenu de `.history`
+  // (1130 + gutter, puisque seul `padding-left` est posé plus haut), pas
+  // contre sa largeur totale (1130 + 2*gutter) qu'utilise son centrage — d'où
+  // un écart constant de gutter/2 (20px) sans la correction ci-dessous.
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-right: calc(50% - 50vw);
-    padding-right: calc(50vw - 50%);
+    margin-right: calc(50% - 50vw + (var(--dm-gutter) / 2));
+    padding-right: calc(50vw - 50% - (var(--dm-gutter) / 2));
     padding-bottom: 32px;
     border-bottom: 1px dashed var(--dm-color-steel);
   }
@@ -80,7 +84,7 @@
   &__viewport.swiper {
     position: relative;
     margin-top: var(--dm-space-element);
-    margin-right: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw + (var(--dm-gutter) / 2));
   }
 
   // Diapositives à largeur fixe (aperçu du suivant) — slidesPerView: auto.

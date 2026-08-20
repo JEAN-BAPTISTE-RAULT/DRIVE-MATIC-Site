@@ -47,7 +47,7 @@
 }
 .news-home__viewport.swiper {
   position: relative;
-  margin-right: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw + var(--dm-gutter) / 2);
 }
 .news-home .swiper-slide {
   width: min(522px, 82%);
