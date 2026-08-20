@@ -34,7 +34,7 @@ elements: |-
       '#type': select
       '#title': Sélectionner
       '#required': true
-      '#empty_option': Sélectionner
+      '#empty_option': Sélectionnez
       '#options':
         concession: 'Une concession'
         auto_ecole: 'Une auto-école'
@@ -62,7 +62,6 @@ elements: |-
       '#title': 'Code postal'
       '#required': true
       '#pattern': '\d{5}'
-      '#placeholder': 'Ex : 13600'
       '#wrapper_attributes':
         class:
           - dm-form-row-start
@@ -74,7 +73,7 @@ elements: |-
       '#type': select
       '#title': Civilité
       '#required': true
-      '#empty_option': Sélectionner
+      '#empty_option': Sélectionnez
       '#options':
         madame: Madame
         monsieur: Monsieur
@@ -89,7 +88,6 @@ elements: |-
       '#type': textfield
       '#title': Nom
       '#required': true
-      '#placeholder': 'Votre nom'
     telephone:
       '#type': tel
       '#title': Téléphone
@@ -101,7 +99,6 @@ elements: |-
       '#type': email
       '#title': E-mail
       '#required': true
-      '#placeholder': 'Ex : monemail@gmail.com'
   demande:
     '#type': fieldset
     '#title': 'Votre demande concerne'
@@ -109,7 +106,7 @@ elements: |-
       '#type': select
       '#title': Sélectionner
       '#required': true
-      '#empty_option': Sélectionner
+      '#empty_option': Sélectionnez
       '#options':
         devis: 'Demande de devis'
         sav: SAV
@@ -118,7 +115,7 @@ elements: |-
       '#type': webform_term_select
       '#title': Marque
       '#vocabulary': vehicle_brand
-      '#empty_option': Marque
+      '#empty_option': Sélectionnez
       '#states':
         visible:
           - ':input[name="demande_concerne"]':
@@ -139,7 +136,7 @@ elements: |-
       '#type': webform_term_select
       '#title': Modèle
       '#vocabulary': vehicle_model
-      '#empty_option': Modèle
+      '#empty_option': Sélectionnez
       '#states':
         visible:
           - ':input[name="demande_concerne"]':
@@ -157,7 +154,7 @@ elements: |-
       '#type': webform_term_select
       '#title': Motorisation
       '#vocabulary': motorisation
-      '#empty_option': Sélectionner
+      '#empty_option': Sélectionnez
       '#states':
         visible:
           - ':input[name="demande_concerne"]':
@@ -221,7 +218,6 @@ elements: |-
     message:
       '#type': textarea
       '#title': 'Votre message'
-      '#placeholder': 'Description de votre message'
       '#states':
         visible:
           ':input[name="demande_concerne"]':

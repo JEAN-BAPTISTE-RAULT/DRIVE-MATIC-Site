@@ -338,7 +338,10 @@
     grid-column-start: 1;
   }
 
+  // `grid-column-end` et non le raccourci `grid-column` : ce dernier reinitialise
+  // aussi `grid-column-start`, ecrasant le `grid-column-start: 1` que pose
+  // `.dm-form-row-start` sur le meme champ (`message` porte les deux classes).
   .webform-submission-form .dm-form-span-2 {
-    grid-column: span 2;
+    grid-column-end: span 2;
   }
 }

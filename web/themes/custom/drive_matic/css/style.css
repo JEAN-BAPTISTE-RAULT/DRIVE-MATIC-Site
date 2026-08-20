@@ -448,7 +448,7 @@ textarea) {
     grid-column-start: 1;
   }
   .webform-submission-form .dm-form-span-2 {
-    grid-column: span 2;
+    grid-column-end: span 2;
   }
 }
 .view-faq .view-filters {
