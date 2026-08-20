@@ -18,9 +18,18 @@
 >    deux champs **Fichier a iteration illimitee**, et non des references a des nodes
 >    `document`. Les lignes qui le citent encore sont a lire au passe.
 > 3. **`news.field_image`** : le recadrage 16:9 reste **obligatoire a l'import**, mais la page
->    de detail affiche le visuel **sans recadrage** (mode d'affichage media `free`) ; le 16:9
->    ne sert plus qu'aux vignettes des listes et de la home (F8,
->    [ADR-016](../.claude/decisions/016-colonne-de-contenu.md)).
+>    de detail affiche le visuel **sans recadrage** ; le 16:9 ne sert plus qu'aux vignettes des
+>    listes et de la home (F8, [ADR-016](../.claude/decisions/016-colonne-de-contenu.md)).
+>    ⚠️ Le champ a en outre ete **renomme `field_photo`** et n'est plus une reference media
+>    (voir point 4).
+> 4. **`field_image` (paragraphes) n'est plus une storage unique.** [ADR-018](../.claude/decisions/018-images-locales-par-paragraphe.md)
+>    (2026-08-19) sort les 9 paragraphes a ratio impose (`image_text_50`, `image_full`,
+>    `history_element`, `grid_element`, `jumbo_home_element`, `product_cross_element`,
+>    `product_image_element`, `product_video_element`, `video_centered`) de la mediatheque :
+>    ils portent desormais un champ **`field_photo`** (image locale, recadrage
+>    `image_widget_crop` scope au seul ratio du bundle, un fichier par usage). `field_image`
+>    ne reste une reference media que pour `image_centered`, `image_text_100` et
+>    `product_characteristics` (sans ratio impose) — inchanges.
 >
 > Le reste (types, champs, allowlists de paragraphes, conventions de formulaire, sitemap) n'a
 > pas ete verifie ligne par ligne a cette date. Une reprise complete reste a faire.

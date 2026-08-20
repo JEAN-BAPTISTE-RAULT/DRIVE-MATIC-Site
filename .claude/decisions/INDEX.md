@@ -21,6 +21,8 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-014](014-titre-unique-porte-par-le-title.md) | Titre unique porte par le `title` ; `<h1>` rendu par le bloc d'ouverture | Accepte | 2026-08-18 |
 | [ADR-015](015-habillage-des-formulaires.md) | Habillage des formulaires en fondation, grille declaree par le formulaire, modale d'aide en SDC | Accepte | 2026-08-18 |
 | [ADR-016](016-colonne-de-contenu.md) | Colonne de contenu — token `--dm-content-column` retunable par gabarit | Accepte | 2026-08-19 |
+| [ADR-017](017-recadrage-requis-par-champ.md) | Recadrage requis applique par champ (validation dediee), pas par media | **Remplace par [ADR-018](018-images-locales-par-paragraphe.md)** | 2026-08-19 |
+| [ADR-018](018-images-locales-par-paragraphe.md) | Images locales par paragraphe (sans mediatheque) pour les 9 champs a ratio impose + node.news | Accepte | 2026-08-19 |
 
 ## Quand creer un ADR
 

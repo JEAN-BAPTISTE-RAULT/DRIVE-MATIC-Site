@@ -64,3 +64,30 @@ La decision #11 impose une gestion d'images industrialisee (media-library reutil
   impose de chaque emplacement, puis verifier l'existence du crop pour chaque fichier
   reference — et non l'inverse.
 - **Prod** : dérives generes a la demande ; regeneration via `drush image:flush` au besoin.
+
+## Addendum (2026-08-19) — la regle etait contournable, pas seulement par script
+
+La ligne 44 ci-dessus (« aucun editeur ne peut contourner la regle ») etait **fausse
+pour un second chemin**, decouvert quand l'utilisatrice a essaye d'ajouter une image
+depuis le widget d'un paragraphe (media library, pas la page `/media/add/image`) : **le
+modal « Ajouter un media » ne proposait aucun recadrage**, meme pour un type l'exigeant.
+
+**Cause** : `core.entity_form_display.media.image.media_library` (le mode de formulaire
+que Drupal utilise pour **tout** ajout de media fait en contexte — media library widget
+sur un champ, donc la quasi-totalite des usages reels) portait le widget **`image_image`**
+(sans crop), alors que `core.entity_form_display.media.image.default` (utilise seulement
+par la page d'administration autonome `/media/add/image`, jamais empruntee par un
+editeur en pratique) portait bien `image_widget_crop`. Les deux modes de formulaire
+existent et sont **independants** ; le formulaire « conforme » n'etait pas celui que les
+editeurs rencontrent. Personne ne l'avait remarque parce que tous les medias du projet
+avaient ete crees par script jusqu'ici (cf. corollaire ligne 48).
+
+**Corrige** : le mode `media_library` porte desormais le meme widget `image_widget_crop`
+avec les memes `crop_list`/`crop_types_required` (1:1, 16:9, 12:5) que le mode `default`.
+Verifie en simulant un upload dans le modal : les trois onglets de recadrage requis
+apparaissent bien.
+
+**Consequence pour la suite** : si un formulaire media semble contourner une regle
+(crop, champ requis…), verifier **quel mode de formulaire** le contexte reel utilise
+(`default` vs `media_library` vs autre) avant de conclure que la config est en cause —
+les deux peuvent diverger silencieusement.
