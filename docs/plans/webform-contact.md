@@ -133,5 +133,5 @@ Contenu : récap identité + champs du cas (cf. specs §2.14). Échapper toutes 
 
 1. ⚠️ **La pièce jointe du SAV ne part pas dans l'e-mail interne** — `attachments: false` sur le handler `sav_interne`, alors que le §4 ci-dessus prévoit « joint le document si présent ». Une ligne de config, non basculée : cela change un envoi sortant.
 2. Le plafond de 5 Mo est borné par `upload_max_filesize` du PHP qui sert le site. ⚠️ Un contrôle via `drush runserver` interroge le PHP **CLI**, pas celui du vhost.
-3. La **ligne « adresse + carte »** au-dessus du formulaire n'est pas mise en page (la maquette la veut sur deux colonnes) — hors périmètre du formulaire.
+3. ~~La **ligne « adresse + carte »** au-dessus du formulaire n'est pas mise en page (la maquette la veut sur deux colonnes) — hors périmètre du formulaire.~~ **Fait le 2026-08-20** : SDC `contact-intro` + `node--contact.html.twig`, 2 colonnes (510/510, gap 110px, même plafond 1130px que la carte du formulaire). Le visuel impose désormais un crop 16:9 (`field_photo`, [ADR-018 addendum](../../.claude/decisions/018-images-locales-par-paragraphe.md)) — recadrage manuel restant à poser en back-office sur le fichier semé depuis la maquette (`node/1/edit`).
 4. Le bouton d'envoi **épouse son texte** là où la maquette dessine un cadre de 171px : choix de cohérence avec les autres boutons du site.

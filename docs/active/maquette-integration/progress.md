@@ -835,3 +835,36 @@ Les libellés d'accessibilité du thème sortent **en anglais** : `Main navigati
    dépôt (identique à `video_centered`) et les métadonnées de cache du champ légende sont
    perdues, mais un champ `string` n'en porte pas d'utile. Second point : `dm_free` sert des
    dérivés surdimensionnés dans une colonne de 960 (dette `sizes`, ADR-004) — non traité.
+
+## Page Contact intégrée (2026-08-20) — maquettes 433-7637/438-9060/438-9465 + modales 438-9456/438-9457
+
+Les 3 frames sont les 3 états conditionnels d'un même formulaire (devis/SAV/question),
+déjà couverts par les `#states` de `webform.webform.contact.yml` ; les 2 modales
+(numéro/type de châssis) étaient déjà livrées (`help-modal`, ADR-015). Le seul écart
+réel était la ligne « adresse + visuel » au-dessus du formulaire (écart #3 de
+`docs/plans/webform-contact.md`), jamais mise en page. Fait : SDC `contact-intro`
+(2 colonnes 510/510, gap 110px repris d'`image-text-50`, même plafond 1130px que la
+carte du formulaire) + `node--contact.html.twig`.
+
+À la demande de l'utilisatrice, le visuel impose désormais un crop 16:9 — `contact`
+sort du circuit « médiathèque sans ratio » (ADR-018 addendum). Le fichier semé
+(capture de carte reprise de la maquette Figma) n'a pas de crop posé par script
+([[crop-obligatoire-manuel]]) : **reste à recadrer manuellement en back-office**
+(`/node/1/edit`, onglet Contenu, champ Visuel) avant publication.
+
+### Self-review
+
+1. **Décision la plus difficile** : confirmer avec l'utilisatrice avant de convertir
+   le champ, puisque `contact` était explicitement listé comme cas où ADR-018 ne
+   s'appliquait pas. Une fois confirmé, réutiliser la storage `field_photo` déjà
+   créée pour `news` plutôt que d'en ouvrir une troisième — aucun nouveau mécanisme.
+2. **Alternative rejetée** : réutiliser le SDC `image-text-50` (même silhouette
+   visuelle) plutôt qu'un nouveau composant. Écarté pour rester cohérent avec la
+   règle FAQ (composants dédiés par cycle de vie) : `image-text-50` porte un titre,
+   un fond, un CTA et une bascule gauche/droite dont ce bloc n'a besoin d'aucun —
+   le réutiliser aurait tiré des props mortes dans le node.
+3. **Point de moindre confiance** : le gap titre → bloc et bloc → formulaire (32px,
+   `--dm-space-block`) ne reproduit pas le pixel exact de la maquette (97px mesuré) —
+   choix délibéré de suivre le rythme unique déjà en place ailleurs sur le site
+   plutôt que la valeur de cette maquette précise, mais pas mesuré contre une
+   maquette qui l'exigerait au pixel.

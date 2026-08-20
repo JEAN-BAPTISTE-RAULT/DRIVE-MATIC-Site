@@ -208,3 +208,39 @@ avec `crop_list` scope sur les 9, `media_library_widget` sur les 3), rendu front
 **Lecon** : sur un champ partage entre bundles, une conversion de type doit d'abord
 verifier la liste complete des bundles utilisateurs de la storage — pas seulement ceux
 vises par la tache en cours.
+
+## Addendum du 20/08 : `node.contact` rejoint le circuit a ratio impose
+
+En integrant la page Contact d'apres les maquettes 433-7637/438-9060/438-9465,
+l'utilisatrice a demande que le visuel de la page impose desormais un recadrage 16:9 —
+alors que ce document (§ Decision, tableau) classait explicitement `node.contact` parmi
+les node « a exemplaire unique/sans probleme » restant en mediatheque. Confirmation
+explicite obtenue avant d'agir (le classement initial etait une decision arretee, pas
+une supposition a corriger silencieusement).
+
+**Changement** : `node.contact` quitte `field_image` (entity_reference/media, storage
+partagee avec `node.brand`) pour un nouveau champ **`field_photo`**, exactement le
+mecanisme deja en place pour `node.news` — reutilise la **meme** storage
+`field.storage.node.field_photo` (aucune nouvelle storage creee), widget
+`image_widget_crop` avec `crop_types_required: [crop_16_9]`, formatter
+`responsive_image` (`dm_16_9`). `node.brand` n'est pas touche : il reste seul sur
+`field_image`/mediatheque.
+
+**Donnee existante** : l'ancienne valeur de `field_image` sur le node 1 pointait vers un
+fichier sans rapport (`actualite-auto-ecole-ecf.png`, reliquat) — perdue sans
+consequence lors de la suppression du champ. Le visuel de la maquette (une capture de
+carte de localisation, asset Figma) a ete repris comme fichier semant le nouveau champ,
+**sans crop pose par script** ([[crop-obligatoire-manuel]]) : le recadrage 16:9 reste a
+faire manuellement en back-office avant publication.
+
+**Consequence pour la regle generale** : la liste « node a exemplaire unique restant en
+mediatheque » (§ Decision) se reduit desormais a `node.brand` seul. Tout futur champ
+node/paragraphe qui impose un ratio suit ce meme chemin (nouveau `field_photo` propre au
+bundle si son `field_image` est partage), comme deja indique plus haut.
+
+**Fichiers impactes** : `config/sync/field.field.node.contact.field_photo.yml` (nouveau,
+remplace `field.field.node.contact.field_image.yml`, supprime),
+`core.entity_form_display.node.contact.default.yml`,
+`core.entity_view_display.node.contact.default.yml`,
+`web/themes/custom/drive_matic/templates/content/node--contact.html.twig` (nouveau),
+`web/themes/custom/drive_matic/components/contact-intro/` (nouveau SDC).

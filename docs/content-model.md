@@ -58,7 +58,7 @@
 | 7 | `documents` | Page :: Documentation | titre (obl), body (obl), metatags | — | 2 sections = **2 champs référence ordonnés** (`field_documents_school`, `field_documents_pmr`) vers des `document` ; les **libellés de champ** servent de titres de section ; section vide → rien d'affiché |
 | 8 | `corporate` | Page :: Corporate | titre (obl), body (obl), metatags | image_text_50, accordion, image_text_100, text_centered, text_left_aligned, triptych, history, image_centered, video_centered | Qui sommes-nous, ateliers, R&D, certifications… |
 | 10 | `brands` | Page :: Marques | titre (obl), body (obl), metatags | — | Vue triée alpha de tous les `brand` |
-| 11 | `contact` | Page :: Contact | titre (obl), body (obl), image **SANS CROP** (obl), metatags | — | Webform complexe (contenu défini plus tard) |
+| 11 | `contact` | Page :: Contact | titre (obl), body (obl), visuel **crop 16:9** (obl, `field_photo`), metatags | — | Webform complexe (contenu défini plus tard) |
 | 12 | `partner` | Page :: Devenir partenaire | titre (obl), body (obl), metatags | — | Webform (contenu défini plus tard) |
 | 13 | `legals` | Page :: Mentions légales | titre (obl) | text_left_aligned | Pas de body ni metatags |
 | 14 | `news` | Page :: Détail d'une actualité | titre (obl), body (obl), metatags, image **crop 16:9** (obl), légende image (opt) | text_left_aligned, image_centered, video_centered | Date = **dernière modification** (champ `changed`, pas de champ dédié), affichée « 12 juillet 2026 » |
@@ -150,7 +150,7 @@ un **libellé d'administration** (relabellisé « Titre administratif » via
 **Nodes inclus**, **entités exclues** (Simple XML Sitemap ou équivalent), configuré par type.
 
 ### Images sans crop
-`image_text_100`, `image_centered`, `product_characteristics` (paragraphes) + `contact`, `brand` (content) utilisent des images **sans crop** (largeur fixe maquette, hauteur proportionnelle) → entrée pour l'étude images.
+`image_text_100`, `image_centered`, `product_characteristics` (paragraphes) + `brand` (content) utilisent des images **sans crop** (largeur fixe maquette, hauteur proportionnelle) → entrée pour l'étude images. `contact` en est sorti le 2026-08-20 ([ADR-018 addendum](../.claude/decisions/018-images-locales-par-paragraphe.md)) : son visuel impose désormais un crop 16:9 (`field_photo`, même mécanisme que `news`).
 
 ## Mapping content type → paragraphes
 
