@@ -82,13 +82,15 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Resultat attendu** : Une navigation coherente sur tout le site.
 
 **Criteres d'acceptation** :
-- [ ] Le menu reprend l'arborescence des specs (rubriques niveau 1 et 2).
+- [x] Le menu reprend l'arborescence des specs (rubriques niveau 1 et 2).
 - [ ] Le fil d'Ariane est present sur toutes les pages **sauf** la home page.
 - [x] Le footer contient : coordonnees, solutions auto-ecole/PMR, assistance (contact, FAQ), reseaux sociaux (Instagram, TikTok, LinkedIn, YouTube), et les liens legaux (CGV, CGU, mentions legales, donnees personnelles).
-- [ ] Drive Matic peut creer des rubriques de **niveau 2** et des pages en autonomie ; la creation de rubriques de **niveau 1** requiert une intervention CSS de Passerelle.
+- [x] Drive Matic peut creer des rubriques de **niveau 2** et des pages en autonomie ; la creation de rubriques de **niveau 1** requiert une intervention CSS de Passerelle.
 
 **Cas limites** :
 - Item « Espace partenaire » : affiche le sous-menu authentifie (Tableau de bord, Mes devis, Mes informations personnelles, Me deconnecter, Supprimer mon compte) **uniquement** pour un partenaire connecte.
+
+- **Mise en oeuvre — header du 2026-08-20** (maquettes desktop 433-7989 + 5 dropdowns, mobile 526-20394 + tiroir), [ADR-021](../.claude/decisions/021-cartes-mega-menu.md) : menu principal (4 rubriques, niveau 2 mixte cartes/liens) et menu compte (5 liens) crees en base, non versionnes (script Drush ponctuel, meme decision que le footer). Liens actives vers du contenu reel pour tout ce qui existe deja (produits, corporate, FAQ, contact, actualites, connexion/deconnexion, edition du compte) ; « Tableau de bord », « Mes devis » et « Supprimer mon compte » restent en `<nolink>`, aucune page/route ne les portant encore (F13/F15/F16). Le bouton « Demander un devis » pointe vers la page `configurator` (F14, `/configurer`). Les 7 visuels de carte (Auto-ecole/PMR) sont recadres (16:9, `field_nav_card_image`).
 
 ---
 

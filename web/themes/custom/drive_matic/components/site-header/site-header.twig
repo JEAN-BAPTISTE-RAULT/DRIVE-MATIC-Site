@@ -1,11 +1,196 @@
 {#
-  SDC « Site :: En-tête » — bandeau global (logo + menu principal).
-  Shell minimal : le menu multi-niveaux complet relève de F2.
-  Slots : branding (bloc marque), menu (bloc menu principal).
+  SDC « Site :: En-tête » — header F2, maquettes desktop 433-7989 (+ 4
+  dropdowns + dropdown compte 433-9619) / mobile 526-20394 (+ tiroir
+  526-23524 + 5 sous-panneaux).
+
+  `navigation` est precalcule en PHP (_drive_matic_main_navigation()) plutot
+  que rendu par un system_menu_block : seule cette forme permet de distinguer,
+  par rubrique, les enfants avec visuel (cartes) des enfants sans visuel
+  (liens) — une distinction que le rendu de menu standard ne porte pas.
+
+  Desktop (flyouts inline) et mobile (tiroir plein ecran + sous-panneaux)
+  rendent la MEME arborescence deux fois, dans deux balisages distincts
+  bascules par media query : les deux layouts sont trop differents pour un
+  balisage commun. site-header.js decide, au clic sur le declencheur "Espace
+  partenaire", laquelle des deux UI (dropdown desktop / panneau du tiroir)
+  ouvrir, selon le point de rupture actif.
+
+  Slots : branding (bloc marque), account (menu "account", region
+  secondary_menu — dropdown/panneau "Espace partenaire").
 #}
-<header class="site-header" role="banner">
-  <div class="site-header__inner">
-    <div class="site-header__branding">{{ block('branding') }}</div>
-    <div class="site-header__menu">{{ block('menu') }}</div>
+{% import _self as header %}
+{% set phone_number = '01 45 34 28 37' %}
+{% set phone_href = 'tel:+33145342837' %}
+
+{% macro panel_content(item) %}
+  {% if item.cards %}
+    <ul class="site-header__cards">
+      {% for card in item.cards %}
+        <li>
+          <a href="{{ card.url }}" class="site-header__card">
+            <span class="site-header__card-image">{{ card.image }}</span>
+            <span class="site-header__card-title">{{ card.title }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% for group in item.link_groups %}
+    {% if loop.first %}
+      {% if item.cards %}
+        <div class="site-header__panel-divider" aria-hidden="true"></div>
+      {% endif %}
+    {% else %}
+      {#
+        Le 1er filet entre colonnes de liens est plus resserre que les
+        suivants (mesure maquette Drive Matic, node 433:9459 : 40px entre la
+        colonne "Qui sommes-nous..." et "Recherche & developpement...",
+        contre 81px — le meme filet que cartes/liens — avant "Actualites").
+      #}
+      <div class="site-header__panel-divider{{ loop.index == 2 ? ' site-header__panel-divider--tight' : '' }}" aria-hidden="true"></div>
+    {% endif %}
+    <ul class="site-header__links">
+      {% for link in group %}
+        <li><a href="{{ link.url }}" class="site-header__link">{{ link.title }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+{% endmacro %}
+
+{% macro drawer_foot(phone_number, phone_href, devis_url) %}
+  <div class="site-header__drawer-foot">
+    <a class="site-header__phone" href="{{ phone_href }}">
+      <span class="site-header__phone-icon" aria-hidden="true"></span>
+      {{ phone_number }}
+    </a>
+    <a class="site-header__cta" href="{{ devis_url }}">{{ 'Demander un devis'|t }}</a>
   </div>
+{% endmacro %}
+
+<header class="site-header" role="banner">
+  <div class="site-header__bar">
+    <button
+      type="button"
+      class="site-header__burger"
+      aria-controls="site-header-drawer"
+      data-drawer-open="root"
+    >
+      <span class="site-header__burger-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">{{ 'Menu'|t }}</span>
+    </button>
+
+    <div class="site-header__branding">{{ block('branding') }}</div>
+
+    <nav class="site-header__nav" aria-label="{{ 'Menu principal'|t }}">
+      <ul class="site-header__nav-list">
+        {% for item in navigation %}
+          <li class="site-header__nav-item">
+            <button
+              type="button"
+              class="site-header__nav-trigger"
+              aria-controls="site-header-panel-{{ item.id }}"
+            >
+              {{ item.title }}
+            </button>
+            <div class="site-header__panel" id="site-header-panel-{{ item.id }}">
+              <div class="site-header__panel-inner">
+                {{ header.panel_content(item) }}
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="site-header__phone" href="{{ phone_href }}">
+        <span class="site-header__phone-icon" aria-hidden="true"></span>
+        {{ phone_number }}
+      </a>
+
+      <a class="site-header__cta" href="{{ devis_url }}">{{ 'Demander un devis'|t }}</a>
+
+      {% if logged_in %}
+        {# Amélioration progressive : sans JS, ce bouton n'ouvre rien, mais le
+           panneau qu'il commande est déjà visible juste en dessous (cf.
+           site-header.scss) — rien à atteindre en plus. #}
+        <button
+          type="button"
+          class="site-header__account-trigger"
+          aria-controls="site-header-account-panel"
+          data-account-trigger
+          data-logged-in="1"
+        >
+          <span class="site-header__account-icon" aria-hidden="true"></span>
+          <span class="site-header__account-label" aria-hidden="true">{{ 'Espace partenaire'|t }}</span>
+          <span class="visually-hidden">{{ 'Espace partenaire'|t }}</span>
+        </button>
+        <div class="site-header__account-panel" id="site-header-account-panel">
+          {{ block('account') }}
+        </div>
+      {% else %}
+        {# Lien de connexion réel : fonctionne sans JS, aucune bascule à câbler. #}
+        <a class="site-header__account-trigger" href="{{ path('user.login') }}">
+          <span class="site-header__account-icon" aria-hidden="true"></span>
+          <span class="site-header__account-label" aria-hidden="true">{{ 'Espace partenaire'|t }}</span>
+          <span class="visually-hidden">{{ 'Espace partenaire'|t }}</span>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <dialog class="site-header__drawer" id="site-header-drawer" aria-label="{{ 'Menu'|t }}">
+    <div class="site-header__drawer-panel" data-drawer-panel="root">
+      <div class="site-header__drawer-head">
+        <button type="button" class="site-header__drawer-close" data-drawer-close>
+          <span class="visually-hidden">{{ 'Fermer'|t }}</span>
+        </button>
+      </div>
+      <ul class="site-header__drawer-list">
+        {% for item in navigation %}
+          <li class="site-header__drawer-item">
+            <button type="button" class="site-header__drawer-trigger" data-drawer-open="{{ item.id }}">
+              {{ item.title }}
+              <span class="site-header__chevron-icon" aria-hidden="true"></span>
+            </button>
+          </li>
+        {% endfor %}
+      </ul>
+      {{ header.drawer_foot(phone_number, phone_href, devis_url) }}
+    </div>
+
+    {% for item in navigation %}
+      <div class="site-header__drawer-panel" data-drawer-panel="{{ item.id }}">
+        <div class="site-header__drawer-head">
+          <button type="button" class="site-header__drawer-back" data-drawer-back>
+            <span class="site-header__chevron-icon site-header__chevron-icon--back" aria-hidden="true"></span>
+            <span class="visually-hidden">{{ 'Retour'|t }}</span>
+          </button>
+          <p class="site-header__drawer-title">{{ item.title }}</p>
+          <button type="button" class="site-header__drawer-close" data-drawer-close>
+            <span class="visually-hidden">{{ 'Fermer'|t }}</span>
+          </button>
+        </div>
+        {{ header.panel_content(item) }}
+        {{ header.drawer_foot(phone_number, phone_href, devis_url) }}
+      </div>
+    {% endfor %}
+
+    {% if logged_in %}
+      <div class="site-header__drawer-panel" data-drawer-panel="account">
+        <div class="site-header__drawer-head">
+          <p class="site-header__drawer-title">{{ 'Partenaires'|t }}</p>
+          <button type="button" class="site-header__drawer-close" data-drawer-close>
+            <span class="visually-hidden">{{ 'Fermer'|t }}</span>
+          </button>
+        </div>
+        {# `block()` réémet le HTML déjà capturé (dont l'id du wrapper de
+           bloc) : ce panneau et le dropdown desktop partagent donc le même id
+           dans le DOM. Sans conséquence ici (rien ne cible cet id en JS/ARIA),
+           mais à garder en tête si un jour un script cible ce bloc par id. #}
+        {{ block('account') }}
+        {{ header.drawer_foot(phone_number, phone_href, devis_url) }}
+      </div>
+    {% endif %}
+  </dialog>
 </header>

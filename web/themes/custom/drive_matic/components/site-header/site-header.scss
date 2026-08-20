@@ -1,24 +1,662 @@
-// SDC « Site :: En-tête » — bandeau global (logo + menu principal).
+// SDC « Site :: En-tête » — header F2, maquettes desktop 433-7989 (+ 4
+// dropdowns + dropdown compte 433-9619) / mobile 526-20394 (+ tiroir
+// 526-23524 + 5 sous-panneaux). Bascule desktop/mobile a 992px (palier
+// "lg"), comme site-footer/contact-intro/grid.
+// Amelioration progressive : sous `html.no-js`, la nav desktop (flyouts)
+// reste TOUJOURS visible et deployee, a toutes les largeurs — le hamburger et
+// le tiroir mobile (qui dupliquent la meme arborescence dans un layout
+// different) n'existent que sous `html.js`, pour eviter d'exposer deux copies
+// du menu sans JS. Les panneaux/dropdowns sont ouverts par defaut (lisibles),
+// et c'est uniquement sous `html.js` qu'ils se replient/positionnent en
+// flyout — meme principe que accordion-element.scss.
+
 .site-header {
+  position: relative;
   background-color: var(--dm-color-white);
   border-bottom: 1px solid var(--dm-color-grey-light);
 
-  &__inner {
+  // Mesures de maquette sans role dans les 3 tokens d'espacement globaux
+  // (ADR-013) : nommees ici plutot que semees en dur.
+  --site-header-gutter: 24px;
+  --site-header-nav-gap: 20px;
+  --site-header-card-gap-column: 11px;
+  --site-header-card-gap-row: 20px;
+  --site-header-card-width: 165px;
+
+  @media (width >= 992px) {
+    --site-header-gutter: 40px;
+    --site-header-card-gap-column: 20px;
+    --site-header-card-gap-row: 30px;
+    --site-header-card-width: 281px;
+  }
+
+  &__bar {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
+    min-height: 66px;
     max-width: 1440px;
-    margin: 0 auto;
-    padding: 16px 24px;
+    margin-inline: auto;
+    padding-inline: var(--site-header-gutter);
+    gap: 16px;
+
+    @media (width >= 992px) {
+      min-height: 90px;
+    }
   }
 
+  // --- Bouton hamburger (mobile uniquement). ---------------------------
+  &__burger {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+
+    :where(html.js) & {
+      @media (width >= 992px) {
+        display: none;
+      }
+    }
+
+    :where(html.no-js) & {
+      display: none;
+    }
+  }
+
+  &__burger-icon {
+    display: block;
+    width: 18px;
+    height: 14px;
+    background-color: var(--dm-color-anthracite);
+    mask: url('../../images/icons/hamburger.svg') no-repeat center / contain;
+  }
+
+  // --- Logo. -------------------------------------------------------------
   &__branding {
+    flex: 0 0 auto;
+
     img {
       display: block;
-      max-width: 100%;
+      width: 190px;
+      height: auto;
+
+      @media (width >= 992px) {
+        width: 226px;
+      }
+    }
+  }
+
+  // --- Nav desktop (flyouts). ----------------------------------------------
+  &__nav {
+    :where(html.js) & {
+      display: none;
+
+      @media (width >= 992px) {
+        display: block;
+      }
+    }
+  }
+
+  &__nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--site-header-nav-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__nav-trigger {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding-inline: 10px;
+    border: 0;
+    border-radius: 4px;
+    background-color: var(--dm-color-white);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.9375rem; // 15px
+    font-weight: 700;
+    line-height: 1.25rem; // 20px
+    cursor: pointer;
+
+    &[aria-expanded='true'] {
+      background-color: var(--dm-color-grey-light);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--dm-color-red);
+      outline-offset: 2px;
+    }
+  }
+
+  // « Assistance » (dernière rubrique) : pas de pastille au repos, texte nu —
+  // écart mesuré dans les 5 variantes de la maquette (433-7989), reproduit à
+  // l'identique plutôt que normalisé. Fragile si l'ordre des rubriques change
+  // un jour ; le motif est ici parce qu'il est propre à CETTE arborescence à
+  // 4 rubriques, pas un principe général de nav.
+
+  // La pastille est un `::before` positionne en absolu (et non un padding
+  // qui basculerait a l'ouverture) : `.site-header__bar` equilibre ses gaps
+  // via `justify-content: space-between`, donc tout changement de largeur
+  // du dernier item du nav se repercute sur TOUS les triggers (mesure : les
+  // 4 boutons se decalaient de 10px a l'ouverture d'Assistance).
+  &__nav-item:last-child > &__nav-trigger {
+    position: relative;
+    padding-inline: 0;
+    background-color: transparent;
+
+    &[aria-expanded='true']::before {
+      content: '';
+      position: absolute;
+      inset: 0 -10px;
+      z-index: -1;
+      border-radius: 4px;
+      background-color: var(--dm-color-grey-light);
+    }
+  }
+
+  // --- Panneaux flyout (desktop) / panneaux de contenu (mobile, dans le
+  // tiroir) : structure partagée (cartes + séparateur + liens). -----------
+  &__panel {
+    :where(html.js) & {
+      position: absolute;
+      top: calc(100% + 1px);
+
+      // Le panneau doit couvrir toute la largeur de la page, pas seulement
+      // celle (plafonnee a 1440px, centree) de `.site-header__bar` — son
+      // ancetre positionne le plus proche, dont il herite sinon la largeur.
+      // Meme echappatoire que les pistes qui debordent volontairement
+      // (ADR-008) : `calc(50% - 50vw)` pose ici, sur l'element qui deborde
+      // lui-meme, et non sur son parent qui se centre — le parent (`.bar`)
+      // garde son gutter symetrique, donc pas le piege de l'ecart constant
+      // documente pour un padding asymetrique.
+      left: calc(50% - 50vw);
+      z-index: 20;
+      display: none;
+      width: 100vw;
+      padding-block: 59px;
+      background-color: var(--dm-color-white);
+      box-shadow: 0 12px 24px rgb(0 0 0 / 12%);
+
+      &.is-open {
+        display: block;
+      }
+    }
+  }
+
+  &__panel-inner {
+    display: flex;
+    align-items: flex-start;
+    max-width: 1440px;
+    margin-inline: auto;
+
+    // La maquette mesure 72px, mais a` 1440px de viewport, cartes (884) +
+    // separateur (81) + liens (309) = 1274px ne laissent que 43px de marge
+    // de chaque cote avant le plafond du panneau (1440 - 2 * 40 de gouttiere) :
+    // pas la place pour 72px symetriques. On reutilise la gouttiere du header
+    // (40px) plutot qu'une valeur qui forcerait un retrecissement flex du
+    // contenu (cf. flex-shrink ci-dessous).
+    padding-inline: var(--site-header-gutter);
+  }
+
+  &__cards {
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    gap: var(--site-header-card-gap-row) var(--site-header-card-gap-column);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    // Desktop : largeur figee a 3 cartes (mesure Figma : x=72 a x=956, soit
+    // 884px) pour que la 4e carte (Véhicule PMR) retombe sur une 2e ligne
+    // malgré la place disponible sur 1440px — comportement mesuré sur la
+    // maquette, pas un hasard de largeur de fenêtre. `flex-shrink: 0`
+    // ci-dessus est indispensable : sans lui, le flex-row du panneau
+    // rétrécit cette largeur de force dès que cartes + séparateur + liens
+    // dépassent l'espace disponible, silencieusement (aucune erreur, juste
+    // une grille de cartes plus étroite que prévu). En mobile, le conteneur
+    // suit simplement la largeur du tiroir (342px), qui ne laisse deja
+    // place qu'a 2 cartes par ligne.
+    @media (width >= 992px) {
+      width: 884px;
+    }
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: var(--site-header-card-width);
+    color: var(--dm-color-steel);
+    text-decoration: none;
+  }
+
+  &__card-image {
+    display: block;
+    overflow: hidden;
+    border-radius: 16px;
+
+    img {
+      display: block;
+      width: 100%;
       height: auto;
     }
+  }
+
+  &__card-title {
+    font-family: var(--dm-font-body);
+    font-size: 0.9375rem; // 15px
+    font-weight: 700;
+    line-height: 1.25rem; // 20px
+  }
+
+  &__card:hover &__card-title,
+  &__card:focus-visible &__card-title {
+    text-decoration: underline;
+  }
+
+  &__panel-divider {
+    align-self: stretch;
+    flex: 0 0 auto;
+    width: 1px;
+    margin-inline: 40px;
+    background-color: var(--dm-color-grey-metal);
+
+    // Filet resserre entre les 2 premieres colonnes de liens (Drive Matic,
+    // node 433:9459) : 0 avant / 39px apres a la mesure, contre 40/40
+    // ailleurs.
+    &--tight {
+      margin-inline: 0 39px;
+    }
+  }
+
+  &__links {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    // Largeur de colonne figee (mesure Figma : Frame41/42/43, node
+    // 433:9459, 309px chacune) : sans elle, une colonne de liens se
+    // contracte a la largeur de son contenu et desaligne les filets des
+    // colonnes voisines des lors qu'il y en a plus d'une.
+    @media (width >= 992px) {
+      width: 309px;
+    }
+  }
+
+  &__link {
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.9375rem; // 15px
+    font-weight: 700;
+    line-height: 1.25rem; // 20px
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  // --- Actions desktop (téléphone, CTA, espace partenaire). ---------------
+  &__actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+
+  &__phone {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 0.9375rem; // 15px
+    font-weight: 700;
+    line-height: 1.25rem; // 20px
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  // Dans la barre : masque en mobile (le tiroir porte sa propre copie,
+  // toujours visible, dans site-header__drawer-foot), gouttiere 24px en
+  // desktop.
+  &__actions > &__phone {
+    display: none;
+
+    @media (width >= 992px) {
+      display: flex;
+      margin-inline-end: 24px;
+    }
+  }
+
+  &__phone-icon {
+    display: block;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color: var(--dm-color-anthracite);
+    mask: url('../../images/icons/phone.svg') no-repeat center / contain;
+  }
+
+  &__cta {
+    display: flex;
+    align-items: center;
+
+    // 13px (pas 14, cf. mesure directe du bouton dans le header : 46px de
+    // haut hors bordure — 14px donnerait 48).
+    padding: 13px 16px;
+    border-radius: 4px;
+    background-color: var(--dm-color-red);
+    color: var(--dm-color-white);
+    font-family: var(--dm-font-body);
+    font-size: 0.9375rem; // 15px
+    font-weight: 500;
+    line-height: 1.25rem; // 20px
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus-visible {
+      background-color: color-mix(in srgb, var(--dm-color-red) 85%, black);
+    }
+  }
+
+  // Dans la barre : masque en mobile (le tiroir porte sa propre copie,
+  // toujours visible, dans site-header__drawer-foot), gouttiere 16px en
+  // desktop avant le bouton « Espace partenaire ».
+  &__actions > &__cta {
+    display: none;
+
+    @media (width >= 992px) {
+      display: flex;
+      margin-inline-end: 16px;
+    }
+  }
+
+  // --- Déclencheur « Espace partenaire » : icône seule en mobile (dans la
+  // barre), bouton contour + libellé en desktop. --------------------------
+  &__account-trigger {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.9375rem; // 15px
+    font-weight: 500;
+    line-height: 1.25rem; // 20px
+    cursor: pointer;
+
+    @media (width >= 992px) {
+      // 10px (pas 11, cf. mesure directe : 46px de haut bordure incluse —
+      // 11px + les 2 * 1px de bordure donnerait 48).
+      padding: 10px 16px;
+      border: 1px solid var(--dm-color-steel);
+      border-radius: 6px;
+    }
+  }
+
+  &__account-icon {
+    display: block;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color: var(--dm-color-steel);
+    mask: url('../../images/icons/user.svg') no-repeat center / contain;
+  }
+
+  &__account-label {
+    // Toujours dans le flux/l'arbre d'accessibilité (le rôle du bouton ne
+    // change pas avec le point de rupture) ; seule l'apparence visuelle
+    // desktop est conditionnelle.
+    display: none;
+
+    @media (width >= 992px) {
+      display: inline;
+    }
+  }
+
+  &__account-panel {
+    :where(html.js) & {
+      position: absolute;
+      top: calc(100% + 1px);
+      right: 0;
+      z-index: 20;
+      display: none;
+      width: 328px;
+      padding: 40px 45px;
+      border-radius: 12px;
+      background-color: var(--dm-color-white);
+      box-shadow: 0 12px 24px rgb(0 0 0 / 12%);
+
+      &.is-open {
+        display: block;
+      }
+    }
+  }
+
+  // Contenu du menu "account" (bloc standard, classes du coeur) : rendu à la
+  // fois dans le dropdown desktop (&__account-panel) et le panneau du tiroir
+  // mobile (&__drawer-panel[data-drawer-panel='account']), d'où les deux
+  // contextes ciblés ensemble plutôt qu'un seul.
+  // stylelint-disable-next-line selector-class-pattern -- classe generee par block--system-menu-block.html.twig
+  &__account-panel .menu,
+  &__drawer-panel[data-drawer-panel='account'] .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  // Le coeur Drupal pose `.menu-item { padding-top: 0.2em }` (rythme d'une
+  // liste verticale) : neutralise, l'espacement est deja porte par le `gap`
+  // ci-dessus.
+  &__account-panel .menu-item,
+  &__drawer-panel[data-drawer-panel='account'] .menu-item {
+    padding: 0;
+  }
+
+  // Scopé à `.menu a`/`.menu span` (pas un `a`/`span` nu) : le panneau du
+  // tiroir porte aussi le téléphone et le CTA du pied (site-header__drawer-
+  // foot), qui ont déjà leur propre couleur — un sélecteur non scopé les
+  // écraserait.
+  &__account-panel .menu a,
+  &__account-panel .menu span,
+  &__drawer-panel[data-drawer-panel='account'] .menu a,
+  &__drawer-panel[data-drawer-panel='account'] .menu span {
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.9375rem; // 15px
+    font-weight: 700;
+    line-height: 1.25rem; // 20px
+    text-decoration: none;
+  }
+
+  &__account-panel .menu a:hover,
+  &__account-panel .menu a:focus-visible,
+  &__drawer-panel[data-drawer-panel='account'] .menu a:hover,
+  &__drawer-panel[data-drawer-panel='account'] .menu a:focus-visible {
+    text-decoration: underline;
+  }
+
+  // --- Tiroir mobile. ------------------------------------------------------
+  &__drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow-y: auto;
+    background-color: var(--dm-color-white);
+
+    :where(html.js) & {
+      @media (width >= 992px) {
+        display: none;
+      }
+    }
+
+    :where(html.no-js) & {
+      display: none;
+    }
+
+    &::backdrop {
+      background-color: rgb(0 0 0 / 40%);
+    }
+  }
+
+  &__drawer-panel {
+    display: none;
+    min-height: 100%;
+    padding-inline: var(--site-header-gutter);
+    padding-block-end: 34px;
+
+    &.is-active {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  &__drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 44px;
+    margin-block-end: 37px;
+  }
+
+  // Panneaux avec titre + retour : la rangee porte 3 zones (retour / titre
+  // centre / fermer) plutot qu'un seul bouton aligne a droite.
+  &__drawer-head:has(&__drawer-back) {
+    justify-content: space-between;
+    margin-block-end: 27px;
+  }
+
+  &__drawer-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-inline-start: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  &__drawer-title {
+    margin: 0;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.9375rem; // 15px
+    font-weight: 700;
+    line-height: 1.25rem; // 20px
+    text-align: center;
+  }
+
+  &__drawer-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 14px;
+      height: 14px;
+      background-color: var(--dm-color-anthracite);
+      mask: url('../../images/icons/close.svg') no-repeat center / contain;
+    }
+  }
+
+  &__drawer-list {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__drawer-item {
+    border-bottom: 1px solid var(--dm-color-grey-light);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  &__drawer-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 58px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.9375rem; // 15px
+    font-weight: 700;
+    line-height: 1.25rem; // 20px
+    text-align: left;
+    cursor: pointer;
+  }
+
+  &__chevron-icon {
+    display: block;
+    flex: 0 0 auto;
+    width: 8px;
+    height: 14px;
+    background-color: var(--dm-color-anthracite);
+    mask: url('../../images/icons/chevron-right.svg') no-repeat center / contain;
+
+    // Le bouton "retour" reutilise le meme chevron, mirore : Figma ne sort
+    // aucun asset "retour" distinct (verifie a l'extraction), seule
+    // l'instance est retournee au niveau du calque.
+    &--back {
+      transform: scaleX(-1);
+    }
+  }
+
+  &__drawer-foot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-top: auto;
+    padding-top: 24px;
   }
 }

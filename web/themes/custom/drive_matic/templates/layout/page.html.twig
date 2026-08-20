@@ -44,9 +44,9 @@
 #}
 <div class="layout-container">
 
-  {% embed 'drive_matic:site-header' %}
+  {% embed 'drive_matic:site-header' with { navigation: main_navigation, logged_in: logged_in, devis_url: devis_url } %}
     {% block branding %}{{ page.header }}{% endblock %}
-    {% block menu %}{{ page.primary_menu }}{{ page.secondary_menu }}{% endblock %}
+    {% block account %}{{ page.secondary_menu }}{% endblock %}
   {% endembed %}
 
   {{ page.breadcrumb }}

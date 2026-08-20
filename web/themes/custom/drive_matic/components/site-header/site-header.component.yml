@@ -1,8 +1,65 @@
 '$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
 name: 'Site :: En-tête'
 status: stable
+libraryOverrides:
+  dependencies:
+    - core/drupal
+    - core/once
+props:
+  type: object
+  required:
+    - navigation
+  properties:
+    navigation:
+      type: array
+      title: 'Arborescence du menu principal (niveaux 1 et 2, menu Drupal « main »)'
+      items:
+        type: object
+        properties:
+          title:
+            type: string
+            title: Libellé de la rubrique
+          id:
+            type: string
+            title: Identifiant HTML (aria-controls du panneau)
+          cards:
+            type: array
+            title: 'Enfants avec visuel (rendus en carte)'
+            items:
+              type: object
+              properties:
+                title:
+                  type: string
+                  title: Libellé
+                url:
+                  type: string
+                  title: URL
+                image:
+                  type: object
+                  title: 'Visuel (rendu, image responsive 16:9)'
+          link_groups:
+            type: array
+            title: 'Enfants sans visuel (rendus en lien texte), groupés par colonne'
+            items:
+              type: array
+              title: 'Une colonne de liens'
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    title: Libellé
+                  url:
+                    type: string
+                    title: URL
+    logged_in:
+      type: boolean
+      title: 'Utilisateur authentifié (bascule le bouton « Espace partenaire » entre lien de connexion et déclencheur du dropdown compte)'
+    devis_url:
+      type: string
+      title: 'URL du bouton « Demander un devis »'
 slots:
   branding:
     title: Logo / marque du site
-  menu:
-    title: Menu principal
+  account:
+    title: 'Contenu du menu compte (région secondary_menu, dropdown « Espace partenaire »)'

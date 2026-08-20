@@ -1,0 +1,38 @@
+uuid: 60190fb2-7ab1-48ae-96fd-9839e834f881
+langcode: fr
+status: true
+dependencies:
+  config:
+    - field.storage.menu_link_content.field_nav_card_image
+  module:
+    - image
+    - menu_link_content
+id: menu_link_content.menu_link_content.field_nav_card_image
+field_name: field_nav_card_image
+entity_type: menu_link_content
+bundle: menu_link_content
+label: 'Visuel de carte (méga-menu)'
+description: "Optionnel. Si renseigné, ce lien de niveau 2 est affiché en carte visuelle plutôt qu'en simple lien texte dans le méga-menu du header. Recadrage 16:9 obligatoire."
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'png gif jpg jpeg webp'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: true
+  alt_field_required: true
+  title_field: false
+  title_field_required: false
+  default_image:
+    uuid: null
+    alt: ''
+    title: ''
+    width: null
+    height: null
+field_type: image

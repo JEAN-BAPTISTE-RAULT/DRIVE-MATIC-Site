@@ -11,8 +11,11 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\Core\Menu\MenuLinkInterface;
+use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\file\FileInterface;
+use Drupal\menu_link_content\MenuLinkContentInterface;
 use Drupal\node\NodeInterface;
 use Drupal\paragraphs\ParagraphInterface;
 
@@ -420,6 +423,183 @@ function drive_matic_preprocess_bef_links(array &$variables): void {
   $variables['children'] = array_values(
     array_diff($variables['children'], ['All'])
   );
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page.
+ *
+ * Le mega-menu du header (F2) distingue, au niveau 2, des enfants avec
+ * visuel (rendus en carte) et sans visuel (rendus en simple lien) — une
+ * distinction que le rendu standard d'un system_menu_block (liste imbriquee)
+ * ne permet pas d'exprimer. On charge donc l'arbre du menu "main"
+ * directement, pour le passer en prop structuree au SDC `site-header`. Le
+ * menu "account" (region secondary_menu, dropdown « Espace partenaire »)
+ * reste rendu par son bloc standard (page.secondary_menu) : liste plate, la
+ * distinction carte/lien ne s'y applique pas.
+ */
+function drive_matic_preprocess_page(array &$variables): void {
+  $variables['main_navigation'] = _drive_matic_main_navigation($variables);
+  $variables['devis_url'] = _drive_matic_devis_cta_url();
+}
+
+/**
+ * URL du bouton « Demander un devis » du header (F2).
+ *
+ * Le type de contenu `configurator` est a exemplaire unique
+ * (docs/content-model.md) : on pointe donc vers lui plutot que vers un href
+ * en dur, pour survivre a un renommage de page. Recherche par bundle plutot
+ * que par nid : pas de numero magique a resynchroniser si le node est
+ * recree.
+ *
+ * @return string
+ *   L'URL de la page du configurateur, ou '#' si la page n'existe pas
+ *   encore.
+ */
+function _drive_matic_devis_cta_url(): string {
+  $nodes = \Drupal::entityTypeManager()->getStorage('node')
+    ->loadByProperties(['type' => 'configurator']);
+  $node = reset($nodes);
+  return $node ? $node->toUrl()->toString() : '#';
+}
+
+/**
+ * Construit l'arbre du menu "main" pour le SDC `site-header`.
+ *
+ * @param array $page_variables
+ *   Variables du template page, pour y attacher les cache tags du menu et
+ *   des entites chargees (menu et fichiers ne remontent pas leurs tags tout
+ *   seuls hors du rendu d'un bloc).
+ *
+ * @return array[]
+ *   Un tableau par rubrique de niveau 1 : title, id (pour aria-controls),
+ *   cards (enfants avec `field_nav_card_image`) et link_groups (les autres,
+ *   groupes par colonne).
+ */
+function _drive_matic_main_navigation(array &$page_variables): array {
+  $params = new MenuTreeParameters();
+  $params->setMaxDepth(3)->onlyEnabledLinks();
+  $tree = \Drupal::menuTree()->load('main', $params);
+  $tree = \Drupal::menuTree()->transform($tree, [
+    ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+    ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
+  ]);
+
+  $page_variables['#cache']['tags'][] = 'config:system.menu.main';
+
+  $navigation = [];
+  foreach ($tree as $element) {
+    if (!$element->access) {
+      continue;
+    }
+    $link = $element->link;
+    $item = [
+      'title' => $link->getTitle(),
+      'id' => Html::getId(\Drupal::transliteration()->transliterate($link->getTitle())),
+      'cards' => [],
+      'link_groups' => [],
+    ];
+
+    // Les liens "a plat" (rubriques sans sous-groupe) s'accumulent ici avant
+    // d'etre pousses comme une seule colonne ; un enfant qui porte lui-meme
+    // des enfants (ex. "Colonne 1/2/3" sous Drive Matic, maquette node
+    // 433:9459) n'est jamais affiche : seuls ses enfants forment une colonne
+    // dediee, separee des autres par un filet.
+    $flat_links = [];
+    foreach ($element->subtree as $child_element) {
+      if (!$child_element->access) {
+        continue;
+      }
+      $child_link = $child_element->link;
+
+      if ($child_element->subtree) {
+        if ($flat_links) {
+          $item['link_groups'][] = $flat_links;
+          $flat_links = [];
+        }
+        $group = [];
+        foreach ($child_element->subtree as $grandchild_element) {
+          if (!$grandchild_element->access) {
+            continue;
+          }
+          $grandchild_link = $grandchild_element->link;
+          $group[] = [
+            'title' => $grandchild_link->getTitle(),
+            'url' => $grandchild_link->getUrlObject()->toString(),
+          ];
+        }
+        if ($group) {
+          $item['link_groups'][] = $group;
+        }
+        continue;
+      }
+
+      $child = [
+        'title' => $child_link->getTitle(),
+        'url' => $child_link->getUrlObject()->toString(),
+      ];
+      $image = _drive_matic_nav_card_image($child_link, $page_variables);
+      if ($image !== NULL) {
+        $child['image'] = $image;
+        $item['cards'][] = $child;
+      }
+      else {
+        $flat_links[] = $child;
+      }
+    }
+    if ($flat_links) {
+      $item['link_groups'][] = $flat_links;
+    }
+
+    $navigation[] = $item;
+  }
+
+  return $navigation;
+}
+
+/**
+ * Rend le visuel de carte d'un lien de menu, s'il en porte un.
+ *
+ * La presence d'une image sur `field_nav_card_image` decide, a elle seule,
+ * si un enfant de niveau 2 est rendu en carte ou en simple lien (cf.
+ * decision du 2026-08-20, header F2) : pas de champ booleen separe a
+ * maintenir en coherence.
+ *
+ * @param \Drupal\Core\Menu\MenuLinkInterface $link
+ *   Le lien de niveau 2 (plugin de menu).
+ * @param array $page_variables
+ *   Variables du template page, pour y attacher les cache tags de l'entite.
+ *
+ * @return array|null
+ *   Le champ image rendu (formatter `responsive_image`, style `dm_16_9`), ou
+ *   NULL si le lien n'est pas un `menu_link_content` ou n'a pas de visuel.
+ */
+function _drive_matic_nav_card_image(MenuLinkInterface $link, array &$page_variables): ?array {
+  $plugin_id = $link->getPluginId();
+  if (!str_starts_with($plugin_id, 'menu_link_content:')) {
+    return NULL;
+  }
+
+  $uuid = substr($plugin_id, strlen('menu_link_content:'));
+  $entity = \Drupal::service('entity.repository')->loadEntityByUuid('menu_link_content', $uuid);
+  if (!$entity instanceof MenuLinkContentInterface
+    || !$entity->hasField('field_nav_card_image')
+    || $entity->get('field_nav_card_image')->isEmpty()) {
+    return NULL;
+  }
+
+  $page_variables['#cache']['tags'] = array_merge(
+    $page_variables['#cache']['tags'] ?? [],
+    $entity->getCacheTags()
+  );
+
+  return $entity->get('field_nav_card_image')->view([
+    'type' => 'responsive_image',
+    'label' => 'hidden',
+    'settings' => [
+      'responsive_image_style' => 'dm_16_9',
+      'image_loading' => ['attribute' => 'lazy'],
+    ],
+  ]);
 }
 
 /**
