@@ -56,3 +56,37 @@ rouge dans `history_element`, plaque + glyphe masque dans `product_video_element
   composant par composant. Un changement de maquette se fait en remplacant
   l'asset. La contrainte de couplage est que le conteneur de la miniature doit
   etre **positionne** (la plaque se centre en absolu) — documente dans le SDC.
+
+## Mise a jour (son a l'autoplay, 2026-08-20)
+
+Le module contrib `video_embed_field` force `mute=1` (YouTube) / `muted=1`
+(Vimeo) des que l'autoplay est actif — necessite technique du rendu **statique
+cote serveur** : sans interaction utilisateur constatable a ce stade, un
+navigateur bloque de toute facon l'autoplay sonore. Consequence non voulue :
+meme avec `autoplay: true` regle sur le formatter des trois paragraphes video,
+un visiteur qui clique sur la façade obtenait une video qui se lancait, mais
+**muette**.
+
+Le clic sur la façade est precisement l'interaction utilisateur qui manquait
+au rendu serveur. `Drupal.behaviors.driveMaticVideoFacade` (`js/video-facade.js`)
+en profite desormais, **au moment du clic** et uniquement a ce moment (avant
+insertion dans le DOM, sur le contenu clone du `<template>`) :
+
+- si l'iframe clonee porte deja `autoplay=1` (le serveur a autorise l'autoplay
+  pour ce role), retirer `mute`/`muted` de son URL et poser
+  `allow="autoplay; encrypted-media; picture-in-picture; fullscreen"` sur
+  l'iframe — le clic, geste utilisateur reel, permet alors au navigateur
+  d'autoriser la lecture avec le son ;
+- sinon (le serveur a deja rendu `autoplay=0`, cas du role portant la
+  permission `video_embed_field` « never autoplay videos ») ne rien changer —
+  ce choix editorial/accessibilite est respecte, pas contourne.
+
+Aucune modification du module contrib (regle du projet) : tout se joue dans le
+JS de theme, au moment de l'insertion, pas dans le rendu serveur.
+
+**⚠️ Piege de verification** : le compte **UID 1** (superadmin) a
+automatiquement **toutes** les permissions Drupal, y compris celle qui
+desactive l'autoplay, meme si aucun role ne la porte explicitement en
+configuration. Tester ce comportement connecte en administration renvoie donc
+systematiquement `autoplay=0` — un faux negatif. Verifier en **anonyme** (ou
+tout role authentifie sans la permission).

@@ -185,9 +185,14 @@ poser un crop 1:1 manuel sur ces deux médias avant publication définitive.
 - Écart dernier bloc → footer mesuré à **0** sur les 4 pages : pas une régression, chaque
   bloc pose déjà son `padding-block` de 32px (`--dm-space-block`) en interne, à l'identique
   du reste du site.
-- Aucun débordement horizontal réel sur `77`, `78`, `79`. Sur `54`, un écart de 20px est
-  **le carrousel « Notre histoire » qui déborde volontairement d'un côté** (piste Swiper,
-  exception documentée par ADR-013) — pas un bug.
+- Aucun débordement horizontal réel sur `77`, `78`, `79`. Sur `54`, un écart de 20px avait
+  été attribué au carrousel « Notre histoire » qui déborde volontairement d'un côté (piste
+  Swiper, exception documentée par ADR-013) — **conclusion erronée, corrigée le
+  2026-08-20** : c'était un vrai bug de calcul (`calc(50% - 50vw)` posé sur un enfant du
+  conteneur au lieu du conteneur lui-même, résolvant son `%` contre la mauvaise base — 20px
+  de constante, indépendante de la largeur de fenêtre). Présent aussi sur `jumbo_home`,
+  `news_home`, `product_features`. Corrigé, cf. [ADR-008](../../../.claude/decisions/008-slideshow-swiper.md)
+  addendum du 20/08 et [CLAUDE.md](../../../CLAUDE.md) section SCSS/SDC.
 - Node 79 : les deux `<p>` du bloc UTAC (héritage d'une saisie en 2 paragraphes alors que
   la maquette est un texte continu) ont été fusionnés en un seul, pour ne pas introduire
   un écart vertical absent de la maquette.
