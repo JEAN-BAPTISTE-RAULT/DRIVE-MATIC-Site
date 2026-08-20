@@ -3,13 +3,20 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 40px;
+
+  // Bloc/gouttière asymétriques (maquette 433-9747) : le chiffre doit rester
+  // à 49px du haut de la carte que le texte au-dessus soit présent ou non.
+  padding-block: 49px 48px;
+  padding-inline: 50px;
   border-radius: 16px;
   background: var(--dm-color-white);
   text-align: left;
 
+  // Rogne sur le padding-top au lieu de s'ajouter au flux : sans ces marges
+  // négatives, sa présence pousserait le chiffre plus bas que sur les cartes
+  // qui n'ont pas de texte au-dessus (cf. commentaire sur .triptych-element).
   &__top {
-    margin: 0;
+    margin-block: -25px -15px;
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-title);
     font-size: var(--dm-h3-size);
