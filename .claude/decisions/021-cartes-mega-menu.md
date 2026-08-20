@@ -81,3 +81,29 @@ applique pas.
 - Le contenu des menus `main` (24 liens) et `account` (5 liens) est créé par
   un script Drush ponctuel, non committé — même decision que le footer
   (ADR-020), à rejouer sur tout environnement sans dump de la base locale.
+
+## Addendum du 2026-08-20 — colonnes de liens à 3 niveaux
+
+Signalé le jour même : le dropdown « Drive Matic » (node Figma 433:9459)
+n'a aucune carte mais **3 colonnes de liens** séparées par des filets
+(3+2+1), alors que le modèle initial ne portait qu'un seul bucket `links`
+à plat par rubrique — issue directe de la portée fixée ci-dessus (Option A
+ne traitait que cartes/liens, pas le regroupement en colonnes).
+
+**Extension, pas remise en cause** : le menu passe de 2 à **3 niveaux**
+pour cette seule rubrique. Un enfant de niveau 2 qui a lui-même des
+enfants (`menu_link_content` supplémentaires, `<nolink>`, ex. « Colonne
+1/2/3 ») n'est jamais rendu comme lien — seuls ses enfants (niveau 3)
+forment une colonne dédiée. `_drive_matic_main_navigation()` charge
+désormais l'arbre sur 3 niveaux (`setMaxDepth(3)`) et produit
+`item.link_groups` (tableau de colonnes) au lieu d'un `item.links` plat.
+Les rubriques sans regroupement (Auto-école, Véhicule PMR, Assistance)
+retombent naturellement sur un unique groupe — comportement inchangé.
+
+Alternative écartée : un champ « rupture de colonne » sur
+`menu_link_content` (booléen/liste), plus proche du pattern
+`field_nav_card_image` de la décision initiale. Écartée parce que la
+scission mesurée sur la maquette n'est pas binaire (2 filets de largeurs
+différentes, 40px puis 81px) — un champ à 2 états n'aurait couvert que la
+moitié du besoin sans complexité supplémentaire, alors que la structure de
+menu à 3 niveaux couvre nativement un nombre de colonnes arbitraire.

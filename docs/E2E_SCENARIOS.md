@@ -19,12 +19,16 @@
 **Objectif** : Verifier la navigation multi-niveaux, le fil d'Ariane et le footer.
 
 **Etapes** :
-1. Depuis la home, ouvrir le menu et deployer les rubriques niveau 2 (Auto-ecole, Vehicule PMR, Drive Matic).
-2. Acceder a une page de niveau 2 (ex. « Double-pedalier »).
-3. Observer le fil d'Ariane, puis parcourir les liens du footer (solutions, assistance, reseaux sociaux, liens legaux).
+1. Depuis la home, ouvrir le menu et deployer chaque rubrique niveau 2 (Auto-ecole, Vehicule PMR, Drive Matic, Assistance), desktop puis mobile (tiroir).
+2. Sur Drive Matic (desktop), verifier les 3 colonnes de liens separees par des filets (pas une liste a plat).
+3. Ouvrir successivement 2 dropdowns differents et observer si les AUTRES boutons du nav se decalent.
+4. Acceder a une page de niveau 2 (ex. « Double-pedalier »).
+5. Observer le fil d'Ariane, puis parcourir les liens du footer (solutions, assistance, reseaux sociaux, liens legaux).
 
 **Resultats attendus** :
 - Le menu reflete l'arborescence du PRD ; les liens mènent aux bonnes pages.
+- Chaque flyout desktop couvre toute la largeur de la page (pas seulement la largeur du bandeau du header) ; son contenu reste aligne avec le logo.
+- Le dropdown Drive Matic affiche 3 colonnes de liens ; aucun bouton du nav ne bouge quand un autre dropdown s'ouvre ou se ferme.
 - Le fil d'Ariane est present sur la page de contenu **et absent sur la home**.
 - Le footer expose coordonnees, solutions auto-ecole/PMR, assistance (contact, FAQ), reseaux sociaux et liens legaux.
 
@@ -498,6 +502,7 @@
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-08-20 | **F2 — le header riche est integre** (maquettes desktop `433-7989` + 5 dropdowns, mobile `526-20394` + tiroir) : menu `main` (4 rubriques) charge directement via le service de menu (pas un `system_menu_block`), distinction carte/lien par `field_nav_card_image` sur `menu_link_content` ([ADR-021](../.claude/decisions/021-cartes-mega-menu.md)) ; menu `account` (5 liens) pour le dropdown « Espace partenaire », gate cote serveur par role. **3 bugs corriges le meme jour** (addendum ADR-021) : (1) le dropdown Drive Matic (sans carte) rendait ses 6 liens en une seule liste au lieu de 3 colonnes — l'arbre du menu passe a 3 niveaux, un enfant a enfants devient une colonne ; (2) l'ouverture du dropdown « Assistance » decalait de 10px les 3 AUTRES boutons du nav — un padding conditionnel changeait sa largeur dans un conteneur `justify-content: space-between`, remplace par un `::before` qui ne participe pas au flux (regle generale ajoutee au CLAUDE.md) ; (3) les flyouts ne couvraient que la largeur plafonnee du bandeau (1440px, centre) au lieu de toute la page — echappatoire `calc(50% - 50vw)` posee sur le panneau. **A rejouer** : S1 (menu principal, desktop et mobile) | S1 |
 | 2026-08-20 | **F2 — le footer riche est integre** (maquettes desktop `303-5967`/nœud `317:6611` et mobile `526-20394`/nœud `526:23380`) : logo, coordonnees, 3 colonnes de liens (solutions auto-ecole, solutions PMR, assistance) via un nouveau menu custom `footer-solutions` (items de tete non cliquables, route `<nolink>`), 4 icones reseaux sociaux (Instagram, TikTok, LinkedIn, YouTube — la maquette mobile n'affichait encore que 3 icones au moment de l'integration, YouTube ajoute par coherence avec le desktop et le PRD) et 4 liens legaux via le menu core `footer`, desormais peuple. Les 14 liens ciblent des nodes reels deja publies (aucun lien invente). Logo et icones sociales extraits de Figma et vectorises en SVG mono-trait (`images/icons/{instagram,tiktok,linkedin,youtube}.svg`) pour le pattern `mask` + `currentColor`. **Ecart delibere avec la maquette** : pas de ligne de copyright (absente du design riche, presente dans l'ancienne coquille minimale). **Corrige au meme moment** : le titre « Restons connectes » sortait 3,2px plus haut que les 3 autres titres de colonne — le CSS du coeur pose `.menu-item { padding-top: 0.2em }`, neutralise depuis (voir CLAUDE.md). **A rejouer** : S1 est desormais verifiable pour de vrai (menu + footer) | S1 |
 | 2026-08-20 | **F11 — le formulaire « Devenir partenaire » est mis en page** (maquette `438-9838`) : confirmation de l'effet de bord annonce par l'entree F10 ci-dessous — la grille manquait ses `#wrapper_attributes` (Civilite/Prenom/Nom sur leur propre ligne, message sur 2 colonnes, consentement pleine largeur), l'ecart titre -> formulaire etait absent (`.field--type-webform` sans `padding-block-start`, invisible sur `contact` ou `contact-intro` le pose deja), et les radios Oui/Non n'etaient pas stylees (seul champ `#type: radios` du site). Les 4 placeholders restants ont ete retires | S11 |
 | 2026-08-20 | **`legals` — le body des pages legales est mis en page** (maquette `469-11689`, node--legals.html.twig + SDC `legal-text`) : colonne 1130 (pas les 960px retunes par l'ADR-019, restes non consommes — signale dans `_tokens.scss`), ecarts titre -> body et body -> footer sur `--dm-space-page`, titres de section en bleu acier 22/32. **Contenu du node 55 (CGV) corrige** : le texte migre par l'ADR-019 ne portait aucune balise `<p>` (texte brut aplati par le navigateur, phrases distinctes fusionnees) ; 38 paragraphes reinseres par script verifie (round-trip automatique avant enregistrement), aucun mot modifie. **A rejouer** : le meme controle (`innerHTML` du `.text-formatted`, pas seulement le rendu visuel) sera necessaire sur les 3 autres pages legales quand leur `body` sera redige | Hors matrice (cf. entree du 2026-08-20 ci-dessous) |
