@@ -1,39 +1,207 @@
-// SDC « Site :: Pied de page » — bandeau sobre minimal (F2 = footer riche).
+// SDC « Site :: Pied de page » — footer riche (F2).
+// Bascule desktop/mobile a 992px (palier "lg" de drive_matic.breakpoints.yml),
+// comme contact-intro/grid/product-characteristics.
 .site-footer {
   background-color: var(--dm-color-steel);
   color: var(--dm-color-white);
   font-family: var(--dm-font-body);
 
-  &__inner {
+  // Mesures de maquette sans role dans les 3 tokens d'espacement (ADR-013) :
+  // nommees en custom properties locales plutot que semees en dur.
+  --site-footer-brand-gap: 20px;
+  --site-footer-group-gap: 20px;
+  --site-footer-item-gap: 10px;
+  --site-footer-social-title-gap: 17px;
+  --site-footer-social-icon-gap: 24px;
+  --site-footer-legal-gap: 10px;
+
+  @media (width >= 992px) {
+    --site-footer-group-gap: 68px;
+    --site-footer-legal-gap: 30px;
+  }
+
+  &__top {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--dm-space-element);
     max-width: 1440px;
-    margin: 0 auto;
-    padding: 32px 24px 16px;
-  }
+    margin-inline: auto;
+    padding-block-start: var(--dm-space-block);
+    padding-inline: var(--dm-gutter);
 
-  &__brand {
-    margin: 0;
-    font-family: var(--dm-font-title);
-    font-weight: 700;
-    font-size: var(--dm-h3-size);
-    line-height: var(--dm-h3-line);
-  }
-
-  &__menu {
-    a {
-      color: var(--dm-color-white);
+    @media (width >= 992px) {
+      flex-direction: row;
+      justify-content: space-between;
     }
   }
 
-  &__copyright {
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--site-footer-brand-gap);
+  }
+
+  &__logo {
+    width: 220px;
+    height: auto;
+
+    @media (width >= 992px) {
+      width: 269px;
+    }
+  }
+
+  &__address,
+  &__phone {
+    margin: 0;
+    font-size: 0.875rem; // 14px, hors echelle globale (footer plus dense)
+    line-height: 1.25rem; // 20px
+  }
+
+  // Rangee de liens legaux (bas de page) — declaree avant `&__columns`
+  // ci-dessous : selecteurs `.menu`/`a` moins specifiques, Stylelint
+  // (no-descending-specificity) exige cet ordre.
+  &__legal {
+    display: flex;
+    justify-content: center;
+    padding-block: var(--dm-space-block);
+    padding-inline: var(--dm-gutter);
     max-width: 1440px;
-    margin: 0 auto;
-    padding: 0 24px 32px;
-    font-size: 0.875rem;
-    color: var(--dm-color-grey-metal);
+    margin-inline: auto;
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: var(--site-footer-legal-gap);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+
+      @media (width >= 992px) {
+        flex-direction: row;
+      }
+    }
+
+    a {
+      color: var(--dm-color-grey-metal);
+      font-size: 0.75rem; // 12px
+      line-height: 1.25rem; // 20px
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__columns {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--site-footer-group-gap);
+
+    @media (width >= 992px) {
+      flex-direction: row;
+    }
+
+    // Le bloc de menu Drupal (3 colonnes solutions/PMR/assistance) devient
+    // lui-meme une rangee flex identique, pour s'aligner avec la colonne
+    // "Restons connectés" a cote.
+    // stylelint-disable-next-line selector-class-pattern -- classe generee par block--system-menu-block.html.twig (derivative_plugin_id)
+    > .menu--footer-solutions > .menu {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--site-footer-group-gap);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      @media (width >= 992px) {
+        flex-direction: row;
+      }
+    }
+
+    // stylelint-disable-next-line selector-class-pattern -- classe generee par block--system-menu-block.html.twig (derivative_plugin_id)
+    > .menu--footer-solutions .menu-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--site-footer-item-gap);
+      list-style: none;
+
+      > span {
+        font-weight: 700;
+        font-size: 1rem; // 16px
+        line-height: 1.5rem; // 24px
+      }
+
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: var(--site-footer-item-gap);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      a {
+        color: var(--dm-color-white);
+        font-size: 0.875rem; // 14px
+        line-height: 1.25rem; // 20px
+        text-decoration: none;
+
+        &:hover,
+        &:focus-visible {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  &__social {
+    display: flex;
+    flex-direction: column;
+    gap: var(--site-footer-social-title-gap);
+  }
+
+  &__social-title {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1rem; // 16px
+    line-height: 1.5rem; // 24px
+  }
+
+  &__social-list {
+    display: flex;
+    align-items: center;
+    gap: var(--site-footer-social-icon-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__social-icon {
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-color: var(--dm-color-white);
+
+    &--instagram {
+      mask: url('../../images/icons/instagram.svg') no-repeat center / contain;
+    }
+
+    &--tiktok {
+      mask: url('../../images/icons/tiktok.svg') no-repeat center / contain;
+    }
+
+    &--linkedin {
+      mask: url('../../images/icons/linkedin.svg') no-repeat center / contain;
+    }
+
+    &--youtube {
+      mask: url('../../images/icons/youtube.svg') no-repeat center / contain;
+    }
   }
 }

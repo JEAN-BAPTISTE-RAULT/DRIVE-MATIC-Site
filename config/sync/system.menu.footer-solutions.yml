@@ -1,0 +1,8 @@
+uuid: cf7b2bec-520a-420b-be18-2f39b7dcad9f
+langcode: fr
+status: true
+dependencies: {  }
+id: footer-solutions
+label: 'Pied de page — Solutions'
+description: 'Colonnes « Nos solutions pour auto-école / PMR » et « Assistance » du footer.'
+locked: false

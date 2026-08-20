@@ -77,7 +77,8 @@
   </main>
 
   {% embed 'drive_matic:site-footer' with { site_name: drupal_config('system.site', 'name') } %}
-    {% block menu %}{{ page.footer }}{% endblock %}
+    {% block solutions %}{{ page.footer.drive_matic_footer_solutions_menu }}{% endblock %}
+    {% block legal %}{{ page.footer.drive_matic_footer_legal_menu }}{% endblock %}
   {% endembed %}
 
 </div>{# /.layout-container #}

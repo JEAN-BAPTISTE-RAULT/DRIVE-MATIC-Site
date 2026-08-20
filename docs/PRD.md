@@ -84,7 +84,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Criteres d'acceptation** :
 - [ ] Le menu reprend l'arborescence des specs (rubriques niveau 1 et 2).
 - [ ] Le fil d'Ariane est present sur toutes les pages **sauf** la home page.
-- [ ] Le footer contient : coordonnees, solutions auto-ecole/PMR, assistance (contact, FAQ), reseaux sociaux (Instagram, TikTok, LinkedIn, YouTube), et les liens legaux (CGV, CGU, mentions legales, donnees personnelles).
+- [x] Le footer contient : coordonnees, solutions auto-ecole/PMR, assistance (contact, FAQ), reseaux sociaux (Instagram, TikTok, LinkedIn, YouTube), et les liens legaux (CGV, CGU, mentions legales, donnees personnelles).
 - [ ] Drive Matic peut creer des rubriques de **niveau 2** et des pages en autonomie ; la creation de rubriques de **niveau 1** requiert une intervention CSS de Passerelle.
 
 **Cas limites** :
@@ -257,6 +257,8 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - [ ] Champs obligatoires marques `*` ; captcha ; case d'autorisation.
 - [ ] Message de confirmation affiche : « Votre demande de partenariat a bien ete envoyee !... ».
 - [ ] E-mails conformes aux modeles des specs.
+
+- **Mise en oeuvre — integration du 2026-08-20** (maquette 438-9838) : le webform heritait deja de l'habillage generique (ADR-015) mais sans ses `#wrapper_attributes` — la grille (Civilite/Prenom/Nom sur leur propre ligne, message sur 2 colonnes, consentement pleine largeur) et l'ecart titre -> formulaire (absent, faute d'un bloc intro comme sur `contact`) ont ete corriges. Les radios Oui/Non, jamais stylees ailleurs sur le site (seul champ `#type: radios`), ont recu leur propre traitement (rond 20px, cote-a-cote via `#options_display: side_by_side`).
 
 ---
 

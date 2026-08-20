@@ -1,15 +1,82 @@
 {#
-  SDC « Site :: Pied de page » — bandeau sobre minimal.
-  Shell minimal : le footer riche (coordonnées, solutions, assistance,
-  réseaux sociaux, liens légaux) relève de F2 et viendra garnir le slot menu.
-  Prop : site_name (obl). Slot : menu (liens de pied de page).
+  SDC « Site :: Pied de page » — footer riche (F2), maquettes 303-5967
+  (desktop) / 526-20394 (mobile), nœud Footer 317:6611 / 526:23380.
+  Logo, adresse et réseaux sociaux sont des données de marque fixes, non
+  éditoriales : codées en dur ici (comme le fait déjà le SDC pour le
+  copyright). Solutions/assistance et liens légaux viennent des menus
+  Drupal « footer-solutions » et « footer » (slots), pour rester valides si
+  un alias de page change.
+  Prop : site_name (obl.). Slots : solutions, legal.
 #}
 <footer class="site-footer" role="contentinfo">
-  <div class="site-footer__inner">
-    <p class="site-footer__brand">{{ site_name }}</p>
-    <div class="site-footer__menu">{{ block('menu') }}</div>
+  <div class="site-footer__top">
+    <div class="site-footer__brand">
+      <a href="{{ path('<front>') }}" class="site-footer__logo-link" rel="home">
+        <img
+          class="site-footer__logo"
+          src="{{ base_path ~ active_theme_path() }}/images/logo-drive-matic-legrand.svg"
+          alt="{{ site_name }}"
+          width="269"
+          height="32"
+        />
+      </a>
+      <p class="site-footer__address">
+        {{ '18 Rue de Wolfenbuttel,'|t }}<br />
+        {{ '92310 Sèvres, France'|t }}
+      </p>
+      <p class="site-footer__phone">{{ 'Tél : 01 45 34 28 37'|t }}</p>
+    </div>
+
+    <div class="site-footer__columns">
+      {{ block('solutions') }}
+
+      <div class="site-footer__social">
+        <p class="site-footer__social-title">{{ 'Restons connectés'|t }}</p>
+        <ul class="site-footer__social-list">
+          <li>
+            <a
+              href="https://www.instagram.com/drive_matic_legrand/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="{{ 'Instagram (nouvel onglet)'|t }}"
+            >
+              <span class="site-footer__social-icon site-footer__social-icon--instagram" aria-hidden="true"></span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.tiktok.com/@drive.matic?is_from_webapp=1&sender_device=pc"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="{{ 'TikTok (nouvel onglet)'|t }}"
+            >
+              <span class="site-footer__social-icon site-footer__social-icon--tiktok" aria-hidden="true"></span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://fr.linkedin.com/company/drive-matic-legrand78"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="{{ 'LinkedIn (nouvel onglet)'|t }}"
+            >
+              <span class="site-footer__social-icon site-footer__social-icon--linkedin" aria-hidden="true"></span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.youtube.com/@drivematiclegrand"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="{{ 'YouTube (nouvel onglet)'|t }}"
+            >
+              <span class="site-footer__social-icon site-footer__social-icon--youtube" aria-hidden="true"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <p class="site-footer__copyright">
-    © {{ 'now'|date('Y') }} {{ site_name }}. {{ 'Tous droits réservés.'|t }}
-  </p>
+
+  <div class="site-footer__legal">{{ block('legal') }}</div>
 </footer>

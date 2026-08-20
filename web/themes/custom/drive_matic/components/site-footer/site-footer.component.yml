@@ -10,5 +10,9 @@ props:
       type: string
       title: Nom du site
 slots:
-  menu:
-    title: Liens de pied de page
+  solutions:
+    title: 'Solutions / Assistance'
+    description: 'Menu « footer-solutions » (3 colonnes : auto-école, PMR, assistance).'
+  legal:
+    title: 'Liens légaux'
+    description: 'Menu core « footer » (CGV, CGU, mentions légales, données personnelles).'

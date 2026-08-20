@@ -1,0 +1,25 @@
+uuid: 46642aac-e6d3-4484-8600-c29a5ab744aa
+langcode: fr
+status: true
+dependencies:
+  config:
+    - system.menu.footer-solutions
+  module:
+    - system
+  theme:
+    - drive_matic
+id: drive_matic_footer_solutions_menu
+theme: drive_matic
+region: footer
+weight: 0
+provider: null
+plugin: 'system_menu_block:footer-solutions'
+settings:
+  id: 'system_menu_block:footer-solutions'
+  label: 'Solutions et assistance'
+  label_display: '0'
+  provider: system
+  level: 1
+  depth: 2
+  expand_all_items: true
+visibility: {  }

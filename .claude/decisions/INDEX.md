@@ -24,6 +24,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-017](017-recadrage-requis-par-champ.md) | Recadrage requis applique par champ (validation dediee), pas par media | **Remplace par [ADR-018](018-images-locales-par-paragraphe.md)** | 2026-08-19 |
 | [ADR-018](018-images-locales-par-paragraphe.md) | Images locales par paragraphe (sans mediatheque) pour les 9 champs a ratio impose + node.news | Accepte | 2026-08-19 |
 | [ADR-019](019-legals-body-metatags.md) | `legals` passe de paragraphes a body + metatags, et s'etend a 4 pages (amende ADR-002, ADR-010) | Accepte | 2026-08-20 |
+| [ADR-020](020-footer-riche-menus.md) | Footer riche : menus Drupal (custom + core `footer`) plutot que liens en dur | Accepte | 2026-08-20 |
 
 ## Quand creer un ADR
 
