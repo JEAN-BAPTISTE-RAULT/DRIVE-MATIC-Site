@@ -3,26 +3,19 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.image_full.field_image
     - field.field.paragraph.image_full.field_link
+    - field.field.paragraph.image_full.field_photo
     - field.field.paragraph.image_full.field_title
     - paragraphs.paragraphs_type.image_full
+    - responsive_image.styles.dm_12_5
   module:
     - link
+    - responsive_image
 id: paragraph.image_full.default
 targetEntityType: paragraph
 bundle: image_full
 mode: default
 content:
-  field_image:
-    type: entity_reference_entity_view
-    label: hidden
-    settings:
-      view_mode: ratio_12_5
-      link: false
-    third_party_settings: {  }
-    weight: 0
-    region: content
   field_link:
     type: link
     label: hidden
@@ -34,6 +27,17 @@ content:
       target: ''
     third_party_settings: {  }
     weight: 2
+    region: content
+  field_photo:
+    type: responsive_image
+    label: hidden
+    settings:
+      responsive_image_style: dm_12_5
+      image_link: ''
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 0
     region: content
 hidden:
   field_title: true

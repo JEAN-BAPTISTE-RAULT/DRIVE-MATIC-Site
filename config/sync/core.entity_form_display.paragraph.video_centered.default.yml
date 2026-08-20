@@ -4,11 +4,12 @@ status: true
 dependencies:
   config:
     - field.field.paragraph.video_centered.field_caption
-    - field.field.paragraph.video_centered.field_image
+    - field.field.paragraph.video_centered.field_photo
     - field.field.paragraph.video_centered.field_video
+    - image.style.thumbnail
     - paragraphs.paragraphs_type.video_centered
   module:
-    - media_library
+    - image_widget_crop
     - video_embed_field
 id: paragraph.video_centered.default
 targetEntityType: paragraph
@@ -23,12 +24,21 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_image:
-    type: media_library_widget
+  field_photo:
+    type: image_widget_crop
     weight: 1
     region: content
     settings:
-      media_types: {  }
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+      crop_preview_image_style: crop_thumbnail
+      crop_list:
+        - crop_16_9
+      crop_types_required:
+        - crop_16_9
+      warn_multiple_usages: false
+      show_crop_area: true
+      show_default_crop: true
     third_party_settings: {  }
   field_video:
     type: video_embed_field_textfield

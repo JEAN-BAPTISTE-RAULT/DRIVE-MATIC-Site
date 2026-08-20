@@ -1,0 +1,22 @@
+{#
+/**
+ * @file
+ * Pages « Corporate » (F9) — Qui sommes-nous, Nos ateliers, Recherches et
+ * développement, Savoir-faire et certifications.
+ *
+ * Affiche le chapô (`body`) dans le SDC `page-intro`, puis les paragraphes.
+ * Le titre de la page n'est pas rendu ici : il vient du bloc titre de page,
+ * qui est visible sur ce bundle (ADR-014). Le rendre ici le doublerait.
+ *
+ * @see node.html.twig pour la liste complète des variables.
+ */
+#}
+<article{{ attributes.addClass('node', 'node--type-corporate') }}>
+  {% if content.body|render|trim is not empty %}
+    {% embed 'drive_matic:page-intro' %}
+      {% block text %}{{ content.body }}{% endblock %}
+    {% endembed %}
+  {% endif %}
+
+  {{ content.field_paragraphs }}
+</article>

@@ -12,7 +12,7 @@
   datetime: node.changed.value|date('c'),
   caption: node.field_caption.value,
 } %}
-  {% block media %}{{ content.field_image }}{% endblock %}
+  {% block media %}{{ content.field_photo }}{% endblock %}
   {% block body %}{{ content.body }}{% endblock %}
   {% block blocks %}{{ content.field_paragraphs }}{% endblock %}
 {% endembed %}

@@ -5,11 +5,13 @@ dependencies:
   config:
     - field.field.paragraph.history_element.field_caption
     - field.field.paragraph.history_element.field_description
-    - field.field.paragraph.history_element.field_image
+    - field.field.paragraph.history_element.field_photo
     - field.field.paragraph.history_element.field_title
     - field.field.paragraph.history_element.field_video
     - paragraphs.paragraphs_type.history_element
+    - responsive_image.styles.dm_16_9
   module:
+    - responsive_image
     - text
     - video_embed_field
 id: paragraph.history_element.default
@@ -24,12 +26,14 @@ content:
     third_party_settings: {  }
     weight: 2
     region: content
-  field_image:
-    type: entity_reference_entity_view
+  field_photo:
+    type: responsive_image
     label: hidden
     settings:
-      view_mode: ratio_16_9
-      link: false
+      responsive_image_style: dm_16_9
+      image_link: ''
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
     weight: 0
     region: content

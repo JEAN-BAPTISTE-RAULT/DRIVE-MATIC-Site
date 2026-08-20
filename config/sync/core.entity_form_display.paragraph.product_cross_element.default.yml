@@ -3,25 +3,19 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.product_cross_element.field_image
     - field.field.paragraph.product_cross_element.field_link
+    - field.field.paragraph.product_cross_element.field_photo
     - field.field.paragraph.product_cross_element.field_title
+    - image.style.thumbnail
     - paragraphs.paragraphs_type.product_cross_element
   module:
+    - image_widget_crop
     - link
-    - media_library
 id: paragraph.product_cross_element.default
 targetEntityType: paragraph
 bundle: product_cross_element
 mode: default
 content:
-  field_image:
-    type: media_library_widget
-    weight: 2
-    region: content
-    settings:
-      media_types: {  }
-    third_party_settings: {  }
   field_link:
     type: link_default
     weight: 1
@@ -29,6 +23,22 @@ content:
     settings:
       placeholder_url: ''
       placeholder_title: ''
+    third_party_settings: {  }
+  field_photo:
+    type: image_widget_crop
+    weight: 2
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+      crop_preview_image_style: crop_thumbnail
+      crop_list:
+        - crop_16_9
+      crop_types_required:
+        - crop_16_9
+      warn_multiple_usages: false
+      show_crop_area: true
+      show_default_crop: true
     third_party_settings: {  }
   field_title:
     type: string_textfield

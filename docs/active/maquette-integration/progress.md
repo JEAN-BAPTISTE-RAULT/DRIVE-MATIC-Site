@@ -39,7 +39,7 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | # | Page | Node | Node-id Figma | État |
 |---|------|------|---------------|------|
 | 1 | Accueil | 31 | `303-5967` | ✅ **conforme, rien à changer** — voir « Le lorem est celui des maquettes » |
-| 2 | Qui sommes-nous | 54 | `433-9747` | ✅ **reconstruite le 2026-08-18** — 6 blocs conformes |
+| 2 | Qui sommes-nous | 54 | `433-9747` | ✅ **mesurée le 2026-08-19** (le « 6 blocs conformes » du 18/08 portait sur le contenu, pas la mise en page — voir « 11bis » plus bas). 2 vraies photos de la maquette réintégrées, logo UTAC sur le bloc « qualité certifiée » |
 | 3 | **CGV** (type `legals`) | 55 | `469-11689` | ✅ **intégrée** — 15 sections `text_left_aligned`. Le frame s'appelle « Conditions générales de vente » : le type `legals` (« Page :: Mentions légales ») porte les CGV. Titre et alias changés, 301 auto depuis /mentions-legales |
 | 4 | **FAQ** | 62 | `396-11620` | ✅ **intégrée le 2026-08-19** (le « intégrée » précédent portait sur le contenu : filtre en liste verticale à puces collée au bord gauche, pas de 95px au lieu de 87 — voir « 4bis » plus bas). Titre « FAQ : Nous répondons à vos questions », motif Pathauto **supprimé**, alias en dur `/faq`, 301 depuis /questions-frequentes |
 | 5 | Documentations | 67 | `398-12119` | ✅ **restructurée** — type de node `document` supprimé, les 2 champs passés en **Fichier illimité**, titres de section en dur dans le Twig |
@@ -48,9 +48,9 @@ Piège rencontré : `news-card` et `news-teaser` lisaient `node.field_title.valu
 | 8 | Une actualité | 17 | `438-10665` | ✅ **intégrée le 2026-08-19** (le « conforme » précédent portait sur l'ordre des champs : la page rendait la date, la légende et le corps **collés au bord gauche**, et le visuel sur 1440 recadré en 16:9 — voir « 8bis » plus bas). SDC `news-article`, visuel sans recadrage, colonne unique de 960 |
 | 9 | Contact | 1 | `433-7637`, `438-9060`, `438-9465`, `438-9456`, `438-9457` ✅ | **formulaire stylé et modales faites** (cf. « 9bis » plus bas). Les 4 frames restants n'étaient pas des « états du formulaire » : deux sont les **variantes SAV et question**, deux les **modales « carte grise »**. Reste hors formulaire : la ligne adresse + carte au-dessus de la carte grise du formulaire |
 | 10 | Devenir partenaire | 2 | `438-9838` | ✅ **conforme** — titre puis formulaire, `body` masqué (aucun chapô dans la maquette), mention « *Champs obligatoires » activée |
-| 11 | Nos ateliers | **77** | `436-2486` | ✅ **créée** — titre, chapô (`body`), 2 `image_text_50` alternées. Alias `/nos-ateliers` |
-| 12 | Recherches et développement | **78** | `436-8300` | ✅ **créée** — titre, chapô (`body`), 2 `image_text_50` alternées, puis un `text_centered` (« Innover aujourd’hui… »). Alias `/recherches-et-developpement`. Visuels = placeholders (la maquette ne pose que des rectangles gris). Le titre retenu est celui de la maquette, pas le « Recherche & développement » du PRD F9 |
-| 13 | Savoir-faire et certifications | **79** | `436-8578` | ✅ **créée** — titre, chapô, 2 `image_text_50` **toutes deux image à gauche** (pas d'alternance ici). Logos UTAC et ISO 9001 exportés de la maquette (médias 27 et 28). Alias `/savoir-faire-et-certifications`. Le lien en attente du node 54 est câblé |
+| 11 | Nos ateliers | **77** | `436-2486` | ✅ **mesurée le 2026-08-19** — titre, chapô (`body`), 2 `image_text_50` alternées. 1 vraie photo de la maquette réintégrée (bloc 1), le bloc 2 reste un placeholder bibliothèque (grey rectangle réel dans la maquette). Alias `/nos-ateliers` |
+| 12 | Recherches et développement | **78** | `436-8300` | ✅ **mesurée le 2026-08-19** — titre, chapô (`body`), 2 `image_text_50` alternées (placeholders bibliothèque confirmés — les deux blocs sont de vrais rectangles gris dans la maquette), puis un `text_centered` (« Innover aujourd’hui… »). Alias `/recherches-et-developpement`. Le titre retenu est celui de la maquette, pas le « Recherche & développement » du PRD F9 |
+| 13 | Savoir-faire et certifications | **79** | `436-8578` | ✅ **mesurée le 2026-08-19** — titre, chapô, 2 `image_text_50` **toutes deux image à gauche** (pas d'alternance ici). Logos UTAC et ISO 9001 exportés de la maquette (médias 27 et 28). Alias `/savoir-faire-et-certifications`. Le lien en attente du node 54 est câblé |
 
 Déjà conformes (vérifiées le 2026-08-18) : node 52 (`363-9316`), node 76 (`389-10805`), node 75 (`390-11137`).
 Les 6 produits sans maquette (53, 70-74) portent un `image_full` seul, conformément à la consigne.
@@ -131,6 +131,181 @@ pour la pleine fenêtre : servi dans une colonne de 960 ses dérivés sont surdi
 alors qu'il est masqué sur `teaser` — sans effet en anonyme. Et le contenu du 1er bloc du
 node 17 dit « En savoir plus » / « Dossier de presse » là où la maquette dit « Lien vers
 site » / « Télécharger » : saisie éditoriale sur un node de test, hors intégration.
+
+## « 11bis » — Les 4 pages « corporate », mesure et vraies photos (2026-08-19)
+
+**Constat de départ.** Les 4 pages (54, 77, 78, 79) n'avaient jamais reçu la passe
+« mesurer, comparer au rendu » — seul leur contenu avait été vérifié à leur création.
+Contrairement aux autres pages reprises ce jour-là, le bloc titre (`_page-title.scss`)
+et le chapô (`page-intro.scss`) étaient **déjà mesurés directement sur 3 de ces 4
+maquettes** (`436-2486`, `436-8300`, `436-8578` cités en commentaire de leurs
+fondations) : la charpente haute de page n'était donc pas un risque réel, contrairement
+à ce qu'un premier balayage aurait pu laisser croire.
+
+**Découverte non documentée : deux blocs des pages 54 et 77 ont une vraie photo dans
+la maquette, pas un rectangle gris.** La note « les visuels corporate sont des
+rectangles gris » ([[home-content]]) était vraie pour `78` et pour un bloc sur deux de
+`77`/`54`, mais pas générale — elle avait été tirée des pages `78`/`79` et appliquée
+par erreur à l'ensemble du type. Vérifié bloc par bloc via `get_screenshot` puis
+`download_assets` :
+
+- Node 54, bloc « Notre engagement » : la maquette montre un technicien DRIVE MATIC
+  LEGRAND consultant une tablette devant un véhicule (photo réelle, pas de placeholder).
+  Le node pointait vers `home-jumbo-auto-ecole.jpg` (média 5, un visuel générique de la
+  home) → **remplacé par la vraie photo** exportée de Figma (média 53,
+  `public://corporate/qui-sommes-nous-engagement.png`).
+- Node 54, bloc « La qualité certifiée » : la maquette montre les logos UTAC **et** ISO
+  9001 empilés dans une seule zone image. `image_text_50` n'a qu'un seul `field_image` —
+  **décision de l'utilisatrice (option A)** : n'afficher que le logo UTAC (média 27, déjà
+  importé pour le node 79, déjà recadré 1:1). Le node pointait vers `home-jumbo-pmr.jpg`
+  (média 6, sans rapport) → corrigé.
+- Node 77, bloc « Un savoir-faire technique reconnu » : la maquette montre des mains
+  réglant un pédalier dans un habitacle (photo réelle). Le node pointait vers
+  `home-savoir-faire.png` (média 11, réutilisé depuis la home) → **remplacé** par la vraie
+  photo (média 54, `public://corporate/nos-ateliers-savoir-faire.png`).
+- Les placeholders bibliothèque restants (node 54 bloc « 65 ans », node 77 bloc
+  « réseau de partenaires », les 2 blocs du node 78) sont **confirmés comme de vrais
+  rectangles gris dans la maquette** (screenshot à l'appui) : le remplacement par une
+  image de la bibliothèque déjà en place est correct, rien à changer. La note rouge sur
+  le bloc « 65 ans » (« Mettre les différents logo Drive Matic avec leur date ») reste une
+  instruction de designer sans asset réel fourni — non actionnable.
+
+⚠️ **Les 2 nouvelles photos sont importées sans crop fabriqué** (média 53 et 54) —
+conformément à [[crop-obligatoire-manuel]], aucun recadrage n'a été posé par script.
+Elles s'affichent donc actuellement **non recadrées** dans leur slot 1:1 (510×340 au
+lieu de 510×510, ratio natif de la photo conservé). **Reste à faire en back-office** :
+poser un crop 1:1 manuel sur ces deux médias avant publication définitive.
+
+**Mesures reprises sur le rendu (navigateur, 1440, anonyme)** — les 4 pages :
+
+- Un seul `<h1>`, centré, colonne **270..1170 (900)**, comme les 3 maquettes déjà citées
+  en fondation.
+- `--dm-space-page` (49px) au-dessus du titre, écart titre → chapô conforme à l'arbitrage
+  déjà pris (49 au lieu des 40 de la maquette, cf. `page-intro.scss`).
+- Écart dernier bloc → footer mesuré à **0** sur les 4 pages : pas une régression, chaque
+  bloc pose déjà son `padding-block` de 32px (`--dm-space-block`) en interne, à l'identique
+  du reste du site.
+- Aucun débordement horizontal réel sur `77`, `78`, `79`. Sur `54`, un écart de 20px est
+  **le carrousel « Notre histoire » qui déborde volontairement d'un côté** (piste Swiper,
+  exception documentée par ADR-013) — pas un bug.
+- Node 79 : les deux `<p>` du bloc UTAC (héritage d'une saisie en 2 paragraphes alors que
+  la maquette est un texte continu) ont été fusionnés en un seul, pour ne pas introduire
+  un écart vertical absent de la maquette.
+
+## « 11ter » — Deux vrais bugs remontés par l'utilisatrice après « 11bis »
+
+La passe « 11bis » avait conclu trop vite sur deux points : une vérification de
+`.page-intro` qui n'a pas remarqué son absence, et l'hypothèse (jamais vérifiée) que
+le pipeline crop restait sans faille hors script. Les deux se sont révélés faux.
+
+**1. Le chapô n'était mis en page sur AUCUNE des 4 pages.** Cause : il n'existe pas de
+`node--corporate.html.twig` — le type tombait donc sur le `node.html.twig` générique,
+qui rend `{{ content }}` brut (le champ `body` sans l'enveloppe `page-intro`, donc sans
+colonne 900, sans centrage, sans le `padding-block-start` de 49px). Le gabarit
+`text-align/width` de `page-intro.scss` n'était simplement jamais atteint. Créé
+`node--corporate.html.twig` sur le modèle de `node--documents.html.twig` (chapô dans
+`{% embed 'drive_matic:page-intro' %}`, puis `content.field_paragraphs`). Vérifié après
+coup sur les 4 pages : chapô à x=270/w=900, centré, `padding-block-start: 49px`.
+
+⚠️ **Piège méthodologique à ne pas reproduire** : la mesure « 11bis » avait bien
+interrogé `document.querySelector('.page-intro')`, mais le script ignorait le cas où le
+sélecteur ne matchait rien (la clé `introBox` disparaissait simplement du JSON au lieu
+d'afficher une erreur) — d'où une« page-intro déjà mesurée sur ces maquettes » présumée
+à tort. **Toujours vérifier explicitement qu'un `querySelector` a retourné un élément
+avant d'utiliser son absence comme preuve d'absence de problème.**
+
+**2. Le recadrage n'était pas proposé du tout en ajoutant une image en contexte**
+(depuis le widget media library d'un paragraphe — le chemin qu'utilise réellement un
+éditeur). Cause détaillée dans l'addendum du 2026-08-19 à
+[ADR-004](../../../.claude/decisions/004-pipeline-images.md) : le mode de formulaire
+`media_library` du bundle `image` portait le widget `image_image` (sans crop) et non
+`image_widget_crop`, contrairement au mode `default` (utilisé seulement par la page
+d'admin autonome, jamais par un éditeur en pratique). Corrigé par config
+(`core.entity_form_display.media.image.media_library`), vérifié en simulant un upload
+dans le modal : les 3 onglets de recadrage requis apparaissent.
+
+Les médias 53 et 54 (photos réelles importées en 11bis, toujours sans crop) devront
+être recadrés par cette voie corrigée — désormais possible, ce qui ne l'était pas avant
+ce correctif.
+
+**Suite (même jour)** : ce correctif restait insuffisant selon l'utilisatrice — il
+exigeait les 3 ratios sur tout import, sans lien avec le champ de destination, et ne
+couvrait pas la réutilisation d'un media déjà en base. Voir [ADR-017](../../../.claude/decisions/017-recadrage-requis-par-champ.md) :
+une validation dédiée par champ (`drivematic_forms`) bloque désormais la sauvegarde du
+node tant que le media sélectionné — neuf ou repris de la médiathèque — n'a pas le
+recadrage exigé par CE champ précis. Vérifié : sauvegarder le node 77 avec le média 54
+(sans `crop_1_1`, requis par `image_text_50`) est bloqué avec un message nommant le
+media et le format attendu ; retirer le média reste possible. ⚠️ Ne s'exécute que si le
+bloc est ouvert (« Modifier ») dans le formulaire — un bloc replié non touché n'est pas
+revalidé à l'enregistrement (comportement standard de Paragraphs).
+
+**Suite (même jour, 3e passe)** : l'utilisatrice a précisé qu'elle voulait voir
+apparaître **le widget de recadrage lui-même** à l'import (neuf ou depuis la
+médiathèque), pas seulement un blocage à l'enregistrement. Ajout des modules
+`contextual_image_widget_crop` (widgets contextuels) et retrait de `media_library_edit`
+(redondant). Un widget custom `DrivematicContextualMediaLibraryWidget` fournit le ratio
+exigé (déjà connu via `_drivematic_forms_image_crop_map()`) là où le module ne peut pas
+le déduire seul. Détail complet, limite assumée (fichier tout juste déversé, avant
+sélection) et vérification dans l'addendum du 19/08 à [ADR-017](../../../.claude/decisions/017-recadrage-requis-par-champ.md).
+Vérifié en navigateur : sélectionner le média 53 (non recadré) sur le bloc « 65 ans »
+du node 54 affiche un lien « edit / crop » qui ouvre une modale limitée au seul onglet
+« Carré (1:1) ».
+
+**Bug immédiat, corrigé (4e passe)** : enregistrer le média depuis cette modale
+refusait avec « Paysage (16:9), Bannière (12:5) are required » — les deux onglets
+masqués restaient exigés par le widget lui-même (`crop_types_required`, posé à « les 3
+toujours » lors du 1er correctif de ce fil). Vidé sur les deux modes de formulaire du
+média ; l'obligation retombe entièrement sur la validation par champ (déjà en place).
+Vérifié : l'enregistrement du média 53 depuis le lien scopé réussit sans erreur.
+Détail dans l'addendum 2 de [ADR-017](../../../.claude/decisions/017-recadrage-requis-par-champ.md).
+
+**Rebondissement final (même jour, 4e passe)** : tout ce qui précède répondait à la
+mauvaise question. Le vrai problème : le recadrage Drupal est rattaché au **fichier**,
+pas à l'usage — réutiliser la même image dans deux blocs `image_text_50` impose donc
+le même cadrage aux deux, sans moyen de le varier. Deux corrections écartées par
+l'utilisatrice : dupliquer le fichier (« ridicule », et la médiathèque affiche tout en
+vignettes carrées indistinguables) ; `media_contextual_crop` (stocke le recadrage par
+référence) exige un **patch sur Drupal core** touchant le contrôleur qui sert toutes
+les images du site — écarté après l'avoir concrètement testé.
+
+**Solution retenue** ([ADR-018](../../../.claude/decisions/018-images-locales-par-paragraphe.md)) :
+les 9 paragraphes à ratio imposé + `node.news` (champ renommé `field_photo`, son
+ancien storage étant partagé avec `node.brand`/`node.contact`, non concernés) passent
+en **champ image local** — upload direct dans le paragraphe, sans médiathèque, exactement
+le modèle des autres sites Passerelle. Le recadrage étant lié au fichier et non au
+champ, **aucun recadrage existant n'a été perdu** : 72 valeurs de paragraphe (dont 36
+imbriquées dans un bloc via `field_elements`/`field_jumbo_elements`/
+`field_cross_elements`/`field_features_elements`) + 32 `node.news` capturées puis
+restaurées à l'identique sur les nouveaux champs — vérifié exhaustivement, 104/104,
+aucun fichier manquant. Le mécanisme de l'ADR-017 (widget custom, validation,
+`contextual_image_widget_crop`) est retiré, devenu sans objet.
+
+⚠️ **Écart trouvé et corrigé en vérifiant** : le bloc « 65 ans d'expertise » du node 54
+portait par erreur le même fichier que « Notre engagement » (glissement survenu
+pendant les tests interactifs de ce fil) — remis sur `home-savoir-faire.png` avant
+migration.
+
+⚠️ **Point non tranché, à signaler** : en testant le widget de recadrage scopé
+(addendum 1 de l'ADR-017), un enregistrement sans interaction a validé un crop
+**par défaut** (`show_default_crop`) sur le média « Corporate — technicien et
+diagnostic véhicule » — une position plausible mais **non choisie par un éditeur**.
+Ce fichier est désormais utilisé directement (media abandonnée) ; son cadrage actuel
+mérite une relecture en back-office, comme les cas relevés dans l'audit du 18/08.
+
+⚠️ **Bug trouvé en vérifiant avant de livrer, corrigé le même jour** : `field.storage.
+paragraph.field_image` est une storage partagée par les **12** bundles de paragraphe
+(les 9 à ratio + les 3 « sans crop »), pas seulement les 9 visés. La convertir en
+`image` a donc aussi converti silencieusement `image_centered`/`image_text_100`/
+`product_characteristics` — perte de la médiathèque là où ADR-018 disait explicitement
+de la garder (aucune perte de donnée : fichier/alt restent corrects). Corrigé en
+appliquant aux 9 bundles à ratio le même renommage que `node.news` (nouveau champ
+`field_photo`), ce qui libère `field_image` pour les 3 bundles sans crop, dont la
+storage a été recréée en `entity_reference`/media et les valeurs restaurées par
+recherche inverse fichier → media (unique, vérifiée). Vérifié de bout en bout après
+coup : `entity.form_builder` sur chaque bundle des deux groupes, rendu front (200,
+alt correct), `drush cst` propre sur tous les objets de config concernés. Détail dans
+l'addendum du 19/08 à l'[ADR-018](../../../.claude/decisions/018-images-locales-par-paragraphe.md)
+et [[shared-storage-check-all-bundles]] (mémoire).
 
 ## « 4bis » — FAQ, intégration réelle (mesuré le 2026-08-19)
 

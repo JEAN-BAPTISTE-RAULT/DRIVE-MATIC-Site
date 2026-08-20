@@ -7,16 +7,16 @@ dependencies:
     - field.field.paragraph.image_text_50.field_caption
     - field.field.paragraph.image_text_50.field_description
     - field.field.paragraph.image_text_50.field_file
-    - field.field.paragraph.image_text_50.field_image
     - field.field.paragraph.image_text_50.field_link
+    - field.field.paragraph.image_text_50.field_photo
     - field.field.paragraph.image_text_50.field_text_position
     - field.field.paragraph.image_text_50.field_title
+    - image.style.thumbnail
     - paragraphs.paragraphs_type.image_text_50
   module:
     - file
+    - image_widget_crop
     - link
-    - media_library
-    - options
     - text
 id: paragraph.image_text_50.default
 targetEntityType: paragraph
@@ -52,13 +52,6 @@ content:
     settings:
       progress_indicator: throbber
     third_party_settings: {  }
-  field_image:
-    type: media_library_widget
-    weight: 2
-    region: content
-    settings:
-      media_types: {  }
-    third_party_settings: {  }
   field_link:
     type: link_default
     weight: 4
@@ -66,6 +59,22 @@ content:
     settings:
       placeholder_url: ''
       placeholder_title: ''
+    third_party_settings: {  }
+  field_photo:
+    type: image_widget_crop
+    weight: 2
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+      crop_preview_image_style: crop_thumbnail
+      crop_list:
+        - crop_1_1
+      crop_types_required:
+        - crop_1_1
+      warn_multiple_usages: false
+      show_crop_area: true
+      show_default_crop: true
     third_party_settings: {  }
   field_text_position:
     type: options_select

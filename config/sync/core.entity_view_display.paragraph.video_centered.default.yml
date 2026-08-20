@@ -4,22 +4,26 @@ status: true
 dependencies:
   config:
     - field.field.paragraph.video_centered.field_caption
-    - field.field.paragraph.video_centered.field_image
+    - field.field.paragraph.video_centered.field_photo
     - field.field.paragraph.video_centered.field_video
     - paragraphs.paragraphs_type.video_centered
+    - responsive_image.styles.dm_16_9
   module:
+    - responsive_image
     - video_embed_field
 id: paragraph.video_centered.default
 targetEntityType: paragraph
 bundle: video_centered
 mode: default
 content:
-  field_image:
-    type: entity_reference_entity_view
+  field_photo:
+    type: responsive_image
     label: hidden
     settings:
-      view_mode: ratio_16_9
-      link: false
+      responsive_image_style: dm_16_9
+      image_link: ''
+      image_loading:
+        attribute: lazy
     third_party_settings: {  }
     weight: 0
     region: content

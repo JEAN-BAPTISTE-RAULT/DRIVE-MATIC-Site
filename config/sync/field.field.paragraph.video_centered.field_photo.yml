@@ -1,0 +1,38 @@
+uuid: 5a00fe5b-5881-473c-aa01-5b93938776c1
+langcode: fr
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_photo
+    - paragraphs.paragraphs_type.video_centered
+  module:
+    - image
+id: paragraph.video_centered.field_photo
+field_name: field_photo
+entity_type: paragraph
+bundle: video_centered
+label: 'Miniature (thumbnail)'
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'png gif jpg jpeg webp'
+  max_filesize: ''
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: true
+  alt_field_required: true
+  title_field: false
+  title_field_required: false
+  default_image:
+    uuid: null
+    alt: ''
+    title: ''
+    width: null
+    height: null
+field_type: image

@@ -6,6 +6,6 @@
 {% embed 'drive_matic:video-centered' with {
   caption: paragraph.field_caption.value,
 } %}
-  {% block thumbnail %}{{ content.field_image }}{% endblock %}
+  {% block thumbnail %}{{ content.field_photo }}{% endblock %}
   {% block video %}{{ content.field_video }}{% endblock %}
 {% endembed %}
