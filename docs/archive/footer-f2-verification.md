@@ -1,5 +1,9 @@
 # Verification — Footer riche (F2)
 
+> Trace d'audit. Feature : SDC `site-footer` riche (logo, coordonnees, menus
+> `footer-solutions`/`footer`, reseaux sociaux, liens legaux). Decision :
+> [ADR-020](../.claude/decisions/020-footer-riche-menus.md).
+
 ## Commandes executees
 
 | Commande | Resultat | Notes |
@@ -26,7 +30,7 @@
 ## Risques identifies et mitigations
 
 - **Alias qui changent** → mitige par le choix de menus Drupal (menu_link_content
-  pointant vers l'entite) plutot que des `href` en dur (cf. [ADR-020](../../../.claude/decisions/020-footer-riche-menus.md)).
+  pointant vers l'entite) plutot que des `href` en dur (cf. [ADR-020](../.claude/decisions/020-footer-riche-menus.md)).
 - **`<nolink>` mal rendu** → verifie au navigateur (markup anonyme) : rendu en
   `<span>`, pas de lien casse.
 - **Contenu (menu_link_content) non versionne** → coherent avec la decision
@@ -68,3 +72,15 @@
    mesures. Egalement : la hauteur totale du footer (287px mesure vs 324px
    maquette) n'a pas ete resorbee, ecart assume (rythme `--dm-space-block`
    au lieu des paddings exacts de la maquette, pas de ligne de copyright).
+
+## Correctif du 2026-08-20 : titre « Restons connectes » desaligne
+
+Signale par l'utilisatrice apres livraison : le titre sortait 3,2px plus bas
+que les 3 autres titres de colonne. Cause identifiee par mesure DOM
+(`getBoundingClientRect` sur chaque `<span>`/`<p>` de titre, pas a l'oeil) :
+le CSS du coeur Drupal pose `.menu-item { padding-top: 0.2em }` (rythme
+d'une liste verticale par defaut), herite par nos `<li>` reutilises en
+colonnes flex — absent du `<p>` "Restons connectes", code en dur. Neutralise
+(`padding: 0`) sur les deux menus du footer. Regle generale consignee dans
+CLAUDE.md (SCSS/SDC) et dans la memoire auto (`sdc-config-gotchas`), pour
+tout futur `system_menu_block` restyle en layout non-liste.
