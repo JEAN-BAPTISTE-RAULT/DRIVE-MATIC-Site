@@ -1,5 +1,5 @@
 uuid: 70447729-acf0-4d6c-9bd0-3f4fea85b38d
-langcode: en
+langcode: fr
 status: true
 dependencies:
   enforced:
@@ -8,8 +8,8 @@ dependencies:
 _core:
   default_config_hash: mII4acOv33s-j8PINywrCag4OITbeJGxdPO373dnHHw
 id: education
-label: Education
-category: Demographic
+label: Éducation
+category: Démographique
 likert: false
 options: |
   High School: High School

@@ -1,11 +1,11 @@
 uuid: c3af17fb-0561-448d-96ff-f8d939612238
-langcode: en
+langcode: fr
 status: true
 dependencies: {  }
 _core:
   default_config_hash: puBstSLDz8mbaWU357zaqQDBGMGsJzG0j-TQNQkjg20
 id: '404'
-label: '404 page not found'
+label: 'Page 404 non trouvée'
 tags:
   canonical_url: '[site:url]'
   shortlink: '[site:url]'

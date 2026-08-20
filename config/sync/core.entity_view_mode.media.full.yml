@@ -1,5 +1,5 @@
 uuid: f12667be-48d8-47d4-90be-affb1e050b6a
-langcode: en
+langcode: fr
 status: false
 dependencies:
   module:
@@ -7,7 +7,7 @@ dependencies:
 _core:
   default_config_hash: dTfAUHooYV0uOVPO3saGpgv-c5PppJXDwxvwRTJOycM
 id: media.full
-label: 'Full content'
+label: 'Contenu complet'
 description: ''
 targetEntityType: media
 cache: true

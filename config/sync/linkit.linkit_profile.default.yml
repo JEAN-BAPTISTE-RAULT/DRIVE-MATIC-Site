@@ -1,12 +1,12 @@
 uuid: e494ef41-2477-444a-bf0a-41fe15cfc342
-langcode: en
+langcode: fr
 status: true
 dependencies:
   module:
     - node
 _core:
   default_config_hash: 0Jw_BFJCCtWk187tIYvME58VFpYwPaAdrc4eRtAyHH0
-label: Default
+label: 'Par défaut'
 id: default
 description: 'A default Linkit profile'
 matchers:

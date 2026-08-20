@@ -1,5 +1,5 @@
 uuid: f595628f-434f-469c-a0ef-62b47cd11a73
-langcode: en
+langcode: fr
 status: true
 dependencies:
   enforced:
@@ -8,11 +8,7 @@ dependencies:
 _core:
   default_config_hash: cjVDbAE5BlopGrY-tfxsxMoyEibwBBNgdQwDdxOSkow
 id: marital_status
-label: 'Marital status'
-category: Demographic
+label: 'Statut marital'
+category: Démographique
 likert: false
-options: |
-  Single: Single
-  Married: Married
-  Divorced: Divorced
-  Widowed: Widowed
+options: "Single: Célibataire\r\nMarried: Marié\r\nDivorced: Divorcé\r\nWidowed: Veuf(ve)\n"

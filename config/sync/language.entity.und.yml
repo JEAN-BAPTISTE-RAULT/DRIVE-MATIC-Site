@@ -1,9 +1,9 @@
 uuid: f1658c8c-081e-4167-9889-7be12c33946f
-langcode: en
+langcode: fr
 status: true
 dependencies: {  }
 id: und
-label: 'Not specified'
+label: 'Non spécifié'
 direction: ltr
 weight: 2
 locked: true

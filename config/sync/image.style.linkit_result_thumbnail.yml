@@ -1,11 +1,11 @@
 uuid: dac9bdd9-576c-410b-a0d9-44094cae7281
-langcode: en
+langcode: fr
 status: true
 dependencies: {  }
 _core:
   default_config_hash: PY0kMp7KIxvU4kBi5mcnD_DHTKUc1OkYCfaPliXjpa8
 name: linkit_result_thumbnail
-label: 'Linkit result thumbnail'
+label: 'Vignette de résultat Linkit'
 effects:
   2943df29-38ea-459c-ba1d-290489bb1807:
     uuid: 2943df29-38ea-459c-ba1d-290489bb1807

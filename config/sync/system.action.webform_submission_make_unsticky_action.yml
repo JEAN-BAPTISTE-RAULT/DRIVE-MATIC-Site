@@ -1,5 +1,5 @@
 uuid: e8ceee33-49be-475b-9e1b-38bbdfaffc5d
-langcode: en
+langcode: fr
 status: true
 dependencies:
   module:
@@ -7,7 +7,7 @@ dependencies:
 _core:
   default_config_hash: n4gTFiUsdp7gw6yWUlDbKFEasZLCgXWWCmm7eJejay0
 id: webform_submission_make_unsticky_action
-label: 'Unstar/unflag submission'
+label: 'Retirer des favoris/démarquer la soumission'
 type: webform_submission
 plugin: webform_submission_make_unsticky_action
 configuration: {  }

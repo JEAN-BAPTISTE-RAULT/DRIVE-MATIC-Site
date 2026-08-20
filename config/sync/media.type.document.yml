@@ -1,12 +1,12 @@
 uuid: 36442888-65cc-4fff-9838-8aa8961a22f5
-langcode: en
+langcode: fr
 status: true
 dependencies: {  }
 _core:
   default_config_hash: QgF3JDg2h0tf2gaqzc4mNvlHttNkUpmxk1LZefP82hE
 id: document
 label: Document
-description: 'A locally hosted document, such as a PDF file.'
+description: "Un document hébergé localement, tel qu'un fichier PDF."
 source: file
 queue_thumbnail_downloads: false
 new_revision: true

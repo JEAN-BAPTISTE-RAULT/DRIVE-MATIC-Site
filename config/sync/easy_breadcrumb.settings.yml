@@ -1,6 +1,6 @@
 _core:
   default_config_hash: TA0Gr1ENpR0kj3J9ZK4M04nzYU5Ou5xPsas2_StoIMU
-langcode: en
+langcode: fr
 applies_admin_routes: true
 include_invalid_paths: false
 excluded_paths: ''
@@ -25,14 +25,14 @@ use_site_title: false
 add_structured_data_json_ld: false
 capitalizator_mode: none
 capitalizator_ignored_words:
-  - of
-  - and
-  - or
+  - sur
+  - et
+  - ou
   - de
   - del
   - 'y'
   - o
-  - a
+  - un
 capitalizator_forced_words: {  }
 capitalizator_forced_words_case_sensitivity: true
 capitalizator_forced_words_first_letter: false
