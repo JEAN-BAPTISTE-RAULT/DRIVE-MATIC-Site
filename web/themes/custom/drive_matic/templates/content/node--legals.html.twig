@@ -1,0 +1,17 @@
+{#
+/**
+ * @file
+ * Pages légales (CGV, CGU, mentions légales, données personnelles — ADR-019),
+ * maquette 469-11689.
+ *
+ * Affiche le `body` dans le SDC `legal-text`. Le titre de la page n'est pas
+ * rendu ici : il vient du bloc titre de page (ADR-014).
+ *
+ * @see node.html.twig pour la liste complète des variables.
+ */
+#}
+<article{{ attributes.addClass('node', 'node--type-legals') }}>
+  {% embed 'drive_matic:legal-text' %}
+    {% block text %}{{ content.body }}{% endblock %}
+  {% endembed %}
+</article>

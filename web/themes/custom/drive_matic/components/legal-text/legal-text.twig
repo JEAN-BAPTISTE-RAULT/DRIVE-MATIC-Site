@@ -1,0 +1,9 @@
+{#
+  SDC « Bloc :: Texte légal » — le corps (`body`) des pages `legals` (CGV, CGU,
+  mentions légales, données personnelles). Le titre reste rendu par le bloc
+  titre de page (ADR-014) : ce composant ne porte que le texte.
+  Slot : text.
+#}
+<div class="legal-text">
+  {{ block('text') }}
+</div>

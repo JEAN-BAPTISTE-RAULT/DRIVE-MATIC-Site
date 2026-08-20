@@ -1,0 +1,53 @@
+// SDC « Bloc :: Texte légal ».
+
+// Mesures relevées sur la maquette 469-11689 (CGV, 16 sections). Colonne de
+// 1130 (x=153 dans un cadre de 1440) — pas les 900/960 de `--dm-content-column`
+// (ADR-016) : cette valeur reprend le même plafond que `news-list`/
+// `brands-grid` et la carte des formulaires (`_forms.scss`), pas la colonne de
+// texte standard. Le retunage `body.page-node-type-legals { --dm-content-column:
+// 960px; }` (`_tokens.scss`, ADR-019) reste donc **non consommé** : signalé ici
+// plutôt que supprimé, la décision appartient à l'ADR.
+
+// Écarts titre de page -> body et body -> footer : rythme unique du gabarit,
+// pas les 70/83px mesurés sur cette maquette précise (ADR-013).
+.legal-text {
+  padding-block: var(--dm-space-page);
+  padding-inline: max(var(--dm-gutter), calc(50vw - 565px));
+
+  // Pose sur le bloc (herite par tout texte, y compris les noeuds bruts sans
+  // `<p>` — cf. le contenu migre du node 55) plutot que sur `p` seul : sinon le
+  // texte retombe sur l'anthracite par defaut du `body` (`_typography.scss`).
+  color: var(--dm-color-grey-text);
+
+  // Écart titre de section -> paragraphe : 10px mesurés, ne correspond à aucun
+  // des trois tokens de l'ADR-013 (le plus proche, `--dm-space-element` à 24px,
+  // en est trop loin) : nommé en custom property locale plutôt que semé en dur.
+  --dm-legal-heading-gap: 10px;
+
+  // Écart section -> section suivante : mesuré à 30px sur 15 des 16 sections de
+  // la maquette (frames "PREAMBULE" à "CONTENTIEUX..."), le plus proche des
+  // trois tokens de l'ADR-013. Porté par le titre (et non le paragraphe qui le
+  // précède, cf. règle `p` plus bas) : l'écart appartient au bloc, pas au
+  // contenu saisi. Couleur bleu acier : la maquette s'écarte de l'anthracite
+  // par défaut des titres (`_typography.scss`). Taille/interligne : la
+  // maquette n'a qu'un seul style de titre de section (« Titre H3 », 22/32)
+  // quel que soit le niveau `<h2>`/`<h3>` choisi par la redactrice dans le
+  // WYSIWYG — CGV (node 55) utilise `<h2>`, d'ou l'ecrasement de la taille par
+  // defaut de `_typography.scss` (30px) sur ce niveau.
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: var(--dm-space-block) 0 var(--dm-legal-heading-gap);
+    color: var(--dm-color-steel);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+  }
+
+  // Aucun écart entre deux paragraphes consécutifs : mesuré à 0px sur deux
+  // sections distinctes de la maquette (PREAMBULE, COMMANDES) — tout le rythme
+  // vertical du corps de texte vient du titre de section, pas du paragraphe.
+  p {
+    margin: 0;
+  }
+}

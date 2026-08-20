@@ -1,0 +1,18 @@
+.legal-text {
+  padding-block: var(--dm-space-page);
+  padding-inline: max(var(--dm-gutter), 50vw - 565px);
+  color: var(--dm-color-grey-text);
+  --dm-legal-heading-gap: 10px;
+}
+.legal-text h1,
+.legal-text h2,
+.legal-text h3,
+.legal-text h4 {
+  margin: var(--dm-space-block) 0 var(--dm-legal-heading-gap);
+  color: var(--dm-color-steel);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+}
+.legal-text p {
+  margin: 0;
+}

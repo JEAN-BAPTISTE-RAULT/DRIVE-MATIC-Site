@@ -78,6 +78,10 @@ body.page-node-type-news {
 
 // Pages legales (CGV, CGU, mentions legales, donnees personnelles) : meme
 // alignement sur 960, pour la meme raison que ci-dessus.
+// ⚠️ Non consomme (2026-08-20) : la maquette CGV (469-11689) mesure son body a
+// ~1130px, pas 960 — le SDC `legal-text` reprend le plafond 1130 de
+// `news-list`/`brands-grid`/la carte des formulaires, pas ce token. A trancher
+// avec l'ADR-019 : retunage laisse en l'etat, decision hors perimetre.
 body.page-node-type-legals {
   --dm-content-column: 960px;
 }
