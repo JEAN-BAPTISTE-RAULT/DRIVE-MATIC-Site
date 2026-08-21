@@ -11,6 +11,7 @@
   --dm-news-teaser-gap: 60px;
   --dm-news-teaser-height: 183px;
 
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--dm-space-element);
@@ -82,6 +83,16 @@
     height: 24px;
     background-color: var(--dm-color-red);
     mask: url('../../images/icons/chevron-right.svg') no-repeat center;
+  }
+
+  // Lien étiré : le seul `<a>` de la ligne étend sa zone cliquable à toute la
+  // carte (image + titre + date comprises), sans dupliquer de lien ni imbriquer
+  // d'ancre — `inset: 0` se résout contre `.news-teaser`, seul ancêtre positionné.
+  &__more::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
   }
 
   &__more:hover {

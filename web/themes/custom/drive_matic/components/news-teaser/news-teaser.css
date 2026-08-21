@@ -2,6 +2,7 @@
   --dm-news-teaser-media: 325px;
   --dm-news-teaser-gap: 60px;
   --dm-news-teaser-height: 183px;
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--dm-space-element);
@@ -71,6 +72,12 @@
   background-color: var(--dm-color-red);
   -webkit-mask: url("../../images/icons/chevron-right.svg") no-repeat center;
           mask: url("../../images/icons/chevron-right.svg") no-repeat center;
+}
+.news-teaser__more::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 .news-teaser__more:hover {
   text-decoration: underline;
