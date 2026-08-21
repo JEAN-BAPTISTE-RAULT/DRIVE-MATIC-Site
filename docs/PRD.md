@@ -230,10 +230,11 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - [ ] **SAV** : marque, modele, motorisation, n° de chassis, 1 document optionnel (PDF/JPG, 5 Mo max, supprimable), message.
 - [ ] **Question** : message seul.
 - [ ] Les champs marques par `*` sont obligatoires ; captcha requis ; case d'autorisation des donnees requise.
-- [ ] Les e-mails suivent les modeles des specs (objet, expediteur `no-reply`, contenu) pour chacun des 3 cas.
+- [x] Les e-mails suivent les modeles des specs (objet, expediteur `no-reply`, contenu) pour chacun des 3 cas.
 
 - **Mise en oeuvre — integration du 2026-08-18** ([ADR-015](../.claude/decisions/015-habillage-des-formulaires.md)) : deux groupes symetriques (`identite` « Vous etes », `demande` « Votre demande concerne »), dont les listes deroulantes portent le libelle « Selectionner » comme la maquette. Les **infobulles « carte grise »** sont remplacees par une **modale illustree** (SDC `help-modal`) montrant le certificat d'immatriculation, la case entouree. La mention « *Champs obligatoires » est rendue en tete par Webform et **descendue en pied** par `order`, l'ordre de tabulation n'etant pas affecte (texte non focusable).
 - **Mise en oeuvre — integration du 2026-08-20** (maquettes 433-7637/438-9060/438-9465) : la ligne « adresse + visuel » au-dessus du formulaire, jusque-la non mise en page, est desormais le SDC `contact-intro` (2 colonnes). Le visuel du node `contact` (champ `field_photo`) impose depuis cette date un crop **16:9** (addendum [ADR-018](../.claude/decisions/018-images-locales-par-paragraphe.md)) — auparavant sans crop. Marge sous le formulaire alignee sur `--dm-space-page` (meme rythme que le pager avant le footer, ADR-013), pas sur le pixel exact de la maquette (qui varie selon l'etat devis/SAV/question).
+- **Mise en oeuvre — integration du 2026-08-21** ([ADR-022](../.claude/decisions/022-gabarit-email-webform.md), maquettes Figma « Modele Email... » 810:9388 et suivants) : les 6 e-mails (accuse + notification, x3 cas) suivent desormais ce modele — logo (PNG, compatibilite clients mail), sans encadre gris ni centrage (demande explicite), ordre commun du bloc identite (Statut/Entreprise/Nom/Adresse/E-mail/Tel, separateur `-` avant CP+ville). La piece jointe SAV est desormais reellement jointe (`attachments: true`), cf. resolution ci-dessous.
 
 **Cas limites** :
 - « Vous etes = particulier » → le nom d'entreprise n'est pas obligatoire.
@@ -243,7 +244,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 > NB : cette « demande de devis » publique est un **e-mail de demande** (pas de chiffrage) — distincte du devis chiffre du configurateur partenaire (F14/F15).
 
-> ⚠️ **Reste ouvert** : la piece jointe du SAV **ne part pas** dans l'e-mail interne — le handler `sav_interne` a `attachments: false`, alors que le plan F10 §4 prevoit qu'elle soit jointe. Jamais visible avant, le champ ne s'affichant pas.
+> ✅ **Resolu le 2026-08-21** : la piece jointe du SAV est desormais jointe a l'e-mail interne **et** a l'accuse demandeur (`attachments: true` sur `sav_interne` et `sav_demandeur`) — auparavant `attachments: false` sur les deux, malgre le plan F10 §4.
 
 ---
 
@@ -258,9 +259,10 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Criteres d'acceptation** :
 - [ ] Champs obligatoires marques `*` ; captcha ; case d'autorisation.
 - [ ] Message de confirmation affiche : « Votre demande de partenariat a bien ete envoyee !... ».
-- [ ] E-mails conformes aux modeles des specs.
+- [x] E-mails conformes aux modeles des specs.
 
 - **Mise en oeuvre — integration du 2026-08-20** (maquette 438-9838) : le webform heritait deja de l'habillage generique (ADR-015) mais sans ses `#wrapper_attributes` — la grille (Civilite/Prenom/Nom sur leur propre ligne, message sur 2 colonnes, consentement pleine largeur) et l'ecart titre -> formulaire (absent, faute d'un bloc intro comme sur `contact`) ont ete corriges. Les radios Oui/Non, jamais stylees ailleurs sur le site (seul champ `#type: radios`), ont recu leur propre traitement (rond 20px, cote-a-cote via `#options_display: side_by_side`).
+- **Mise en oeuvre — integration du 2026-08-21** ([ADR-022](../.claude/decisions/022-gabarit-email-webform.md), maquette Figma 810:10324/810:10435) : les 2 e-mails reprennent le meme gabarit que le formulaire de contact. Ce formulaire n'a pas de champ « Vous etes » (pas de ligne Statut) ; la ligne Adresse, absente de la maquette de ces 2 e-mails, a ete ajoutee par coherence (les 4 champs adresse sont obligatoires au formulaire).
 
 ---
 

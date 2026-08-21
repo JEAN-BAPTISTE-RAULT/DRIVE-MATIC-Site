@@ -26,6 +26,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-019](019-legals-body-metatags.md) | `legals` passe de paragraphes a body + metatags, et s'etend a 4 pages (amende ADR-002, ADR-010) | Accepte | 2026-08-20 |
 | [ADR-020](020-footer-riche-menus.md) | Footer riche : menus Drupal (custom + core `footer`) plutot que liens en dur | Accepte | 2026-08-20 |
 | [ADR-021](021-cartes-mega-menu.md) | Cartes du mega-menu (header F2) : champ image sur `menu_link_content` | Accepte | 2026-08-20 |
+| [ADR-022](022-gabarit-email-webform.md) | Gabarit HTML inline pour les 8 e-mails webform (F10, F11), logo PNG en URL absolue | Accepte | 2026-08-21 |
 
 ## Quand creer un ADR
 

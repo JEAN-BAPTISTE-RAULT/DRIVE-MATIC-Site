@@ -76,3 +76,4 @@ Implémente **F11** ; type `partner` (ADR-002) ; « soumissions stockées + e-ma
 - [x] E-mails, confirmation, réutilisation contact définis
 - [x] Décisions tranchées (§10)
 - [x] Implémenté (webform + type partner + page /devenir-partenaire) — vérifié
+- [x] **Gabarits e-mail conformes — fait le 2026-08-21** ([ADR-022](../../.claude/decisions/022-gabarit-email-webform.md)) : mêmes conventions que le formulaire de contact (pas de ligne Statut, ce formulaire n'a pas de champ « Vous êtes » ; ligne Adresse ajoutée bien qu'absente de la maquette 810:10324/810:10435, les 4 champs adresse étant obligatoires).
