@@ -459,6 +459,7 @@ handlers:
         <div style="text-align:left;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:14px;line-height:22px;"><p style="margin:0 0 16px;"><img src="https://www.drivematiclegrand.com/themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png" alt="Drive Matic Legrand" width="211" height="24" style="display:block;border:0;"></p><p style="margin:0 0 16px;">Bonjour,</p><p style="margin:0 0 16px;">Nous vous remercions pour votre demande de devis et pour l’intérêt que vous portez à nos services. Votre demande a bien été enregistrée et est en cours de traitement par nos services. Nous reviendrons vers vous dans les meilleurs délais.</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Vous êtes</h3><p style="margin:0 0 16px;"><strong>Statut :</strong> [webform_submission:values:vous_etes]<br>
         <strong>Entreprise :</strong> [webform_submission:values:entreprise]<br>
         <strong>Nom :</strong> [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>Adresse :</strong> [webform_submission:values:adresse] [webform_submission:values:complement], [webform_submission:values:code_postal] [webform_submission:values:ville]<br>
         <strong>E-mail :</strong> [webform_submission:values:email]<br>
         <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Votre demande concerne</h3><p style="margin:0 0 16px;"><strong>Marque :</strong> [webform_submission:values:marque]<br>
         <strong>Modèle :</strong> [webform_submission:values:modele]<br>
@@ -509,9 +510,9 @@ handlers:
         <div style="text-align:left;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:14px;line-height:22px;"><p style="margin:0 0 16px;"><img src="https://www.drivematiclegrand.com/themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png" alt="Drive Matic Legrand" width="211" height="24" style="display:block;border:0;"></p><p style="margin:0 0 16px;">Bonjour,</p><p style="margin:0 0 16px;">Nous venons de recevoir cette demande de devis sur le site Internet.</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Demandeur</h3><p style="margin:0 0 16px;"><strong>Statut :</strong> [webform_submission:values:vous_etes]<br>
         <strong>Entreprise :</strong> [webform_submission:values:entreprise]<br>
         <strong>Nom :</strong> [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>Adresse :</strong> [webform_submission:values:adresse] [webform_submission:values:complement], [webform_submission:values:code_postal] [webform_submission:values:ville]<br>
         <strong>E-mail :</strong> [webform_submission:values:email]<br>
-        <strong>Tél :</strong> [webform_submission:values:telephone]<br>
-        <strong>Adresse :</strong> [webform_submission:values:adresse] [webform_submission:values:complement], [webform_submission:values:code_postal] [webform_submission:values:ville]</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">La demande concerne</h3><p style="margin:0 0 16px;"><strong>Marque :</strong> [webform_submission:values:marque]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">La demande concerne</h3><p style="margin:0 0 16px;"><strong>Marque :</strong> [webform_submission:values:marque]<br>
         <strong>Modèle :</strong> [webform_submission:values:modele]<br>
         <strong>Motorisation :</strong> [webform_submission:values:motorisation]<br>
         <strong>N° de châssis :</strong> [webform_submission:values:numero_chassis]<br>
@@ -557,21 +558,23 @@ handlers:
       sender_name: ''
       subject: 'Drive Matic Legrand : SAV'
       body: |-
-        <p>Bonjour,</p><p>Votre demande de SAV a bien été enregistrée et est en cours de traitement par nos services.</p><p><strong>Vous êtes :</strong> [webform_submission:values:vous_etes]<br>
+        <div style="text-align:left;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:14px;line-height:22px;"><p style="margin:0 0 16px;"><img src="https://www.drivematiclegrand.com/themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png" alt="Drive Matic Legrand" width="211" height="24" style="display:block;border:0;"></p><p style="margin:0 0 16px;">Bonjour,</p><p style="margin:0 0 16px;">Votre demande de SAV a bien été enregistrée et est en cours de traitement par nos services. Nous l’étudierons avec attention et reviendrons vers vous dans les meilleurs délais. Nous vous remercions de votre confiance et mettons tout en œuvre pour vous apporter une solution.</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Vous êtes</h3><p style="margin:0 0 16px;"><strong>Statut :</strong> [webform_submission:values:vous_etes]<br>
         <strong>Entreprise :</strong> [webform_submission:values:entreprise]<br>
-        [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>Nom :</strong> [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>Adresse :</strong> [webform_submission:values:adresse] [webform_submission:values:complement], [webform_submission:values:code_postal] [webform_submission:values:ville]<br>
         <strong>E-mail :</strong> [webform_submission:values:email]<br>
-        <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3>Votre demande de SAV</h3><p><strong>Marque :</strong> [webform_submission:values:marque]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Votre demande concerne</h3><p style="margin:0 0 16px;"><strong>Marque :</strong> [webform_submission:values:marque]<br>
         <strong>Modèle :</strong> [webform_submission:values:modele]<br>
         <strong>Motorisation :</strong> [webform_submission:values:motorisation]<br>
-        <strong>N° de châssis :</strong> [webform_submission:values:numero_chassis]</p><p><strong>Message :</strong><br>[webform_submission:values:message]</p><p>À bientôt<br>www.drivematiclegrand.com</p>
+        <strong>N° de châssis :</strong> [webform_submission:values:numero_chassis]<br>
+        <strong>Pièce jointe :</strong> [webform_submission:values:document]</p><p style="margin:0 0 16px;"><strong>MESSAGE</strong><br>[webform_submission:values:message]</p><p style="margin:0 0 16px;">À bientôt<br><strong style="color:#aa0000;">www.drivematiclegrand.com</strong></p><p style="color:#666666;font-size:12px;line-height:18px;margin:0;">Cet e-mail vous a été envoyé par un système automatique d’émission de messages. L’adresse d’émission n’est pas une adresse de courriel classique. Si vous écrivez à cette adresse, votre message ne sera pas pris en compte.</p></div>
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
       exclude_attachments: false
       html: true
-      attachments: false
+      attachments: true
       twig: false
       theme_name: ''
       langcode: ''
@@ -606,21 +609,23 @@ handlers:
       sender_name: ''
       subject: 'Drive Matic Legrand : SAV'
       body: |-
-        <p>Nous venons de recevoir cette demande de SAV sur le site Internet.</p><h3>Demandeur</h3><p><strong>Vous êtes :</strong> [webform_submission:values:vous_etes]<br>
+        <div style="text-align:left;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:14px;line-height:22px;"><p style="margin:0 0 16px;"><img src="https://www.drivematiclegrand.com/themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png" alt="Drive Matic Legrand" width="211" height="24" style="display:block;border:0;"></p><p style="margin:0 0 16px;">Bonjour,</p><p style="margin:0 0 16px;">Nous venons de recevoir cette demande de SAV sur le site Internet.</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Demandeur</h3><p style="margin:0 0 16px;"><strong>Statut :</strong> [webform_submission:values:vous_etes]<br>
         <strong>Entreprise :</strong> [webform_submission:values:entreprise]<br>
-        [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>Nom :</strong> [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>Adresse :</strong> [webform_submission:values:adresse] [webform_submission:values:complement], [webform_submission:values:code_postal] [webform_submission:values:ville]<br>
         <strong>E-mail :</strong> [webform_submission:values:email]<br>
-        <strong>Tél :</strong> [webform_submission:values:telephone]</p><p><strong>Adresse :</strong> [webform_submission:values:adresse], [webform_submission:values:code_postal] [webform_submission:values:ville]</p><h3>Demande de SAV</h3><p><strong>Marque :</strong> [webform_submission:values:marque]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">La demande concerne</h3><p style="margin:0 0 16px;"><strong>Marque :</strong> [webform_submission:values:marque]<br>
         <strong>Modèle :</strong> [webform_submission:values:modele]<br>
         <strong>Motorisation :</strong> [webform_submission:values:motorisation]<br>
-        <strong>N° de châssis :</strong> [webform_submission:values:numero_chassis]</p><p><strong>Message :</strong><br>[webform_submission:values:message]</p><p>À bientôt<br>www.drivematiclegrand.com</p>
+        <strong>N° de châssis :</strong> [webform_submission:values:numero_chassis]<br>
+        <strong>Pièce jointe :</strong> [webform_submission:values:document]</p><p style="margin:0 0 16px;"><strong>MESSAGE</strong><br>[webform_submission:values:message]</p><p style="margin:0 0 16px;">À bientôt<br><strong style="color:#aa0000;">www.drivematiclegrand.com</strong></p><p style="color:#666666;font-size:12px;line-height:18px;margin:0;">Cet e-mail vous a été envoyé par un système automatique d’émission de messages. L’adresse d’émission n’est pas une adresse de courriel classique. Si vous écrivez à cette adresse, votre message ne sera pas pris en compte.</p></div>
       excluded_elements: {  }
       ignore_access: false
       exclude_empty: true
       exclude_empty_checkbox: false
       exclude_attachments: false
       html: true
-      attachments: false
+      attachments: true
       twig: false
       theme_name: ''
       langcode: ''
