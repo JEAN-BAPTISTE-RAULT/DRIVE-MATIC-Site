@@ -83,7 +83,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 **Criteres d'acceptation** :
 - [x] Le menu reprend l'arborescence des specs (rubriques niveau 1 et 2).
-- [ ] Le fil d'Ariane est present sur toutes les pages **sauf** la home page.
+- [x] Le fil d'Ariane est present sur toutes les pages **sauf** la home page.
 - [x] Le footer contient : coordonnees, solutions auto-ecole/PMR, assistance (contact, FAQ), reseaux sociaux (Instagram, TikTok, LinkedIn, YouTube), et les liens legaux (CGV, CGU, mentions legales, donnees personnelles).
 - [x] Drive Matic peut creer des rubriques de **niveau 2** et des pages en autonomie ; la creation de rubriques de **niveau 1** requiert une intervention CSS de Passerelle.
 
@@ -91,6 +91,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - Item « Espace partenaire » : affiche le sous-menu authentifie (Tableau de bord, Mes devis, Mes informations personnelles, Me deconnecter, Supprimer mon compte) **uniquement** pour un partenaire connecte.
 
 - **Mise en oeuvre — header du 2026-08-20** (maquettes desktop 433-7989 + 5 dropdowns, mobile 526-20394 + tiroir), [ADR-021](../.claude/decisions/021-cartes-mega-menu.md) : menu principal (4 rubriques, niveau 2 mixte cartes/liens) et menu compte (5 liens) crees en base, non versionnes (script Drush ponctuel, meme decision que le footer). Liens actives vers du contenu reel pour tout ce qui existe deja (produits, corporate, FAQ, contact, actualites, connexion/deconnexion, edition du compte) ; « Tableau de bord », « Mes devis » et « Supprimer mon compte » restent en `<nolink>`, aucune page/route ne les portant encore (F13/F15/F16). Le bouton « Demander un devis » pointe vers la page `configurator` (F14, `/configurer`). Les 7 visuels de carte (Auto-ecole/PMR) sont recadres (16:9, `field_nav_card_image`). **Corrige le meme jour** (addendum ADR-021) : le dropdown « Drive Matic » (sans carte) a 3 colonnes de liens, pas une liste a plat ; les flyouts couvrent toute la largeur de la page, pas seulement la largeur plafonnee du bandeau ; l'ouverture d'un dropdown ne decale plus les autres rubriques du nav.
+- **Mise en oeuvre — fil d'Ariane stylise le 2026-08-21** ([ADR-023](../.claude/decisions/023-fil-ariane-style.md)) : aucune maquette ne le montrait (ecart assume, cf. `docs/active/maquette-integration/progress.md`) — typographie et couleurs reprises du registre `pager`, ecart egal au-dessus et au-dessous (`--dm-space-element`, 24px, porte par le fil d'Ariane lui-meme pour couvrir aussi les pages sans bloc titre comme `product`), et alignement horizontal cale sur le bandeau du header (logo compris), pas sur la colonne de contenu — les deux divergent au-dela de ~980px de large.
 
 ---
 
@@ -180,7 +181,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 **Criteres d'acceptation** :
 - [ ] **Liste** : derniere publiee/modifiee en tete ; chaque item = photo principale + titre + date + lien « Lire la suite » ; pagination **10 par page**.
-  - **Mise en oeuvre** : node `all_news` (titre, corps, metatags) + Vue `all_news` embarquee par `drupal_view()`. Ligne = SDC **`news-teaser`** (visuel 16:9, titre, date, « Lire la suite ») en mode d'affichage `teaser` — a distinguer de `news-card`, la carte du bloc home, qui n'affiche **pas** la date. Liste vide → message « Aucune actualite n'est publiee pour le moment. ».
+  - **Mise en oeuvre** : node `all_news` (titre, corps, metatags) + Vue `all_news` embarquee par `drupal_view()`. Ligne = SDC **`news-teaser`** (visuel 16:9, titre, date, « Lire la suite ») en mode d'affichage `teaser` — a distinguer de `news-card`, la carte du bloc home, qui n'affiche **pas** la date. Liste vide → message « Aucune actualite n'est publiee pour le moment. ». **Toute la ligne est cliquable** depuis le 2026-08-21 (pas seulement « Lire la suite ») via un lien etire (cf. CLAUDE.md, section SCSS/SDC) — `news-card` (bloc home) n'a pas recu le meme traitement, non demande.
 - [ ] **Detail** : titre, date, visuel principal, blocs (titre/texte/lien/document/video optionnels), possibilite d'ajouter des paragraphes texte/image/video.
   - **Mise en oeuvre** : `news` porte `field_paragraphs` (allowlist `text_left_aligned`, `image_centered`, `video_centered`). La date affichee est `changed`, format **`dm_long`** (`j F Y`), rendue en `<time datetime>`. Le titre vient du bloc titre de page ; le reste est enveloppe par le SDC **`news-article`** (integration maquette 438-10665, 2026-08-19).
   - **Ordre d'affichage** : titre, date **centree**, visuel + legende **ferree en bas a droite**, corps de texte, puis les blocs. Le corps ne figure pas sur la maquette : il est affiche a la demande de l'utilisatrice, entre la legende et les blocs.

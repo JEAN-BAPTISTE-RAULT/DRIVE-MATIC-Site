@@ -124,7 +124,7 @@ sans visuel ni corps → aucune enveloppe vide. Non-régression vérifiée sur `
 et le node 33 (colonne toujours 900), `/actualites` et la home (toujours `dm_16_9`).
 
 **Écarts assumés, écrits.** Le **fil d'Ariane** est rendu alors que la maquette n'en montre
-aucun (élément de shell de page, à trancher avec F2, comme l'en-tête et le pied de page).
+aucun (élément de shell de page). **Tranché le 2026-08-21** ([ADR-023](../../../.claude/decisions/023-fil-ariane-style.md)) : stylisé sans maquette de référence (registre typographique de `pager`, alignement sur la boîte du header).
 Les écarts internes sont à 24 au lieu de 16 et 35 (décision 3). `dm_free` est dimensionné
 pour la pleine fenêtre : servi dans une colonne de 960 ses dérivés sont surdimensionnés
 (dette `sizes`, ADR-004). `links` reste visible dans le view display `default` (poids 100)
