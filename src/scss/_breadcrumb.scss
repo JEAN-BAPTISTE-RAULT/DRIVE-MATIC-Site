@@ -1,0 +1,92 @@
+// Fil d'Ariane (bloc du coeur `system_breadcrumb_block`, markup Easy Breadcrumb
+// via `templates/navigation/breadcrumb.html.twig`) — meme derogation assumee
+// que `local-tasks`, `forms`, `page-title` et `pager` : le markup ne vient
+// d'aucun SDC.
+
+// Aucune maquette ne montre le fil d'Ariane stylise (ecart assume, deja
+// documente dans docs/active/maquette-integration/progress.md). Typographie,
+// tailles et couleurs reprises du registre deja etabli par `pager` (meme type
+// de markup de navigation secondaire du coeur) : Inter 14/28, gris texte pour
+// les liens, acier gras pour l'element courant.
+
+// Neutralise le style brut herite du starterkit (`css/components/
+// breadcrumb.css`, charge par la librairie `drive_matic/base`, categorie
+// `component`) : meme specificite, mais `style.css` (categorie `theme`) est
+// agrege apres et l'emporte — pas besoin d'y toucher.
+
+// Alignement horizontal : demande explicite de l'utilisatrice, le fil
+// d'Ariane doit demarrer sous le logo du header, pas sous la colonne de
+// contenu (qui ne coincide PAS avec le logo au-dela d'environ 980px de
+// large : le header plafonne sa boite a 1440px centree, la colonne de
+// contenu n'a pas de plafond). On reprend donc exactement la boite du
+// bandeau du header (`site-header.scss`, `&__bar`) : plafond 1440px centre +
+// gouttiere responsive 24px / 40px a 992px (`--site-header-gutter`, propriete
+// scopee a `.site-header` et donc non heritable ici — valeurs dupliquees a la
+// main). ⚠️ Toute modification de `--site-header-gutter` doit etre repercutee
+// ici pour ne pas faire diverger les deux bords.
+.breadcrumb {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 24px;
+
+  // Ecart menu -> fil, et fil -> ce qui suit (titre de page OU premier
+  // paragraphe sur les gabarits "hero" ou le bloc titre est masque) : porte
+  // ici, unconditionnellement, plutot que sur l'element suivant — certains
+  // gabarits hero (`product`) n'ont aucun bloc titre pour porter cet ecart.
+  // `--dm-space-page` (l'ecart de rythme de page) rendait les deux ecarts
+  // cumules trop importants une fois le fil d'Ariane realise (retour de
+  // l'utilisatrice) — reduit de moitie via `--dm-space-element`.
+  padding-block: var(--dm-space-element);
+
+  @media (width >= 992px) {
+    padding-inline: 40px;
+  }
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.breadcrumb li {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+  line-height: 1.75rem;
+}
+
+.breadcrumb li:not(:first-child)::before {
+  content: '»';
+  margin-inline: 8px;
+  color: var(--dm-color-grey-metal);
+}
+
+.breadcrumb a {
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb a:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 2px;
+}
+
+// Element courant (dernier de la liste, sans lien) : meme mise en avant que
+// la page active du pager (acier gras).
+.breadcrumb li:last-child {
+  color: var(--dm-color-steel);
+  font-weight: 700;
+}

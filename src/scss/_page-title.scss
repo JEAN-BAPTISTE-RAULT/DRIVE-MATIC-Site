@@ -6,15 +6,25 @@
 // pourra l'absorber.
 
 // Mesures relevees sur les maquettes 438-10209, 438-10665, 436-8300, 436-8578 et
-// 433-7637 : le titre est **toujours centre**, a 49px sous le filet du header, et
-// s'inscrit dans une colonne de 900 (c'est la largeur ou il se coupe sur la page
-// de detail d'actualite, ou il fait trois lignes).
+// 433-7637 : le titre est **toujours centre**, a 49px sous le filet du header (ces
+// maquettes ne montrent pas le fil d'Ariane, cf. `_breadcrumb.scss`), et s'inscrit
+// dans une colonne de 900 (c'est la largeur ou il se coupe sur la page de detail
+// d'actualite, ou il fait trois lignes).
 
 // La colonne passe par `--dm-content-column` : elle vaut 900 partout, sauf sur
 // le detail d'une actualite ou elle est retunee a 960 (cf. `_tokens.scss`).
 
+// Le fil d'Ariane (`_breadcrumb.scss`) s'intercale desormais entre le filet du
+// header et ce titre, et porte lui-meme son ecart du bas (`padding-block-end:
+// var(--dm-space-element)`) : ce bloc ne pose donc plus son propre
+// padding-block-start, sans quoi l'ecart doublerait. Ce report fonctionne
+// parce que le fil d'Ariane precede TOUJOURS ce bloc quand il est affiche —
+// les deux partagent la meme condition de masquage sur les bundles hero
+// (`homepage`/`transform`/`product`, cf. `_drive_matic_hero_title_bundles()`)
+// et le fil n'est masque que sur `<front>`, qui ne correspond a aucun bundle
+// hero. Un bundle hero futur qui masquerait le titre SANS masquer le fil
+// d'Ariane devra reposer ce padding ici.
 .block-page-title-block {
-  padding-block-start: var(--dm-space-page);
   padding-inline: max(
     var(--dm-gutter),
     calc(50vw - var(--dm-content-column) / 2)
