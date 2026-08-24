@@ -18,7 +18,15 @@
   // Gouttière entre le texte de la question et le cercle : elle laisse
   // exactement les 785px de la maquette au texte (900 - 61 - 54).
   --dm-faq-row-gap: 61px;
-  --dm-faq-icon-size: 54px;
+
+  // Mobile : aligne sur le cercle de l'accordéon home (526-20394, 36px) —
+  // la maquette FAQ (527-24855) ne mock pas les lignes elles-memes. Desktop :
+  // 54px (396-11620), inchange.
+  --dm-faq-icon-size: 36px;
+
+  @media (width >= 992px) {
+    --dm-faq-icon-size: 54px;
+  }
 
   // Réponse -> bouton, et dernier élément -> filet.
   --dm-faq-answer-space: 16px;
@@ -68,25 +76,36 @@
 
     // Fermé : le « + » de la maquette (14px d'arête, trait de 2 arrondi).
     // Posé en `mask` sur l'asset exporté, pour hériter d'un token de couleur.
+    // Glyphe mis a l'echelle du cercle (36/54) sur mobile, cf. plus haut.
     &::before {
       content: '';
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 16px;
-      height: 16px;
+      width: 11px;
+      height: 11px;
       transform: translate(-50%, -50%);
       background-color: var(--dm-color-grey-metal);
       mask: url('../../images/icons/plus.svg') no-repeat center / contain;
+
+      @media (width >= 992px) {
+        width: 16px;
+        height: 16px;
+      }
     }
   }
 
   // Ouvert : la maquette ne fait pas pivoter le « + », elle pose une croix
   // distincte — 12px d'arête contre 14. Deux assets, donc, pas une rotation.
   &__trigger[aria-expanded='true'] &__icon::before {
-    width: 14px;
-    height: 14px;
+    width: 9px;
+    height: 9px;
     mask-image: url('../../images/icons/close.svg');
+
+    @media (width >= 992px) {
+      width: 14px;
+      height: 14px;
+    }
   }
 
   &__panel {

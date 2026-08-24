@@ -2,7 +2,14 @@
   --dm-faq-row-padding: 16px;
   --dm-faq-row-padding-open: 12px;
   --dm-faq-row-gap: 61px;
-  --dm-faq-icon-size: 54px;
+  --dm-faq-icon-size: 36px;
+}
+@media (width >= 992px) {
+  .faq-question {
+    --dm-faq-icon-size: 54px;
+  }
+}
+.faq-question {
   --dm-faq-answer-space: 16px;
   border-bottom: 1px solid var(--dm-color-grey-light);
 }
@@ -47,18 +54,30 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 16px;
-  height: 16px;
+  width: 11px;
+  height: 11px;
   transform: translate(-50%, -50%);
   background-color: var(--dm-color-grey-metal);
   -webkit-mask: url("../../images/icons/plus.svg") no-repeat center/contain;
           mask: url("../../images/icons/plus.svg") no-repeat center/contain;
 }
+@media (width >= 992px) {
+  .faq-question__icon::before {
+    width: 16px;
+    height: 16px;
+  }
+}
 .faq-question__trigger[aria-expanded=true] .faq-question__icon::before {
-  width: 14px;
-  height: 14px;
+  width: 9px;
+  height: 9px;
   -webkit-mask-image: url("../../images/icons/close.svg");
           mask-image: url("../../images/icons/close.svg");
+}
+@media (width >= 992px) {
+  .faq-question__trigger[aria-expanded=true] .faq-question__icon::before {
+    width: 14px;
+    height: 14px;
+  }
 }
 :where(html.js) .faq-question__panel {
   display: none;

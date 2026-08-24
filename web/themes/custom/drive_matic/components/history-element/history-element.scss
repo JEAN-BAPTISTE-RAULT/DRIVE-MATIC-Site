@@ -14,20 +14,33 @@
     gap: 10px;
   }
 
+  // Mobile (527-26410) : 16/32, distinct de l'echelle h3 partagee (18/26) —
+  // desktop restaure celle-ci.
   &__title {
     margin: 0;
     color: var(--dm-color-steel);
     font-family: var(--dm-font-title);
-    font-size: var(--dm-h3-size);
-    line-height: var(--dm-h3-line);
+    font-size: 1rem;
+    line-height: 2rem;
     font-weight: 700;
+
+    @media (width >= 992px) {
+      font-size: var(--dm-h3-size);
+      line-height: var(--dm-h3-line);
+    }
   }
 
+  // Mobile : 14/24, plus dense que l'echelle body generale (16/28).
   &__description {
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
-    font-size: var(--dm-body-size);
-    line-height: var(--dm-body-line);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+
+    @media (width >= 992px) {
+      font-size: var(--dm-body-size);
+      line-height: var(--dm-body-line);
+    }
   }
 
   // Le champ `text_long` rend des <p> porteurs des marges de l'agent

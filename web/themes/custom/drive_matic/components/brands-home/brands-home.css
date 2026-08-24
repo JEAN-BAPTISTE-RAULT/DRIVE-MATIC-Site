@@ -13,7 +13,12 @@
   position: relative;
 }
 .brands-home__viewport.swiper {
-  margin-inline: 66px;
+  margin-inline: 0;
+}
+@media (width >= 992px) {
+  .brands-home__viewport.swiper {
+    margin-inline: 66px;
+  }
 }
 .brands-home .swiper-slide {
   width: 118px;
@@ -46,8 +51,10 @@
   opacity: 0.35;
   pointer-events: none;
 }
-.brands-home:has(.brands-home__viewport.swiper-initialized) .brands-home__nav-button {
-  display: block;
+@media (width >= 992px) {
+  .brands-home:has(.brands-home__viewport.swiper-initialized) .brands-home__nav-button {
+    display: block;
+  }
 }
 .brands-home__viewport {
   --dm-brands-fade-start: 0px;

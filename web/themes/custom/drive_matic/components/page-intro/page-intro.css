@@ -3,5 +3,13 @@
           padding-block-start: var(--dm-space-page);
   padding-inline: max(var(--dm-gutter), 50vw - 450px);
   color: var(--dm-color-grey-text);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
   text-align: center;
+}
+@media (width >= 992px) {
+  .page-intro {
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
 }

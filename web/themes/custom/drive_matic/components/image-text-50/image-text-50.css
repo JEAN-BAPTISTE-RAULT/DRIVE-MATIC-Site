@@ -48,9 +48,15 @@
 .image-text-50__description {
   color: var(--dm-color-grey-text);
   font-family: var(--dm-font-body);
-  font-size: var(--dm-body-size);
+  font-size: 0.875rem;
   font-weight: 400;
-  line-height: var(--dm-body-line);
+  line-height: 1.5rem;
+}
+@media (width >= 992px) {
+  .image-text-50__description {
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
 }
 .image-text-50__cta-row {
   display: flex;
@@ -66,9 +72,14 @@
   background: var(--dm-color-grey-light);
   color: var(--dm-color-steel);
   font-family: var(--dm-font-body);
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   text-decoration: none;
+}
+@media (width >= 992px) {
+  .image-text-50__actions a {
+    font-size: 0.9375rem;
+  }
 }
 @media (width >= 992px) {
   .image-text-50--text-left {

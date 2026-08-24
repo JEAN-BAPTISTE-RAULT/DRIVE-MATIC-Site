@@ -1,7 +1,13 @@
 .brands-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(132px, 100%), 1fr));
-  gap: 22px 20px;
+  grid-template-columns: repeat(auto-fill, minmax(min(81px, 100%), 1fr));
+  gap: 11px;
   padding-block: var(--dm-space-page);
   padding-inline: max(var(--dm-gutter), 50vw - 565px);
+}
+@media (width >= 992px) {
+  .brands-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(132px, 100%), 1fr));
+    gap: 22px 20px;
+  }
 }

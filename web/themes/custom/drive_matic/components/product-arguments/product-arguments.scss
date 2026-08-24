@@ -8,6 +8,11 @@
 // bloc : l'écart de 16px appartient au filet, pas à la colonne.
 
 .product-arguments {
+  // Ecart texte <-> filet horizontal, mesure sur la maquette mobile
+  // (526-24137) : 20px de chaque cote du filet, symetrique — ne correspond a
+  // aucun des trois roles de l'ADR-013, nomme en custom property locale.
+  --product-arguments-mobile-gap: 20px;
+
   max-width: calc(858px + 2 * var(--dm-gutter));
   margin-inline: auto;
   padding-block: var(--dm-space-block);
@@ -16,7 +21,7 @@
   &__list {
     display: flex;
     flex-direction: column;
-    gap: var(--dm-space-element);
+    gap: 0;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -27,18 +32,38 @@
     }
   }
 
+  // Mobile (maquette 526-24137) : 18/26 (echelle h3) — plus dense que
+  // l'echelle h2 desktop (30/44, mesuree sur 392:11481).
   &__item {
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--dm-color-anthracite);
     font-family: var(--dm-font-title);
-    font-size: var(--dm-h2-size);
-    line-height: var(--dm-h2-line);
+    font-size: 1.125rem;
+    line-height: 1.625rem;
     font-weight: 700;
     text-align: center;
 
+    // Filet horizontal entre les items empilés — mobile uniquement, le
+    // desktop garde son filet vertical ci-dessous. Ecart symetrique de part
+    // et d'autre du filet (`--product-arguments-mobile-gap`), pas le gap
+    // uniforme du bloc : ici le filet doit tomber au milieu de l'ecart, pas
+    // juste apres le texte.
+    @media (width < 768px) {
+      &:not(:first-child) {
+        padding-top: var(--product-arguments-mobile-gap);
+      }
+
+      &:not(:last-child) {
+        padding-bottom: var(--product-arguments-mobile-gap);
+        border-bottom: 1px solid var(--dm-color-grey-metal);
+      }
+    }
+
     @media (width >= 768px) {
+      font-size: var(--dm-h2-size);
+      line-height: var(--dm-h2-line);
       flex: 1 1 0;
       padding-block: 16px;
 

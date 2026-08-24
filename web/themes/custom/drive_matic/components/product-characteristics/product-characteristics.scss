@@ -57,26 +57,42 @@
     font-weight: 700;
   }
 
-  // Deux colonnes de caractéristiques ; le wrapper de champ Drupal
-  // (`field__items`) est neutralisé pour que les éléments soient les cellules.
+  // Une colonne sur mobile (maquette 526-24137, Frame 45 : liste empilée) ;
+  // deux colonnes de 295px a partir de 992px (maquette desktop 390:11137).
+  // Sans palier mobile, `minmax(0, 295px)` peut se retrouver ecrase par un
+  // libelle long (le `min-width: auto` par defaut d'un enfant de grille passe
+  // outre le plancher de 0 du track) — d'ou le debordement a droite.
+  // Le wrapper de champ Drupal (`field__items`) est neutralise pour que les
+  // elements soient les cellules.
   &__list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 295px));
-    gap: var(--dm-space-element) 50px;
+    grid-template-columns: 1fr;
+    gap: var(--dm-space-element);
 
     > * {
       display: contents;
     }
+
+    @media (width >= 992px) {
+      grid-template-columns: repeat(2, minmax(0, 295px));
+      gap: var(--dm-space-element) 50px;
+    }
   }
 
   // Documents : alignés sur les colonnes des caractéristiques, largeur du
-  // contenu (le bouton ne remplit pas sa cellule).
+  // contenu (le bouton ne remplit pas sa cellule). Une colonne sur mobile,
+  // meme raison que `&__list` ci-dessus.
   &__downloads {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 295px));
-    gap: 16px 50px;
+    grid-template-columns: 1fr;
+    gap: 16px;
     justify-items: start;
     margin-top: 67px;
+
+    @media (width >= 992px) {
+      grid-template-columns: repeat(2, minmax(0, 295px));
+      gap: 16px 50px;
+    }
   }
 
   // Bouton « contour + icône » de la maquette, variante sur fond sombre :

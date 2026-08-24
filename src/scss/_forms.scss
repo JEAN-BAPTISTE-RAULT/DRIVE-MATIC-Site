@@ -33,14 +33,22 @@
   // La maquette donne 40/60 pour la respiration interieure de la carte et 30
   // entre les champs : aucune des trois valeurs de l'ADR-013 ne correspond, et
   // ce sont des mesures propres a la carte, pas au rythme des blocs. On les
-  // nomme ici plutot que de les semer dans le fichier.
-  --dm-form-card-padding-block: 40px;
-  --dm-form-card-padding-inline: 60px;
-  --dm-form-gap: 30px;
+  // nomme ici plutot que de les semer dans le fichier. Mobile (maquette
+  // 600-29489, page contact) : carte a 358px de large, 60px de padding-inline
+  // ne laissait que 238px aux champs — resserre a 16/16 et a un gap de 20px.
+  --dm-form-card-padding-block: 16px;
+  --dm-form-card-padding-inline: 16px;
+  --dm-form-gap: 20px;
 
   // Ecart libelle -> champ, et legende de groupe -> premier champ.
   --dm-form-label-gap: 3px;
   --dm-form-legend-gap: 13px;
+
+  @media (width >= 992px) {
+    --dm-form-card-padding-block: 40px;
+    --dm-form-card-padding-inline: 60px;
+    --dm-form-gap: 30px;
+  }
 
   display: grid;
   grid-template-columns: minmax(0, 1fr);

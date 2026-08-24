@@ -34,16 +34,21 @@
     font-weight: 700;
   }
 
-  // Lien texte + chevron rouge (motif « Lien » de la maquette).
+  // Lien texte + chevron rouge (motif « Lien » de la maquette). 13px sur la
+  // maquette mobile (526-20394) ; 16px au palier desktop (303:6011, deja mesure).
   &__more {
     display: inline-flex;
     align-items: center;
     gap: 4px;
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
-    font-size: var(--dm-body-size);
+    font-size: 0.8125rem;
     line-height: var(--dm-body-line);
     text-decoration: none;
+
+    @media (width >= 992px) {
+      font-size: var(--dm-body-size);
+    }
   }
 
   &__more::after {

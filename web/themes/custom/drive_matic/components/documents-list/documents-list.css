@@ -35,14 +35,24 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 12px 24px;
+  padding: 12px 16px;
   color: var(--dm-color-steel);
   text-decoration: none;
 }
+@media (width >= 992px) {
+  .documents-list__file {
+    padding: 12px 24px;
+  }
+}
 .documents-list__file-label {
   font-family: var(--dm-font-body);
-  font-size: var(--dm-body-size);
+  font-size: 0.875rem;
   line-height: var(--dm-body-line);
+}
+@media (width >= 992px) {
+  .documents-list__file-label {
+    font-size: var(--dm-body-size);
+  }
 }
 .documents-list__file-download {
   display: flex;
@@ -52,6 +62,20 @@
   font-family: var(--dm-font-body);
   font-size: var(--dm-body-size);
   line-height: var(--dm-body-line);
+}
+@media (width < 992px) {
+  .documents-list__file-download-label {
+    position: absolute;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    white-space: nowrap;
+    -webkit-clip-path: inset(50%);
+            clip-path: inset(50%);
+    border: 0;
+  }
 }
 .documents-list__file-download-icon {
   width: 24px;

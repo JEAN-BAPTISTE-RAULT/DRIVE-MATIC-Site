@@ -10,13 +10,42 @@
   max-width: 100vw;
   margin-inline: calc(50% - 50vw);
 
-  &__media :is(img, picture) {
-    display: block;
-    width: 100%;
-    height: auto;
+  // Mobile (ex. 526-22804) : hauteur fixe de la maquette plutot que le ratio
+  // naturel du recadrage back-office (12:5) a pleine largeur — l'image
+  // remplit ce cadre en `cover` (recadree davantage par la CSS, mais toujours
+  // a partir du crop editorial : aucun nouveau recadrage n'est fabrique).
+  // `position: absolute` plutot qu'une chaine de `height: 100%` (picture ->
+  // img) : un `<img>` avec attributs width/height se voit deriver un
+  // `aspect-ratio` automatique par le navigateur (anti-layout-shift), qui
+  // rend la resolution en pourcentage peu fiable a travers `<picture>`.
+  // Desktop : ratio naturel du crop (`height: auto`, flux normal), inchange.
+  &__media {
+    position: relative;
+    height: 304px;
+    overflow: hidden;
+
+    @media (width >= 992px) {
+      height: auto;
+      overflow: visible;
+    }
   }
 
-  // Titre + CTA superposés, ancrés dans la partie haute et centrés.
+  &__media :is(img, picture) {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    @media (width >= 992px) {
+      position: static;
+      height: auto;
+    }
+  }
+
+  // Titre + CTA superposés, ancrés dans la partie haute et centrés. Mobile
+  // (526-24137) : 8px entre titre et bouton ; desktop : 24px conserve.
   &__overlay {
     position: absolute;
     inset-block-start: 8%;
@@ -24,9 +53,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    gap: 8px;
     padding-inline: 16px;
     text-align: center;
+
+    @media (width >= 992px) {
+      gap: 24px;
+    }
   }
 
   &__title {

@@ -1,6 +1,9 @@
 // SDC « Bloc :: Triptyque » — bande steel pleine largeur, 1 à 3 cartes blanches.
-// Le wrapper de champ Drupal (`field__items`) est neutralisé via
-// `display: contents` pour que les éléments soient les cellules directes.
+// Le champ Drupal imbrique DEUX wrappers (`.field.field__items` puis, par
+// element, `.field__item`) : les deux sont neutralises via `display: contents`
+// pour que les cartes soient les cellules directes (`> *` seul ne couvre que
+// le premier niveau — sans le second, un `flex-basis`/`width` pose sur la
+// carte n'a aucun effet, c'est le `.field__item` qui reste le vrai enfant flex/grille).
 
 .triptych {
   // Bande steel pleine largeur (full-bleed) quel que soit le conteneur.
@@ -10,20 +13,44 @@
   padding-block: var(--dm-space-block);
   background: var(--dm-color-steel);
 
+  // Mobile (maquette 527-26410) : PAS une grille empilee — une piste
+  // deroulante au doigt, calee a gauche sur le conteneur et debordant a
+  // droite (aperçu coupe de la carte suivante), meme idiome que
+  // jumbo_home/news_home mais en simple scroll natif (la maquette ne montre
+  // ni fleche ni point, Swiper n'apporterait rien ici).
   &__items {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
     gap: var(--dm-space-element);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+
+    // Sans ce `scroll-padding`, Chrome/Safari considerent le `padding-left`
+    // hors de la zone d'accrochage et demarrent la piste deja defilee de sa
+    // valeur (premiere carte plaquee au bord, gouttiere invisible).
+    scroll-padding-left: var(--dm-gutter);
     max-width: calc(1130px + 2 * var(--dm-gutter));
     margin-inline: auto;
-    padding-inline: var(--dm-gutter);
+    padding-left: var(--dm-gutter);
 
-    > * {
+    > *,
+    > * > * {
       display: contents;
     }
 
+    .triptych-element {
+      flex: 0 0 212px;
+      scroll-snap-align: start;
+    }
+
     @media (width >= 768px) {
+      display: grid;
       grid-template-columns: repeat(3, 1fr);
+      overflow-x: visible;
+      padding-inline: var(--dm-gutter);
+
+      .triptych-element {
+        flex: initial;
+      }
     }
   }
 }

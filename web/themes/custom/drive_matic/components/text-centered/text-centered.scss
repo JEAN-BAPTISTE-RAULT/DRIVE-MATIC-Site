@@ -24,11 +24,18 @@
     margin-bottom: var(--dm-space-element);
   }
 
+  // Mobile (maquette 526-22804) : 14/24, plus dense que l'echelle body
+  // generale (16/28) — restauree au palier desktop.
   &__description {
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
-    font-size: var(--dm-body-size);
-    line-height: var(--dm-body-line);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+
+    @media (width >= 992px) {
+      font-size: var(--dm-body-size);
+      line-height: var(--dm-body-line);
+    }
   }
 
   // Rangée CTA : bouton d'action (rouge) + bouton de téléchargement (contour) côte à côte, centrés.
@@ -41,7 +48,9 @@
     margin-top: var(--dm-space-element);
   }
 
-  // Bouton rouge « primaire » (Figma BtnRouge) : Inter Medium 15px, padding 14×16.
+  // Bouton rouge « primaire » (Figma BtnRouge) : Inter Medium, padding 14×16.
+  // 13px sur la maquette mobile (526-22804) ; 15px au palier desktop (spec
+  // documentee, cf. figma-button-specs).
   &__actions a {
     display: inline-block;
     padding: 14px 16px;
@@ -49,8 +58,12 @@
     background: var(--dm-color-red);
     color: var(--dm-color-white);
     font-family: var(--dm-font-body);
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     text-decoration: none;
+
+    @media (width >= 992px) {
+      font-size: 0.9375rem;
+    }
   }
 }

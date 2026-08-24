@@ -15,6 +15,9 @@
 
   // Le dégradé couvre toute la carte (calque de lisibilité de la maquette),
   // le contenu restant ferré en bas à gauche. Angle et arrêts : Figma 303:5977.
+  // Mobile (maquette 526-20394) : titre et bouton quasi jointifs (gap 0),
+  // marge interne alignée sur la gouttière (16px) ; desktop restaure les
+  // valeurs mesurées sur 303:5977 (gap 14, marge 24).
   &__body {
     position: absolute;
     inset: 0;
@@ -22,27 +25,41 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-end;
-    gap: 14px;
-    padding: 24px;
+    gap: 0;
+    padding: 16px;
     background: linear-gradient(
       22.83deg,
       rgb(0 0 0 / 60%) 19.56%,
       rgb(0 0 0 / 0%) 34.72%
     );
     color: var(--dm-color-white);
+
+    @media (width >= 992px) {
+      gap: 14px;
+      padding: 24px;
+    }
   }
 
+  // Mobile : 18px (maquette 526-20394) ; desktop : echelle h2 partagee (30px).
+  // L'interligne 44px est commun aux deux paliers — il cale le bloc de titre
+  // sur la hauteur du bouton en dessous, meme quand la police est plus petite.
   &__title {
     margin: 0;
     color: var(--dm-color-white);
     font-family: var(--dm-font-title);
-    font-size: var(--dm-h2-size);
-    line-height: var(--dm-h2-line);
+    font-size: 1.125rem;
+    line-height: 2.75rem;
     font-weight: 700;
     text-shadow: 0 0 25px rgb(0 0 0 / 35%);
+
+    @media (width >= 992px) {
+      font-size: var(--dm-h2-size);
+    }
   }
 
-  // Bouton gris (Figma Btn) : #E8E8E8, Inter Medium 15px steel.
+  // Bouton gris (Figma Btn) : #E8E8E8, Inter Medium steel. 13px sur la
+  // maquette mobile (526-20394) ; 15px au palier desktop (spec documentee,
+  // cf. figma-button-specs).
   &__cta a {
     display: inline-block;
     padding: 14px 16px;
@@ -50,9 +67,13 @@
     background: var(--dm-color-grey-light);
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     text-decoration: none;
+
+    @media (width >= 992px) {
+      font-size: 0.9375rem;
+    }
   }
 
   &__cta a:focus-visible {

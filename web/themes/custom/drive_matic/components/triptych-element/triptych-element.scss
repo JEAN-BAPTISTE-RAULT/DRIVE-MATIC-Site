@@ -4,42 +4,70 @@
   flex-direction: column;
   gap: 8px;
 
-  // Bloc/gouttière asymétriques (maquette 433-9747) : le chiffre doit rester
-  // à 49px du haut de la carte que le texte au-dessus soit présent ou non.
-  padding-block: 49px 48px;
-  padding-inline: 50px;
+  // Bloc/gouttière asymétriques sur desktop (maquette 433-9747) : le chiffre
+  // doit rester à 49px du haut de la carte que le texte au-dessus soit
+  // présent ou non. Mobile (527-26410, cartes sans texte au-dessus) :
+  // padding symétrique ~29/30, plus resserré.
+  padding-block: 29px;
+  padding-inline: 30px;
   border-radius: 16px;
   background: var(--dm-color-white);
   text-align: left;
 
+  @media (width >= 992px) {
+    padding-block: 49px 48px;
+    padding-inline: 50px;
+  }
+
   // Rogne sur le padding-top au lieu de s'ajouter au flux : sans ces marges
   // négatives, sa présence pousserait le chiffre plus bas que sur les cartes
   // qui n'ont pas de texte au-dessus (cf. commentaire sur .triptych-element).
+  // Recalibre pour le palier mobile (padding-block 29px, echelle de police
+  // 14/19) : verifie en direct que le chiffre retombe bien a 29px du haut de
+  // la carte, comme les cartes sans texte au-dessus (carte « Plus de / 2500 »
+  // du node.qui-sommes-nous reel).
   &__top {
-    margin-block: -25px -15px;
+    margin-block: -12px -15px;
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-title);
-    font-size: var(--dm-h3-size);
-    line-height: var(--dm-h3-line);
+    font-size: 0.875rem;
+    line-height: 1.1875rem;
     font-weight: 700;
+
+    @media (width >= 992px) {
+      margin-block: -25px -15px;
+      font-size: var(--dm-h3-size);
+      line-height: var(--dm-h3-line);
+    }
   }
 
-  // Chiffre / accroche : Exo 2 Black.
+  // Chiffre / accroche : Exo 2 Black. Mobile : 36/35 (527-26410) ; desktop :
+  // 60/58 (433-9747).
   &__main {
     margin: 0;
     color: var(--dm-color-steel);
     font-family: var(--dm-font-title);
-    font-size: 3.75rem;
-    line-height: 58px;
+    font-size: 2.25rem;
+    line-height: 2.1875rem;
     font-weight: 900;
+
+    @media (width >= 992px) {
+      font-size: 3.75rem;
+      line-height: 58px;
+    }
   }
 
   &__bottom {
     margin: 0;
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-title);
-    font-size: var(--dm-h3-size);
-    line-height: var(--dm-h3-line);
+    font-size: 0.875rem;
+    line-height: 1.1875rem;
     font-weight: 700;
+
+    @media (width >= 992px) {
+      font-size: var(--dm-h3-size);
+      line-height: var(--dm-h3-line);
+    }
   }
 }

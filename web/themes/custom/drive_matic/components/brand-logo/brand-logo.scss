@@ -11,11 +11,18 @@
 
   // La maquette place chaque logo a sa taille propre (de 45 % a 75 % de la
   // tuile selon le glyphe) : on ne peut que plafonner. 16px laisse le logo
-  // occuper ~71 % de la tuile, la densite moyenne de la maquette.
-  padding: 16px;
+  // occuper ~71 % de la tuile a l'echelle desktop (132px, 526:21531). La
+  // tuile mobile est bien plus petite (81px, 600-28845) : le meme plafond en
+  // dur y ecraserait le logo (60 % au lieu de ~80 % observe sur la maquette) —
+  // ramene a 8px sur ce palier.
+  padding: 8px;
   border: 1px solid var(--dm-color-grey-metal);
   border-radius: 11px;
   background: var(--dm-color-white);
+
+  @media (width >= 992px) {
+    padding: 16px;
+  }
 
   &__image {
     display: flex;

@@ -53,27 +53,41 @@
     font-weight: 700;
   }
 
+  // Mobile (maquette 601-31379) : 14px ; desktop : echelle body (16/28).
   &__date {
     margin-block-start: 14px;
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
-    font-size: var(--dm-body-size);
+    font-size: 0.875rem;
     line-height: var(--dm-body-line);
+
+    @media (width >= 992px) {
+      font-size: var(--dm-body-size);
+    }
   }
 
   // Lien texte + chevron rouge (motif « Lien » de la maquette). `margin-top:
-  // auto` le colle au bas de la ligne, comme la maquette.
+  // auto` le colle au bas de la ligne, comme la maquette (desktop, ou la
+  // hauteur fixe de la ligne absorbe cet espace). Mobile (601-31379) : pas de
+  // hauteur fixe (colonne unique) — l'espace vient donc bien du
+  // `padding-block-start`, qui doit alors valoir l'ecart mesure (8px), pas le
+  // `--dm-space-element` uniforme (24px, 3x trop grand).
   &__more {
     display: inline-flex;
     align-items: center;
     gap: 4px;
     margin-block-start: auto;
-    padding-block-start: var(--dm-space-element);
+    padding-block-start: 8px;
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
-    font-size: var(--dm-body-size);
+    font-size: 0.8125rem;
     line-height: var(--dm-body-line);
     text-decoration: none;
+
+    @media (width >= 992px) {
+      padding-block-start: var(--dm-space-element);
+      font-size: var(--dm-body-size);
+    }
   }
 
   &__more::after {

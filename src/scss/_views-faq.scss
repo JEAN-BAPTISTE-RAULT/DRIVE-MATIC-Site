@@ -48,17 +48,29 @@
   }
 
   // Le cadre de la barre : 526x54 bordure comprise, d'ou 5px de respiration
-  // interieure (54 = 2 de bordure + 10 + 42 d'onglet).
+  // interieure (54 = 2 de bordure + 10 + 42 d'onglet). Largeur figee a 342px
+  // sur mobile (maquette 527-24855) pour que les onglets `flex: 1 1 0` se
+  // partagent vraiment cette largeur plutot que de se tasser sur leur propre
+  // contenu ; desktop conserve sa largeur au contenu (169px par onglet).
   .bef-links {
+    // `100%` ne marche pas ici : `.js-form-item` (Views/BEF) n'a pas de
+    // largeur propre dans `.form--inline` (flex, largeur au contenu) — le
+    // pourcentage boucle sur la largeur de son propre contenu. On calcule
+    // donc contre le viewport, comme un `calc(50% - 50vw)` de debordement.
+    width: min(342px, calc(100vw - 2 * var(--dm-gutter)));
     padding: 5px;
     border: 1px solid var(--dm-color-grey-metal);
     border-radius: 4px;
     background-color: var(--dm-color-white);
+
+    @media (width >= 992px) {
+      width: auto;
+    }
   }
 
   .bef-links ul {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
     gap: 3px;
     margin: 0;
@@ -66,20 +78,43 @@
     list-style: none;
   }
 
-  // Un onglet : 169x42 (28 d'interligne + 2 x 7 de respiration).
+  // Les elements flex sont les `<li>` (enfants directs du `ul`), pas les
+  // `<a class="bef-link">` qu'ils enveloppent — `flex` sur `.bef-link` seul
+  // n'a aucun effet. Mobile (maquette 527-24855) : 3 onglets a largeur egale,
+  // qui se partagent la largeur du cadre plutot que le `min-width` fixe du
+  // desktop — sans ce palier, `min-width: 169px` force le passage a la ligne
+  // ("PMR" tombe sous les deux premiers onglets) sous ~520px de large.
+  .bef-links li {
+    flex: 1 1 0;
+    min-width: 0;
+
+    @media (width >= 992px) {
+      flex: 0 0 auto;
+    }
+  }
+
+  // Desktop : 169x42 (28 d'interligne + 2 x 7 de respiration), inchange.
   .bef-link {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 169px;
-    padding: 7px 15px;
+    width: 100%;
+    padding: 10px 8px;
     border-radius: 4px;
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
-    font-size: var(--dm-body-size);
+    font-size: 0.875rem;
     line-height: var(--dm-body-line);
     text-align: center;
     text-decoration: none;
+    white-space: nowrap;
+
+    @media (width >= 992px) {
+      width: auto;
+      min-width: 169px;
+      padding: 7px 15px;
+      font-size: var(--dm-body-size);
+    }
   }
 
   // stylelint-disable-next-line selector-class-pattern -- classe de BEF

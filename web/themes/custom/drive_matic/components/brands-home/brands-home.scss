@@ -28,8 +28,16 @@
   // faisait passer les tuiles sous la flèche de droite.
   // `.swiper` est répété : le bundle pose `margin-left/right: auto` à la même
   // spécificité que notre BEM et il est chargé après.
+  // Mobile (pas de flèches, cf. plus bas) : aucune marge à réserver — la
+  // première tuile s'aligne directement sur la gouttière du bloc, à la même
+  // distance du bord que la première carte de `news_home`. Le dégradé
+  // d'estompage (plus bas) indique la suite au doigt.
   &__viewport.swiper {
-    margin-inline: 66px;
+    margin-inline: 0;
+
+    @media (width >= 992px) {
+      margin-inline: 66px;
+    }
   }
 
   // Tuiles à largeur fixe — slidesPerView: auto.
@@ -77,8 +85,13 @@
 
   // Déclaré après les règles simples de `&__nav-button` : `:has()` est plus
   // spécifique, Stylelint (no-descending-specificity) exige cet ordre.
-  &:has(&__viewport.swiper-initialized) &__nav-button {
-    display: block;
+  // Réservé au palier desktop : sur mobile (maquette 526-20394), seuls le
+  // doigt (swipe) et le dégradé d'estompage doivent suggérer la suite —
+  // même correction que jumbo_home et news_home.
+  @media (width >= 992px) {
+    &:has(&__viewport.swiper-initialized) &__nav-button {
+      display: block;
+    }
   }
 
   // Dégradé d'estompage : il dit que la rangée continue et que la flèche sert à

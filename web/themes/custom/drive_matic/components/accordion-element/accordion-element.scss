@@ -32,15 +32,21 @@
     }
   }
 
-  // Cercle 54px (blanc, bordure grise) contenant un « + » (fermé).
+  // Cercle (blanc, bordure grise) contenant un « + » (fermé). 36px sur la
+  // maquette mobile (526-20394) ; 54px au palier desktop (deja mesure).
   &__icon {
     position: relative;
     flex: 0 0 auto;
-    width: 54px;
-    height: 54px;
+    width: 36px;
+    height: 36px;
     border: 1px solid var(--dm-color-grey-metal);
     border-radius: 50%;
     background: var(--dm-color-white);
+
+    @media (width >= 992px) {
+      width: 54px;
+      height: 54px;
+    }
 
     @media (prefers-reduced-motion: no-preference) {
       transition: transform 0.2s ease;
@@ -56,15 +62,23 @@
     }
 
     &::before {
-      width: 22px;
+      width: 16px;
       height: 2px;
       transform: translate(-50%, -50%);
+
+      @media (width >= 992px) {
+        width: 22px;
+      }
     }
 
     &::after {
       width: 2px;
-      height: 22px;
+      height: 16px;
       transform: translate(-50%, -50%);
+
+      @media (width >= 992px) {
+        height: 22px;
+      }
     }
   }
 
@@ -84,12 +98,19 @@
     }
   }
 
+  // Mobile (maquette 526-20394) : 14/24, plus dense que l'echelle body
+  // generale (16/28) — restauree au palier desktop.
   &__body {
     padding-bottom: 24px;
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
-    font-size: var(--dm-body-size);
-    line-height: var(--dm-body-line);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+
+    @media (width >= 992px) {
+      font-size: var(--dm-body-size);
+      line-height: var(--dm-body-line);
+    }
   }
 
   // Rangée boutons du panneau : lien (pilule) + téléchargement.

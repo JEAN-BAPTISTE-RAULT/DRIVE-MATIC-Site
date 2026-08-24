@@ -7,7 +7,12 @@
   // Largeur de diapositive, exprimée en `vw` et non en `%` : la même valeur sert
   // à centrer la flèche sur la hauteur du visuel (`top`), où un pourcentage se
   // résoudrait sur la hauteur du conteneur et non sur sa largeur.
-  --dm-features-slide: min(900px, 70vw);
+  // Mobile (maquette 526-24137) : 321px ; desktop : 900px/70vw (existant).
+  --dm-features-slide: min(321px, 85%);
+
+  @media (width >= 992px) {
+    --dm-features-slide: min(900px, 70vw);
+  }
 
   max-width: calc(1130px + 2 * var(--dm-gutter));
   margin-inline: auto;
@@ -68,16 +73,21 @@
     outline-offset: 2px;
   }
 
-  // Flèches actives uniquement quand Swiper a démarré (>= 2 diapositives).
-  &__viewport.swiper-initialized &__nav {
-    display: block;
-  }
+  // Flèches actives uniquement quand Swiper a démarré (>= 2 diapositives) —
+  // et seulement au palier desktop : sur mobile (maquette 526-24137), seuls
+  // le doigt (swipe) doit permettre de naviguer (pas de pagination a points
+  // sur ce composant).
+  @media (width >= 992px) {
+    &__viewport.swiper-initialized &__nav {
+      display: block;
+    }
 
-  // Flèche en bout de course : masquée (la maquette ne montre pas de flèche
-  // « précédent » sur la première diapositive), comme `jumbo_home` — elles sont
-  // superposées au visuel, leur disparition ne réorganise rien.
-  &__viewport.swiper-initialized &__nav.swiper-button-disabled {
-    display: none;
+    // Flèche en bout de course : masquée (la maquette ne montre pas de
+    // flèche « précédent » sur la première diapositive), comme `jumbo_home`
+    // — elles sont superposées au visuel, leur disparition ne réorganise rien.
+    &__viewport.swiper-initialized &__nav.swiper-button-disabled {
+      display: none;
+    }
   }
 
   // Repli sans JS : neutralise le viewport Swiper (empilement vertical lisible)

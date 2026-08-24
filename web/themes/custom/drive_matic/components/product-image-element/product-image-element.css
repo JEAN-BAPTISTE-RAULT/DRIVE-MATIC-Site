@@ -30,8 +30,14 @@
 .product-image-element__description {
   color: var(--dm-color-grey-text);
   font-family: var(--dm-font-body);
-  font-size: var(--dm-body-size);
-  line-height: var(--dm-body-line);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+@media (width >= 992px) {
+  .product-image-element__description {
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
 }
 .product-image-element__description :is(p):first-child {
   margin-top: 0;
@@ -56,11 +62,16 @@
   background: var(--dm-color-grey-light);
   color: var(--dm-color-steel);
   font-family: var(--dm-font-body);
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   line-height: 18px;
   text-decoration: none;
   transition: background-color 0.15s ease;
+}
+@media (width >= 992px) {
+  .product-image-element__actions a {
+    font-size: 0.9375rem;
+  }
 }
 .product-image-element__actions a:hover {
   background: var(--dm-color-grey-metal);

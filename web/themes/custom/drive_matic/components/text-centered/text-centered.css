@@ -19,8 +19,14 @@
 .text-centered__description {
   color: var(--dm-color-grey-text);
   font-family: var(--dm-font-body);
-  font-size: var(--dm-body-size);
-  line-height: var(--dm-body-line);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+@media (width >= 992px) {
+  .text-centered__description {
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
 }
 .text-centered__cta-row {
   display: flex;
@@ -37,7 +43,12 @@
   background: var(--dm-color-red);
   color: var(--dm-color-white);
   font-family: var(--dm-font-body);
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   text-decoration: none;
+}
+@media (width >= 992px) {
+  .text-centered__actions a {
+    font-size: 0.9375rem;
+  }
 }

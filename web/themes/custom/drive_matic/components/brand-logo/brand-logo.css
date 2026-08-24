@@ -5,10 +5,15 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  padding: 16px;
+  padding: 8px;
   border: 1px solid var(--dm-color-grey-metal);
   border-radius: 11px;
   background: var(--dm-color-white);
+}
+@media (width >= 992px) {
+  .brand-logo {
+    padding: 16px;
+  }
 }
 .brand-logo__image {
   display: flex;

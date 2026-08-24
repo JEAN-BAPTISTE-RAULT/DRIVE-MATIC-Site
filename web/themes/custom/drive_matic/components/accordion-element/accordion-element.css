@@ -28,11 +28,17 @@
 .accordion-element__icon {
   position: relative;
   flex: 0 0 auto;
-  width: 54px;
-  height: 54px;
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--dm-color-grey-metal);
   border-radius: 50%;
   background: var(--dm-color-white);
+}
+@media (width >= 992px) {
+  .accordion-element__icon {
+    width: 54px;
+    height: 54px;
+  }
 }
 @media (prefers-reduced-motion: no-preference) {
   .accordion-element__icon {
@@ -47,14 +53,24 @@
   background: var(--dm-color-anthracite);
 }
 .accordion-element__icon::before {
-  width: 22px;
+  width: 16px;
   height: 2px;
   transform: translate(-50%, -50%);
 }
+@media (width >= 992px) {
+  .accordion-element__icon::before {
+    width: 22px;
+  }
+}
 .accordion-element__icon::after {
   width: 2px;
-  height: 22px;
+  height: 16px;
   transform: translate(-50%, -50%);
+}
+@media (width >= 992px) {
+  .accordion-element__icon::after {
+    height: 22px;
+  }
 }
 .accordion-element__trigger[aria-expanded=true] .accordion-element__icon {
   transform: rotate(45deg);
@@ -69,8 +85,14 @@
   padding-bottom: 24px;
   color: var(--dm-color-grey-text);
   font-family: var(--dm-font-body);
-  font-size: var(--dm-body-size);
-  line-height: var(--dm-body-line);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+@media (width >= 992px) {
+  .accordion-element__body {
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
 }
 .accordion-element__cta-row {
   display: flex;

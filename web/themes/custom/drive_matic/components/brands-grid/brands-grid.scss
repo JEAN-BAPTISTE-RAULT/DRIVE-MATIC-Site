@@ -15,10 +15,19 @@
 // liste d'actualités (choix de l'utilisatrice : un rythme unique plutôt que les
 // 65 et 188 de la maquette).
 
+// Taille minimale de tuile : 81px sur la maquette mobile (600-28845, 4
+// colonnes a 358 de large) contre 132px sur 433-7148 (desktop, 7 colonnes) —
+// deux mesures distinctes, pas la meme formule qui s'adapte seule. Le
+// mecanisme `auto-fill` reste inchange, seul le seuil et le gap varient.
 .brands-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(132px, 100%), 1fr));
-  gap: 22px 20px; // rangée, puis colonne
+  grid-template-columns: repeat(auto-fill, minmax(min(81px, 100%), 1fr));
+  gap: 11px;
   padding-block: var(--dm-space-page);
   padding-inline: max(var(--dm-gutter), calc(50vw - 565px));
+
+  @media (width >= 992px) {
+    grid-template-columns: repeat(auto-fill, minmax(min(132px, 100%), 1fr));
+    gap: 22px 20px; // rangée, puis colonne
+  }
 }

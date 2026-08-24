@@ -36,11 +36,18 @@
     font-weight: 700;
   }
 
+  // Mobile (maquette 526-24137) : 14/24, plus dense que l'echelle body
+  // generale (16/28) — restauree au palier desktop.
   &__description {
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
-    font-size: var(--dm-body-size);
-    line-height: var(--dm-body-line);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+
+    @media (width >= 992px) {
+      font-size: var(--dm-body-size);
+      line-height: var(--dm-body-line);
+    }
   }
 
   &__description :is(p):first-child {
@@ -63,7 +70,8 @@
   }
 
   // Lien de la maquette : bouton gris (le champ fichier garde, lui, le bouton
-  // de téléchargement global).
+  // de téléchargement global). 13px sur la maquette mobile (526-24137) ;
+  // 15px au palier desktop (spec documentee, cf. figma-button-specs).
   &__actions a {
     display: inline-flex;
     align-items: center;
@@ -73,11 +81,15 @@
     background: var(--dm-color-grey-light);
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     line-height: 18px;
     text-decoration: none;
     transition: background-color 0.15s ease;
+
+    @media (width >= 992px) {
+      font-size: 0.9375rem;
+    }
   }
 
   &__actions a:hover {

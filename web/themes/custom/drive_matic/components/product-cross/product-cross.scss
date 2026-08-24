@@ -7,9 +7,15 @@
   padding-block: var(--dm-space-block);
   padding-inline: var(--dm-gutter);
 
+  // Mobile (maquette 526-24137) : 25px avant la premiere carte ; 37px
+  // conserve au palier desktop (396:11619).
   &__title {
-    margin: 0 0 37px;
+    margin: 0 0 25px;
     color: var(--dm-color-steel);
+
+    @media (width >= 992px) {
+      margin-bottom: 37px;
+    }
   }
 
   // Deux colonnes au plus (2 × 440 + 20 = les 900 du conteneur) ; au-delà de

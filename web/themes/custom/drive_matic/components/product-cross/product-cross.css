@@ -5,8 +5,13 @@
   padding-inline: var(--dm-gutter);
 }
 .product-cross__title {
-  margin: 0 0 37px;
+  margin: 0 0 25px;
   color: var(--dm-color-steel);
+}
+@media (width >= 992px) {
+  .product-cross__title {
+    margin-bottom: 37px;
+  }
 }
 .product-cross__items {
   display: grid;

@@ -6,18 +6,31 @@
   background: var(--dm-color-steel);
 }
 .triptych__items {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
   gap: var(--dm-space-element);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--dm-gutter);
   max-width: calc(1130px + 2 * var(--dm-gutter));
   margin-inline: auto;
-  padding-inline: var(--dm-gutter);
+  padding-left: var(--dm-gutter);
 }
-.triptych__items > * {
+.triptych__items > *,
+.triptych__items > * > * {
   display: contents;
+}
+.triptych__items .triptych-element {
+  flex: 0 0 212px;
+  scroll-snap-align: start;
 }
 @media (width >= 768px) {
   .triptych__items {
+    display: grid;
     grid-template-columns: repeat(3, 1fr);
+    overflow-x: visible;
+    padding-inline: var(--dm-gutter);
+  }
+  .triptych__items .triptych-element {
+    flex: initial;
   }
 }

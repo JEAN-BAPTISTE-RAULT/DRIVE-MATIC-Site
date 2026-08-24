@@ -33,8 +33,11 @@
   // D'ou la regle : plafond = contenu + 2 gouttieres, et la gouttiere en
   // padding. Un bloc qui deborde volontairement d'un cote (piste de slideshow)
   // ne pose la gouttiere que de l'autre cote.
+  // Valeur mobile (maquette Home 526-20394) ; surchargee au palier desktop
+  // (992px, cf. bloc @media plus bas) — ne pas reprendre 40px ici pour un
+  // futur retunage, c'est la valeur desktop.
   --dm-space-block: 32px;
-  --dm-gutter: 40px;
+  --dm-gutter: 16px;
 
   // Ecart vertical entre les elements d'un meme bloc — valeur UNIQUE.
   // Les blocs sont separes par leur `padding-block` (2 x 40px) : garder cet
@@ -46,22 +49,45 @@
   // l'ecart entre le filet du header et le titre de page. Elle cadence aussi ce
   // qui suit le titre (liste d'actualites, pagination) : les trois valent le
   // meme ecart, d'ou un token unique plutot que trois valeurs a resynchroniser.
-  --dm-space-page: 49px;
+  // Mobile : 13px, mesure de facon identique (a 1px pres) sur toutes les
+  // maquettes mobiles revues (home 526-20394, FAQ 527-24855, documentations
+  // 527-25612, contact 600-29489, actualites 601-31379, marques 600-28845,
+  // corporate 527-26410 : header a 66, titre a 79 partout). Desktop :
+  // 49px (valeur d'origine, cf. bloc @media plus bas).
+  --dm-space-page: 13px;
 
   // Largeur de la colonne de contenu, hors gouttieres. 900 est la mesure
   // commune aux maquettes : titre de page, chapo, blocs image et video centres
   // s'y inscrivent tous (x=270 dans un cadre de 1440).
   --dm-content-column: 900px;
 
-  // Echelle titres (taille / interligne) — PRD §6
-  --dm-h1-size: 2.8125rem;
-  --dm-h1-line: 3.625rem;
-  --dm-h2-size: 1.875rem;
-  --dm-h2-line: 2.75rem;
-  --dm-h3-size: 1.375rem;
-  --dm-h3-line: 2rem;
+  // Echelle titres (taille / interligne) — PRD §6. Valeurs mobile (maquette
+  // Home 526-20394) ; surchargees au palier desktop (992px) par le bloc
+  // @media plus bas, qui restaure les valeurs PRD §6 d'origine.
+  --dm-h1-size: 1.375rem;
+  --dm-h1-line: 1.875rem;
+  --dm-h2-size: 1.25rem;
+  --dm-h2-line: 1.75rem;
+  --dm-h3-size: 1.125rem;
+  --dm-h3-line: 1.625rem;
   --dm-body-size: 1rem;
   --dm-body-line: 1.75rem;
+}
+
+// Palier desktop — meme bascule que le reste du theme (cf. site-header.scss :
+// « Bascule desktop/mobile a 992px »). Restaure les valeurs PRD §6 (echelle
+// titres) et la gouttiere desktop, mesurees sur les maquettes >= 1440px.
+@media (width >= 992px) {
+  :root {
+    --dm-h1-size: 2.8125rem;
+    --dm-h1-line: 3.625rem;
+    --dm-h2-size: 1.875rem;
+    --dm-h2-line: 2.75rem;
+    --dm-h3-size: 1.375rem;
+    --dm-h3-line: 2rem;
+    --dm-gutter: 40px;
+    --dm-space-page: 49px;
+  }
 }
 
 // Retune par gabarit — la colonne du detail d'une actualite vaut 960.

@@ -58,12 +58,19 @@
     font-weight: 700;
   }
 
+  // Mobile (maquette 526-20394) : 14/24, plus dense que l'echelle body
+  // generale (16/28) — restauree au palier desktop.
   &__description {
     color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
-    font-size: var(--dm-body-size);
+    font-size: 0.875rem;
     font-weight: 400;
-    line-height: var(--dm-body-line);
+    line-height: 1.5rem;
+
+    @media (width >= 992px) {
+      font-size: var(--dm-body-size);
+      line-height: var(--dm-body-line);
+    }
   }
 
   // Rangée boutons : lien (gris) + téléchargement (contour), alignés à gauche.
@@ -78,7 +85,9 @@
     margin-top: calc(var(--dm-space-element) - 10px);
   }
 
-  // Bouton lien « gris » (Figma Btn) : fond #E8E8E8, Inter Medium 15px steel.
+  // Bouton lien « gris » (Figma Btn) : fond #E8E8E8, Inter Medium steel. 13px
+  // sur la maquette mobile (526-20394) ; 15px au palier desktop (spec
+  // documentee, cf. figma-button-specs).
   &__actions a {
     display: inline-block;
     padding: 14px 16px;
@@ -86,9 +95,13 @@
     background: var(--dm-color-grey-light);
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     text-decoration: none;
+
+    @media (width >= 992px) {
+      font-size: 0.9375rem;
+    }
   }
 
   // Ordre source = image puis texte → naturellement « texte à droite ».

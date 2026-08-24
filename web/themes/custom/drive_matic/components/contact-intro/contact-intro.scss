@@ -17,9 +17,20 @@
     gap: 110px;
   }
 
+  // Mobile (maquette 600-29489) : 14/24 centre, plus dense que l'echelle
+  // body generale (16/28 aligne a gauche) — restauree au palier desktop.
   &__text {
     flex: 1 1 300px;
     color: var(--dm-color-grey-text);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    text-align: center;
+
+    @media (width >= 992px) {
+      font-size: var(--dm-body-size);
+      line-height: var(--dm-body-line);
+      text-align: left;
+    }
   }
 
   &__media {

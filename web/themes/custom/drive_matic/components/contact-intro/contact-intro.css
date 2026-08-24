@@ -15,6 +15,16 @@
 .contact-intro__text {
   flex: 1 1 300px;
   color: var(--dm-color-grey-text);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  text-align: center;
+}
+@media (width >= 992px) {
+  .contact-intro__text {
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+    text-align: left;
+  }
 }
 .contact-intro__media {
   flex: 1 1 300px;

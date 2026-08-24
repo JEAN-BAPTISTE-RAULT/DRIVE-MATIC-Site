@@ -63,11 +63,15 @@
   // (no-descending-specificity) exige cet ordre.
   &__legal {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     padding-block: var(--dm-space-block);
     padding-inline: var(--dm-gutter);
     max-width: 1440px;
     margin-inline: auto;
+
+    @media (width >= 992px) {
+      justify-content: center;
+    }
 
     .menu {
       display: flex;
@@ -76,10 +80,11 @@
       list-style: none;
       margin: 0;
       padding: 0;
-      text-align: center;
+      text-align: left;
 
       @media (width >= 992px) {
         flex-direction: row;
+        text-align: center;
       }
     }
 

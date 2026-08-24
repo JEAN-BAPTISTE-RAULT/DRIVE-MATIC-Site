@@ -32,9 +32,14 @@
   gap: 4px;
   color: var(--dm-color-steel);
   font-family: var(--dm-font-body);
-  font-size: var(--dm-body-size);
+  font-size: 0.8125rem;
   line-height: var(--dm-body-line);
   text-decoration: none;
+}
+@media (width >= 992px) {
+  .news-card__more {
+    font-size: var(--dm-body-size);
+  }
 }
 .news-card__more::after {
   content: "";

@@ -8,9 +8,18 @@
 // L'écart au titre reprend `--dm-space-page`, le rythme unique du gabarit
 // (la maquette pose 40 ; cf. le même arbitrage sur la liste d'actualités).
 
+// Mobile (maquette 527-25612, page Documentations) : 14/24, plus dense que
+// l'echelle body generale (16/28) — restauree au palier desktop.
 .page-intro {
   padding-block-start: var(--dm-space-page);
   padding-inline: max(var(--dm-gutter), calc(50vw - 450px));
   color: var(--dm-color-grey-text);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
   text-align: center;
+
+  @media (width >= 992px) {
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
 }
