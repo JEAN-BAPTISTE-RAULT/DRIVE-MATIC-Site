@@ -445,19 +445,18 @@ function drive_matic_preprocess_page(array &$variables): void {
 /**
  * URL du bouton « Demander un devis » du header (F2).
  *
- * Le type de contenu `configurator` est a exemplaire unique
+ * Le type de contenu `contact` est a exemplaire unique
  * (docs/content-model.md) : on pointe donc vers lui plutot que vers un href
  * en dur, pour survivre a un renommage de page. Recherche par bundle plutot
  * que par nid : pas de numero magique a resynchroniser si le node est
  * recree.
  *
  * @return string
- *   L'URL de la page du configurateur, ou '#' si la page n'existe pas
- *   encore.
+ *   L'URL de la page de contact, ou '#' si la page n'existe pas encore.
  */
 function _drive_matic_devis_cta_url(): string {
   $nodes = \Drupal::entityTypeManager()->getStorage('node')
-    ->loadByProperties(['type' => 'configurator']);
+    ->loadByProperties(['type' => 'contact']);
   $node = reset($nodes);
   return $node ? $node->toUrl()->toString() : '#';
 }
