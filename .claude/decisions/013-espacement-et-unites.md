@@ -127,3 +127,27 @@ Deux exceptions, toutes deux dictees par le design :
 - `src/scss/_tokens.scss` (les trois tokens, typographie en rem),
   `src/scss/_typography.scss` (marges du texte riche).
 - Les 20 composants SDC.
+
+## Addendum du 2026-08-24 — bascule mobile-first
+
+`--dm-gutter` et `--dm-space-page` (le « quatrieme token » du gabarit de
+page, cf. README) ainsi que l'echelle de titres (h1/h2/h3, taille +
+interligne) ne portaient qu'une valeur, mesuree sur les maquettes
+**desktop** (`--dm-gutter: 40px`) — aucune des maquettes **mobiles**
+n'etait alors reprise dans les tokens. Corrige : chacun porte desormais une
+valeur mobile de base (mesuree sur les maquettes mobiles revues : home
+526-20394, FAQ 527-24855, documentations 527-25612, contact 600-29489,
+actualites 601-31379, marques 600-28845, corporate 527-26410 — toutes
+donnent `--dm-space-page: 13px` a 1px pres), et un bloc `@media (width >=
+992px)` restaure la valeur desktop d'origine. Repercute sur ~25 composants
+qui consommaient ces tokens sans distinction d'ecran.
+
+**`--dm-space-element` (24px) n'est PAS concerne : il reste une valeur
+unique**, y compris entre mobile et desktop — c'est une regle distincte
+(« ne pas le desaccorder bloc par bloc », ci-dessus), pas un oubli.
+Consequence directe verifiee le meme jour sur `news-article` (detail d'une
+actualite, maquette mobile 601-32027) : cette maquette mesure 16px sous le
+titre et 30px sous la date, deux valeurs differentes, alors que le code
+n'a qu'un seul token a leur offrir — impossible de satisfaire les deux a la
+fois sans casser l'unicite. Arbitrage reconduit (24px des deux cotes),
+decision de l'utilisatrice.
