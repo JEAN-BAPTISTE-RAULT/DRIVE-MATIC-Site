@@ -15,6 +15,13 @@
 // `--dm-space-element`, l'écart intra-bloc unique du projet, là où la maquette
 // pose 16 sous le titre et 35 sous la date.
 
+// Reconfirmé le 24/08 sur la maquette mobile 601-32027 (16 sous le titre, 30
+// sous la date, mesures DOM verifiees a 24/24 des deux cotes) : un seul token
+// ne peut pas porter deux ecarts differents, et `--dm-space-element` est
+// consomme par ~20 composants sitewide (cf. `_tokens.scss` : « valeur UNIQUE,
+// ne pas la desaccorder bloc par bloc ») — le desaccord avec la maquette reste
+// donc assume ici aussi, pas un bug.
+
 .news-article {
   &__lede {
     max-width: calc(var(--dm-content-column) + 2 * var(--dm-gutter));
