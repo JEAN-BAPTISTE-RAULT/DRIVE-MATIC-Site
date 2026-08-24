@@ -30,7 +30,9 @@
 
   // Flèches : masquées tant que Swiper n'a pas démarré — sans JS comme pour un
   // slideshow à une seule carte. Hors de la piste : l'état « démarré » se lit
-  // sur le viewport voisin via `:has()`.
+  // sur le viewport voisin via `:has()`. Reservees au palier desktop : sur
+  // mobile (maquette 526-20394), seuls le doigt (swipe) et la pagination a
+  // points doivent permettre de naviguer.
   &__nav {
     display: none;
     grid-column: 3;
@@ -38,8 +40,10 @@
     gap: 12px;
   }
 
-  &:has(&__viewport.swiper-initialized) &__nav {
-    display: flex;
+  @media (width >= 992px) {
+    &:has(&__viewport.swiper-initialized) &__nav {
+      display: flex;
+    }
   }
 
   // Flèche de défilement : export du calque « Next » de la maquette (Figma Home,
@@ -84,8 +88,37 @@
   }
 
   // Cartes à largeur fixe (aperçu de la suivante) — slidesPerView: auto.
+  // Mobile (maquette 526-20394) : 318px ; desktop : 522px/82% (existant).
   & .swiper-slide {
-    width: min(522px, 82%);
+    width: min(318px, 85%);
+
+    @media (width >= 992px) {
+      width: min(522px, 82%);
+    }
+  }
+
+  // Pagination (points) sous la piste, centrée — maquette mobile (Group 3).
+  // Meme motif que `jumbo-home` : point actif rouge, points inactifs gris.
+  &__pagination.swiper-pagination {
+    --swiper-pagination-bullet-horizontal-gap: 0;
+
+    position: static;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: var(--dm-space-element);
+  }
+
+  & .swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--dm-color-grey-metal);
+    opacity: 1;
+  }
+
+  & .swiper-pagination-bullet-active {
+    background: var(--dm-color-red);
   }
 
   // « Voir toutes les actualités » : bouton gris de la maquette, centré sous la
@@ -100,17 +133,23 @@
     }
   }
 
+  // 13px sur la maquette mobile (526-20394) ; 15px au palier desktop (spec
+  // documentee, cf. figma-button-specs).
   &__more a {
     padding: 14px 16px;
     border-radius: 6px;
     background: var(--dm-color-grey-light);
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     line-height: 18px;
     text-decoration: none;
     transition: background-color 0.15s ease;
+
+    @media (width >= 992px) {
+      font-size: 0.9375rem;
+    }
   }
 
   &__more a:hover {
@@ -135,5 +174,9 @@
 
   :where(html.no-js) & .swiper-slide {
     width: 100%;
+  }
+
+  :where(html.no-js) &__pagination.swiper-pagination {
+    display: none;
   }
 }

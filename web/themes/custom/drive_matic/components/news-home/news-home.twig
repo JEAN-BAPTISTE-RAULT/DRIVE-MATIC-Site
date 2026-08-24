@@ -35,6 +35,10 @@
       {{ block('slides') }}
     </div>
   </div>
+  <div
+    class="news-home__pagination swiper-pagination"
+    data-dm-slideshow-pagination
+  ></div>
   {% if block('link') is not empty %}
     <div class="news-home__more">{{ block('link') }}</div>
   {% endif %}
