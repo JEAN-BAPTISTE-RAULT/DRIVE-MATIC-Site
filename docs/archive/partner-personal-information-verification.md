@@ -58,7 +58,7 @@
 
 Suite a un retour utilisateur (page non stylisee, champs Image/Langue/Fuseau horaire
 superflus, pas de redirection utile apres le lien de definition de mot de passe de l'e-mail
-d'activation). Voir addendum [ADR-026](../../../.claude/decisions/026-profil-partenaire-mes-informations.md).
+d'activation). Voir addendum [ADR-026](../../.claude/decisions/026-profil-partenaire-mes-informations.md).
 
 | Commande | Resultat | Notes |
 |---|---|---|

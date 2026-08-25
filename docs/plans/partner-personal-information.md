@@ -1,5 +1,13 @@
 # Plan — Page "Mes informations personnelles" (espace partenaire)
 
+Statut : **livré le 2026-08-25** (commit `aa3be74`) — voir
+`docs/archive/partner-personal-information-verification.md` pour la trace d'audit (inclut
+l'addendum du même jour sur `/user/{uid}/edit`, styling + redirection post-mot de passe).
+Décisions actées : lecture seule étendue à tout le bloc "Votre entreprise" + e-mail (pas
+seulement l'adresse comme le PRD initial), `/user/{uid}/edit` restreint pour empêcher le
+contournement de ces règles via le formulaire core partagé. Voir
+[ADR-026](../../.claude/decisions/026-profil-partenaire-mes-informations.md).
+
 Maquette desktop : Figma node 524:20069 (fichier `ZmmVBSOWSsHVkok6EU2Ays`).
 
 Décisions actées avant implémentation :

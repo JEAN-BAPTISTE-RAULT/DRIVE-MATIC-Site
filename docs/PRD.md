@@ -285,7 +285,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Criteres d'acceptation** :
 - [x] L'e-mail d'activation suit le modele des specs ; lien valable 72 h ; au-dela, passage par « Mot de passe perdu ».
 - [ ] Drive Matic peut modifier, suspendre et supprimer un compte en back-office.
-- [ ] L'adresse de **facturation** est affichee mais **non modifiable** en front (mise a jour via back-office uniquement).
+- [x] L'adresse de **facturation** est affichee mais **non modifiable** en front (mise a jour via back-office uniquement). **Perimetre elargi a l'implementation** : tout le bloc « Votre entreprise » (Siret, raison sociale, adresse, complement, code postal, ville) et l'e-mail sont lecture seule, pas seulement l'adresse — decision actee lors du plan (voir Mise en oeuvre ci-dessous).
 - [ ] « Supprimer mon compte » demande une confirmation, puis **supprime le compte** tout en **anonymisant les documents associes** (devis/commandes conserves de maniere anonyme, pour la tracabilite et la conservation legale/comptable).
 
 **Cas limites** :
@@ -294,6 +294,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 - **Mise en oeuvre — integration du 2026-08-25** ([ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md), maquettes Figma 472:12636 desktop / 602:33089 mobile) : la page `/user/login` (SDC `login-panel`) porte, sous le formulaire de connexion, 3 cartes d'action vers les parcours d'entree — « Créer un compte » et « Devenir partenaire » (vers les 2 nodes du bundle mutualise `simple_form`, ADR-024) et « Demander un devis » (vers `contact`). **Decision actee** : 3 cartes aux deux gabarits desktop/mobile — la maquette mobile n'en montre que 2 (« Créer un compte » absente), harmonisation demandee par l'utilisatrice plutot que reproduction litterale. Aucune des deux pages de demande n'aboutit a une creation de compte immediate (coherent avec la decision #4 ci-dessus).
 - **Mise en oeuvre — integration du 2026-08-25** ([ADR-025](../.claude/decisions/025-roles-back-office-et-email-activation.md), maquette Figma 810:10544) : role `partenaire` cree (aucune permission back-office) ; role `content_editor` etoffe et relabellise "Admin" (CRUD sur les 16 types de contenu + medias, sans administration systeme) ; e-mail d'activation (`register_admin_created`, via `mailer_policy`/`mailer_override`) reecrit selon la maquette, teste bout-en-bout (Mailpit). ⚠️ Le cloisonnement serveur du configurateur/dashboard (cas limite ci-dessus) n'est **pas** couvert par cette integration — aucun `_custom_access` n'existe encore sur ces routes.
+- **Mise en oeuvre — integration du 2026-08-25** ([ADR-026](../.claude/decisions/026-profil-partenaire-mes-informations.md), maquette Figma 524:20069) : page « Mes informations personnelles » (`/user/mes-informations-personnelles`, module `drivematic_partner`), reservee au role `partenaire`. Reprend les champs du webform `account_request` ; seuls Civilite/Prenom/Nom/Fonction/Telephone sont modifiables, e-mail + bloc « Votre entreprise » en lecture seule. « Mot de passe perdu » redirige vers `/user/password` (formulaire core). Le formulaire core `/user/{uid}/edit` (partage avec le lien de definition de mot de passe de l'e-mail d'activation) est restreint en consequence : memes champs masques/lecture-seule, redirection vers « Mes informations personnelles » apres sauvegarde. « Supprimer mon compte » **reste non implemente** (dernier critere d'acceptation ci-dessus).
 
 ---
 
@@ -367,7 +368,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Criteres d'acceptation** :
 - [ ] Creation / modification / suspension / suppression des comptes partenaires.
 - [ ] Gestion des conditions commerciales : **taux de remise par defaut** par partenaire + **remise exceptionnelle temporaire par ligne** sur un devis donne.
-- [ ] Donnees partenaire structurees selon le fichier « partenaires » (structure a integrer). `[A PRECISER]` : champs exacts du fichier.
+- [ ] Donnees partenaire structurees selon le fichier « partenaires » (structure a integrer). `[A PRECISER]` : champs exacts du fichier. **Identite/coordonnees deja couvertes** par les 10 champs ajoutes a l'entite `user` pour F12 (ADR-026) ; restent `[A PRECISER]` : taux de remise par defaut et tout champ specifique au fichier source non repris par le webform `account_request`.
 
 ---
 
@@ -400,7 +401,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 | Entite | Champs cles | Relations |
 |--------|-------------|-----------|
-| **Partenaire** (compte utilisateur + profil) | Entreprise, adresse de facturation, taux de remise par defaut, statut (actif/suspendu), donnees du fichier « partenaires » `[A PRECISER]` | 1 → N adresses de livraison ; 1 → N devis |
+| **Partenaire** (compte utilisateur + profil) | Civilite, prenom, nom, fonction, telephone (modifiables par le partenaire, F12) ; e-mail, SIRET, raison sociale, adresse d'entreprise, complement, code postal, ville (lecture seule en front, pilotes par le back-office) ; taux de remise par defaut, statut (actif/suspendu) `[A PRECISER]` (F16, hors perimetre F12) | 1 → N adresses de livraison ; 1 → N devis |
 | **Adresse de livraison** | Libelle, adresse, CP, ville | N → 1 partenaire (gerees back-office + ajout/maj front) |
 | **Devis** | N° `WAAAAMMJJ-001`, statut (`a finaliser` / `a commander` / `commande le jj/mm/aaaa`), date de creation, date de commande, archive (bool) + date, totaux (HT, remise HT, TVA 20 %, TTC), remise exceptionnelle eventuelle | N → 1 partenaire ; 1 → 1..10 configurations ; N → 1 adresse de livraison |
 | **Configuration** (groupe vehicule d'un devis) | Vehicule (marque/modele/type/motorisation), nombre de vehicules identiques | N → 1 devis ; 1 → N lignes d'equipement |
