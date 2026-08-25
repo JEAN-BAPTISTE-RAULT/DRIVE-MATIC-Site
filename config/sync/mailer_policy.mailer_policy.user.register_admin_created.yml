@@ -1,0 +1,17 @@
+uuid: 6ea2f889-af60-49ca-b79e-1a9fedd1e870
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.register_admin_created
+configuration:
+  email_subject:
+    value: 'Drive Matic Legrand : Votre compte personnel'
+  email_body:
+    content:
+      value: |-
+        <div style="text-align:left;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:14px;line-height:22px;"><p style="margin:0 0 16px;"><img src="https://www.drivematiclegrand.com/themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png" alt="Drive Matic Legrand" width="211" height="24" style="display:block;border:0;"></p><p style="margin:0 0 16px;">Bonjour,</p><p style="margin:0 0 16px;">Nous avons le plaisir de vous compter parmi nos partenaires et nous vous remercions pour votre confiance !<br>
+        Votre accès à notre espace partenaire est désormais activé. Cet espace vous permettra de réaliser vos devis en bénéficiant de vos conditions commerciales.<br>
+        Pour finaliser la création de votre compte, il vous suffit de cliquer sur le lien ci-dessous afin de définir votre mot de passe : <a href="[user:one-time-login-url]">[user:one-time-login-url]</a></p><p style="margin:0 0 16px;">Attention, pour des raisons de sécurité ce lien est valable 72h. Passé ce délai, vous pourrez créer un nouveau mot de passe en utilisant la fonctionnalité « Mot de passe perdu ». Si vous rencontrez la moindre difficulté lors de l’activation de votre compte, notre équipe reste à votre disposition pour vous accompagner.</p><p style="margin:0 0 16px;">À bientôt<br><strong style="color:#aa0000;">www.drivematiclegrand.com</strong></p><p style="color:#666666;font-size:12px;line-height:18px;margin:0;">Cet e-mail vous a été envoyé par un système automatique d’émission de messages. L’adresse d’émission n’est pas une adresse de courriel classique. Si vous écrivez à cette adresse, votre message ne sera pas pris en compte.</p></div>
+      format: email_html

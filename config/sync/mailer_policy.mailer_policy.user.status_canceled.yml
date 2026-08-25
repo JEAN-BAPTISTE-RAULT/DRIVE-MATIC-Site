@@ -1,0 +1,16 @@
+uuid: 7fcda0a7-a000-4c48-99fc-830a1b87e83e
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.status_canceled
+configuration:
+  email_subject:
+    value: 'Détails du compte [user:display-name] sur [site:name] (annulé)'
+  email_body:
+    content:
+      value: "[user:display-name],\r\n\r\nVotre compte sur [site:name] a été annulé.\r\n\r\n--  L'équipe de [site:name]"
+      format: plain_text
+  email_skip_sending:
+    message: 'Notification disabled in settings'

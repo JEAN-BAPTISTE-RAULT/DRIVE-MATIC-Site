@@ -1,0 +1,14 @@
+uuid: 9877afed-01ff-4d11-83ba-666ef3375fa8
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.register_no_approval_required
+configuration:
+  email_subject:
+    value: 'Détails du compte [user:display-name] sur [site:name]'
+  email_body:
+    content:
+      value: "[user:display-name],\r\n\r\nNous vous remercions pour votre inscription sur [site:name]. Vous pouvez maintenant vous connecter en utilisant le lien ci-dessous ou en le copiant dans votre navigateur : \r\n\r\n[user:one-time-login-url]\r\n\r\nCe lien ne peut être utilisé qu'une seule fois et vous redirigera vers une page où vous pourrez choisir votre mot de passe.\r\n\r\nAprès avoir choisi votre mot de passe, vous pourrez vous connecter sur [site:login-url] en utilisant : \r\n\r\nNom d'utilisateur : [user:name]\r\nmot de passe : Votre mot de passe\r\n\r\n--  L'équipe de [site:name]"
+      format: plain_text

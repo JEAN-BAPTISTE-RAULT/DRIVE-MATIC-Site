@@ -1,0 +1,14 @@
+uuid: ce66fc95-d098-402f-88b5-a1c35183e80b
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.cancel_confirm
+configuration:
+  email_subject:
+    value: "Demande d'annulation du compte [user:display-name] sur [site:name]"
+  email_body:
+    content:
+      value: "[user:display-name]\r\n\r\nUne requête pour supprimer votre compte a été déposée sur [site:name].\r\n\r\nVous pouvez désormais supprimer votre compte sur [site:url-brief] en cliquant sur ce lien ou en copiant cette adresse dans un navigateur :\r\n\r\n[user:cancel-url]\r\n\r\nÀ noter : la suppression de votre compte n'est pas réversible.\r\n\r\nCe lien expire dans un délai d'une journée et rien ne se passera si vous ne l'utilisez pas.\r\n\r\n--  L'équipe de [site:name]"
+      format: plain_text

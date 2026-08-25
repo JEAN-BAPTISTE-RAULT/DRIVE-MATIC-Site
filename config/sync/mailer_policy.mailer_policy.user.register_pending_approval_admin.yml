@@ -1,0 +1,19 @@
+uuid: c44fc3ba-972d-49ed-b9a6-d7d467888730
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.register_pending_approval_admin
+configuration:
+  email_subject:
+    value: "Détails du compte [user:display-name] sur [site:name] (en attente de validation d'un administrateur)"
+  email_body:
+    content:
+      value: "[user:display-name] a fait une demande de compte.\r\n\r\n[user:edit-url]"
+      format: plain_text
+  email_to:
+    addresses:
+      -
+        value: '<site>'
+        display: ''

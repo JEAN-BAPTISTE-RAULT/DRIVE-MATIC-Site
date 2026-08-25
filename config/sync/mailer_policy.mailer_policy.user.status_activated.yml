@@ -1,0 +1,14 @@
+uuid: d3f933d3-0fd2-4de2-8041-9a8bbf06214e
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.status_activated
+configuration:
+  email_subject:
+    value: 'Détails du compte pour [user:display-name] sur [site:name]'
+  email_body:
+    content:
+      value: "[user:display-name],\r\n\r\nVotre compte sur [site:name] a été activé.\r\n\r\nVous pouvez maintenant vous connecter en cliquant sur le lien ci-dessous ou en le copiant dans votre navigateur : \r\n\r\n[user:one-time-login-url]\r\n\r\nCe lien ne peut être utilisé qu'une seule fois et vous redirigera vers une page où vous pourrez choisir votre mot de passe.\r\n\r\nAprès avoir choisi votre mot de passe, vous pourrez vous connecter sur [site:login-url] en utilisant :\r\n\r\nnom d'utilisateur : [user:account-name]\r\nmot de passe : Votre mot de passe\r\n\r\n--  L'équipe de [site:name]"
+      format: plain_text

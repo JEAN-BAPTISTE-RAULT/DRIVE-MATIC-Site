@@ -1,0 +1,11 @@
+uuid: 33c6827b-a326-483e-8402-465c7cd90a96
+langcode: fr
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: ''
+id: partenaire
+label: Partenaire
+weight: 4
+is_admin: false
+permissions: {  }

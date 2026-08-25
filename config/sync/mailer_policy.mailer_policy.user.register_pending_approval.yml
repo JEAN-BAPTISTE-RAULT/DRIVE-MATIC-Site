@@ -1,0 +1,14 @@
+uuid: 7e33148a-c621-4453-b62b-7910b5cb3aef
+langcode: en
+status: true
+dependencies:
+  module:
+    - user
+id: user.register_pending_approval
+configuration:
+  email_subject:
+    value: "Détails du compte [user:display-name] sur [site:name] (en attente de validation d'un administrateur)"
+  email_body:
+    content:
+      value: "[user:display-name],\r\n\r\nNous vous remercions pour votre demande d'inscription sur [site:name]. Votre demande est actuellement en cours de validation. Une fois la validation faite, vous recevrez un autre courriel de confirmation contenant les informations vous permettant de vous connecter, choisir votre mot de passe ainsi que d'autres détails.\r\n\r\n\r\n--  L'équipe de [site:name]"
+      format: plain_text

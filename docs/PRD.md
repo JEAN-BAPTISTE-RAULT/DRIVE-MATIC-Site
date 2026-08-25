@@ -283,7 +283,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Resultat attendu** : Acces authentifie et cloisonne a l'espace partenaire ; autorisation re-verifiee cote serveur (decision #5).
 
 **Criteres d'acceptation** :
-- [ ] L'e-mail d'activation suit le modele des specs ; lien valable 72 h ; au-dela, passage par « Mot de passe perdu ».
+- [x] L'e-mail d'activation suit le modele des specs ; lien valable 72 h ; au-dela, passage par « Mot de passe perdu ».
 - [ ] Drive Matic peut modifier, suspendre et supprimer un compte en back-office.
 - [ ] L'adresse de **facturation** est affichee mais **non modifiable** en front (mise a jour via back-office uniquement).
 - [ ] « Supprimer mon compte » demande une confirmation, puis **supprime le compte** tout en **anonymisant les documents associes** (devis/commandes conserves de maniere anonyme, pour la tracabilite et la conservation legale/comptable).
@@ -293,6 +293,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - Compte suspendu → connexion refusee. `[INFERE]`
 
 - **Mise en oeuvre — integration du 2026-08-25** ([ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md), maquettes Figma 472:12636 desktop / 602:33089 mobile) : la page `/user/login` (SDC `login-panel`) porte, sous le formulaire de connexion, 3 cartes d'action vers les parcours d'entree — « Créer un compte » et « Devenir partenaire » (vers les 2 nodes du bundle mutualise `simple_form`, ADR-024) et « Demander un devis » (vers `contact`). **Decision actee** : 3 cartes aux deux gabarits desktop/mobile — la maquette mobile n'en montre que 2 (« Créer un compte » absente), harmonisation demandee par l'utilisatrice plutot que reproduction litterale. Aucune des deux pages de demande n'aboutit a une creation de compte immediate (coherent avec la decision #4 ci-dessus).
+- **Mise en oeuvre — integration du 2026-08-25** ([ADR-025](../.claude/decisions/025-roles-back-office-et-email-activation.md), maquette Figma 810:10544) : role `partenaire` cree (aucune permission back-office) ; role `content_editor` etoffe et relabellise "Admin" (CRUD sur les 16 types de contenu + medias, sans administration systeme) ; e-mail d'activation (`register_admin_created`, via `mailer_policy`/`mailer_override`) reecrit selon la maquette, teste bout-en-bout (Mailpit). ⚠️ Le cloisonnement serveur du configurateur/dashboard (cas limite ci-dessus) n'est **pas** couvert par cette integration — aucun `_custom_access` n'existe encore sur ces routes.
 
 ---
 

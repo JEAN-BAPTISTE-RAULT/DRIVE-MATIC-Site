@@ -387,7 +387,8 @@ access:
     users: {  }
     permissions: {  }
   view_any:
-    roles: {  }
+    roles:
+      - content_editor
     users: {  }
     permissions: {  }
   update_any:
