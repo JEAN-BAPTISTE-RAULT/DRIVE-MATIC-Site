@@ -1,0 +1,79 @@
+// Habillage minimal du formulaire "mot de passe oublie" core (`user_pass`,
+// page /user/password).
+
+// Meme derogation qu'`user-login-form` (ADR-015 addendum, 25/08/2026) : ce
+// markup vient de l'API Form, pas d'un composant. Portee volontairement
+// reduite au strict minimum demande (gouttiere, champ, bouton, typographie) —
+// pas de carte, pas de SDC d'enveloppe, contrairement a `login-panel`.
+
+// Gouttiere standard. Le fil d'Ariane au-dessus s'aligne volontairement sur
+// la boite du header, pas sur `--dm-gutter` (choix documente dans
+// `_breadcrumb.scss`) : le reproduire ici aurait alourdi un habillage voulu
+// minimal pour un ecart de quelques pixels. Pas de bloc titre de page sur
+// cette route (aucun `<h1>` rendu) : rien d'autre a aligner.
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-pass {
+  padding-inline: var(--dm-gutter);
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-pass p {
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-pass .form-item > label {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  font-weight: 400;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-pass input[type='text'] {
+  // Sans largeur explicite, l'attribut `size="60"` du cœur (largeur
+  // intrinseque ~573px, non liee au conteneur) fait deborder la page en
+  // dessous de ~600px de viewport — constate sur mobile (375px) : le champ
+  // poussait tout le layout, footer compris, au-dela du viewport.
+  inline-size: 100%;
+  max-width: 400px;
+  padding: 10px 20px;
+  border: 1px solid var(--dm-color-grey-metal);
+  border-radius: 8px;
+  background-color: var(--dm-color-white);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-pass input:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 1px;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-pass .form-actions .form-submit {
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-pass .form-actions .form-submit:hover {
+  background: var(--dm-color-anthracite);
+}

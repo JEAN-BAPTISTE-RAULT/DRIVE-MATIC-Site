@@ -651,6 +651,62 @@ textarea) {
   background: var(--dm-color-anthracite);
 }
 
+.user-pass {
+  padding-inline: var(--dm-gutter);
+}
+
+.user-pass p {
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+.user-pass .form-item > label {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  font-weight: 400;
+}
+
+.user-pass input[type=text] {
+  inline-size: 100%;
+  max-width: 400px;
+  padding: 10px 20px;
+  border: 1px solid var(--dm-color-grey-metal);
+  border-radius: 8px;
+  background-color: var(--dm-color-white);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+.user-pass input:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 1px;
+}
+
+.user-pass .form-actions .form-submit {
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
+}
+
+.user-pass .form-actions .form-submit:hover {
+  background: var(--dm-color-anthracite);
+}
+
 .view-faq .view-filters {
   padding-block: var(--dm-space-page);
   padding-inline: var(--dm-gutter);
