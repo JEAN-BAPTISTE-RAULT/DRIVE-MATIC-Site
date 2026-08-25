@@ -59,14 +59,14 @@
 | 8 | `corporate` | Page :: Corporate | titre (obl), body (obl), metatags | image_text_50, accordion, image_text_100, text_centered, text_left_aligned, triptych, history, image_centered, video_centered | Qui sommes-nous, ateliers, R&D, certifications… |
 | 10 | `brands` | Page :: Marques | titre (obl), body (obl), metatags | — | Vue triée alpha de tous les `brand` |
 | 11 | `contact` | Page :: Contact | titre (obl), body (obl), visuel **crop 16:9** (obl, `field_photo`), metatags | — | Webform complexe (contenu défini plus tard) |
-| 12 | `partner` | Page :: Devenir partenaire | titre (obl), body (obl), metatags | — | Webform (contenu défini plus tard) |
+| 12 | `simple_form` | Page :: Formulaire simple | titre (obl), body (obl), metatags | — | Webform référencé ; **mutualisé, multi-instance** depuis le 2026-08-25 ([ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md)) — porte les nodes « Devenir partenaire » et « Demande de création de compte » (webform partagé temporairement, le second reste à créer) |
 | 13 | `legals` | Page :: Mentions légales | titre (obl) | text_left_aligned | Pas de body ni metatags |
 | 14 | `news` | Page :: Détail d'une actualité | titre (obl), body (obl), metatags, image **crop 16:9** (obl), légende image (opt) | text_left_aligned, image_centered, video_centered | Date = **dernière modification** (champ `changed`, pas de champ dédié), affichée « 12 juillet 2026 » |
 | 15 | `all_news` | Page :: Toutes les actualités | titre (obl), body (obl), metatags | — | Vue paginée (10/page) de tous les `news`, tri date de modif décroissante |
 
 Tous les nodes : **inclus au sitemap** — sauf `homepage`, dont la racine `/` est déjà déclarée en **lien personnalisé** (un réglage de bundle produirait un doublon avec `/node/<id>`).
 
-**Corps de texte masqué à l'affichage** sur les pages entièrement composées de blocs (`homepage`, `transform`, `product`, `corporate`) : le champ y sert de source à la méta description, pas de chapeau. Il reste **affiché** sur `news`, `all_news`, `faq`, `documents`, `brands`, `contact`, `partner`, où il porte un vrai texte d'introduction.
+**Corps de texte masqué à l'affichage** sur les pages entièrement composées de blocs (`homepage`, `transform`, `product`, `corporate`) : le champ y sert de source à la méta description, pas de chapeau. Il reste **affiché** sur `news`, `all_news`, `faq`, `documents`, `brands`, `contact`, `simple_form`, où il porte un vrai texte d'introduction.
 
 ## Fragments (`Element :: …`) — nodes sans page publique
 
@@ -104,7 +104,7 @@ Module **Metatag** : par type de node, mapper **body → meta description** et *
 1. **Remplissage automatique** par les defauts Metatag : `node` porte `title: [node:title] | [site:name]` et `description: [node:summary]` (`[node:summary]` = le resume s'il est saisi, sinon un extrait tronque du body — evite une description a rallonge). Rien a saisir par defaut.
 2. **Surcharge editoriale** : champ **`field_meta_tags`** (type Metatag, libelle « Balises meta ») sur les nodes publics, widget `metatag_firehose` en **barre laterale** du formulaire, **masque au rendu** (les balises partent dans le `<head>`, pas dans le contenu). Vide = remplissage automatique.
 
-Pose a ce jour sur `homepage`, `news`, `contact`, `partner` — **a ajouter a chaque nouveau node public** (`transform`, `product`, `faq`, `documents`, `corporate`, `brands`, `all_news`) ; jamais sur `legals` ni sur les fragments (`question`, `document`, `brand`), ni sur `page` (hote de test).
+Pose a ce jour sur `homepage`, `news`, `contact`, `simple_form` — **a ajouter a chaque nouveau node public** (`transform`, `product`, `faq`, `documents`, `corporate`, `brands`, `all_news`) ; jamais sur `legals` ni sur les fragments (`question`, `document`, `brand`), ni sur `page` (hote de test).
 
 ⚠️ **Piege de la page d'accueil** : Metatag applique sur `<front>` son defaut special **`front`**, qui **remplace** les defauts `node` et `node__homepage` (`metatag.module`, branche `getSpecialMetatags()` → le `else` de la branche entite n'est pas execute). Le mapping a donc ete recopie dans le defaut `front`, en y **conservant `canonical_url: [site:url]`** : l'URL canonique de l'accueil doit rester la racine et non `/node/<id>`. La surcharge par le champ du node, elle, s'applique bien sur l'accueil (elle est fusionnee apres, hors de cette branche).
 
@@ -184,4 +184,4 @@ un **libellé d'administration** (relabellisé « Titre administratif » via
 3. ✅ **`product` sans champ catégorie** : tout le contenu de la page est saisi manuellement, la distinction auto-école/PMR ne nécessite pas de champ.
 4. ✅ **`news`** : date affichée = **dernière modification** (`changed`).
 5. ✅ **`legals`** : **indexable, dans le sitemap, sans champ « Balises meta »** — mais il garde un **defaut Metatag de bundle limite au titre** (`[node:field_title] | [site:name]`), sans quoi sa balise `<title>` afficherait le libelle d'administration (consequence d'ADR-011). Pas de description, faute de body.
-6. **Webforms** (`contact`, `partner`) : contenu défini plus tard (chantier séparé, cohérent avec F10/F11).
+6. **Webforms** (`contact`, `simple_form`) : contenu défini plus tard (chantier séparé, cohérent avec F10/F11). `simple_form` mutualisé et multi-instance depuis le 2026-08-25 ([ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md)).

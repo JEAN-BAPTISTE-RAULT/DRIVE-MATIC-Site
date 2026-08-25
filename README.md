@@ -101,7 +101,7 @@ Projet **Drupal 11** (`drupal/recommended-project`), docroot **`web/`**.
 | `faq` | FAQ (F9) | Vue `faq` embarquée, filtre **BEF** par catégorie, rendu en accordéon |
 | `documents` | Documentations (F6) | 2 champs **Fichier** à cardinalité illimitée (`field_documents_school`, `field_documents_pmr`), rendus en ligne cliquable via SDC `documents-list` |
 | `brands` | Marques partenaires (F7) | Vue `brands` embarquée (ordre alpha), SDC `brands-grid` |
-| `contact`, `partner` | Formulaires (F10, F11) | Webform référencé |
+| `contact`, `simple_form` | Formulaires (F10, F11, F12) | Webform référencé ; `simple_form` mutualisé et multi-instance depuis le 2026-08-25 ([ADR-024](.claude/decisions/024-mutualisation-formulaire-simple.md)) — porte « Devenir partenaire » et « Demande de création de compte » |
 | `question`, `brand` | **fragments** | pas de page publique : Rabbit Hole → **403**, hors sitemap, sans alias ni métatags. ⚠️ Tout fragment rendu dans une Vue ou un champ référence a besoin de **son propre template** : sinon `node.html.twig` affiche son libellé, en lien vers un 403 |
 | `page` | **Bac à sable paragraphes** | hors modèle : seul type autorisant les 18 blocs, un seul node (`33`), disparaît en fin de chantier |
 
@@ -178,19 +178,21 @@ Projet **Drupal 11** (`drupal/recommended-project`), docroot **`web/`**.
 
 **E-mails transactionnels des webforms** ([ADR-022](.claude/decisions/022-gabarit-email-webform.md)) : les 8 handlers d'email (`webform.webform.contact.yml` ×6, `webform.webform.partner.yml` ×2) suivent un gabarit HTML commun stocké directement dans `handlers.*.settings.body` (`html: true`, `twig: false`) — CSS **inline** uniquement (les clients mail n'exécutent ni feuille liée ni custom properties CSS). Le logo est un **PNG** dédié (`web/themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png`, exporté du SVG du thème via ImageMagick — le SVG est souvent bloqué par les clients mail), référencé par **URL absolue** (`https://www.drivematiclegrand.com/...`) : contrairement au logo du header/footer, ce chemin est **codé en dur** et ne se résout pas via `active_theme_path()` (un `<img>` d'e-mail n'a pas de contexte de thème). Convention détaillée dans [CLAUDE.md](CLAUDE.md), section « E-mails webform ».
 
+**Page de connexion** (`/user/login`, SDC `login-panel`, [ADR-024](.claude/decisions/024-mutualisation-formulaire-simple.md) + addendum [ADR-015](.claude/decisions/015-habillage-des-formulaires.md)) : accessible en anonyme via « Espace partenaire » (header, déjà câblé vers `path('user.login')`, rien à y modifier). Le formulaire core `user_login_form` n'étant pas un webform, son habillage vit dans une fondation dédiée `_user-login-form.scss` — pas de carte propre (portée par le SDC qui l'enveloppe), pas de grille multi-colonnes. `drivematic_forms_form_alter()` y ajoute : le libellé « E-mail » (`#title` avec un `#context` distinct, sans quoi la traduction fr déjà présente pour « E-mail » sans contexte — « Courriel » — l'écraserait), le libellé du bouton « Me connecter », le déclencheur d'affichage du mot de passe (`#field_suffix`, inerte sans JS) et le lien « Mot de passe oublié » (adjacent au libellé, positionné en absolu plutôt qu'en `flex` : l'astérisque des champs obligatoires repose sur `vertical-align: super`, sans effet sur un item flex — passer le `<label>` en `flex` l'aurait fait retomber sur la ligne de base). Les 3 cartes d'action (Créer un compte / Devenir partenaire / Demander un devis) résolvent leur URL par **bundle + titre** (`_drive_matic_simple_form_node_url()`), le bundle `simple_form` étant désormais multi-instance. Fil d'Ariane et titre d'onglet alignés sur « Me connecter » par deux mécanismes distincts : réglage `easy_breadcrumb.settings.replaced_titles` pour le premier, `hook_preprocess_html()` substituant le libellé **dans** la chaîne déjà composée par Metatag pour le second (écraser toute la valeur y perdrait le nom du site, les hooks de thème s'exécutant après ceux des modules).
+
 ## Structure du projet
 
 ```
 web/                         docroot Drupal
   core/  modules/contrib/  themes/contrib/   (Composer, gitignorés)
-  modules/custom/drivematic_forms/  cascade véhicules du webform contact
+  modules/custom/drivematic_forms/  cascade véhicules (webform contact), ajustements du formulaire de connexion core, migrations (.install)
   modules/custom/drivematic_home/   front page dynamique → node homepage (ConfigFactoryOverride)
   themes/custom/drive_matic/ thème front (SDC : components/, templates/, css/, js/, vendor/ = libs tierces vendorisées ex. Swiper)
   sites/default/settings.php accès BDD + overrides locaux (gitignoré)
 src/scss/                    sources SCSS (fondations : tokens, reset, typographie)
 config/sync/                 configuration Drupal versionnée
 docs/                        PRD, E2E, plans, études (content-types, paragraphs…)
-.claude/decisions/           ADR (001 paragraphes · 002 types de contenu · 003 référentiel véhicules · 004 pipeline images · 005 config par environnement · 006 vidéo embed + façade · 007 storage partagé Éléments · 008 slideshow Swiper · 009 téléchargements nommés · 010 métatags · 011 titre affiché + alias · 012 présentation admin · 013 espacement · 014 titre unique · 015 habillage des formulaires)
+.claude/decisions/           ADR (001 paragraphes · 002 types de contenu · 003 référentiel véhicules · 004 pipeline images · 005 config par environnement · 006 vidéo embed + façade · 007 storage partagé Éléments · 008 slideshow Swiper · 009 téléchargements nommés · 010 métatags · 011 titre affiché + alias · 012 présentation admin · 013 espacement · 014 titre unique · 015 habillage des formulaires · 016 colonne de contenu · 017 recadrage par champ · 018 images locales par paragraphe · 019 legals body+metatags · 020 footer riche · 021 cartes méga-menu · 022 gabarit e-mail webform · 023 fil d'Ariane stylisé · 024 mutualisation `partner`→`simple_form`)
 composer.json                projet Drupal + modules
 package.json                 build front + lint
 ```

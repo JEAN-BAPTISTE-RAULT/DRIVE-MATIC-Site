@@ -1,5 +1,9 @@
 # Verification — Page de connexion (/user/login)
 
+> Trace d'audit. Feature : page `/user/login` (SDC `login-panel`), mutualisation du bundle
+> `partner` en `simple_form`. Decision : [ADR-024](../../.claude/decisions/024-mutualisation-formulaire-simple.md)
+> et addendum du 25/08 a [ADR-015](../../.claude/decisions/015-habillage-des-formulaires.md).
+
 ## Commandes executees
 
 | Commande | Resultat | Notes |

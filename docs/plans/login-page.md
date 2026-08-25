@@ -1,6 +1,6 @@
 # Plan — Page de connexion `/user/login` (Espace partenaire)
 
-Statut : approuvé le 2026-08-25. Décision actée : création du bundle `simple_form`
+Statut : **livré le 2026-08-25** (commit `720b1cc`) — voir `docs/archive/login-page-verification.md` pour la trace d'audit. Décision actée : création du bundle `simple_form`
 (migration du node "Devenir partenaire" depuis `partner`, puis suppression de `partner`).
 Décision actée : 3 cartes CTA en desktop **et** en mobile (harmonisation, écart volontaire
 avec la maquette mobile 602:33089 qui n'en montre que 2).
