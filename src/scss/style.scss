@@ -15,6 +15,12 @@
 // `user-pass-form` : meme derogation, pour le formulaire "mot de passe
 // oublie" core (page /user/password) — habillage volontairement minimal,
 // sans carte ni SDC.
+// `personal-information-form` : meme derogation, pour le formulaire "Mes
+// informations personnelles" core (FormBase, espace partenaire) — porte sa
+// propre carte, comme `forms`, mais reste scope a sa propre classe.
+// `user-edit-form` : meme derogation, pour `user_form` (page
+// /user/{uid}/edit — atterrissage du lien de definition de mot de passe de
+// l'e-mail d'activation) — habillage minimal comme `user-pass-form`.
 
 @use 'tokens';
 @use 'fonts';
@@ -24,6 +30,8 @@
 @use 'forms';
 @use 'user-login-form';
 @use 'user-pass-form';
+@use 'personal-information-form';
+@use 'user-edit-form';
 @use 'views-faq';
 @use 'page-title';
 @use 'pager';

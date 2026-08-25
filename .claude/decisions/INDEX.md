@@ -30,6 +30,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-023](023-fil-ariane-style.md) | Fil d'Ariane stylise : ecart porte par lui-meme (couvre les gabarits hero), aligne sur la boite du header (pas la colonne de contenu) | Accepte | 2026-08-21 |
 | [ADR-024](024-mutualisation-formulaire-simple.md) | Mutualisation du bundle `partner` en `simple_form` (page login, F2) : nouveau bundle + migration, multi-instance | Accepte | 2026-08-25 |
 | [ADR-025](025-roles-back-office-et-email-activation.md) | Roles back-office (Admin/Partenaire) et e-mail d'activation de compte via `mailer_override` | Accepte | 2026-08-25 |
+| [ADR-026](026-profil-partenaire-mes-informations.md) | Profil partenaire (« Mes informations personnelles ») : 10 champs User, lecture seule etendue au bloc entreprise, restriction du formulaire core d'auto-edition | Accepte | 2026-08-25 |
 
 ## Quand creer un ADR
 

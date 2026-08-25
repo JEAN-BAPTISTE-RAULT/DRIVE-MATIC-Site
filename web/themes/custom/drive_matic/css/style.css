@@ -707,6 +707,275 @@ textarea) {
   background: var(--dm-color-anthracite);
 }
 
+.personal-information-page {
+  padding-inline: max(var(--dm-gutter), 50vw - 565px);
+  padding-block: var(--dm-space-page);
+}
+
+.drivematic-partner-personal-information-form {
+  --dm-form-card-padding-block: 16px;
+  --dm-form-card-padding-inline: 16px;
+  --dm-form-gap: 20px;
+  --dm-form-label-gap: 3px;
+  --dm-form-legend-gap: 13px;
+}
+@media (width >= 992px) {
+  .drivematic-partner-personal-information-form {
+    --dm-form-card-padding-block: 40px;
+    --dm-form-card-padding-inline: 60px;
+    --dm-form-gap: 30px;
+  }
+}
+.drivematic-partner-personal-information-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--dm-form-gap);
+  align-items: start;
+  padding: var(--dm-form-card-padding-block) var(--dm-form-card-padding-inline);
+  border-radius: 24px;
+  background-color: var(--dm-color-grey-lighter);
+}
+
+.drivematic-partner-personal-information-form > fieldset,
+.drivematic-partner-personal-information-form > .form-actions {
+  grid-column: 1/-1;
+}
+
+.drivematic-partner-personal-information-form fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+
+.drivematic-partner-personal-information-form legend {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--dm-form-legend-gap);
+  padding: 0;
+}
+
+.drivematic-partner-personal-information-form .fieldset-legend {
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+  font-weight: 700;
+}
+
+.drivematic-partner-personal-information-form .fieldset-wrapper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--dm-form-gap);
+  align-items: start;
+}
+
+.drivematic-partner-personal-information-form .form-item {
+  margin: 0;
+}
+
+.drivematic-partner-personal-information-form .form-item > label {
+  display: block;
+  margin-bottom: var(--dm-form-label-gap);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  font-weight: 400;
+}
+
+.drivematic-partner-personal-information-form :is(input[type=text], input[type=email], input[type=tel], select) {
+  inline-size: 100%;
+  padding: 10px 20px;
+  border: 1px solid var(--dm-color-grey-metal);
+  border-radius: 8px;
+  background-color: var(--dm-color-white);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+.drivematic-partner-personal-information-form :is(input, select):focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 1px;
+}
+
+.drivematic-partner-personal-information-form input[readonly] {
+  background-color: var(--dm-color-grey-light);
+  cursor: default;
+}
+
+.drivematic-partner-personal-information-form select {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  -webkit-padding-end: 52px;
+          padding-inline-end: 52px;
+}
+
+.drivematic-partner-personal-information-form .form-item:has(> select) {
+  position: relative;
+}
+
+.drivematic-partner-personal-information-form .form-item:has(> select)::after {
+  position: absolute;
+  inset-block-end: 13px;
+  inset-inline-end: 20px;
+  width: 24px;
+  height: 24px;
+  content: "";
+  pointer-events: none;
+  background-color: var(--dm-color-grey-metal);
+  -webkit-mask: url("../images/icons/chevron-down.svg") no-repeat center;
+          mask: url("../images/icons/chevron-down.svg") no-repeat center;
+}
+
+.drivematic-partner-personal-information-form .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.drivematic-partner-personal-information-form .personal-information-form__password-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  border: 1px solid var(--dm-color-steel);
+  border-radius: 4px;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.drivematic-partner-personal-information-form .form-actions .form-submit {
+  display: inline-block;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
+}
+
+.drivematic-partner-personal-information-form .form-actions .form-submit:hover {
+  background: var(--dm-color-anthracite);
+}
+
+@media (width >= 992px) {
+  .drivematic-partner-personal-information-form .fieldset-wrapper {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.user-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  max-width: 380px;
+  padding-inline: var(--dm-gutter);
+  padding-block: var(--dm-space-page);
+}
+
+.user-form .form-item {
+  margin: 0;
+}
+
+.user-form .form-item > label {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  font-weight: 400;
+}
+
+.user-form .description {
+  margin-top: 3px;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.user-form input[type=email],
+.user-form input[type=password] {
+  inline-size: 100%;
+  padding: 10px 20px;
+  border: 1px solid var(--dm-color-grey-metal);
+  border-radius: 8px;
+  background-color: var(--dm-color-white);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+.user-form input[readonly] {
+  background-color: var(--dm-color-grey-light);
+  cursor: default;
+}
+
+.user-form input:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 1px;
+}
+
+.user-form .password-parent .form-item {
+  -webkit-margin-after: 12px;
+          margin-block-end: 12px;
+}
+
+.user-form .password-strength,
+.user-form .password-confirm-message {
+  margin-top: 6px;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.user-form .password-strength__meter {
+  block-size: 4px;
+  margin-block: 4px;
+  border-radius: 2px;
+  background-color: var(--dm-color-grey-light);
+}
+
+.user-form .password-strength__indicator {
+  display: block;
+  block-size: 100%;
+  border-radius: 2px;
+  background-color: var(--dm-color-red);
+  transition: inline-size 0.2s ease;
+}
+
+.user-form .form-actions .button {
+  display: inline-block;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
+}
+
+.user-form .form-actions .button:hover {
+  background: var(--dm-color-anthracite);
+}
+
 .view-faq .view-filters {
   padding-block: var(--dm-space-page);
   padding-inline: var(--dm-gutter);

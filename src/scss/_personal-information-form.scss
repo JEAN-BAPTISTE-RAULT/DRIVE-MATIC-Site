@@ -1,0 +1,204 @@
+// Habillage du formulaire "Mes informations personnelles" (espace
+// partenaire, route /user/mes-informations-personnelles).
+
+// Meme derogation qu'`user-login-form`/`user-pass-form` (ADR-015 addendum) :
+// ce formulaire vient de l'API Form de Drupal (FormBase), pas d'un
+// composant. Contrairement a `user-login-form`, il porte sa propre carte —
+// meme traitement que `.webform-submission-form` dans `forms`, redeclare ici
+// plutot que partage (chaque fondation de formulaire core reste scopee a sa
+// propre classe, cf. ADR-015 §1).
+
+// Reference : maquette Figma 524:20069 (desktop uniquement).
+
+// Enveloppe (#prefix/#suffix du FormBase) : porte la gouttiere de page et
+// l'espacement vertical du gabarit, separement du padding interieur de la
+// carte — meme repartition en deux couches que `.field--type-webform`
+// (exterieur) / `.webform-submission-form` (carte) dans `forms`, ici sur
+// deux elements distincts faute de champ de node pour porter la premiere
+// couche. Seul et dernier bloc de la page (rien avant le titre, rien apres
+// avant le footer) : les deux paddings s'appliquent sans condition
+// `:first-child`.
+.personal-information-page {
+  padding-inline: max(var(--dm-gutter), calc(50vw - 565px));
+  padding-block: var(--dm-space-page);
+}
+
+.drivematic-partner-personal-information-form {
+  // Memes mesures que la carte webform (`forms`) : la maquette donne les
+  // memes 40/60 desktop pour la respiration interieure de la carte, 16/16 au
+  // resserrement mobile.
+  --dm-form-card-padding-block: 16px;
+  --dm-form-card-padding-inline: 16px;
+  --dm-form-gap: 20px;
+  --dm-form-label-gap: 3px;
+  --dm-form-legend-gap: 13px;
+
+  @media (width >= 992px) {
+    --dm-form-card-padding-block: 40px;
+    --dm-form-card-padding-inline: 60px;
+    --dm-form-gap: 30px;
+  }
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--dm-form-gap);
+  align-items: start;
+  padding: var(--dm-form-card-padding-block) var(--dm-form-card-padding-inline);
+  border-radius: 24px;
+  background-color: var(--dm-color-grey-lighter);
+}
+
+.drivematic-partner-personal-information-form > fieldset,
+.drivematic-partner-personal-information-form > .form-actions {
+  grid-column: 1 / -1;
+}
+
+// --- Groupes de champs (« Vous êtes » / « Votre entreprise »). -------------
+
+.drivematic-partner-personal-information-form fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+
+.drivematic-partner-personal-information-form legend {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--dm-form-legend-gap);
+  padding: 0;
+}
+
+.drivematic-partner-personal-information-form .fieldset-legend {
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+  font-weight: 700;
+}
+
+.drivematic-partner-personal-information-form .fieldset-wrapper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--dm-form-gap);
+  align-items: start;
+}
+
+// --- Champs. -----------------------------------------------------------
+
+.drivematic-partner-personal-information-form .form-item {
+  margin: 0;
+}
+
+.drivematic-partner-personal-information-form .form-item > label {
+  display: block;
+  margin-bottom: var(--dm-form-label-gap);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  font-weight: 400;
+}
+
+.drivematic-partner-personal-information-form
+  :is(input[type='text'], input[type='email'], input[type='tel'], select) {
+  inline-size: 100%;
+  padding: 10px 20px;
+  border: 1px solid var(--dm-color-grey-metal);
+  border-radius: 8px;
+  background-color: var(--dm-color-white);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+.drivematic-partner-personal-information-form :is(input, select):focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 1px;
+}
+
+// Champs lecture seule (e-mail + bloc « Votre entreprise ») : fond grise,
+// distinct visuellement des champs modifiables. Ecart assume vs la maquette
+// (qui ne montre ce traitement que sur l'e-mail) : le bloc « Votre
+// entreprise » a ete rendu lecture seule dans son ensemble par decision de
+// l'utilisatrice (docs/plans/partner-personal-information.md), pas visible
+// sur la maquette d'origine.
+.drivematic-partner-personal-information-form input[readonly] {
+  background-color: var(--dm-color-grey-light);
+  cursor: default;
+}
+
+// Chevron de la liste deroulante Civilite (meme technique que `forms`).
+.drivematic-partner-personal-information-form select {
+  appearance: none;
+  padding-inline-end: 52px;
+}
+
+.drivematic-partner-personal-information-form .form-item:has(> select) {
+  position: relative;
+}
+
+.drivematic-partner-personal-information-form .form-item:has(> select)::after {
+  position: absolute;
+  inset-block-end: 13px;
+  inset-inline-end: 20px;
+  width: 24px;
+  height: 24px;
+  content: '';
+  pointer-events: none;
+  background-color: var(--dm-color-grey-metal);
+  mask: url('../images/icons/chevron-down.svg') no-repeat center;
+}
+
+// --- Actions (mot de passe + soumission). -----------------------------
+
+.drivematic-partner-personal-information-form .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+// stylelint-disable selector-class-pattern -- classe posee par PersonalInformationForm, hors SDC
+.drivematic-partner-personal-information-form
+  .personal-information-form__password-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  border: 1px solid var(--dm-color-steel);
+  border-radius: 4px;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+// stylelint-enable selector-class-pattern
+
+.drivematic-partner-personal-information-form .form-actions .form-submit {
+  display: inline-block;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
+}
+
+.drivematic-partner-personal-information-form .form-actions .form-submit:hover {
+  background: var(--dm-color-anthracite);
+}
+
+// --- Grille desktop (3 colonnes, 2 lignes par section). -----------------
+
+@media (width >= 992px) {
+  .drivematic-partner-personal-information-form .fieldset-wrapper {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

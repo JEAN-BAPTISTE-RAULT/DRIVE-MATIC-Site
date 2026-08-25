@@ -1,0 +1,7 @@
+name: 'DRIVE-MATIC Espace partenaire'
+type: module
+description: 'Espace authentifie reserve aux partenaires (gestion du compte).'
+package: 'DRIVE-MATIC'
+core_version_requirement: ^11
+dependencies:
+  - drupal:user

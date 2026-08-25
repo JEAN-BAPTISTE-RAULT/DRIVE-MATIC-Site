@@ -1,0 +1,21 @@
+uuid: baad65d8-1747-4dd0-bdec-2fb3f01e0b04
+langcode: fr
+status: true
+dependencies:
+  module:
+    - user
+id: user.field_postal_code
+field_name: field_postal_code
+entity_type: user
+type: string
+settings:
+  max_length: 5
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

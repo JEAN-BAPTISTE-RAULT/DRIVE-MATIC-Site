@@ -1,0 +1,7 @@
+drivematic_partner.personal_information:
+  path: '/user/mes-informations-personnelles'
+  defaults:
+    _form: '\Drupal\drivematic_partner\Form\PersonalInformationForm'
+    _title: 'Mes informations personnelles'
+  requirements:
+    _role: 'partenaire'

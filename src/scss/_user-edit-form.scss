@@ -1,0 +1,126 @@
+// Habillage minimal du formulaire core d'edition de compte (`user_form`,
+// page /user/{uid}/edit) — reduit par `drivematic_partner.module` (pour un
+// partenaire editant son propre compte) au seul e-mail (lecture seule) et
+// mot de passe. C'est la page sur laquelle atterrit un partenaire en
+// cliquant le lien de definition de mot de passe de l'e-mail d'activation.
+
+// Meme derogation qu'`user-login-form`/`user-pass-form` (ADR-015 addendum) :
+// ce markup vient de l'API Form, pas d'un composant. Portee reduite au
+// minimum, sur le modele de `user-pass-form` : pas de carte, pas de SDC
+// d'enveloppe.
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  max-width: 380px;
+  padding-inline: var(--dm-gutter);
+  padding-block: var(--dm-space-page);
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-form .form-item {
+  margin: 0;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-form .form-item > label {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  font-weight: 400;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-form .description {
+  margin-top: 3px;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-form input[type='email'],
+.user-form input[type='password'] {
+  inline-size: 100%;
+  padding: 10px 20px;
+  border: 1px solid var(--dm-color-grey-metal);
+  border-radius: 8px;
+  background-color: var(--dm-color-white);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-form input[readonly] {
+  background-color: var(--dm-color-grey-light);
+  cursor: default;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-form input:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 1px;
+}
+
+// --- Widget « mot de passe » (password_confirm : 2 champs + indicateurs JS). --
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-form .password-parent .form-item {
+  margin-block-end: 12px;
+}
+
+.user-form .password-strength,
+.user-form .password-confirm-message {
+  margin-top: 6px;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+// stylelint-disable selector-class-pattern -- classes injectees par le JS du coeur (user.theme.js)
+.user-form .password-strength__meter {
+  block-size: 4px;
+  margin-block: 4px;
+  border-radius: 2px;
+  background-color: var(--dm-color-grey-light);
+}
+
+.user-form .password-strength__indicator {
+  display: block;
+  block-size: 100%;
+  border-radius: 2px;
+  background-color: var(--dm-color-red);
+  transition: inline-size 0.2s ease;
+}
+// stylelint-enable selector-class-pattern
+
+// --- Bouton d'envoi. --------------------------------------------------------
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-form .form-actions .button {
+  display: inline-block;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-form .form-actions .button:hover {
+  background: var(--dm-color-anthracite);
+}

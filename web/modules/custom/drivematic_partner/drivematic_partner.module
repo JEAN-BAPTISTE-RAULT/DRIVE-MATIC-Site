@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * @file
+ * Espace partenaire DRIVE-MATIC.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter() for user_form.
+ *
+ * `/user/{user}/edit` (formulaire core `user_form`, classe `ProfileForm`) est
+ * accessible par defaut a tout utilisateur authentifie pour SON PROPRE
+ * compte, independamment des permissions de role — c'est aussi la page sur
+ * laquelle atterrit un partenaire en cliquant le lien de definition de mot
+ * de passe de l'e-mail d'activation (meme route, jeton `pass-reset-token` en
+ * plus). Les 11 champs profil partenaire sont exposes sur l'affichage de
+ * formulaire par defaut pour que l'admin puisse les remplir a la
+ * creation/edition d'un compte partenaire (`/admin/people/*`) — mais ce meme
+ * affichage par defaut est aussi celui de ce formulaire d'auto-edition. Sans
+ * ce filtre, un partenaire pourrait donc contourner le caractere
+ * lecture-seule impose par `PersonalInformationForm` (e-mail + bloc « Votre
+ * entreprise ») simplement en visitant directement `/user/{uid}/edit`.
+ *
+ * Pour la meme raison, `user_picture`/`language`/`timezone` (hors perimetre
+ * de `PersonalInformationForm`, sans utilite pour un partenaire) sont
+ * retires, l'e-mail est passe en lecture seule (coherent avec
+ * `PersonalInformationForm`), et la redirection post-sauvegarde pointe vers
+ * « Mes informations personnelles » plutot que la page de compte par
+ * defaut.
+ *
+ * Tout cela reste visible/editable/inchange quand un compte avec la
+ * permission `administer users` (seul `administrator`, bypass `is_admin`,
+ * aujourd'hui) edite le compte de quelqu'un d'autre.
+ */
+function drivematic_partner_form_user_form_alter(array &$form, FormStateInterface $form_state): void {
+  $account = $form_state->getFormObject()->getEntity();
+  $editing_own_account = (int) $account->id() === (int) \Drupal::currentUser()->id();
+
+  if (!$editing_own_account || \Drupal::currentUser()->hasPermission('administer users')) {
+    return;
+  }
+
+  foreach (_drivematic_partner_profile_field_names() as $field_name) {
+    unset($form[$field_name]);
+  }
+  unset($form['user_picture'], $form['language'], $form['timezone']);
+
+  $form['account']['mail']['#attributes']['readonly'] = 'readonly';
+
+  // Le bouton de soumission porte son propre `#submit` (['::submitForm',
+  // '::save'], pose par EntityForm::actions()) : il prime sur $form['#submit']
+  // pour l'element declencheur, qui reste donc sans effet ici — l'ajout doit
+  // se faire directement sur le bouton.
+  $form['actions']['submit']['#submit'][] = '_drivematic_partner_user_form_redirect';
+}
+
+/**
+ * Redirige vers « Mes informations personnelles » apres sauvegarde.
+ *
+ * Callback #submit ajoutee APRES celles de `ProfileForm::save()` : elle
+ * s'execute a la suite et remplace donc la redirection par defaut du cœur
+ * (page de compte), sans la dupliquer.
+ */
+function _drivematic_partner_user_form_redirect(array &$form, FormStateInterface $form_state): void {
+  $form_state->setRedirect('drivematic_partner.personal_information');
+}
+
+/**
+ * Noms des 11 champs du profil partenaire portes par l'entite User.
+ *
+ * @return string[]
+ *   Les noms machine des champs.
+ */
+function _drivematic_partner_profile_field_names(): array {
+  return [
+    'field_civility',
+    'field_first_name',
+    'field_last_name',
+    'field_job_title',
+    'field_phone',
+    'field_siret',
+    'field_company_name',
+    'field_company_address',
+    'field_address_complement',
+    'field_postal_code',
+    'field_city',
+  ];
+}

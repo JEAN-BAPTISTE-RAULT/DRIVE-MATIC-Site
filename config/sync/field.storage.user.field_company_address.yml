@@ -1,0 +1,21 @@
+uuid: c02f18c6-42b6-4bcf-be45-117d9dcb1b13
+langcode: fr
+status: true
+dependencies:
+  module:
+    - user
+id: user.field_company_address
+field_name: field_company_address
+entity_type: user
+type: string
+settings:
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

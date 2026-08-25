@@ -1,0 +1,18 @@
+uuid: 3948d91f-3ca3-4e29-a3ea-50c61e2b92cb
+langcode: fr
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_company_name
+id: user.user.field_company_name
+field_name: field_company_name
+entity_type: user
+bundle: user
+label: 'Raison sociale'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,18 @@
+uuid: 385088ca-4747-402e-811f-57013a0d5244
+langcode: fr
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_siret
+id: user.user.field_siret
+field_name: field_siret
+entity_type: user
+bundle: user
+label: 'Numéro de Siret (14 caractères)'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

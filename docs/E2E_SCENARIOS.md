@@ -421,7 +421,17 @@
 - L'adresse de facturation reste **non modifiable** en front.
 - « Supprimer mon compte » supprime le compte **et anonymise les devis/commandes associes** (conserves de maniere anonyme).
 
----
+**Mise en oeuvre (a rejouer) — page « Mes informations personnelles » livree le 2026-08-25** (maquette Figma 524:20069, [plan](../docs/plans/partner-personal-information.md)) :
+- Route `/user/mes-informations-personnelles` (module `drivematic_partner`), reservee au role `partenaire` (`_role` sur la route, 403 pour anonyme et pour tout autre role, y compris `administrator`).
+- Reprend les champs du webform `account_request`. Seuls **Civilite/Prenom/Nom/Fonction/Telephone** sont modifiables et enregistres par « Mettre a jour mes informations ». **E-mail + tout le bloc « Votre entreprise »** (Siret, Raison sociale, Adresse, Complement, Code postal, Ville) sont en lecture seule (`readonly`, fond grise) — perimetre volontairement **plus large** que la seule « adresse de facturation » mentionnee au PRD (decision actee lors du plan, a refleter au PRD au `/sync`).
+- « Modifier mon mot de passe » redirige vers `/user/password` (formulaire core de reinitialisation par e-mail), pas de champ mot de passe sur cette page.
+- ⚠️ **A verifier a chaque rejeu** : `/user/{uid}/edit` (formulaire core d'auto-edition) ne doit **plus** afficher les 11 champs du profil partenaire pour le proprietaire du compte (`hook_form_user_form_alter`, `drivematic_partner.module`) — sinon un partenaire peut contourner le caractere lecture-seule en visitant directement cette URL. Un compte avec la permission `administer users` (editant un AUTRE compte) doit au contraire toujours les voir.
+- « Supprimer mon compte » **non implemente** (hors scope de cette tache — chantier F12 restant).
+
+**Mise en oeuvre (a rejouer) — lien de definition de mot de passe (e-mail d'activation), addendum du 2026-08-25** ([ADR-026](../.claude/decisions/026-profil-partenaire-mes-informations.md)) :
+- Le lien de l'e-mail d'activation mene a `/user/{uid}/edit` (meme `user_form`, jeton `pass-reset-token`) : ne doit afficher que E-mail (lecture seule) + Mot de passe + Confirmer le mot de passe — plus d'Image/Langue du site/Fuseau horaire.
+- Habillage stylise (`_user-edit-form.scss`), coherent avec le reste du site.
+- Apres sauvegarde du mot de passe, redirection vers **« Mes informations personnelles »** (pas la page de compte par defaut du cœur).
 
 ## Securite & cloisonnement
 

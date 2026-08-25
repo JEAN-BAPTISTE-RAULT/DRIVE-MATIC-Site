@@ -1,0 +1,21 @@
+uuid: a083adba-726c-4a4b-a577-b9b5879a9983
+langcode: fr
+status: true
+dependencies:
+  module:
+    - user
+id: user.field_siret
+field_name: field_siret
+entity_type: user
+type: string
+settings:
+  max_length: 14
+  case_sensitive: false
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
