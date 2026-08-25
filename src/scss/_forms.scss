@@ -21,9 +21,10 @@
 
 // Ecart apres le titre : sur `contact`, deja pose par le `padding-block-start`
 // du bloc `contact-intro` qui precede le formulaire (deux paddings ne
-// s'additionnent pas, ADR-013). Sur `partner`, le body est masque et le
-// formulaire est le premier — et seul — element du contenu : sans son propre
-// `padding-block-start`, il colle au titre (ecart mesure : 0px).
+// s'additionnent pas, ADR-013). Sur `simple_form` (ex-`partner`, ADR-024), le
+// body est masque et le formulaire est le premier — et seul — element du
+// contenu : sans son propre `padding-block-start`, il colle au titre (ecart
+// mesure : 0px).
 // stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
 .field--type-webform:first-child {
   padding-block-start: var(--dm-space-page);
