@@ -193,7 +193,7 @@ settings:
   confirmation_type: message
   confirmation_url: ''
   confirmation_title: ''
-  confirmation_message: ''
+  confirmation_message: "Votre demande de création de compte a bien été envoyée ! Notre équipe l'étudiera et vous recontactera dans les meilleurs délais."
   confirmation_attributes: {  }
   confirmation_back: true
   confirmation_back_label: ''
@@ -269,5 +269,93 @@ access:
     roles: {  }
     users: {  }
     permissions: {  }
-handlers: {  }
+handlers:
+  account_request_demandeur:
+    id: email
+    handler_id: account_request_demandeur
+    label: 'Demande de compte — accusé demandeur'
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      states:
+        - completed
+      to_mail: '[webform_submission:values:email:raw]'
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: no-reply@drivematiclegrand.com
+      from_options: {  }
+      from_name: 'Drive Matic Legrand'
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Drive Matic Legrand : demande de création de compte'
+      body: |-
+        <div style="text-align:left;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:14px;line-height:22px;"><p style="margin:0 0 16px;"><img src="https://www.drivematiclegrand.com/themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png" alt="Drive Matic Legrand" width="211" height="24" style="display:block;border:0;"></p><p style="margin:0 0 16px;">Bonjour,</p><p style="margin:0 0 16px;">Nous vous remercions pour l’intérêt que vous portez à Drive Matic Legrand et pour votre demande de création de compte. Votre demande a bien été enregistrée et sera étudiée avec attention par notre équipe. Nous reviendrons vers vous dans les meilleurs délais afin de finaliser la création de votre compte partenaire.</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Vous êtes</h3><p style="margin:0 0 16px;"><strong>Nom :</strong> [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>Fonction :</strong> [webform_submission:values:fonction]<br>
+        <strong>E-mail :</strong> [webform_submission:values:email]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Votre entreprise</h3><p style="margin:0 0 16px;"><strong>Raison sociale :</strong> [webform_submission:values:raison_sociale]<br>
+        <strong>Siret :</strong> [webform_submission:values:siret]<br>
+        <strong>Adresse :</strong> [webform_submission:values:adresse] [webform_submission:values:complement] - [webform_submission:values:code_postal] [webform_submission:values:ville]</p><p style="margin:0 0 16px;">À bientôt<br><strong style="color:#aa0000;">www.drivematiclegrand.com</strong></p><p style="color:#666666;font-size:12px;line-height:18px;margin:0;">Cet e-mail vous a été envoyé par un système automatique d’émission de messages. L’adresse d’émission n’est pas une adresse de courriel classique. Si vous écrivez à cette adresse, votre message ne sera pas pris en compte.</p></div>
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      langcode: ''
+      parameters: {  }
+      debug: false
+  account_request_interne:
+    id: email
+    handler_id: account_request_interne
+    label: 'Demande de compte — notification interne'
+    notes: ''
+    status: true
+    conditions: {  }
+    weight: 1
+    settings:
+      states:
+        - completed
+      to_mail: audrey@passerelle.com
+      to_options: {  }
+      bcc_mail: ''
+      bcc_options: {  }
+      cc_mail: ''
+      cc_options: {  }
+      from_mail: no-reply@drivematiclegrand.com
+      from_options: {  }
+      from_name: 'Drive Matic Legrand'
+      reply_to: ''
+      return_path: ''
+      sender_mail: ''
+      sender_name: ''
+      subject: 'Drive Matic Legrand : demande de création de compte'
+      body: |-
+        <div style="text-align:left;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:14px;line-height:22px;"><p style="margin:0 0 16px;"><img src="https://www.drivematiclegrand.com/themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png" alt="Drive Matic Legrand" width="211" height="24" style="display:block;border:0;"></p><p style="margin:0 0 16px;">Bonjour,</p><p style="margin:0 0 16px;">Nous venons de recevoir une demande de création de compte sur le site Internet.</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Demandeur</h3><p style="margin:0 0 16px;"><strong>Nom :</strong> [webform_submission:values:civilite] [webform_submission:values:prenom] [webform_submission:values:nom]<br>
+        <strong>Fonction :</strong> [webform_submission:values:fonction]<br>
+        <strong>E-mail :</strong> [webform_submission:values:email]<br>
+        <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Votre entreprise</h3><p style="margin:0 0 16px;"><strong>Raison sociale :</strong> [webform_submission:values:raison_sociale]<br>
+        <strong>Siret :</strong> [webform_submission:values:siret]<br>
+        <strong>Adresse :</strong> [webform_submission:values:adresse] [webform_submission:values:complement] - [webform_submission:values:code_postal] [webform_submission:values:ville]</p><p style="margin:0 0 16px;">À bientôt<br><strong style="color:#aa0000;">www.drivematiclegrand.com</strong></p><p style="color:#666666;font-size:12px;line-height:18px;margin:0;">Cet e-mail vous a été envoyé par un système automatique d’émission de messages. L’adresse d’émission n’est pas une adresse de courriel classique. Si vous écrivez à cette adresse, votre message ne sera pas pris en compte.</p></div>
+      excluded_elements: {  }
+      ignore_access: false
+      exclude_empty: true
+      exclude_empty_checkbox: false
+      exclude_attachments: false
+      html: true
+      attachments: false
+      twig: false
+      theme_name: ''
+      langcode: ''
+      parameters: {  }
+      debug: false
 variants: {  }
