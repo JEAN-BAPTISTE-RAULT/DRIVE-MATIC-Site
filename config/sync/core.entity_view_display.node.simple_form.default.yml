@@ -1,19 +1,19 @@
-uuid: 59863c87-8cce-4a85-9d56-b4cb717d36c4
+uuid: 49513224-20ad-409e-beaf-5e0f4fe3e3c0
 langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.partner.body
-    - field.field.node.partner.field_meta_tags
-    - field.field.node.partner.field_webform
-    - node.type.partner
+    - field.field.node.simple_form.body
+    - field.field.node.simple_form.field_meta_tags
+    - field.field.node.simple_form.field_webform
+    - node.type.simple_form
   module:
     - text
     - user
     - webform
-id: node.partner.default
+id: node.simple_form.default
 targetEntityType: node
-bundle: partner
+bundle: simple_form
 mode: default
 content:
   field_webform:
@@ -31,6 +31,6 @@ content:
     weight: 100
     region: content
 hidden:
+  body: true
   field_meta_tags: true
   langcode: true
-  body: true

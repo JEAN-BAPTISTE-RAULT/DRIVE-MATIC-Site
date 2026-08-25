@@ -6,18 +6,93 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 
 /**
  * Implements hook_form_alter().
  *
- * Attache la cascade marque -> modele -> motorisation sur le webform contact.
+ * Attache la cascade marque -> modele -> motorisation sur le webform contact,
+ * et les ajustements du formulaire de connexion (SDC `login-panel`, page
+ * /user/login) : libelle du bouton "Me connecter", libelle "E-mail"
+ * (maquette 472:12636/602:33089), lien "Mot de passe oublié" et declencheur
+ * d'affichage du mot de passe.
  */
 function drivematic_forms_form_alter(array &$form, FormStateInterface $form_state, string $form_id): void {
-  if (!str_starts_with($form_id, 'webform_submission_contact')) {
+  if (str_starts_with($form_id, 'webform_submission_contact')) {
+    $form['#attached']['library'][] = 'drivematic_forms/vehicle_select';
+    $form['#attached']['drupalSettings']['drivematicForms'] = _drivematic_forms_vehicle_map();
     return;
   }
-  $form['#attached']['library'][] = 'drivematic_forms/vehicle_select';
-  $form['#attached']['drupalSettings']['drivematicForms'] = _drivematic_forms_vehicle_map();
+
+  if ($form_id === 'user_login_form') {
+    // Maquette : "Me connecter", pas le "Se connecter" par defaut du coeur.
+    $form['actions']['submit']['#value'] = t('Me connecter');
+    // #context distinct : la traduction fr existante de "E-mail" (sans
+    // contexte, "Courriel", deja presente dans le stockage des chaines)
+    // ecraserait sinon ce libelle precis de la maquette.
+    $form['name']['#title'] = t('E-mail', [], ['context' => 'login-panel']);
+    _drivematic_forms_add_forgot_password_link($form['pass']);
+    _drivematic_forms_add_password_toggle($form['pass']);
+  }
+}
+
+/**
+ * Ajoute le lien "Mot de passe oublié" au libelle du champ (maquette).
+ *
+ * La maquette place ce lien sur la meme ligne que le libelle "Mot de passe".
+ * `#title` devient un render array **sans wrapper** (aucun `#type` sur le
+ * tableau racine : Drupal concatene ses enfants directement, sans balise
+ * intermediaire) — le texte du libelle et le lien restent ainsi des enfants
+ * directs du `<label>`, qui garde son flux normal (`_user-login-form.scss`).
+ *
+ * Le lien est positionne en absolu (`position: relative` sur le `<label>`),
+ * pas en `flex` : l'asterisque standard du site (`.form-required::after`)
+ * repose sur `vertical-align: super`, une propriete sans effet sur un item
+ * flex — passer le `<label>` en `flex` le fait retomber sur la ligne de base
+ * au lieu de rester en exposant. Le flux inline normal du `<label>` (texte +
+ * `::after`) reste donc intact.
+ *
+ * @param array $element
+ *   L'element `pass` du formulaire de connexion, par reference.
+ */
+function _drivematic_forms_add_forgot_password_link(array &$element): void {
+  $link = Link::fromTextAndUrl(t('Mot de passe oublié'), Url::fromRoute('user.pass'))
+    ->toRenderable();
+  $link['#attributes']['class'][] = 'login-panel__forgot-password';
+
+  $element['#title'] = [
+    'label' => ['#markup' => $element['#title']],
+    'link' => $link,
+  ];
+}
+
+/**
+ * Ajoute le declencheur d'affichage du mot de passe (callback #field_suffix).
+ *
+ * Rendu en render array (pas de HTML brut) : le bouton reste inerte sans JS,
+ * `login-panel.js` l'active et bascule `type="password"`/`type="text"`.
+ *
+ * @param array $element
+ *   L'element `pass` du formulaire de connexion, par reference.
+ */
+function _drivematic_forms_add_password_toggle(array &$element): void {
+  $element['#field_suffix'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'button',
+    '#attributes' => [
+      'type' => 'button',
+      'class' => ['login-panel__password-toggle'],
+      'data-password-toggle' => TRUE,
+      'aria-pressed' => 'false',
+    ],
+    'label' => [
+      '#type' => 'html_tag',
+      '#tag' => 'span',
+      '#attributes' => ['class' => ['visually-hidden']],
+      '#value' => t('Afficher le mot de passe'),
+    ],
+  ];
 }
 
 /**

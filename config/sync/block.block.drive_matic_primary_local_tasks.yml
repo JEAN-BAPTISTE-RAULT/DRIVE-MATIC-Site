@@ -19,4 +19,9 @@ settings:
   provider: core
   primary: true
   secondary: false
-visibility: {  }
+visibility:
+  request_path:
+    id: request_path
+    negate: true
+    context_mapping: {  }
+    pages: /user/login

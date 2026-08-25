@@ -1,9 +1,9 @@
-uuid: 894dff73-0a94-4ae6-9cd5-9a63b15736db
+uuid: 48fe6546-c47f-4ef7-9d87-cab3a7f01c99
 langcode: en
 status: true
 dependencies: {  }
-name: 'Page :: Devenir partenaire'
-type: partner
+name: 'Page :: Formulaire simple'
+type: simple_form
 description: null
 help: null
 new_revision: true

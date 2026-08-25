@@ -462,6 +462,69 @@ function _drive_matic_devis_cta_url(): string {
 }
 
 /**
+ * Implements hook_preprocess_HOOK() for page--user--login.html.twig.
+ *
+ * Calcule les 3 URLs des cartes d'action du SDC `login-panel` (page de
+ * connexion, F2). "Créer un compte"/"faire une demande" et "Devenir
+ * partenaire" pointent vers les 2 nodes du bundle mutualise `simple_form` :
+ * la recherche par bundle seul ne suffit plus (contrairement a
+ * `_drive_matic_devis_cta_url()`), le bundle etant multi-instance depuis sa
+ * mutualisation (ADR-024) — on distingue donc aussi par titre.
+ *
+ * Suggestion `page__user__login` : construite par
+ * `SystemThemeHooks::themeSuggestionsPage()` a partir des segments du chemin
+ * interne (`user` + `login`), pas du nom de la route.
+ */
+function drive_matic_preprocess_page__user__login(array &$variables): void {
+  $variables['request_account_url'] = _drive_matic_simple_form_node_url('Demande de création de compte');
+  $variables['partner_url'] = _drive_matic_simple_form_node_url('Devenir partenaire');
+  $variables['quote_url'] = _drive_matic_devis_cta_url();
+}
+
+/**
+ * URL d'un node du bundle mutualise `simple_form`, identifie par son titre.
+ *
+ * @param string $title
+ *   Le titre exact du node cible.
+ *
+ * @return string
+ *   L'URL du node, ou '#' si introuvable.
+ */
+function _drive_matic_simple_form_node_url(string $title): string {
+  $nodes = \Drupal::entityTypeManager()->getStorage('node')
+    ->loadByProperties(['type' => 'simple_form', 'title' => $title]);
+  $node = reset($nodes);
+  return $node ? $node->toUrl()->toString() : '#';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for html.html.twig.
+ *
+ * Aligne le titre d'onglet sur le bouton et le fil d'Ariane : "Me connecter"
+ * plutot que "Se connecter" (libelle par defaut du cœur pour la route
+ * `user.login`). Meme demarche que le reglage `replaced_titles`
+ * d'easy_breadcrumb pour le fil d'Ariane, mais applique ici a la variable de
+ * gabarit `head_title` plutot qu'a la route elle-meme — qui reste "Se
+ * connecter" partout ou elle est utilisee ailleurs (ex. onglets locaux,
+ * masques sur cette page mais toujours en base).
+ *
+ * Les hooks de theme s'executent apres ceux des modules : `head_title`
+ * porte deja ici la chaine composee par metatag (« Se connecter | Drive
+ * Matic Legrand »), pas seulement le titre de la page — l'ecraser
+ * completement aurait aussi perdu le nom du site. On y remplace donc
+ * seulement le libelle, pas toute la valeur.
+ */
+function drive_matic_preprocess_html(array &$variables): void {
+  if (\Drupal::routeMatch()->getRouteName() === 'user.login' && !empty($variables['head_title']['title'])) {
+    $variables['head_title']['title'] = str_replace(
+      'Se connecter',
+      (string) t('Me connecter'),
+      (string) $variables['head_title']['title']
+    );
+  }
+}
+
+/**
  * Construit l'arbre du menu "main" pour le SDC `site-header`.
  *
  * @param array $page_variables

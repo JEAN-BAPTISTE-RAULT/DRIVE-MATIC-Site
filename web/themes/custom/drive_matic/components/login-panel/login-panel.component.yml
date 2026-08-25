@@ -1,0 +1,28 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Page :: Connexion'
+status: stable
+libraryOverrides:
+  dependencies:
+    - core/drupal
+    - core/once
+slots:
+  form:
+    title: Formulaire
+    description: 'Le formulaire de connexion core (`user_login_form`), rendu par Drupal.'
+props:
+  type: object
+  required:
+    - request_account_url
+    - partner_url
+    - quote_url
+  properties:
+    request_account_url:
+      type: string
+      title: 'URL "Demande de création de compte"'
+      description: 'Cible du lien "faire une demande" et de la carte "Créer un compte".'
+    partner_url:
+      type: string
+      title: 'URL "Devenir partenaire"'
+    quote_url:
+      type: string
+      title: 'URL "Demander un devis"'

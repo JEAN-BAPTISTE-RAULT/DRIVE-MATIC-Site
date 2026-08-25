@@ -1,0 +1,38 @@
+{#
+  SDC « Page :: Connexion » — carte d'authentification + 3 cartes d'action,
+  maquettes 472:12636 (desktop) et 602:33089 (mobile).
+  Decision actee (25/08/2026) : 3 cartes aux deux gabarits — la maquette
+  mobile n'en montre que 2 ("Créer un compte" absente) mais l'harmonisation a
+  ete demandee par l'utilisatrice plutot que la reproduction litterale.
+  Slot : form (formulaire de connexion core, rendu par Drupal).
+  Props : request_account_url, partner_url, quote_url.
+#}
+<div class="login-panel">
+  <div class="login-panel__card">
+    <p class="login-panel__intro">
+      {{ 'Vous êtes revendeur partenaire de Drive Matic Legrand, identifiez-vous et configurez votre solution à vos conditions tarifaires.'|t }}
+    </p>
+
+    {{ block('form') }}
+
+    <p class="login-panel__request">
+      {{ 'Vous êtes revendeur Drive Matic Legrand et n’avez pas encore de compte :'|t }}
+      <a href="{{ request_account_url }}" class="login-panel__request-link">{{ 'FAITES UNE DEMANDE'|t }}</a>
+    </p>
+  </div>
+
+  <div class="login-panel__actions">
+    <div class="login-panel__action">
+      <p class="login-panel__action-text">{{ 'Vous êtes partenaire de Drive Matic Legrand et vous souhaitez créer un compte'|t }}</p>
+      <a href="{{ request_account_url }}" class="login-panel__action-button">{{ 'Créer un compte'|t }}</a>
+    </div>
+    <div class="login-panel__action">
+      <p class="login-panel__action-text">{{ 'Vous êtes un professionnel et souhaitez devenir partenaire de Drive Matic Legrand'|t }}</p>
+      <a href="{{ partner_url }}" class="login-panel__action-button">{{ 'Devenir partenaire'|t }}</a>
+    </div>
+    <div class="login-panel__action">
+      <p class="login-panel__action-text">{{ 'Vous êtes une auto-école'|t }}</p>
+      <a href="{{ quote_url }}" class="login-panel__action-button">{{ 'Demander un devis'|t }}</a>
+    </div>
+  </div>
+</div>

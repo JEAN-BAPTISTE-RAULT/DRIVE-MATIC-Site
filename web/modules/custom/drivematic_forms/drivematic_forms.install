@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * @file
+ * Fonctions de mise a jour du module DRIVE-MATIC Formulaires.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Field\Entity\BaseFieldOverride;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\node\Entity\Node;
+
+/**
+ * Mutualise le bundle "Devenir partenaire" en "Page :: Formulaire simple".
+ *
+ * Le nom technique d'un type de contenu ne peut pas etre renomme : on cree
+ * donc le bundle `simple_form` (config deja importee dans config/sync), on y
+ * bascule le node "Devenir partenaire" existant (les champs `body`,
+ * `field_webform` et `field_meta_tags` restent sur le meme storage partage,
+ * aucune perte de donnees), on cree le node "Demande de création de compte"
+ * sur ce meme bundle avec le webform `partner` en attendant la creation de
+ * son propre webform (cf. tache), puis on supprime le bundle `partner`
+ * devenu vide.
+ *
+ * Idempotent : si le bundle `partner` n'existe plus, la mise a jour a deja
+ * ete appliquee et ne fait rien.
+ */
+function drivematic_forms_update_11001(): string {
+  $node_type_storage = \Drupal::entityTypeManager()->getStorage('node_type');
+  $partner_type = $node_type_storage->load('partner');
+
+  if (!$partner_type) {
+    return 'Bundle "partner" deja absent : mise a jour ignoree (deja appliquee).';
+  }
+
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+
+  // 1. Bascule des nodes existants vers le nouveau bundle.
+  $partner_nodes = $node_storage->loadByProperties(['type' => 'partner']);
+  foreach ($partner_nodes as $node) {
+    $node->set('type', 'simple_form');
+    $node->save();
+  }
+
+  // 2. Creation du node "Demande de création de compte".
+  $request_node = Node::create([
+    'type' => 'simple_form',
+    'langcode' => 'fr',
+    'uid' => 0,
+    'status' => 1,
+    'title' => 'Demande de création de compte',
+    'field_webform' => ['target_id' => 'partner'],
+  ]);
+  $request_node->save();
+
+  // 3. Suppression du bundle "partner" : dependants d'abord, bundle en dernier.
+  \Drupal::configFactory()
+    ->getEditable('simple_sitemap.bundle_settings.default.node.partner')
+    ->delete();
+
+  \Drupal::entityTypeManager()->getStorage('pathauto_pattern')
+    ->load('node_partner')?->delete();
+
+  \Drupal::entityTypeManager()->getStorage('metatag_defaults')
+    ->load('node__partner')?->delete();
+
+  \Drupal::entityTypeManager()->getStorage('entity_view_display')
+    ->load('node.partner.default')?->delete();
+
+  \Drupal::entityTypeManager()->getStorage('entity_form_display')
+    ->load('node.partner.default')?->delete();
+
+  foreach (['body', 'field_webform', 'field_meta_tags'] as $field_name) {
+    FieldConfig::loadByName('node', 'partner', $field_name)?->delete();
+  }
+
+  BaseFieldOverride::loadByName('node', 'partner', 'title')?->delete();
+
+  $partner_type->delete();
+
+  return sprintf(
+    'Bundle "partner" mutualise en "simple_form" : %d node(s) bascule(s), node "Demande de création de compte" (nid %d) cree, bundle "partner" supprime.',
+    count($partner_nodes),
+    (int) $request_node->id()
+  );
+}

@@ -1,0 +1,53 @@
+{#
+/**
+ * @file
+ * Page de connexion (/user/login), maquettes Figma 472:12636 (desktop) et
+ * 602:33089 (mobile). Copie de page.html.twig : seule la zone de contenu
+ * change (SDC `login-panel`), header/footer restent le gabarit standard.
+ *
+ * @see page.html.twig
+ * @see \drive_matic_preprocess_page__user__login()
+ */
+#}
+<div class="layout-container">
+
+  {% embed 'drive_matic:site-header' with { navigation: main_navigation, logged_in: logged_in, devis_url: devis_url } %}
+    {% block branding %}{{ page.header }}{% endblock %}
+    {% block account %}{{ page.secondary_menu }}{% endblock %}
+  {% endembed %}
+
+  {{ page.breadcrumb }}
+
+  {{ page.highlighted }}
+
+  {{ page.help }}
+
+  <main>
+    <a id="main-content" tabindex="-1"></a>{# link is in html.html.twig #}
+
+    <div class="layout-content">
+      {% embed 'drive_matic:login-panel' with { request_account_url: request_account_url, partner_url: partner_url, quote_url: quote_url } %}
+        {% block form %}{{ page.content }}{% endblock %}
+      {% endembed %}
+    </div>{# /.layout-content #}
+
+    {% if page.sidebar_first %}
+      <aside class="layout-sidebar-first">
+        {{ page.sidebar_first }}
+      </aside>
+    {% endif %}
+
+    {% if page.sidebar_second %}
+      <aside class="layout-sidebar-second" >
+        {{ page.sidebar_second }}
+      </aside>
+    {% endif %}
+
+  </main>
+
+  {% embed 'drive_matic:site-footer' with { site_name: drupal_config('system.site', 'name') } %}
+    {% block solutions %}{{ page.footer.drive_matic_footer_solutions_menu }}{% endblock %}
+    {% block legal %}{{ page.footer.drive_matic_footer_legal_menu }}{% endblock %}
+  {% endembed %}
+
+</div>{# /.layout-container #}

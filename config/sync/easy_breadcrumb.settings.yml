@@ -4,7 +4,7 @@ langcode: fr
 applies_admin_routes: true
 include_invalid_paths: false
 excluded_paths: ''
-replaced_titles: ''
+replaced_titles: 'Se connecter::Me connecter'
 custom_paths: ''
 include_home_segment: true
 alternative_title_field: ''

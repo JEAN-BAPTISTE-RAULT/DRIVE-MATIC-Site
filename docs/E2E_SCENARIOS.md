@@ -482,6 +482,31 @@
 
 ---
 
+## S25 — Page de connexion (Espace partenaire) et demande de creation de compte
+
+**Objectif** : Verifier la page `/user/login` (maquettes 472:12636 desktop / 602:33089 mobile) et les 3 parcours de navigation qu'elle expose, en anonyme.
+
+**Etapes** :
+1. Depuis n'importe quelle page, cliquer sur « Espace partenaire » (header, anonyme) → arrivee sur `/user/login`.
+2. Cliquer sur « faire une demande » (lien dans la carte de connexion) ou sur le bouton « Créer un compte » (carte d'action) → page « Demande de création de compte » (`/demande-de-creation-de-compte`).
+3. Retour sur `/user/login`, cliquer sur « Devenir partenaire » (carte d'action) → page « Devenir partenaire » (`/devenir-partenaire`).
+4. Retour sur `/user/login`, cliquer sur « Demandez un devis » (carte « auto-école ») → page Contact (`/contact`).
+5. Saisir des identifiants invalides et se connecter → message d'erreur core affiche, lien « mot de passe oublié » fonctionnel.
+6. Cliquer sur le declencheur d'affichage du mot de passe → le mot de passe saisi devient visible, puis a nouveau masque au second clic.
+
+**Resultats attendus** :
+- Les 3 cartes d'action et le lien « faire une demande » resolvent vers les bonnes pages, sans lien mort (`#`).
+- Aucune boite d'onglets locaux ("Se connecter"/"Réinitialiser votre mot de passe") ni double titre ne s'affiche sur `/user/login`.
+- La bascule d'affichage du mot de passe reste inerte si le JS ne s'execute pas (repli sans JS : champ mot de passe standard).
+- « Demande de création de compte » et « Devenir partenaire » n'aboutissent **jamais** a une creation de compte immediate — ce sont des demandes, instruites en back-office (decision #4, aucune auto-inscription).
+
+**Cas limites** :
+- Renommer le node « Devenir partenaire » ou « Demande de création de compte » en back-office casse la recherche par titre (`_drive_matic_simple_form_node_url()`) : le lien retombe sur `#`. A surveiller, meme classe de fragilite que la recherche par bundle deja acceptee sur le bouton « Demander un devis » du header.
+
+**Mise en oeuvre (a rejouer) — integration du 2026-08-25** ([ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md), addendum [ADR-015](../.claude/decisions/015-habillage-des-formulaires.md)) : bundle `partner` mutualise en `simple_form` (multi-instance), nouveau SDC `login-panel`, nouvelle fondation `_user-login-form.scss` pour le formulaire core. Les 2 pages `simple_form` partagent temporairement le meme webform (`partner`) — le vrai webform de demande de compte reste a creer.
+
+---
+
 ## Matrice de couverture (scenario → feature)
 
 | Scenario | Features couvertes |
@@ -503,12 +528,14 @@
 | S20, S21 | F12, decision #5 (cloisonnement) |
 | S23 | F18 |
 | S24 | F9 (volet FAQ) |
-| Transverse (S1-S24) | F1 (Paragraphes), decision #8 (RGAA/WCAG AA) |
+| S25 | F2, F11, F12 (page login, ADR-024) |
+| Transverse (S1-S25) | F1 (Paragraphes), decision #8 (RGAA/WCAG AA) |
 
 ## Historique des modifications
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-08-25 | **F2/F11/F12 — la page de connexion (`/user/login`) est integree** ([ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md), maquettes 472:12636 desktop / 602:33089 mobile) : nouveau SDC `login-panel` (carte de connexion + 3 cartes d'action), nouvelle fondation `_user-login-form.scss` (addendum [ADR-015](../.claude/decisions/015-habillage-des-formulaires.md)) pour habiller `user_login_form` (core, pas un webform). Bundle `partner` mutualise en `simple_form` (multi-instance) pour porter aussi la nouvelle page « Demande de création de compte ». **Decision actee** : 3 cartes aux deux gabarits (la maquette mobile n'en montre que 2, harmonisation demandee par l'utilisatrice). **Nouveau scenario S25** | S25 |
 | 2026-08-24 | **Transverse — bascule mobile-first des tokens** (addendum [ADR-013](../.claude/decisions/013-espacement-et-unites.md)) : `--dm-gutter`, `--dm-space-page` et l'echelle de titres (h1/h2/h3) ne portaient qu'une valeur desktop ; chacun recoit desormais une valeur mobile de base (mesuree sur les maquettes mobiles) et une surcharge `@media (width >= 992px)`. Repercute sur ~25 composants. `--dm-space-element` (24px) reste volontairement une valeur unique, y compris mobile/desktop. **A rejouer** : verifier le rythme mobile de toute page listee ci-dessous, en particulier gouttiere laterale et tailles de titre | Transverse (S1-S24) |
 | 2026-08-24 | **F2 — corrections mobile du header** : le bouton « Demander un devis » du pied de tiroir mobile occupe desormais toute la largeur du menu (etait centre sur son contenu, maquette 526-23592) ; le sous-menu « Drive Matic » n'affiche plus ses filets entre les 3 groupes de liens en mobile (liste plate a ecart uniforme, maquette 526-23698) ; le bouton « Demander un devis » (barre + tiroir) pointe desormais vers `contact` (F10) au lieu de `configurator` (F14, inatteignable en anonyme). **A rejouer** : S1, tiroir mobile complet (racine + les 4 sous-panneaux) | S1 |
 | 2026-08-21 | **F2 — le fil d'Ariane est stylise** ([ADR-023](../.claude/decisions/023-fil-ariane-style.md)) : nouvelle fondation `_breadcrumb.scss`, registre typographique repris de `pager` (liens gris, element courant acier gras, separateur `»` gris metallise). Ecart egal au-dessus et au-dessous (`--dm-space-element`, 24px), porte par le fil d'Ariane lui-meme — necessaire car les gabarits "hero" (`homepage`/`transform`/`product`) n'ont pas de bloc titre de page pour porter cet ecart ; `_page-title.scss` ne pose donc plus son propre `padding-block-start`. Alignement horizontal cale sur la boite du bandeau du header (plafond 1440px + gouttiere responsive 24/40px), pas sur la colonne de contenu : les deux ne coincident qu'en dessous d'environ 980px de large. **A rejouer** : S1, en desktop large (>1440px) et sur une page hero sans bloc titre | S1 |

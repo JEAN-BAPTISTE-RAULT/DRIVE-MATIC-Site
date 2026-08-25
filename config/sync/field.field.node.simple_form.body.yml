@@ -1,16 +1,16 @@
-uuid: 5f18dbd2-0037-4d8e-b12f-b7879c758ede
+uuid: f604a532-7feb-43cc-9c34-3de8f2c51ad4
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.body
-    - node.type.partner
+    - node.type.simple_form
   module:
     - text
-id: node.partner.body
+id: node.simple_form.body
 field_name: body
 entity_type: node
-bundle: partner
+bundle: simple_form
 label: Corps
 description: ''
 required: false

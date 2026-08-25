@@ -1,13 +1,13 @@
-uuid: a468e4cf-f974-4fb7-bf7b-7ccb03b1c798
+uuid: 9ffd3e99-7c2e-4727-a2c2-11265104f7ed
 langcode: en
 status: true
 dependencies:
   config:
-    - node.type.partner
-id: node.partner.title
+    - node.type.simple_form
+id: node.simple_form.title
 field_name: title
 entity_type: node
-bundle: partner
+bundle: simple_form
 label: Titre
 description: 'Titre de la page. Il alimente l’adresse de la page, le fil d’Ariane et la balise « title » du navigateur.'
 required: true

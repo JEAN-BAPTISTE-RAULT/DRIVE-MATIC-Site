@@ -1,0 +1,154 @@
+// Habillage du formulaire de connexion core (`user_login_form`).
+
+// Exception assumee a la regle « tout est SDC », de la meme nature que
+// `forms` (ADR-015 §1) : ce formulaire vient de l'API Form de Drupal, pas
+// d'un composant, et son markup ne peut donc pas etre restructure. Distinct
+// de `forms` : ce n'est pas un webform (pas de grille multi-colonnes, pas de
+// carte propre — la carte est portee par le SDC `login-panel` qui enveloppe
+// ce formulaire). Seuls label/champ/bouton sont repris, avec le meme langage
+// visuel (memes tokens) que `forms`. Addendum ADR-015 (25/08/2026).
+
+// Reference : maquettes Figma 472:12636 (desktop) / 602:33089 (mobile).
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-login-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--login-panel-gap, 20px);
+  width: 100%;
+  text-align: left;
+
+  // Largeur des champs mesuree sur la maquette desktop (380px, `Listbox`
+  // 472:12644/472:12648) : plus etroite que la carte, contrairement au
+  // mobile ou elle occupe deja toute la largeur disponible (326px = 358px
+  // de carte - 2x16px de gouttiere, sans reglage supplementaire).
+  @media (width >= 992px) {
+    max-width: 380px;
+  }
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-login-form .form-item {
+  margin: 0;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-login-form .form-item > label {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+  font-weight: 400;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-login-form
+  :is(input[type='text'], input[type='email'], input[type='password']) {
+  inline-size: 100%;
+  padding: 10px 20px;
+  border: 1px solid var(--dm-color-grey-metal);
+  border-radius: 8px;
+  background-color: var(--dm-color-white);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-login-form input:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 1px;
+}
+
+// Le champ mot de passe et son declencheur partagent une meme boite
+// positionnee, pour poser le bouton en superposition (queue de champ).
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-login-form .form-item-pass {
+  position: relative;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-login-form .form-item-pass input {
+  padding-inline-end: 52px;
+}
+
+// Libelle du champ mot de passe : reste en flux normal (pas de `flex`), pour
+// que l'asterisque standard du site (`.form-required::after`, non touche)
+// garde son `vertical-align: super` — une propriete **sans effet sur un item
+// flex** (essaye d'abord avec le `<label>` en `flex` : l'asterisque
+// retombait au niveau de la ligne de base au lieu de rester en exposant,
+// puisque `vertical-align` n'a alors plus aucune prise). Le lien est donc
+// positionne en absolu plutot que pousse par flex, ancre sur le `<label>`
+// lui-meme (`position: relative`) pour rester verticalement centre sur SA
+// ligne, independamment de la hauteur du champ mot de passe en dessous.
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-login-form .form-item-pass > label {
+  position: relative;
+}
+
+// Bouton insere dans le formulaire core via `#field_suffix`
+// (drivematic_forms.module) : classe du SDC `login-panel`, referencee ici
+// depuis l'exterieur du composant (meme cas que `.help-modal__trigger`
+// ci-dessus dans `forms`).
+// stylelint-disable selector-class-pattern -- classe d'un SDC (BEM)
+.login-panel__password-toggle {
+  position: absolute;
+  inset-block-end: 10px;
+  inset-inline-end: 16px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background-color: var(--dm-color-grey-metal);
+  cursor: pointer;
+  mask: url('../images/icons/eye-off.svg') no-repeat center;
+}
+
+// Inerte sans JS (login-panel.js pose `is-ready` sur `.login-panel`) : le
+// champ reste un mot de passe standard, sans bouton qui ne ferait rien.
+.login-panel:not(.is-ready) .login-panel__password-toggle {
+  display: none;
+}
+
+.login-panel__password-toggle--visible {
+  mask-image: url('../images/icons/eye.svg');
+}
+
+.login-panel__forgot-password {
+  position: absolute;
+  inset-inline-end: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+  font-weight: 400;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+// stylelint-enable selector-class-pattern
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-login-form .form-actions .form-submit {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  text-align: center;
+  cursor: pointer;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-login-form .form-actions .form-submit:hover {
+  background: var(--dm-color-anthracite);
+}

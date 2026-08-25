@@ -761,8 +761,12 @@ Le `title` prend le **libellé exact de la maquette**, accroche comprise. Sur un
 **exemplaire unique**, on **supprime son motif Pathauto** et on pose l'alias **en dur** sur le
 node, pour garder une URL courte. Fait : `configurator` → `/configurer`, `faq` → `/faq`,
 `brands` → `/marques-partenaires`. Restent à traiter sur ce schéma : `documents`, `all_news`,
-`contact`, `partner`. Pas d'alias manuel sur un type multi-instances (`corporate`, `product`,
+`contact`. Pas d'alias manuel sur un type multi-instances (`corporate`, `product`,
 `transform`, `news`, `legals`) : leur motif reste.
+
+⚠️ `partner` sort de cette liste (2026-08-25) : mutualisé en bundle `simple_form` pour porter
+aussi la page « Demande de création de compte » (page login), il devient multi-instance —
+son motif Pathauto `/[node:title]` reste donc actif, pas d'alias en dur.
 
 Les coquilles de maquette sont corrigées, pas reproduites : le calque disait « Les marques
 partenaire » au singulier, le frame « Les marques partenaires ». Retenu : le pluriel.

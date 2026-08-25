@@ -114,3 +114,26 @@ back-office. L'intention de la regle est respectee sur le fond : sortie **WebP**
   token.
 - **Garder l'infobulle de Webform** avec l'image dans `#help` : une infobulle au
   survol de 900px de haut, et le contenu est de toute facon passe a `stripTags`.
+
+## Addendum du 25/08 : le meme raisonnement s'etend au formulaire de connexion core
+
+La page `/user/login` (F2, maquettes 472:12636 / 602:33089) a besoin du meme
+habillage carte/champ/bouton, mais pour `user_login_form` — un formulaire
+core, pas un webform. La regle d'origine (§1) scope explicitement `_forms.scss`
+a `.webform-submission-form` / `.field--type-webform` : on ne l'a pas
+elargie a `.user-login-form` en silence, ce qui aurait rendu ce scope annonce
+faux.
+
+**Decision** : nouvelle fondation dediee `src/scss/_user-login-form.scss`,
+meme derogation « tout est SDC » que `forms`, meme reference aux tokens
+(couleurs, `--dm-font-body`), mais **pas** la grille multi-colonnes ni la
+carte propre de `.webform-submission-form` — la carte (fond, radius,
+padding) est portee par le SDC `login-panel` qui enveloppe ce formulaire,
+pas par le formulaire lui-meme. Le fichier reprend le meme `stylelint-disable`
+cible pour les classes du coeur (`.user-login-form`), et le meme motif pour
+une classe de SDC referencee depuis l'exterieur (`.login-panel__password-toggle`,
+bouton insere par `#field_suffix` dans `drivematic_forms.module`) que
+`.help-modal__trigger` ci-dessus.
+
+Voir [ADR-024](024-mutualisation-formulaire-simple.md) pour la partie
+content-model de la meme tache (mutualisation `partner` → `simple_form`).

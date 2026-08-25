@@ -1,16 +1,16 @@
-uuid: 03049a9c-c2bb-45a8-9187-304203f60f52
+uuid: 15d673f0-e635-4e03-ba7f-8647382dba9b
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_webform
-    - node.type.partner
+    - node.type.simple_form
   module:
     - webform
-id: node.partner.field_webform
+id: node.simple_form.field_webform
 field_name: field_webform
 entity_type: node
-bundle: partner
+bundle: simple_form
 label: Formulaire
 description: ''
 required: true

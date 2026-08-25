@@ -1,9 +1,9 @@
-uuid: aebc5da8-340d-429e-9edd-93960e1f113c
+uuid: 5d365484-45a7-48b5-913d-347f76571f27
 langcode: en
 status: true
 dependencies: {  }
-id: node__partner
-label: 'Page :: Devenir partenaire'
+id: node__simple_form
+label: 'Page :: Formulaire simple'
 tags:
   title: '[node:title] | [site:name]'
   description: '[node:summary]'
