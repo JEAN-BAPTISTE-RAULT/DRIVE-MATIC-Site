@@ -85,3 +85,44 @@ function drivematic_forms_update_11001(): string {
     (int) $request_node->id()
   );
 }
+
+/**
+ * Rattache son propre webform au node "Demande de création de compte".
+ *
+ * Le node cree par drivematic_forms_update_11001() pointait provisoirement
+ * vers le webform `partner` (cf. note de l'ADR-024, levee par cette mise a
+ * jour). Le webform `account_request` doit deja avoir ete importe via
+ * `drush cim` avant de lancer cette mise a jour.
+ *
+ * Idempotent : ne fait rien si le node est deja rattache a `account_request`
+ * ou si le webform `account_request` n'est pas encore importe.
+ */
+function drivematic_forms_update_11002(): string {
+  $webform_storage = \Drupal::entityTypeManager()->getStorage('webform');
+  if (!$webform_storage->load('account_request')) {
+    return 'Webform "account_request" absent (config non importee) : mise a jour ignoree.';
+  }
+
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  $nodes = $node_storage->loadByProperties([
+    'type' => 'simple_form',
+    'title' => 'Demande de création de compte',
+  ]);
+  $request_node = reset($nodes);
+
+  if (!$request_node) {
+    return 'Node "Demande de création de compte" introuvable : mise a jour ignoree.';
+  }
+
+  if ($request_node->get('field_webform')->target_id === 'account_request') {
+    return 'Node "Demande de création de compte" deja rattache a "account_request" : mise a jour ignoree (deja appliquee).';
+  }
+
+  $request_node->set('field_webform', ['target_id' => 'account_request']);
+  $request_node->save();
+
+  return sprintf(
+    'Node "Demande de création de compte" (nid %d) rattache au webform "account_request".',
+    (int) $request_node->id()
+  );
+}

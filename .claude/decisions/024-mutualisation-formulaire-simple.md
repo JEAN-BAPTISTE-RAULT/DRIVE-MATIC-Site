@@ -86,7 +86,7 @@ node existant vers le nouveau bundle avant de supprimer l'ancien.
   soumissions de "Demande de création de compte" arrivent avec les libelles
   et destinataires du formulaire "Devenir partenaire". Accepte explicitement
   par la tache (creation du vrai webform reportee) — a ne pas prendre pour un
-  bug tant qu'il n'est pas cree.
+  bug tant qu'il n'est pas cree. **Resolu le 2026-08-25**, voir Notes.
 - ⚠️ **Trouve en verifiant la migration, pas cause par elle** : le node
   "Devenir partenaire" avait deja `field_webform` vide en base avant toute
   intervention (une seule revision existante, la migration n'a touche que
@@ -101,3 +101,8 @@ Voir Option A ci-dessus.
 Le webform propre a "Demande de création de compte" reste a creer — quand ce
 sera fait, mettre a jour `field_webform` du node 124 et retirer la note de
 webform partage ci-dessus.
+
+**Addendum du 2026-08-25** : webform dedie `account_request` cree (maquettes
+Figma 472:12922 / 602:33766), et `drivematic_forms_update_11002()` rattache le
+node "Demande de création de compte" a ce nouveau webform. Le partage
+temporaire avec `partner` decrit ci-dessus est termine.
