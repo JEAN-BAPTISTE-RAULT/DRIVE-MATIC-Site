@@ -68,6 +68,67 @@ function _drivematic_partner_user_form_redirect(array &$form, FormStateInterface
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter() for user_login_form.
+ *
+ * `/user/login` (formulaire core `UserLoginForm`) redirige par defaut vers
+ * la page de compte (`entity.user.canonical`, `/user/{uid}`) — sans interet
+ * pour un partenaire, dont la page d'atterrissage naturelle est « Mes
+ * informations personnelles » (meme raisonnement que la redirection posee
+ * sur `user_form`, `_drivematic_partner_user_form_redirect()`).
+ *
+ * Scope au role `partenaire` : cette page exige `_role: partenaire`
+ * (drivematic_partner.routing.yml) — rediriger un compte qui ne l'a pas
+ * (un admin sans ce role) y renverrait un acces refuse.
+ *
+ * Pas de `#submit` sur le bouton comme pour `user_form` : `user_login_form`
+ * est un `FormBase` simple, pas un `EntityForm` — son bouton ne porte pas de
+ * `#submit` propre qui primerait sur `$form['#submit']`.
+ *
+ * Un `destination` explicite (ex. redirection depuis une page protegee)
+ * continue de l'emporter : `RedirectResponseSubscriber` l'applique
+ * apres coup, quel que soit ce que ce callback definit ici.
+ */
+function drivematic_partner_form_user_login_form_alter(array &$form, FormStateInterface $form_state): void {
+  $form['#submit'][] = '_drivematic_partner_user_login_redirect';
+}
+
+/**
+ * Redirige un partenaire vers « Mes informations personnelles ».
+ *
+ * Callback #submit ajoutee APRES celle de `UserLoginForm::submitForm()`, qui
+ * a deja appele `user_login_finalize()` a ce stade : `\Drupal::currentUser()`
+ * reflete donc deja le compte fraichement authentifie.
+ */
+function _drivematic_partner_user_login_redirect(array &$form, FormStateInterface $form_state): void {
+  if (\Drupal::currentUser()->hasRole('partenaire')) {
+    $form_state->setRedirect('drivematic_partner.personal_information');
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for user_logout_confirm.
+ *
+ * `/user/logout/confirm` (formulaire core `UserLogoutConfirm`, atterrissage
+ * du lien « Me déconnecter » du dropdown « Espace partenaire ») n'affiche par
+ * defaut aucun texte visible : le bloc titre de page est masque sur cette
+ * route (meme comportement que /user/login et /user/password, la condition
+ * de visibilite `entity_bundle:node` du bloc ne pouvant pas s'evaluer hors
+ * contexte de node), et la route n'a pas de `_title` statique en repli — la
+ * question du core (`getQuestion()`, deja portee par `$form['#title']` a ce
+ * stade, apres `ConfirmFormBase::buildForm()`) ne s'affiche donc nulle part,
+ * ni dans l'onglet du navigateur ni dans la page. On la rend visible en
+ * texte, sans dupliquer la chaine traduite.
+ */
+function drivematic_partner_form_user_logout_confirm_alter(array &$form, FormStateInterface $form_state): void {
+  $form['question'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'p',
+    '#value' => $form['#title'],
+    '#weight' => -10,
+  ];
+}
+
+/**
  * Noms des 11 champs du profil partenaire portes par l'entite User.
  *
  * @return string[]

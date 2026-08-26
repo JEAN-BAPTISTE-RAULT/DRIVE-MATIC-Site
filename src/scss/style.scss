@@ -21,6 +21,9 @@
 // `user-edit-form` : meme derogation, pour `user_form` (page
 // /user/{uid}/edit — atterrissage du lien de definition de mot de passe de
 // l'e-mail d'activation) — habillage minimal comme `user-pass-form`.
+// `user-logout-confirm-form` : meme derogation, pour `user_logout_confirm`
+// (page /user/logout/confirm, atterrissage du lien « Me deconnecter » du
+// dropdown « Espace partenaire ») — habillage minimal comme `user-pass-form`.
 
 @use 'tokens';
 @use 'fonts';
@@ -32,6 +35,7 @@
 @use 'user-pass-form';
 @use 'personal-information-form';
 @use 'user-edit-form';
+@use 'user-logout-confirm-form';
 @use 'views-faq';
 @use 'page-title';
 @use 'pager';

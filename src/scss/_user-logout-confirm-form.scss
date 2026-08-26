@@ -1,0 +1,104 @@
+// Habillage minimal du formulaire core de confirmation de deconnexion
+// (`user_logout_confirm`, page /user/logout/confirm).
+
+// Meme derogation qu'`user-pass-form`/`user-edit-form` (ADR-015 addendum) :
+// ce markup vient de l'API Form, pas d'un composant. Pas de carte, pas de SDC
+// d'enveloppe. La question du core est rendue en texte visible par
+// `drivematic_partner_form_user_logout_confirm_alter()` (PHP) : ce fichier
+// n'habille que la mise en page.
+
+// Alignement horizontal : meme demande explicite que pour le fil d'Ariane
+// (_breadcrumb.scss) — demarrer sous le logo du header, pas sous la
+// gouttiere generique `--dm-gutter`, qui ne coincide pas avec lui au-dela
+// d'environ 980px (le header plafonne sa boite a 1440px centree). On reprend
+// donc la boite du bandeau du header a l'identique (`site-header.scss`,
+// `&__bar`) : plafond 1440px centre + gouttiere responsive 24px / 40px a
+// 992px (`--site-header-gutter`, propriete scopee a `.site-header`, donc non
+// heritable ici — valeurs dupliquees a la main, comme dans `_breadcrumb.scss`).
+// ⚠️ Toute modification de `--site-header-gutter` doit etre repercutee ici.
+
+// Pas de `padding-block-start` : le fil d'Ariane au-dessus porte deja
+// l'ecart (`--dm-space-element`, en `padding-block` symetrique) — en ajouter
+// un ici doublerait l'ecart (regle CLAUDE.md, deja appliquee sur
+// `.block-page-title-block`). Seul `padding-block-end` reste, pour l'ecart
+// avant le footer.
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-logout-confirm {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 24px;
+  padding-block-end: var(--dm-space-page);
+
+  @media (width >= 992px) {
+    padding-inline: 40px;
+  }
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-logout-confirm p {
+  margin: 0 0 var(--dm-space-element);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-logout-confirm .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-block-start: 0;
+}
+
+// --- Bouton primaire « Se deconnecter » (spec Figma BtnRouge). -------------
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-logout-confirm .form-actions .button--primary {
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-logout-confirm .form-actions .button--primary:hover {
+  background: var(--dm-color-anthracite);
+}
+
+// --- Lien secondaire « Annuler » (spec Figma BtnContourIcone, sans icone). --
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-logout-confirm .form-actions .dialog-cancel {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 16px;
+  border: 1px solid var(--dm-color-steel);
+  border-radius: 6px;
+  background: var(--dm-color-white);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  text-decoration: none;
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-logout-confirm .form-actions .dialog-cancel:hover {
+  background: var(--dm-color-grey-light);
+}
+
+// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
+.user-logout-confirm .form-actions a:focus-visible,
+.user-logout-confirm .form-actions input:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 1px;
+}

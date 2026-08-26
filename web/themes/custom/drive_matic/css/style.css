@@ -976,6 +976,78 @@ textarea) {
   background: var(--dm-color-anthracite);
 }
 
+.user-logout-confirm {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 24px;
+  -webkit-padding-after: var(--dm-space-page);
+          padding-block-end: var(--dm-space-page);
+}
+@media (width >= 992px) {
+  .user-logout-confirm {
+    padding-inline: 40px;
+  }
+}
+
+.user-logout-confirm p {
+  margin: 0 0 var(--dm-space-element);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+
+.user-logout-confirm .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  -webkit-margin-before: 0;
+          margin-block-start: 0;
+}
+
+.user-logout-confirm .form-actions .button--primary {
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--dm-color-red);
+  color: var(--dm-color-white);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
+}
+
+.user-logout-confirm .form-actions .button--primary:hover {
+  background: var(--dm-color-anthracite);
+}
+
+.user-logout-confirm .form-actions .dialog-cancel {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 16px;
+  border: 1px solid var(--dm-color-steel);
+  border-radius: 6px;
+  background: var(--dm-color-white);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: normal;
+  text-decoration: none;
+}
+
+.user-logout-confirm .form-actions .dialog-cancel:hover {
+  background: var(--dm-color-grey-light);
+}
+
+.user-logout-confirm .form-actions a:focus-visible,
+.user-logout-confirm .form-actions input:focus-visible {
+  outline: 2px solid var(--dm-color-red);
+  outline-offset: 1px;
+}
+
 .view-faq .view-filters {
   padding-block: var(--dm-space-page);
   padding-inline: var(--dm-gutter);
