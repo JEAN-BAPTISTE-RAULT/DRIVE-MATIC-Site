@@ -1,5 +1,7 @@
 // SDC « Bloc :: Texte centré » — CSS scopé (BEM), consomme les tokens globaux.
 
+@use 'button-mixins' as btn;
+
 .text-centered {
   max-width: calc(960px + 2 * var(--dm-gutter));
   margin-inline: auto;
@@ -52,11 +54,12 @@
   // 13px sur la maquette mobile (526-22804) ; 15px au palier desktop (spec
   // documentee, cf. figma-button-specs).
   &__actions a {
+    @include btn.dm-btn-red;
+    @include btn.dm-btn-height;
+
     display: inline-block;
-    padding: 14px 16px;
+    padding-inline: 16px;
     border-radius: 4px;
-    background: var(--dm-color-red);
-    color: var(--dm-color-white);
     font-family: var(--dm-font-body);
     font-size: 0.8125rem;
     font-weight: 500;

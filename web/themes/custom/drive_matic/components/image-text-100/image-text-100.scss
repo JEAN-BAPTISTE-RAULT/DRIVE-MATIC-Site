@@ -2,6 +2,8 @@
 // Maquette : image pleine largeur (radius 16, sans crop) puis titre H2 steel,
 // description, bouton lien gris + téléchargement. Légende ferrée bas-droite.
 
+@use 'button-mixins' as btn;
+
 .image-text-100 {
   max-width: calc(900px + 2 * var(--dm-gutter));
   margin-inline: auto;
@@ -66,11 +68,12 @@
 
   // Bouton lien « gris » (Figma Btn) : fond #E8E8E8, Inter Medium 15px steel.
   &__actions a {
+    @include btn.dm-btn-grey;
+    @include btn.dm-btn-height;
+
     display: inline-block;
-    padding: 14px 16px;
+    padding-inline: 16px;
     border-radius: 6px;
-    background: var(--dm-color-grey-light);
-    color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
     font-size: 0.9375rem;
     font-weight: 500;

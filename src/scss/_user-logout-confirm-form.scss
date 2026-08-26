@@ -1,6 +1,8 @@
 // Habillage minimal du formulaire core de confirmation de deconnexion
 // (`user_logout_confirm`, page /user/logout/confirm).
 
+@use 'button-mixins' as btn;
+
 // Meme derogation qu'`user-pass-form`/`user-edit-form` (ADR-015 addendum) :
 // ce markup vient de l'API Form, pas d'un composant. Pas de carte, pas de SDC
 // d'enveloppe. La question du core est rendue en texte visible par
@@ -56,11 +58,12 @@
 
 // stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
 .user-logout-confirm .form-actions .button--primary {
-  padding: 14px 16px;
+  @include btn.dm-btn-red;
+  @include btn.dm-btn-height;
+
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
@@ -68,32 +71,22 @@
   cursor: pointer;
 }
 
-// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
-.user-logout-confirm .form-actions .button--primary:hover {
-  background: var(--dm-color-anthracite);
-}
-
-// --- Lien secondaire « Annuler » (spec Figma BtnContourIcone, sans icone). --
+// --- Lien secondaire « Annuler » (spec Figma BtnContour, sans icone). -------
 
 // stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
 .user-logout-confirm .form-actions .dialog-cancel {
+  @include btn.dm-btn-outline;
+  @include btn.dm-btn-height($bordered: true);
+
   display: inline-flex;
   align-items: center;
-  padding: 11px 16px;
-  border: 1px solid var(--dm-color-steel);
+  padding-inline: 16px;
   border-radius: 6px;
-  background: var(--dm-color-white);
-  color: var(--dm-color-steel);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   text-decoration: none;
-}
-
-// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
-.user-logout-confirm .form-actions .dialog-cancel:hover {
-  background: var(--dm-color-grey-light);
 }
 
 // stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal

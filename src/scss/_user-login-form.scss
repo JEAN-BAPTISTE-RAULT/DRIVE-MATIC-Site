@@ -10,6 +10,8 @@
 
 // Reference : maquettes Figma 472:12636 (desktop) / 602:33089 (mobile).
 
+@use 'button-mixins' as btn;
+
 // stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
 .user-login-form {
   display: grid;
@@ -133,22 +135,18 @@
 
 // stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
 .user-login-form .form-actions .form-submit {
+  @include btn.dm-btn-red;
+  @include btn.dm-btn-height;
+
   display: block;
   width: 100%;
-  padding: 14px 16px;
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   text-align: center;
   cursor: pointer;
-}
-
-// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
-.user-login-form .form-actions .form-submit:hover {
-  background: var(--dm-color-anthracite);
 }

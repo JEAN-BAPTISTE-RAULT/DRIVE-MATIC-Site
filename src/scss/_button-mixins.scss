@@ -1,0 +1,61 @@
+// Mixins de boutons partages — Figma node 243:5551 (fichier ZmmVBSOWSsHVkok6EU2Ays).
+// Chaque SDC/fondation applique un mixin sur SON PROPRE selecteur : le CSS reste
+// co-localise dans le composant, seules les valeurs (couleurs, hauteur) sont
+// centralisees pour ne plus diverger d'un composant a l'autre. Voir ADR-029.
+
+// Bouton plein rouge -> survol bleu acier (« BtnRouge » Figma).
+@mixin dm-btn-red {
+  background-color: var(--dm-color-red);
+  color: var(--dm-color-white);
+
+  &:hover {
+    background-color: var(--dm-color-steel);
+  }
+}
+
+// Bouton plein gris -> survol rouge (« Btn » Figma).
+@mixin dm-btn-grey {
+  background-color: var(--dm-color-grey-light);
+  color: var(--dm-color-steel);
+
+  &:hover {
+    background-color: var(--dm-color-red);
+    color: var(--dm-color-white);
+  }
+}
+
+// Bouton contour blanc -> survol bleu acier plein (« BtnContour » Figma).
+@mixin dm-btn-outline {
+  border: 1px solid var(--dm-color-steel);
+  background-color: transparent;
+  color: var(--dm-color-steel);
+
+  &:hover {
+    background-color: var(--dm-color-steel);
+    color: var(--dm-color-white);
+  }
+}
+
+// Hauteur ~46px commune a toutes les familles : le padding vertical varie selon
+// le contenu (texte seul, ou icone 24px + texte). `$bordered` compense le 1px
+// de bordure d'un bouton contour (mesure empiriquement : un `border` ajoute a
+// la hauteur d'une boite en hauteur automatique, `box-sizing: border-box` ne
+// changeant rien tant qu'aucune `height` explicite n'est posee).
+// `line-height: normal` est indispensable au calcul : sans lui, un bouton
+// herite du `line-height` ambiant du corps de texte (28px) et grimpe a ~58px
+// (mesure empirique repetee sur plusieurs composants). Un composant qui pose
+// deja son propre `line-height` explicite APRES ce mixin le supplante sans
+// probleme (meme selecteur, derniere declaration gagne).
+@mixin dm-btn-height($content: text, $bordered: false) {
+  line-height: normal;
+
+  @if $content == icon and $bordered {
+    padding-block: 10px;
+  } @else if $content == icon {
+    padding-block: 11px;
+  } @else if $bordered {
+    padding-block: 13px;
+  } @else {
+    padding-block: 14px;
+  }
+}

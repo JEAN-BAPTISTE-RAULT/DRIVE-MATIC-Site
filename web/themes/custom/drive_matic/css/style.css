@@ -424,7 +424,7 @@ textarea) {
 }
 
 .webform-submission-form input[type=radio]:checked {
-  border-color: var(--dm-color-red);
+  border-color: var(--dm-color-steel);
 }
 
 .webform-submission-form input[type=radio]:checked::after {
@@ -434,7 +434,7 @@ textarea) {
   margin: 4px;
   content: "";
   border-radius: 50%;
-  background-color: var(--dm-color-red);
+  background-color: var(--dm-color-steel);
 }
 
 .webform-submission-form .form-type-radio > label.option {
@@ -467,8 +467,8 @@ textarea) {
 }
 
 .webform-submission-form input[type=checkbox]:checked {
-  border-color: var(--dm-color-red);
-  background-color: var(--dm-color-red);
+  border-color: var(--dm-color-steel);
+  background-color: var(--dm-color-steel);
 }
 
 .webform-submission-form input[type=checkbox]:checked::after {
@@ -512,25 +512,28 @@ textarea) {
 }
 
 .webform-submission-form .form-actions .form-submit {
+  background-color: var(--dm-color-red);
+  color: var(--dm-color-white);
+}
+.webform-submission-form .form-actions .form-submit:hover {
+  background-color: var(--dm-color-steel);
+}
+.webform-submission-form .form-actions .form-submit {
+  line-height: normal;
+  padding-block: 14px;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
   display: inline-block;
   margin: 0;
-  padding: 14px 16px;
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   cursor: pointer;
-}
-
-.webform-submission-form .form-actions .form-submit:hover {
-  background: var(--dm-color-anthracite);
 }
 
 @media (width < 992px) {
@@ -644,23 +647,26 @@ textarea) {
 }
 
 .user-login-form .form-actions .form-submit {
+  background-color: var(--dm-color-red);
+  color: var(--dm-color-white);
+}
+.user-login-form .form-actions .form-submit:hover {
+  background-color: var(--dm-color-steel);
+}
+.user-login-form .form-actions .form-submit {
+  line-height: normal;
+  padding-block: 14px;
   display: block;
   width: 100%;
-  padding: 14px 16px;
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   text-align: center;
   cursor: pointer;
-}
-
-.user-login-form .form-actions .form-submit:hover {
-  background: var(--dm-color-anthracite);
 }
 
 .user-pass {
@@ -703,20 +709,23 @@ textarea) {
 }
 
 .user-pass .form-actions .form-submit {
-  padding: 14px 16px;
+  background-color: var(--dm-color-red);
+  color: var(--dm-color-white);
+}
+.user-pass .form-actions .form-submit:hover {
+  background-color: var(--dm-color-steel);
+}
+.user-pass .form-actions .form-submit {
+  line-height: normal;
+  padding-block: 14px;
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   cursor: pointer;
-}
-
-.user-pass .form-actions .form-submit:hover {
-  background: var(--dm-color-anthracite);
 }
 
 .personal-information-page {
@@ -851,14 +860,23 @@ textarea) {
 }
 
 .drivematic-partner-personal-information-form .personal-information-form__password-link {
+  border: 1px solid var(--dm-color-steel);
+  background-color: transparent;
+  color: var(--dm-color-steel);
+}
+.drivematic-partner-personal-information-form .personal-information-form__password-link:hover {
+  background-color: var(--dm-color-steel);
+  color: var(--dm-color-white);
+}
+.drivematic-partner-personal-information-form .personal-information-form__password-link {
+  line-height: normal;
+  padding-block: 13px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 14px 16px;
-  border: 1px solid var(--dm-color-steel);
+  padding-inline: 16px;
   border-radius: 4px;
-  color: var(--dm-color-steel);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
@@ -867,26 +885,29 @@ textarea) {
 }
 
 .drivematic-partner-personal-information-form .form-actions .form-submit {
+  background-color: var(--dm-color-red);
+  color: var(--dm-color-white);
+}
+.drivematic-partner-personal-information-form .form-actions .form-submit:hover {
+  background-color: var(--dm-color-steel);
+}
+.drivematic-partner-personal-information-form .form-actions .form-submit {
+  line-height: normal;
+  padding-block: 14px;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
   display: inline-block;
   width: 100%;
   margin: 0;
-  padding: 14px 16px;
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   cursor: pointer;
-}
-
-.drivematic-partner-personal-information-form .form-actions .form-submit:hover {
-  background: var(--dm-color-anthracite);
 }
 
 @media (width >= 992px) {
@@ -982,21 +1003,24 @@ textarea) {
 }
 
 .user-form .form-actions .button {
+  background-color: var(--dm-color-red);
+  color: var(--dm-color-white);
+}
+.user-form .form-actions .button:hover {
+  background-color: var(--dm-color-steel);
+}
+.user-form .form-actions .button {
+  line-height: normal;
+  padding-block: 14px;
   display: inline-block;
-  padding: 14px 16px;
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   cursor: pointer;
-}
-
-.user-form .form-actions .button:hover {
-  background: var(--dm-color-anthracite);
 }
 
 .user-logout-confirm {
@@ -1030,11 +1054,18 @@ textarea) {
 }
 
 .user-logout-confirm .form-actions .button--primary {
-  padding: 14px 16px;
+  background-color: var(--dm-color-red);
+  color: var(--dm-color-white);
+}
+.user-logout-confirm .form-actions .button--primary:hover {
+  background-color: var(--dm-color-steel);
+}
+.user-logout-confirm .form-actions .button--primary {
+  line-height: normal;
+  padding-block: 14px;
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
@@ -1042,27 +1073,27 @@ textarea) {
   cursor: pointer;
 }
 
-.user-logout-confirm .form-actions .button--primary:hover {
-  background: var(--dm-color-anthracite);
-}
-
 .user-logout-confirm .form-actions .dialog-cancel {
+  border: 1px solid var(--dm-color-steel);
+  background-color: transparent;
+  color: var(--dm-color-steel);
+}
+.user-logout-confirm .form-actions .dialog-cancel:hover {
+  background-color: var(--dm-color-steel);
+  color: var(--dm-color-white);
+}
+.user-logout-confirm .form-actions .dialog-cancel {
+  line-height: normal;
+  padding-block: 13px;
   display: inline-flex;
   align-items: center;
-  padding: 11px 16px;
-  border: 1px solid var(--dm-color-steel);
+  padding-inline: 16px;
   border-radius: 6px;
-  background: var(--dm-color-white);
-  color: var(--dm-color-steel);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   text-decoration: none;
-}
-
-.user-logout-confirm .form-actions .dialog-cancel:hover {
-  background: var(--dm-color-grey-light);
 }
 
 .user-logout-confirm .form-actions a:focus-visible,
@@ -1358,7 +1389,7 @@ textarea) {
      -moz-appearance: none;
           appearance: none;
   display: inline-block;
-  padding: 11px 16px 11px 44px;
+  padding: 13px 16px 13px 44px;
   border: 1px solid var(--dm-color-steel);
   border-radius: 6px;
   background: var(--dm-color-white) url("../images/icons/plus-circle.svg") no-repeat 16px center;
@@ -1371,7 +1402,9 @@ textarea) {
   cursor: pointer;
 }
 .configurator-form .form-actions .configurator-form__add:hover {
-  background-color: var(--dm-color-grey-lighter);
+  background-color: var(--dm-color-steel);
+  background-image: url("../images/icons/plus-circle-white.svg");
+  color: var(--dm-color-white);
 }
 .configurator-form .form-actions .configurator-form__add:disabled {
   cursor: not-allowed;

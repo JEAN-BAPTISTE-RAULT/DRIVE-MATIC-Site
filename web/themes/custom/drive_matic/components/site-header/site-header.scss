@@ -412,7 +412,7 @@
 
     &:hover,
     &:focus-visible {
-      background-color: color-mix(in srgb, var(--dm-color-red) 85%, black);
+      background-color: var(--dm-color-steel);
     }
   }
 
@@ -451,6 +451,14 @@
       padding: 10px 16px;
       border: 1px solid var(--dm-color-steel);
       border-radius: 6px;
+
+      // Bouton contour (Figma BtnContour) : survol bleu acier plein. Le
+      // libelle suit via `color` (herite, pas de couleur propre) ; l'icone
+      // (mask) a besoin de son propre `background-color`.
+      &:hover {
+        background-color: var(--dm-color-steel);
+        color: var(--dm-color-white);
+      }
     }
   }
 
@@ -461,6 +469,12 @@
     height: 24px;
     background-color: var(--dm-color-steel);
     mask: url('../../images/icons/user.svg') no-repeat center / contain;
+  }
+
+  @media (width >= 992px) {
+    &__account-trigger:hover &__account-icon {
+      background-color: var(--dm-color-white);
+    }
   }
 
   &__account-label {

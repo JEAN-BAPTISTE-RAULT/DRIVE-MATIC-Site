@@ -39,7 +39,7 @@
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
-  line-height: 28px;
+  line-height: normal;
   text-align: center;
   text-decoration: none;
   transition: background-color 0.15s ease, color 0.15s ease;

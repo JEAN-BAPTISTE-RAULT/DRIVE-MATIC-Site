@@ -6,6 +6,8 @@
 // reduite au strict minimum demande (gouttiere, champ, bouton, typographie) —
 // pas de carte, pas de SDC d'enveloppe, contrairement a `login-panel`.
 
+@use 'button-mixins' as btn;
+
 // Gouttiere standard. Le fil d'Ariane au-dessus s'aligne volontairement sur
 // la boite du header, pas sur `--dm-gutter` (choix documente dans
 // `_breadcrumb.scss`) : le reproduire ici aurait alourdi un habillage voulu
@@ -61,19 +63,15 @@
 
 // stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
 .user-pass .form-actions .form-submit {
-  padding: 14px 16px;
+  @include btn.dm-btn-red;
+  @include btn.dm-btn-height;
+
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   cursor: pointer;
-}
-
-// stylelint-disable-next-line selector-class-pattern -- classe du coeur Drupal
-.user-pass .form-actions .form-submit:hover {
-  background: var(--dm-color-anthracite);
 }

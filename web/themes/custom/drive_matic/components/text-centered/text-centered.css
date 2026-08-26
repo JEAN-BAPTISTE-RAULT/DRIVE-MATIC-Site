@@ -37,11 +37,18 @@
   margin-top: var(--dm-space-element);
 }
 .text-centered__actions a {
-  display: inline-block;
-  padding: 14px 16px;
-  border-radius: 4px;
-  background: var(--dm-color-red);
+  background-color: var(--dm-color-red);
   color: var(--dm-color-white);
+}
+.text-centered__actions a:hover {
+  background-color: var(--dm-color-steel);
+}
+.text-centered__actions a {
+  line-height: normal;
+  padding-block: 14px;
+  display: inline-block;
+  padding-inline: 16px;
+  border-radius: 4px;
   font-family: var(--dm-font-body);
   font-size: 0.8125rem;
   font-weight: 500;

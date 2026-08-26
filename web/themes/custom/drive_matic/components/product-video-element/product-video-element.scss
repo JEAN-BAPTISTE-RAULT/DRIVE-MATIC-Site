@@ -3,6 +3,8 @@
 // deux Éléments alimentent la même présentation « swipe »).
 // La plaque de lecture est le SDC partagé `video-play` (inclus dans le bouton) ;
 // le JS d'injection de l'iframe est mutualisé (`drive_matic/video-facade`).
+@use 'button-mixins' as btn;
+
 .product-video-element {
   display: flex;
   flex-direction: column;
@@ -81,23 +83,20 @@
   // Lien de la maquette : bouton gris (le champ fichier garde, lui, le bouton
   // de téléchargement global).
   &__actions a {
+    @include btn.dm-btn-grey;
+    @include btn.dm-btn-height;
+
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 14px 16px;
+    padding-inline: 16px;
     border-radius: 6px;
-    background: var(--dm-color-grey-light);
-    color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
     font-size: 0.9375rem;
     font-weight: 500;
     line-height: 18px;
     text-decoration: none;
     transition: background-color 0.15s ease;
-  }
-
-  &__actions a:hover {
-    background: var(--dm-color-grey-metal);
   }
 
   &__actions a:focus-visible {

@@ -62,22 +62,27 @@
   margin-top: 12px;
 }
 .product-video-element__actions a {
+  background-color: var(--dm-color-grey-light);
+  color: var(--dm-color-steel);
+}
+.product-video-element__actions a:hover {
+  background-color: var(--dm-color-red);
+  color: var(--dm-color-white);
+}
+.product-video-element__actions a {
+  line-height: normal;
+  padding-block: 14px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 16px;
+  padding-inline: 16px;
   border-radius: 6px;
-  background: var(--dm-color-grey-light);
-  color: var(--dm-color-steel);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: 18px;
   text-decoration: none;
   transition: background-color 0.15s ease;
-}
-.product-video-element__actions a:hover {
-  background: var(--dm-color-grey-metal);
 }
 .product-video-element__actions a:focus-visible {
   outline: 3px solid var(--dm-color-red);

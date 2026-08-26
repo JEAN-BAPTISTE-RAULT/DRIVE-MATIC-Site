@@ -2,6 +2,8 @@
 // Maquette : image 1:1 (radius 16) + texte (titre H2 steel, description, boutons)
 // sur 2 colonnes ~510px. Options : texte gauche/droite, fond blanc/gris.
 
+@use 'button-mixins' as btn;
+
 .image-text-50 {
   display: flex;
   flex-wrap: wrap;
@@ -89,11 +91,12 @@
   // sur la maquette mobile (526-20394) ; 15px au palier desktop (spec
   // documentee, cf. figma-button-specs).
   &__actions a {
+    @include btn.dm-btn-grey;
+    @include btn.dm-btn-height;
+
     display: inline-block;
-    padding: 14px 16px;
+    padding-inline: 16px;
     border-radius: 6px;
-    background: var(--dm-color-grey-light);
-    color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
     font-size: 0.8125rem;
     font-weight: 500;
@@ -118,8 +121,15 @@
   }
 
   // Sur fond gris, le bouton lien passe en blanc pour rester visible (hypothèse
-  // à confirmer : le bloc gris de la maquette n'avait pas de bouton).
+  // à confirmer : le bloc gris de la maquette n'avait pas de bouton). Devient
+  // alors un bouton « contour blanc » (Figma BtnContour) : survol bleu acier,
+  // pas rouge.
   &--bg-grey &__actions a {
-    background: var(--dm-color-white);
+    background-color: var(--dm-color-white);
+
+    &:hover {
+      background-color: var(--dm-color-steel);
+      color: var(--dm-color-white);
+    }
   }
 }

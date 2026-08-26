@@ -33,6 +33,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-026](026-profil-partenaire-mes-informations.md) | Profil partenaire (« Mes informations personnelles ») : 10 champs User, lecture seule etendue au bloc entreprise, restriction du formulaire core d'auto-edition | Accepte | 2026-08-25 |
 | [ADR-027](027-confirmation-deconnexion.md) | Confirmation de deconnexion (`/user/logout/confirm`) : question injectee via form-alter (pas de bloc titre sur route non-node), alignement sur la boite du header | Accepte | 2026-08-26 |
 | [ADR-028](028-configurateur-formbase-vs-webform.md) | Configurateur de devis (F14, ecran 1) : FormBase custom plutot que Webform, `/configurer` repris du node placeholder | Accepte | 2026-08-26 |
+| [ADR-029](029-mixin-boutons-partage.md) | Mixin Sass partage pour les boutons (couleurs + hauteur), `--load-path` supplementaire pour les SDC | Accepte | 2026-08-26 |
 
 ## Quand creer un ADR
 

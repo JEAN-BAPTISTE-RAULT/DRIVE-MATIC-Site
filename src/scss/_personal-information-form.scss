@@ -10,6 +10,8 @@
 
 // Reference : maquette Figma 524:20069 (desktop uniquement).
 
+@use 'button-mixins' as btn;
+
 // Enveloppe (#prefix/#suffix du FormBase) : porte la gouttiere de page et
 // l'espacement vertical du gabarit, separement du padding interieur de la
 // carte — meme repartition en deux couches que `.field--type-webform`
@@ -167,14 +169,15 @@
 // stylelint-disable selector-class-pattern -- classe posee par PersonalInformationForm, hors SDC
 .drivematic-partner-personal-information-form
   .personal-information-form__password-link {
+  @include btn.dm-btn-outline;
+  @include btn.dm-btn-height($bordered: true);
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 14px 16px;
-  border: 1px solid var(--dm-color-steel);
+  padding-inline: 16px;
   border-radius: 4px;
-  color: var(--dm-color-steel);
   font-family: var(--dm-font-body);
 
   // Sans cette ligne, le lien herite du `line-height` ambiant du corps de
@@ -196,24 +199,21 @@
   // la largeur du conteneur (`width: 100%` n'atteignait alors pas le bord
   // droit du champ voisin) et desynchroniser sa hauteur de celle du lien
   // « Modifier mon mot de passe ».
+  @include btn.dm-btn-red;
+  @include btn.dm-btn-height;
+
   appearance: none;
   display: inline-block;
   width: 100%;
   margin: 0;
-  padding: 14px 16px;
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   cursor: pointer;
-}
-
-.drivematic-partner-personal-information-form .form-actions .form-submit:hover {
-  background: var(--dm-color-anthracite);
 }
 
 // --- Grille desktop (3 colonnes, 2 lignes par section). -----------------

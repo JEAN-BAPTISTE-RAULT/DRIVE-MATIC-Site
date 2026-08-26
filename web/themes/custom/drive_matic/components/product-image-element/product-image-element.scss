@@ -1,6 +1,8 @@
 // SDC « Élément :: Image produit » — visuel 16:9 puis titre, description et CTA.
 // Maquette Figma 396:11566 : visuel arrondi à 16px, écart de 26px avant le
 // corps, titre H2 acier, description 16/28 gris, bouton gris à 22px du texte.
+@use 'button-mixins' as btn;
+
 .product-image-element {
   display: flex;
   flex-direction: column;
@@ -73,13 +75,14 @@
   // de téléchargement global). 13px sur la maquette mobile (526-24137) ;
   // 15px au palier desktop (spec documentee, cf. figma-button-specs).
   &__actions a {
+    @include btn.dm-btn-grey;
+    @include btn.dm-btn-height;
+
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 14px 16px;
+    padding-inline: 16px;
     border-radius: 6px;
-    background: var(--dm-color-grey-light);
-    color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
     font-size: 0.8125rem;
     font-weight: 500;
@@ -90,10 +93,6 @@
     @media (width >= 992px) {
       font-size: 0.9375rem;
     }
-  }
-
-  &__actions a:hover {
-    background: var(--dm-color-grey-metal);
   }
 
   &__actions a:focus-visible {

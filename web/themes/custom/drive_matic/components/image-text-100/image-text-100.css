@@ -49,11 +49,19 @@
   margin-top: calc(var(--dm-space-element) - 10px);
 }
 .image-text-100__actions a {
-  display: inline-block;
-  padding: 14px 16px;
-  border-radius: 6px;
-  background: var(--dm-color-grey-light);
+  background-color: var(--dm-color-grey-light);
   color: var(--dm-color-steel);
+}
+.image-text-100__actions a:hover {
+  background-color: var(--dm-color-red);
+  color: var(--dm-color-white);
+}
+.image-text-100__actions a {
+  line-height: normal;
+  padding-block: 14px;
+  display: inline-block;
+  padding-inline: 16px;
+  border-radius: 6px;
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;

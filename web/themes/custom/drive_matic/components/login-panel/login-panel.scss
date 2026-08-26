@@ -115,18 +115,20 @@
 
   &__action-button {
     display: inline-block;
-    padding: 14px 16px;
+    padding: 13px 16px;
     border: 1px solid var(--dm-color-steel);
     border-radius: 4px;
     color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
     font-size: 0.9375rem;
     font-weight: 500;
+    line-height: normal;
     text-decoration: none;
     white-space: nowrap;
 
     &:hover {
-      background-color: var(--dm-color-grey-lighter);
+      background-color: var(--dm-color-steel);
+      color: var(--dm-color-white);
     }
   }
 }

@@ -57,11 +57,18 @@
   text-shadow: 0 0 25px rgba(0, 0, 0, 0.35);
 }
 .image-full__actions a {
-  display: inline-block;
-  padding: 14px 16px;
-  border-radius: 4px;
-  background: var(--dm-color-red);
+  background-color: var(--dm-color-red);
   color: var(--dm-color-white);
+}
+.image-full__actions a:hover {
+  background-color: var(--dm-color-steel);
+}
+.image-full__actions a {
+  line-height: normal;
+  padding-block: 14px;
+  display: inline-block;
+  padding-inline: 16px;
+  border-radius: 4px;
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;

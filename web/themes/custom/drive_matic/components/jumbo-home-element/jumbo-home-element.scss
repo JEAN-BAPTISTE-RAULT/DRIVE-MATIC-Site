@@ -1,5 +1,7 @@
 // SDC « Élément :: Jumbo Homepage » — bannière (visuel 16:9 + titre + CTA).
 // Titre et CTA superposés en bas à gauche du visuel, sur un dégradé de lisibilité.
+@use 'button-mixins' as btn;
+
 .jumbo-home-element {
   position: relative;
   overflow: hidden;
@@ -61,11 +63,12 @@
   // maquette mobile (526-20394) ; 15px au palier desktop (spec documentee,
   // cf. figma-button-specs).
   &__cta a {
+    @include btn.dm-btn-grey;
+    @include btn.dm-btn-height;
+
     display: inline-block;
-    padding: 14px 16px;
+    padding-inline: 16px;
     border-radius: 6px;
-    background: var(--dm-color-grey-light);
-    color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
     font-size: 0.8125rem;
     font-weight: 500;

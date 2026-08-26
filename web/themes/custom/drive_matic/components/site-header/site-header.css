@@ -285,7 +285,7 @@
   white-space: nowrap;
 }
 .site-header__cta:hover, .site-header__cta:focus-visible {
-  background-color: color-mix(in srgb, var(--dm-color-red) 85%, black);
+  background-color: var(--dm-color-steel);
 }
 .site-header__actions > .site-header__cta {
   display: none;
@@ -318,6 +318,10 @@
     border: 1px solid var(--dm-color-steel);
     border-radius: 6px;
   }
+  .site-header__account-trigger:hover {
+    background-color: var(--dm-color-steel);
+    color: var(--dm-color-white);
+  }
 }
 .site-header__account-icon {
   display: block;
@@ -327,6 +331,11 @@
   background-color: var(--dm-color-steel);
   -webkit-mask: url("../../images/icons/user.svg") no-repeat center/contain;
           mask: url("../../images/icons/user.svg") no-repeat center/contain;
+}
+@media (width >= 992px) {
+  .site-header__account-trigger:hover .site-header__account-icon {
+    background-color: var(--dm-color-white);
+  }
 }
 .site-header__account-label {
   display: none;

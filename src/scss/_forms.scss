@@ -1,5 +1,7 @@
 // Habillage des formulaires publics du site.
 
+@use 'button-mixins' as btn;
+
 // Exception assumee a la regle « tout est SDC », de la meme nature que
 // `local-tasks` : le markup vient de l'API Form de Drupal et de Webform, pas
 // d'un composant — il n'existe donc pas de dossier de SDC ou poser ce CSS, et
@@ -295,7 +297,7 @@
 }
 
 .webform-submission-form input[type='radio']:checked {
-  border-color: var(--dm-color-red);
+  border-color: var(--dm-color-steel);
 }
 
 .webform-submission-form input[type='radio']:checked::after {
@@ -305,7 +307,7 @@
   margin: 4px;
   content: '';
   border-radius: 50%;
-  background-color: var(--dm-color-red);
+  background-color: var(--dm-color-steel);
 }
 
 .webform-submission-form .form-type-radio > label.option {
@@ -338,8 +340,8 @@
 }
 
 .webform-submission-form input[type='checkbox']:checked {
-  border-color: var(--dm-color-red);
-  background-color: var(--dm-color-red);
+  border-color: var(--dm-color-steel);
+  background-color: var(--dm-color-steel);
 }
 
 .webform-submission-form input[type='checkbox']:checked::after {
@@ -392,23 +394,20 @@
   // chaque cote) — invisible ici tant qu'aucune largeur n'est forcee, mais
   // qui empeche un `width: 100%` (ex. bouton "Valider" du webform "Demande
   // de creation de compte") d'atteindre reellement les bords du conteneur.
+  @include btn.dm-btn-red;
+  @include btn.dm-btn-height;
+
   appearance: none;
   display: inline-block;
   margin: 0;
-  padding: 14px 16px;
+  padding-inline: 16px;
   border: 0;
   border-radius: 4px;
-  background: var(--dm-color-red);
-  color: var(--dm-color-white);
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: normal;
   cursor: pointer;
-}
-
-.webform-submission-form .form-actions .form-submit:hover {
-  background: var(--dm-color-anthracite);
 }
 
 // Bouton « Valider » du webform "Demande de création de compte" (page

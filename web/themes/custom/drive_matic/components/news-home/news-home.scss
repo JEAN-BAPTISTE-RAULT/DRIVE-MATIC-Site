@@ -3,6 +3,8 @@
 // conteneur avec la paire de flèches à droite, piste calée à gauche et
 // débordante à droite (aperçu coupé de la carte suivante), bouton gris centré
 // sous la piste. Sans JS : les cartes s'empilent et les flèches sont masquées.
+@use 'button-mixins' as btn;
+
 .news-home {
   // Decolle du bord gauche a toute largeur (la piste, elle, deborde a droite).
   // 1440 - 40 = calage de la maquette : cartes a partir de x=40.
@@ -136,10 +138,11 @@
   // 13px sur la maquette mobile (526-20394) ; 15px au palier desktop (spec
   // documentee, cf. figma-button-specs).
   &__more a {
-    padding: 14px 16px;
+    @include btn.dm-btn-grey;
+    @include btn.dm-btn-height;
+
+    padding-inline: 16px;
     border-radius: 6px;
-    background: var(--dm-color-grey-light);
-    color: var(--dm-color-steel);
     font-family: var(--dm-font-body);
     font-size: 0.8125rem;
     font-weight: 500;
@@ -150,10 +153,6 @@
     @media (width >= 992px) {
       font-size: 0.9375rem;
     }
-  }
-
-  &__more a:hover {
-    background: var(--dm-color-grey-metal);
   }
 
   &__more a:focus-visible {

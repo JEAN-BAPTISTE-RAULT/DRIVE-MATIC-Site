@@ -2,6 +2,8 @@
 // Maquette : bandeau 12:5 pleine largeur (full-bleed), titre blanc + bouton
 // rouge superposés dans la partie haute, centrés. Contraste via ombre de titre.
 
+@use 'button-mixins' as btn;
+
 .image-full {
   position: relative;
 
@@ -77,11 +79,12 @@
 
   // Bouton rouge « primaire » (Figma BtnRouge) : Inter Medium 15px.
   &__actions a {
+    @include btn.dm-btn-red;
+    @include btn.dm-btn-height;
+
     display: inline-block;
-    padding: 14px 16px;
+    padding-inline: 16px;
     border-radius: 4px;
-    background: var(--dm-color-red);
-    color: var(--dm-color-white);
     font-family: var(--dm-font-body);
     font-size: 0.9375rem;
     font-weight: 500;
