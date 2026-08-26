@@ -332,6 +332,8 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - Tentative d'ajouter une 11e configuration → bloquee (max 10).
 - Quantite retrovision exterieure hors bornes 1-2 → refus. `[INFERE]`
 
+- **Mise en oeuvre — ecran 1 « Configuration » le 2026-08-26** (maquettes desktop 493-16990, mobile 606-36813, multi-config 508-13222), [ADR-028](../.claude/decisions/028-configurateur-formbase-vs-webform.md) : module `drivematic_configurator`, FormBase custom (pas Webform) sur la route `/configurer` — reprend le node placeholder du meme alias, desormais supprime. Selection vehicule par cascade (marque/modele/motorisation, taxonomies ADR-003, meme mecanisme que F10 generalise pour plusieurs instances sur une page) ; 4 equipements codes en dur en attendant le catalogue F17 (retrovision exterieure avec quantite 1-2, retrovision interieure, telecommande VOR, double pedalier) ; quantite hors bornes 1-2 refusee cote serveur, verifie par un contournement reel du controle client (`#max` de l'element `number`, pas seulement l'attribut HTML) ; blocs de configuration repetables (max 10, verifie cote serveur) avec suppression a partir du 2e bloc. Route reservee au role `partenaire` ; un anonyme est redirige vers la connexion plutot que de recevoir un 403 brut (mecanisme sitewide, `PartnerAccessRedirectSubscriber`, applique a toute route `_role: partenaire`). **Hors perimetre de cet ecran** : etapes Devis et Livraison (F14 2/3 et 3/3), entites metier Devis/Configuration (rien n'est persiste au-dela de la session), tarification. Detail des corrections post-livraison : `docs/active/configurateur-etape-1/verification.md`.
+
 ---
 
 ### F15 : Devis (onglets, cycle de vie, commande)
