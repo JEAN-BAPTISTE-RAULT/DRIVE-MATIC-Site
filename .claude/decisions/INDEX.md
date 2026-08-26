@@ -31,6 +31,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-024](024-mutualisation-formulaire-simple.md) | Mutualisation du bundle `partner` en `simple_form` (page login, F2) : nouveau bundle + migration, multi-instance | Accepte | 2026-08-25 |
 | [ADR-025](025-roles-back-office-et-email-activation.md) | Roles back-office (Admin/Partenaire) et e-mail d'activation de compte via `mailer_override` | Accepte | 2026-08-25 |
 | [ADR-026](026-profil-partenaire-mes-informations.md) | Profil partenaire (« Mes informations personnelles ») : 10 champs User, lecture seule etendue au bloc entreprise, restriction du formulaire core d'auto-edition | Accepte | 2026-08-25 |
+| [ADR-027](027-confirmation-deconnexion.md) | Confirmation de deconnexion (`/user/logout/confirm`) : question injectee via form-alter (pas de bloc titre sur route non-node), alignement sur la boite du header | Accepte | 2026-08-26 |
 
 ## Quand creer un ADR
 

@@ -416,10 +416,13 @@
 1. Consulter/modifier « Mes informations personnelles ».
 2. Tester « Mot de passe perdu ».
 3. Declencher « Supprimer mon compte » et confirmer.
+4. Depuis le dropdown « Espace partenaire », cliquer sur « Me deconnecter ».
 
 **Resultats attendus** :
 - L'adresse de facturation reste **non modifiable** en front.
 - « Supprimer mon compte » supprime le compte **et anonymise les devis/commandes associes** (conserves de maniere anonyme).
+- « Me deconnecter » mene a une page de confirmation (`/user/logout/confirm`, question visible + boutons « Se deconnecter »/« Annuler ») avant toute deconnexion effective — pas de deconnexion immediate au clic.
+- En mobile, les boutons « Modifier mon mot de passe » et « Mettre a jour mes informations » occupent toute la largeur de la carte et font la meme hauteur. En desktop, ils sont sur la meme ligne, alignes a droite, bord a bord avec les champs.
 
 **Mise en oeuvre (a rejouer) — page « Mes informations personnelles » livree le 2026-08-25** (maquette Figma 524:20069, [plan](../docs/plans/partner-personal-information.md)) :
 - Route `/user/mes-informations-personnelles` (module `drivematic_partner`), reservee au role `partenaire` (`_role` sur la route, 403 pour anonyme et pour tout autre role, y compris `administrator`).
@@ -427,6 +430,10 @@
 - « Modifier mon mot de passe » redirige vers `/user/password` (formulaire core de reinitialisation par e-mail), pas de champ mot de passe sur cette page.
 - ⚠️ **A verifier a chaque rejeu** : `/user/{uid}/edit` (formulaire core d'auto-edition) ne doit **plus** afficher les 11 champs du profil partenaire pour le proprietaire du compte (`hook_form_user_form_alter`, `drivematic_partner.module`) — sinon un partenaire peut contourner le caractere lecture-seule en visitant directement cette URL. Un compte avec la permission `administer users` (editant un AUTRE compte) doit au contraire toujours les voir.
 - « Supprimer mon compte » **non implemente** (hors scope de cette tache — chantier F12 restant).
+
+**Mise en oeuvre (a rejouer) — confirmation de deconnexion et corrections responsive, 2026-08-26** ([ADR-027](../.claude/decisions/027-confirmation-deconnexion.md)) :
+- Le lien « Me deconnecter » pointe vers `/user/logout/confirm` (`menu_link_content` id 48, contenu — pas config) au lieu d'une deconnexion immediate.
+- Boutons de « Mes informations personnelles » corriges : pleine largeur + meme hauteur en mobile, meme ligne + alignes a droite sur les champs en desktop. Root cause : `<input type="submit">` non stylise reservait une marge horizontale invisible (~15px) empechant `width: 100%` d'atteindre les bords — corrige par `appearance: none` + `margin: 0`, generalise a `_reset.scss`.
 
 **Mise en oeuvre (a rejouer) — lien de definition de mot de passe (e-mail d'activation), addendum du 2026-08-25** ([ADR-026](../.claude/decisions/026-profil-partenaire-mes-informations.md)) :
 - Le lien de l'e-mail d'activation mene a `/user/{uid}/edit` (meme `user_form`, jeton `pass-reset-token`) : ne doit afficher que E-mail (lecture seule) + Mot de passe + Confirmer le mot de passe — plus d'Image/Langue du site/Fuseau horaire.
@@ -505,8 +512,11 @@
 4. Retour sur `/user/login`, cliquer sur « Demander un devis » (carte « auto-école ») → page Contact (`/contact`).
 5. Saisir des identifiants invalides et cliquer sur « Me connecter » → message d'erreur core affiche, lien « Mot de passe oublié » fonctionnel (vers `/user/password`).
 6. Cliquer sur le declencheur d'affichage du mot de passe → le mot de passe saisi devient visible, puis a nouveau masque au second clic.
+7. Se connecter avec des identifiants valides d'un compte role `partenaire`.
 
 **Resultats attendus** :
+- Apres connexion (etape 7), redirection vers « Mes informations personnelles » (`/user/mes-informations-personnelles`), pas la page de compte par defaut du cœur.
+- En mobile, les 3 cartes d'action font toutes la meme hauteur (verifier notamment que la carte « Vous êtes une auto-école », au texte plus court, n'est pas plus basse que les 2 autres).
 - Les 3 cartes d'action et le lien « FAITES UNE DEMANDE » resolvent vers les bonnes pages, sans lien mort (`#`).
 - Fil d'Ariane et titre d'onglet affichent « Me connecter » (pas le « Se connecter » par defaut du cœur — `easy_breadcrumb.replaced_titles` et `hook_preprocess_html()`).
 - Aucune boite d'onglets locaux ("Se connecter"/"Réinitialiser votre mot de passe", libelles core inchanges) ni double titre ne s'affiche sur `/user/login`.
@@ -518,6 +528,8 @@
 - Renommer le node « Devenir partenaire » ou « Demande de création de compte » en back-office casse la recherche par titre (`_drive_matic_simple_form_node_url()`) : le lien retombe sur `#`. A surveiller, meme classe de fragilite que la recherche par bundle deja acceptee sur le bouton « Demander un devis » du header.
 
 **Mise en oeuvre (a rejouer) — integration du 2026-08-25** ([ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md), addendum [ADR-015](../.claude/decisions/015-habillage-des-formulaires.md)) : bundle `partner` mutualise en `simple_form` (multi-instance), nouveau SDC `login-panel`, nouvelle fondation `_user-login-form.scss` pour le formulaire core. Les 2 pages `simple_form` portent chacune leur propre webform depuis le meme jour : `partner` (Devenir partenaire) et le webform dedie `account_request` (Demande de creation de compte, addendum ADR-024) — le partage temporaire initial est termine.
+
+**Mise en oeuvre (a rejouer) — corrections responsive du 2026-08-26** : egalisation JS de la hauteur des 3 cartes d'action en mobile (`login-panel.js`, degradation gracieuse sans JS — chaque carte garde sa hauteur naturelle) ; bouton « Valider » du webform `account_request` en pleine largeur en mobile sur `/demande-de-creation-de-compte` (scope a ce seul webform, verifier que `/contact` et les autres webforms n'ont pas bouge).
 
 ---
 
@@ -549,6 +561,7 @@
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-08-26 | **F12 — confirmation de deconnexion, redirection post-connexion et corrections responsive** ([ADR-027](../.claude/decisions/027-confirmation-deconnexion.md), commits `84d9b1d`/`d3320e8`) : « Me deconnecter » mene desormais a `/user/logout/confirm` (question visible via `hook_form_user_logout_confirm_alter`, le bloc titre de page etant absent sur cette route comme sur `/user/login`/`/user/password`) au lieu d'une deconnexion immediate. Un partenaire authentifie sur `/user/login` est redirige vers « Mes informations personnelles » (scope au role `partenaire`). **3 corrections responsive** : hauteur des 3 cartes d'action egalisee en mobile sur `/user/login` (JS, degradation gracieuse) ; boutons de « Mes informations personnelles » pleine largeur/meme hauteur en mobile et alignes a droite en desktop, apres correction d'une marge fantome sur les `<input type="submit">` non stylises (`appearance: none` + `margin: 0`, generalisee a `_reset.scss`, regle ajoutee au CLAUDE.md) ; bouton « Valider » du webform `account_request` en pleine largeur mobile. **A rejouer** : S19 (deconnexion, boutons) et S25 (redirection connexion, hauteur des cartes, bouton Valider) | S19, S25 |
 | 2026-08-25 | **F12 — page « Mes informations personnelles » livree** ([ADR-026](../.claude/decisions/026-profil-partenaire-mes-informations.md), commit `aa3be74`, maquette Figma 524:20069) : nouveau module `drivematic_partner`, route `/user/mes-informations-personnelles` (role `partenaire`), `PersonalInformationForm` reprenant les champs du webform `account_request` (Civilite/Prenom/Nom/Fonction/Telephone modifiables ; e-mail + bloc « Votre entreprise » lecture seule — perimetre elargi par decision utilisatrice au-dela de la seule adresse de facturation prevue au PRD). 10 nouveaux champs sur l'entite `user`, exposes aussi en back-office. « Modifier mon mot de passe » → `/user/password`. **Restriction de securite** : `/user/{uid}/edit` (formulaire core partage) ne montre plus ces champs a un partenaire editant son propre compte (`hook_form_user_form_alter`), pour eviter un contournement. **Addendum le meme jour** : la meme page core `/user/{uid}/edit`, atteinte via le lien de definition de mot de passe de l'e-mail d'activation, a aussi ete stylisee et allegee (retrait Image/Langue/Fuseau horaire, e-mail en lecture seule) et redirige desormais vers « Mes informations personnelles » apres sauvegarde du mot de passe. **A rejouer** : S19 en entier (page + lien de mot de passe) | S19 |
 | 2026-08-25 | **F12 — roles Admin/Partenaire et e-mail d'activation de compte partenaire** ([ADR-025](../.claude/decisions/025-roles-back-office-et-email-activation.md), maquette 810:10544) : role `content_editor` etoffe (CRUD sur les 16 types de contenu + medias) et relabellise **« Admin »**, ajoute en `view_any` sur les 3 webforms pour consulter les demandes de compte ; nouveau role **« Partenaire »** sans aucune permission back-office (authentification seule) ; e-mail `register_admin_created` reecrit selon la maquette via `mailer_policy`/`mailer_override`, teste bout-en-bout via Mailpit ; `password_reset_timeout` porte a 259200 (72 h). **A rejouer** : S12 (contenu de l'e-mail, lien 72h), S22 (creation du compte en tant qu'« Admin ») | S12, S22 |
 | 2026-08-25 | **F12 — webform dedie `account_request` cree pour « Demande de creation de compte »** (maquettes 472:12922 / 602:33766) : remplace le partage temporaire du webform `partner` (addendum [ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md)) — champs identite (civilite/prenom/nom/fonction/telephone/e-mail) + entreprise (siret/raison sociale/adresse/complement/code postal/ville), tous obligatoires sauf complement, sans placeholder. `drivematic_forms_update_11002()` rattache le node existant (nid 124) au nouveau webform ; message de confirmation et 2 e-mails (accuse + notification) ajoutes au meme gabarit ([ADR-022](../.claude/decisions/022-gabarit-email-webform.md)). ⚠️ Notifications internes des 3 webforms redirigees temporairement vers `audrey@passerelle.com` (a restaurer sur `info@drivematiclegrand.com` avant prod). **A rejouer** : S25 (demande de compte avec ses propres libelles/destinataires, distincts de « Devenir partenaire ») | S25 |
