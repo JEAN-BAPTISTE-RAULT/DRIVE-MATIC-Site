@@ -1,0 +1,622 @@
+// Habillage du formulaire « Configuration » du configurateur de devis (F14
+// etape 1/3), route /configurer, module drivematic_configurator.
+
+// Meme derogation qu'ADR-015 (`forms`, `personal-information-form`) : le
+// markup vient de l'API Form de Drupal (FormBase), pas d'un composant.
+// Contrairement aux autres formulaires du site, celui-ci porte PLUSIEURS
+// cartes (une par configuration), pas une seule enveloppant tout le
+// formulaire — la fondation `.webform-submission-form` (carte unique) est
+// donc neutralisee sur la racine et redeclaree sur `&__card` pour chaque
+// bloc. Nommage BEM (`&__element`) comme le reste du theme, y compris ici ou
+// le markup n'est pas un SDC : `stylelint` (`selector-class-pattern`) n'admet
+// une classe a double-underscore que via `&`, jamais en toutes lettres.
+
+// Reference : maquettes Figma (fileKey ZmmVBSOWSsHVkok6EU2Ays) 493-16990
+// (desktop), 606-36813 (mobile), 508-13222 (plusieurs configurations).
+
+// Enveloppe : meme repartition en deux couches que `.field--type-webform` /
+// `.webform-submission-form` (fondation `forms`) — gouttiere + rythme
+// vertical de page ici (seul et dernier bloc de la page, comme
+// `.personal-information-page`), padding interieur de chaque carte plus bas.
+.configurator-page {
+  padding-inline: max(var(--dm-gutter), calc(50vw - 565px));
+  padding-block: var(--dm-space-page);
+}
+
+.configurator-form {
+  // Le bloc titre de page du coeur (`.block-page-title-block`, cf.
+  // `_page-title.scss`) ne s'affiche que sur les routes de node (sa
+  // condition de visibilite exige un contexte `node`, absent sur cette route
+  // FormBase) : le `<h1>` est donc rendu directement par le formulaire, hors
+  // `<form>` (via `#prefix`), en reutilisant `.page-title` (couleur/police/
+  // taille/centrage, deja globaux) — seul son ecart vers ce qui suit est
+  // pose ici (la maquette, 493:16994, mesure ~49px avant le fil d'etapes,
+  // soit `--dm-space-page` desktop, reutilise plutot qu'invente).
+
+  // `&__title.page-title` (2 classes), pas juste `&__title` : `.page-title`
+  // (`_page-title.scss`, importe APRES ce fichier dans style.scss) pose son
+  // propre `margin: 0` a specificite egale (1 classe) et gagnerait sinon a
+  // l'ordre d'import, silencieusement (aucune erreur, juste un ecart nul) —
+  // meme famille de piege que `.form-actions &__add` (cf. memoire
+  // sdc-config-gotchas). `.page-title` est deja portee par ce `<h1>`
+  // (les deux classes sont posees ensemble cote PHP), la combinaison est
+  // donc honnete, pas un hack de specificite gratuit. (`h1&__title` a ete
+  // tente d'abord : Dart Sass refuse `&` ailleurs qu'en tete d'un selecteur
+  // compose — "& may only be used at the beginning of a compound selector".)
+  &__title.page-title {
+    margin-block-end: var(--dm-space-page);
+  }
+
+  // La fondation `forms` traite `.webform-submission-form` comme UNE carte
+  // (grid + padding + fond gris + `align-items: start`). Ce formulaire n'est
+  // pas une carte unique : on annule ces proprietes sur la racine (les
+  // custom properties `--dm-form-card-padding-*`/`--dm-form-gap` posees par
+  // la meme regle restent actives et sont reutilisees plus bas, sur
+  // `&__card`). `align-items: stretch` (au lieu du `start` herite, jamais
+  // sinon annule) est necessaire pour que `&__stepper` s'etire sur toute la
+  // largeur avant que son propre `justify-content: center` centre les
+  // pastilles — sans quoi il ne fait que la largeur de son contenu, plaque a
+  // gauche.
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--dm-space-block);
+  padding: 0;
+  border-radius: 0;
+  background: none;
+
+  // Un bloc de configuration (titre + carte) par cle — `gap` plutot que des
+  // marges, pour un ecart garanti identique entre chaque paire de blocs
+  // quel que soit leur nombre (jusqu'a 10). Meme rythme que les autres
+  // ecarts de haut niveau de la page (fil d'etapes -> blocs, blocs ->
+  // actions) : `--dm-space-block`, mesure maquette 508-13222
+  // (fin de la 1ere carte -> titre de la 2eme, ~30px, arrondi au token).
+  &__configurations {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dm-space-block);
+  }
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+
+  @media (width < 992px) {
+    .form-actions &__add,
+    .form-actions &__submit {
+      width: 100%;
+    }
+  }
+
+  // --- Fil d'etapes (Configuration / Devis / Livraison). -------------------
+
+  &__stepper {
+    display: flex;
+    justify-content: center;
+    gap: 44px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @media (width < 992px) {
+      gap: 33px;
+    }
+  }
+
+  &__step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 2px 20px;
+    border: 1px solid var(--dm-color-grey-metal);
+    border-radius: 30px;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    line-height: 1.75rem;
+    white-space: nowrap;
+
+    @media (width < 992px) {
+      font-size: 0.75rem;
+    }
+
+    &.is-current {
+      border-color: var(--dm-color-steel);
+      background-color: var(--dm-color-steel);
+      color: var(--dm-color-white);
+    }
+
+    // Connecteur en pointilles entre deux etapes, porte par l'etape qui
+    // precede (aucun apres la derniere) : positionne hors du flux pour ne
+    // pas perturber la boite de la pastille (bordure/fond).
+    &:not(:last-child)::after {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      width: 44px;
+      content: '';
+      border-top: 1px dashed var(--dm-color-anthracite);
+      transform: translateY(-50%);
+
+      @media (width < 992px) {
+        width: 33px;
+      }
+    }
+  }
+
+  // --- En-tete de bloc (« Configuration N » + suppression). ----------------
+
+  &__card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--dm-space-element);
+    margin-block-end: 16px;
+
+    @media (width < 992px) {
+      margin-block-end: 8px;
+    }
+  }
+
+  &__card-title {
+    margin: 0;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+    font-weight: 700;
+  }
+
+  // Poubelle icone seule. Rendu par Drupal en `<input type="submit">` : cet
+  // element ne peut pas porter de `::before`/`::after` (contrairement aux
+  // SDC qui masquent un declencheur `<button>`), l'icone est donc posee
+  // directement en `mask` sur l'element, et son texte (`value`, qui reste
+  // le nom accessible) est rendu invisible plutot que supprime.
+  &__remove {
+    appearance: none;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background-color: var(--dm-color-grey-metal);
+    color: transparent;
+    cursor: pointer;
+    mask: url('../images/icons/trash.svg') no-repeat center;
+
+    &:hover {
+      background-color: var(--dm-color-red);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--dm-color-red);
+      outline-offset: 2px;
+    }
+  }
+
+  // --- Carte (fond gris). --------------------------------------------------
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dm-space-element);
+    padding: var(--dm-form-card-padding-block)
+      var(--dm-form-card-padding-inline);
+    border-radius: 12px;
+    background-color: var(--dm-color-grey-lighter);
+  }
+
+  // Legendes de groupe (« Sélectionner un véhicule »/« ...les équipements »)
+  // : 18px/26 fixe, y compris au palier desktop — contrairement au titre
+  // « Configuration N » (qui suit l'echelle H3 responsive), la maquette
+  // garde cette taille identique aux deux gabarits (mesure desktop
+  // 508:7364/7367 et mobile 606:37104/37131, toutes deux 18px).
+  &__vehicle,
+  &__equipment {
+    .fieldset-legend {
+      font-size: 1.125rem;
+      line-height: 1.625rem;
+    }
+  }
+
+  // --- Grille des equipements. ---------------------------------------------
+
+  // 5 elements (4 cases + la quantite rétrovision) positionnes par role, pas
+  // par ordre du DOM : le DOM reste dans un ordre de lecture stable (les 4
+  // cases puis leur quantite conditionnelle), la grille les replace
+  // visuellement selon la maquette — qui les ordonne differemment en mobile
+  // (quantite juste apres la 1ere case) et en desktop (quantite sous les 4,
+  // colonne 1 seule).
+  &__equipment {
+    // La fondation pose `align-items: start` sur tout `.fieldset-wrapper`
+    // (correct pour la plupart des formulaires, ou les champs n'ont pas a
+    // s'etirer) : ici, cela empechait chaque item de la grille de s'etirer
+    // a la hauteur de la ligne, donc « Double pédalier auto-école » (2
+    // lignes, boite 2x plus haute) et les 3 autres (1 ligne) restaient
+    // chacun a leur propre hauteur de contenu — leurs cases, centrees par
+    // `.form-type-checkbox { align-items: center }` (fondation) chacune
+    // dans une boite differente, ne s'alignaient donc pas entre elles.
+    // `stretch` uniformise la hauteur des 4 items sur la ligne (celle du
+    // plus grand), pour que ce centrage individuel aligne aussi les cases
+    // entre elles.
+    // `row-gap: 0` (au lieu du `gap` herite de la fondation, applique aux
+    // deux axes) : la grille garde 2 lignes meme quand la 2e (la quantite
+    // rétrovision) est masquee par `#states` — un `gap` de grille s'insere
+    // entre les lignes QUELLE QUE SOIT leur visibilite, ce qui reservait un
+    // ecart y compris case decochee (mesure : 34px de trop entre les cases
+    // et la ligne de separation suivante, contre 24px cote « Sélectionner
+    // un véhicule »). L'ecart visible n'est donc plus porte par la grille
+    // mais par `&__equipment-quantity` (`margin-block-start`, plus bas) :
+    // une marge sur un element `display: none` ne consomme aucun espace,
+    // contrairement a un `row-gap` de grille.
+    .fieldset-wrapper {
+      align-items: stretch;
+      row-gap: 0;
+      grid-template-areas:
+        'ret-ext'
+        'ret-ext-qty'
+        'ret-int'
+        'tele'
+        'double';
+    }
+
+    @media (width >= 992px) {
+      .fieldset-wrapper {
+        // `minmax(max-content, 1fr)`, pas `minmax(0, 1fr)` : 4 colonnes
+        // strictement egales forcent « Double pédalier auto-école » (le
+        // libelle le plus long) a passer sur 2 lignes. `max-content` en
+        // borne basse garantit a chaque colonne au moins la largeur de son
+        // propre libelle (jamais de retour a la ligne) ; le `1fr` continue
+        // de repartir l'espace restant entre les 4, comme la maquette (les
+        // colonnes n'y sont d'ailleurs pas rigoureusement egales : mesure
+        // 508:12894/12895/12900/12905, ~250px chacune a quelques px pres).
+        grid-template-columns: repeat(4, minmax(max-content, 1fr));
+        grid-template-areas:
+          'ret-ext ret-int tele double'
+          'ret-ext-qty ret-ext-qty ret-ext-qty ret-ext-qty';
+      }
+    }
+  }
+
+  &__equipment-item {
+    // Ecart porte par l'item plutot que par le `row-gap` de la grille (mis a
+    // 0 plus haut) : tous les items en ont besoin, « double » inclus —
+    // ⚠️ lui laisser cette marge de cote (essaye d'abord) casse
+    // l'alignement : `align-items: stretch` calcule la hauteur de ligne au
+    // MAXIMUM de chaque item (contenu + marge), qui vaut alors 58px (28
+    // contenu + 30 marge desktop) pour les items AVEC marge ; l'item SANS
+    // marge (« double ») est alors etire a cette hauteur PAR SON CONTENU (58
+    // au lieu de 28, faute de marge pour absorber la difference), decalant
+    // sa case ~15px plus bas que les 3 autres — regression rencontree en
+    // testant apres coup. Avec la marge UNIFORME sur les 4, la hauteur de
+    // ligne reste 58 mais le contenu de chacun reste 28 (58 moins sa propre
+    // marge), retablissant l'alignement.
+    // L'ecart en trop que cette marge ajoute apres « double » (dernier item,
+    // qui n'en a normalement pas besoin) est neutralise plus bas par une
+    // marge negative equivalente sur le fieldset lui-meme
+    // (`&__equipment.form-wrapper`) — constante, donc valable que la
+    // quantite rétrovision soit visible ou non.
+    // `.form-item` en toutes lettres (pas de `__`) sur chaque modificateur :
+    // la fondation pose `.webform-submission-form .form-item { margin: 0 }`
+    // a 0,2,0 (2 classes), qui l'emportait sur un modificateur seul (0,1,0)
+    // — meme famille de conflit deja rencontree plusieurs fois sur ce
+    // fichier (bouton « Ajouter », titre, lignes de separation).
+    &--equipment-retrovision-ext.form-item,
+    &--equipment-retrovision-int.form-item,
+    &--equipment-telecommande-vor.form-item,
+    &--equipment-double-pedalier.form-item {
+      margin-block-end: var(--dm-form-gap);
+    }
+
+    &--equipment-retrovision-ext {
+      grid-area: ret-ext;
+    }
+
+    &--equipment-retrovision-int {
+      grid-area: ret-int;
+    }
+
+    &--equipment-telecommande-vor {
+      grid-area: tele;
+    }
+
+    &--equipment-double-pedalier {
+      grid-area: double;
+    }
+  }
+
+  // Annule la marge de fin de « double » (dernier item, cf. `&__equipment-
+  // item` plus haut — necessaire aux 3 autres pour la hauteur de ligne mais
+  // superflue apres le dernier). Constante (`--dm-form-gap`, meme valeur des
+  // deux cotes) : correcte que la quantite rétrovision soit affichee ou non,
+  // puisque la marge qu'elle annule est deja comprise dans la hauteur de la
+  // 1ere ligne de la grille dans les deux cas. `.form-wrapper` (specificite
+  // 0,2,0) pour la meme raison que d'habitude : `.form-item`/`fieldset`
+  // seul perdrait face a la fondation.
+  &__equipment.form-wrapper {
+    margin-block-end: calc(-1 * var(--dm-form-gap));
+  }
+
+  // --- Lignes de separation (vehicule -> equipements -> quantite). ---------
+
+  // `padding` egal au `gap` de `&__card` : la ligne se retrouve centree dans
+  // l'espacement total (padding avant + gap apres), sans mesure ad hoc.
+  // Mesure maquette (508:7365/12910, ~30px de part et d'autre) proche de ce
+  // doublement de `--dm-space-element`.
+
+  // ⚠️ Essaye d'abord en `padding-top`/`border-top`/`::before` sur
+  // `&__equipment` (le fieldset SUIVANT le gap) : la `<legend>` d'un
+  // `<fieldset>` a un rendu natif qui l'ancre au bord SUPERIEUR de la boite,
+  // en ignorant `padding-top` — la legende « Sélectionner les équipements »
+  // se retrouvait donc collee a la ligne au lieu d'en etre separee (mesure :
+  // 2px d'ecart entre le haut du fieldset et le haut de la legende, alors
+  // que `padding-top: 24px` etait bien applique). Ce n'est PAS le meme
+  // symptome que le round precedent (border qui ne se peignait pas du tout)
+  // — cette fois le calcul CSS ET le rendu sont corrects, c'est le POSITION-
+  // NEMENT de la legende elle-meme qui ignore le padding.
+
+  // Corrige en ancrant la ligne au bord INFERIEUR du fieldset PRECEDENT
+  // (`&__vehicle`) plutot qu'au bord superieur de celui qui suit — une
+  // legende n'existe qu'en haut d'un fieldset, un `::after` en bas n'est
+  // donc jamais concerne par cette specificite de rendu. `&__vehicle.
+  // form-wrapper` (2 classes) : meme conflit de specificite avec la
+  // fondation (`fieldset { padding: 0; border: 0 }`, 0,1,1) que rencontre
+  // sur `&__equipment` precedemment — meme correctif (`form-wrapper`, sans
+  // `__`, classe Drupal native sur tout fieldset).
+  &__vehicle.form-wrapper {
+    position: relative;
+    padding-bottom: var(--dm-space-element);
+
+    &::after {
+      position: absolute;
+      inset-block-end: 0;
+      inset-inline: 0;
+      height: 1px;
+      content: '';
+      background-color: var(--dm-color-grey-metal);
+    }
+  }
+
+  // --- Quantite (véhicules identiques). -------------------------------------
+
+  &__vehicle-count {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dm-form-label-gap);
+    padding-top: var(--dm-space-element);
+    border-top: 1px solid var(--dm-color-grey-metal);
+
+    // 18px/26 fixe, comme les legendes de groupe (meme raison : la maquette
+    // garde cette taille aux deux gabarits, contrairement a l'echelle H3
+    // responsive utilisee pour « Configuration N »).
+    h3 {
+      margin: 0;
+      color: var(--dm-color-steel);
+      font-family: var(--dm-font-title);
+      font-size: 1.125rem;
+      line-height: 1.625rem;
+      font-weight: 700;
+    }
+  }
+
+  // --- Stepper de quantite (-/+). -------------------------------------------
+
+  // Le gabarit `form-element.html.twig` rend le libelle et les deux boutons
+  // (`field-prefix`/`field-suffix`) comme des freres directs de l'input,
+  // tous enfants du meme `.form-item` (pas de sous-conteneur dedie a « juste
+  // les boutons + le champ ») : une grille 2 lignes place le libelle sur
+  // toute la largeur puis les 3 elements du pilulier sur la ligne suivante,
+  // sans avoir besoin d'un wrapper supplementaire. Le pilulier n'a pas de
+  // bordure propre : chaque segment porte la sienne, alignees pour se
+  // prolonger visuellement.
+
+  // Colonnes en px fixes (pas de `1fr`) : le libelle, potentiellement long
+  // (« Nombre de véhicule(s)... »), doit pouvoir passer a la ligne dans la
+  // largeur normale du bloc — un `1fr` sur la colonne centrale aurait etire
+  // le pilulier a cette meme largeur, et un `width: max-content` sur la
+  // grille (essaye d'abord) forcait le libelle entier sur une seule ligne,
+  // debordant le viewport mobile (`document.documentElement.scrollWidth` >
+  // `clientWidth`, piege deja documente pour d'autres composants du site).
+  &__quantity {
+    display: grid;
+    grid-template-columns: 33px 61px 33px;
+    grid-template-rows: auto 44px;
+    row-gap: var(--dm-form-label-gap);
+
+    > label {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    // Bordure rouge sur les 4 cotes de chaque bouton, y compris le cote
+    // interne (contre le champ) : conforme a la maquette (508:12885/12917,
+    // `border-[#a00] border-[1.178px] border-solid` sans exception de cote)
+    // — ne pas neutraliser ce cote comme un ombrage "pilulier a un seul
+    // contour" le suggererait a l'oeil, ce n'est pas ce que la maquette fait.
+    .field-prefix,
+    .field-suffix {
+      display: flex;
+      grid-row: 2;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--dm-color-red);
+      background-color: var(--dm-color-grey-stepper);
+    }
+
+    // 5px : arrondi mesure sur la maquette (4.713px, meme rayon aux 2
+    // instances 508:12885 et 508:12917 — valeur du composant, pas un
+    // artefact d'echelle isole).
+    .field-prefix {
+      grid-column: 1;
+      border-radius: 5px 0 0 5px;
+    }
+
+    .field-suffix {
+      grid-column: 3;
+      border-radius: 0 5px 5px 0;
+    }
+  }
+
+  // Le pilulier ci-dessus est concu compact (127px, 3 colonnes fixes) pour
+  // l'equipement rétrovision, dont le libelle est invisible
+  // (`#title_display: invisible`). Dans `&__vehicle-count`, le libelle EST
+  // visible et doit rester sur une ligne (« Nombre de véhicule(s)
+  // identique(s) à équiper ») : une 4e colonne `1fr` absorbe le reste de la
+  // largeur de la carte pour que `grid-column: 1 / -1` (sur le libelle,
+  // regle ci-dessus) s'etire au-dela des 127px des 3 colonnes du pilulier,
+  // qui reste lui-meme inchange (il n'occupe que les 3 premieres colonnes).
+  &__vehicle-count &__quantity {
+    width: 100%;
+    grid-template-columns: 33px 61px 33px 1fr;
+  }
+
+  // ⚠️ La fondation rend `display: contents` tout `div.js-form-wrapper`
+  // direct enfant d'un `.fieldset-wrapper` (pour qu'un wrapper technique
+  // #states ne cree pas sa propre cellule de grille) DES QUE la condition
+  // `#states` est vraie (checkbox cochee) — `&__equipment-quantity` (ce
+  // wrapper) perd alors totalement sa propre boite, et tout ce qu'on lui
+  // pose (`grid-area`, marge) devient sans effet des que la case est cochee
+  // (mesure : `getBoundingClientRect()` renvoie un rectangle degenere,
+  // `top: 0`). La grille et la marge doivent donc cibler l'enfant REEL
+  // (`&__quantity`, le pilulier lui-meme), qui reste un element normal
+  // regardless de la transparence de son parent.
+  &__equipment-quantity &__quantity {
+    grid-area: ret-ext-qty;
+
+    // `justify-self: stretch` est la valeur par defaut d'un item de grille
+    // CSS des que sa largeur reste `auto` (cas ici) : sans cette ligne, le
+    // pilulier s'etirait sur toute la largeur de la zone nommee
+    // `ret-ext-qty` (les 4 colonnes du fieldset, ~990px) au lieu de rester
+    // compact a 127px (largeur mesuree sur la maquette, 508:12885) — bug
+    // silencieux, invisible dans les mesures d'ecart vertical d'un round
+    // precedent (qui ne verifiaient que la hauteur/position, pas la
+    // largeur). `&__vehicle-count &__quantity` (plus bas) reste volontaire-
+    // ment en `width: 100%` : ce n'est pas le meme contexte, la 4e colonne
+    // `1fr` y sert au libelle visible, pas au pilulier lui-meme.
+    justify-self: start;
+
+    // Marge de fin inconditionnelle (pas seulement mobile). En mobile, la
+    // quantite est un item DU MILIEU (entre ret-ext et ret-int) : il lui
+    // faut sa propre marge pour l'ecart avec l'item suivant. En desktop,
+    // c'est le DERNIER item de la grille (ligne 2 entiere) — meme raison
+    // que les items de checkbox plus haut (cf. `&__equipment-item`) :
+    // `&__equipment.form-wrapper` applique une marge negative CONSTANTE
+    // (`-1 * --dm-form-gap`) pour neutraliser la marge de fin du dernier
+    // item visible, quel qu'il soit. Sans marge ici, quand la quantite
+    // devient le dernier item (case cochee, desktop), il n'y a plus rien a
+    // neutraliser : la compensation constante retranche alors 30px qui
+    // n'ont pas ete ajoutes, rapprochant la ligne suivante de 6px en trop
+    // (chevauchement mesure : `gapQtyItemToLine2: -6`). Poser cette marge
+    // dans tous les cas restaure la marge « fin de grille » que la
+    // compensation attend, dans les deux etats (case cochee ou non).
+    margin-block-end: var(--dm-form-gap);
+  }
+
+  // Deux classes necessaires (l'input porte aussi `&__quantity`... non : le
+  // wrapper `.form-item` porte `&__quantity`, l'input porte cette classe a
+  // lui, une classe distincte) — specificite portee a 2 classes + 1 element
+  // pour egaler `.webform-submission-form input[type='number']` (fondation
+  // `forms`, meme poids) : sans ce complement, la fondation l'emporterait
+  // malgre l'ordre d'import (`configurator-form` apres `forms`).
+  & input#{&}__quantity-input {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border-block: 1px solid var(--dm-color-grey-outline);
+    border-inline: 0;
+    background: var(--dm-color-white);
+    color: var(--dm-color-anthracite);
+    text-align: center;
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+  }
+
+  // Amelioration progressive (meme pattern que `help-modal`/`login-panel`) :
+  // masques par defaut, reveles par `quantity-stepper.js` (classe
+  // `is-ready` posee une fois le comportement attache). Sans JS, la valeur
+  // reste modifiable au clavier — pas de fleches natives (`appearance:
+  // textfield` ci-dessus), c'est le compromis de repli assume.
+  &__quantity-decrement,
+  &__quantity-increment {
+    display: none;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background-color: var(--dm-color-red);
+    cursor: pointer;
+    mask: url('../images/icons/minus.svg') no-repeat center / contain;
+  }
+
+  &__quantity-increment {
+    mask-image: url('../images/icons/plus.svg');
+  }
+
+  &__quantity-decrement:disabled,
+  &__quantity-increment:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  [data-quantity-stepper].is-ready & {
+    &__quantity-decrement,
+    &__quantity-increment {
+      display: block;
+    }
+  }
+
+  // --- Bouton « Ajouter une configuration » (contour + icone). -------------
+
+  // Meme contrainte que `&__remove` : rendu en `<input type="submit">`, qui
+  // ne peut pas porter de `::before`. L'icone est donc posee en
+  // `background-image` (pas `mask`) pour laisser le texte du bouton visible
+  // a cote — l'asset est exporte avec sa couleur finale au lieu du
+  // `currentColor` habituel via mask.
+
+  // `.configurator-form` repete en tete (litteral, avant le nesting SCSS
+  // implicite) : Drupal pose aussi `form-submit` sur ce bouton, et la regle
+  // de fondation `.webform-submission-form .form-actions .form-submit` (3
+  // classes) l'emporterait sinon — `.form-actions &__add` seul (2 classes,
+  // `&` ne duplique pas le contexte englobant quand il est deja utilise
+  // explicitement dans le selecteur) ne suffit pas, piege deja rencontre une
+  // fois sur ce meme bouton.
+  .configurator-form .form-actions &__add {
+    appearance: none;
+    display: inline-block;
+    padding: 11px 16px 11px 44px;
+    border: 1px solid var(--dm-color-steel);
+    border-radius: 6px;
+    background: var(--dm-color-white) url('../images/icons/plus-circle.svg')
+      no-repeat 16px center;
+    background-size: 20px;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: normal;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--dm-color-grey-lighter);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+}

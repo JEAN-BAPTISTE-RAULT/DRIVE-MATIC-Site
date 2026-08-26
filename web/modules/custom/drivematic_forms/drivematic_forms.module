@@ -21,7 +21,7 @@ use Drupal\Core\Url;
 function drivematic_forms_form_alter(array &$form, FormStateInterface $form_state, string $form_id): void {
   if (str_starts_with($form_id, 'webform_submission_contact')) {
     $form['#attached']['library'][] = 'drivematic_forms/vehicle_select';
-    $form['#attached']['drupalSettings']['drivematicForms'] = _drivematic_forms_vehicle_map();
+    $form['#attached']['drupalSettings']['drivematicForms'] = drivematic_forms_vehicle_map();
     return;
   }
 
@@ -170,11 +170,14 @@ function _drivematic_forms_require_file_description(array $element, FormStateInt
 /**
  * Construit les correspondances vehicule pour la cascade front.
  *
+ * API publique du module : consommee ici (webform contact) et par
+ * `drivematic_configurator` (formulaire de configuration, F14).
+ *
  * @return array
  *   Deux maps indexees par identifiant de terme : 'modelsByBrand' (marque =>
  *   liste de modeles) et 'motosByModel' (modele => liste de motorisations).
  */
-function _drivematic_forms_vehicle_map(): array {
+function drivematic_forms_vehicle_map(): array {
   $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
   $models = $storage->loadByProperties(['vid' => 'vehicle_model']);
   $models_by_brand = [];

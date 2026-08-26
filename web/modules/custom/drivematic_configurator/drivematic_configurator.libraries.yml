@@ -1,0 +1,7 @@
+quantity_stepper:
+  version: 1.x
+  js:
+    js/quantity-stepper.js: {}
+  dependencies:
+    - core/drupal
+    - core/once

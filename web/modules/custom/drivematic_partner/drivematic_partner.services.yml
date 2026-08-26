@@ -1,0 +1,7 @@
+services:
+  drivematic_partner.access_redirect_subscriber:
+    class: Drupal\drivematic_partner\EventSubscriber\PartnerAccessRedirectSubscriber
+    arguments:
+      - '@current_user'
+    tags:
+      - { name: event_subscriber }

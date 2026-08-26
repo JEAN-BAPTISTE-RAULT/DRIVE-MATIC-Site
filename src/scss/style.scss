@@ -24,6 +24,10 @@
 // `user-logout-confirm-form` : meme derogation, pour `user_logout_confirm`
 // (page /user/logout/confirm, atterrissage du lien « Me deconnecter » du
 // dropdown « Espace partenaire ») — habillage minimal comme `user-pass-form`.
+// `configurator-form` : meme derogation, pour le formulaire « Configuration »
+// du configurateur de devis (FormBase, route /configurer, F14 etape 1/3) —
+// plusieurs cartes (une par configuration) au lieu d'une seule, contrairement
+// a `forms`/`personal-information-form`.
 
 @use 'tokens';
 @use 'fonts';
@@ -36,6 +40,7 @@
 @use 'personal-information-form';
 @use 'user-edit-form';
 @use 'user-logout-confirm-form';
+@use 'configurator-form';
 @use 'views-faq';
 @use 'page-title';
 @use 'pager';

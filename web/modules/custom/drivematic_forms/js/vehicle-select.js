@@ -1,10 +1,17 @@
 /**
  * @file
- * Cascade marque -> modele -> motorisation du webform contact.
+ * Cascade marque -> modele -> motorisation (webform contact, configurateur).
  *
  * Filtre les options de « modele » selon la « marque » choisie, puis celles de
  * « motorisation » selon le « modele » choisi. Les correspondances sont fournies
  * par drupalSettings.drivematicForms. Sans JS, les listes restent completes.
+ *
+ * Chaque cascade est un conteneur `[data-vehicle-cascade]` portant 3 selects
+ * `[data-vehicle-role="brand|model|motorisation"]`. Le ciblage par attribut
+ * (plutot que par `name` + `closest('form')`) permet plusieurs cascades
+ * independantes sur une meme page (configurateur, un bloc par vehicule) — un
+ * ciblage par `name` unique ne le permettrait pas, puisque `name` se repete
+ * ou varie selon l'imbrication (`configurations[0][vehicle][brand]`, etc.).
  */
 
 (function (Drupal, once, drupalSettings) {
@@ -62,12 +69,18 @@
       const modelsByBrand = settings.modelsByBrand || {};
       const motosByModel = settings.motosByModel || {};
 
-      once('dm-vehicle', 'select[name="marque"]', context).forEach(
-        function (brandSelect) {
-          const form = brandSelect.form;
-          const modelSelect = form.querySelector('select[name="modele"]');
-          const motoSelect = form.querySelector('select[name="motorisation"]');
-          if (!modelSelect || !motoSelect) {
+      once('dm-vehicle', '[data-vehicle-cascade]', context).forEach(
+        function (cascade) {
+          const brandSelect = cascade.querySelector(
+            '[data-vehicle-role="brand"]',
+          );
+          const modelSelect = cascade.querySelector(
+            '[data-vehicle-role="model"]',
+          );
+          const motoSelect = cascade.querySelector(
+            '[data-vehicle-role="motorisation"]',
+          );
+          if (!brandSelect || !modelSelect || !motoSelect) {
             return;
           }
 

@@ -17,6 +17,7 @@ module:
   crop: 0
   datetime: 0
   dblog: 0
+  drivematic_configurator: 0
   drivematic_forms: 0
   drivematic_home: 0
   drivematic_partner: 0

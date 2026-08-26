@@ -102,6 +102,8 @@ elements: |-
   demande:
     '#type': fieldset
     '#title': 'Votre demande concerne'
+    '#attributes':
+      data-vehicle-cascade: true
     demande_concerne:
       '#type': select
       '#title': Sélectionner
@@ -116,6 +118,8 @@ elements: |-
       '#title': Marque
       '#vocabulary': vehicle_brand
       '#empty_option': Sélectionnez
+      '#attributes':
+        data-vehicle-role: brand
       '#states':
         visible:
           - ':input[name="demande_concerne"]':
@@ -137,6 +141,8 @@ elements: |-
       '#title': Modèle
       '#vocabulary': vehicle_model
       '#empty_option': Sélectionnez
+      '#attributes':
+        data-vehicle-role: model
       '#states':
         visible:
           - ':input[name="demande_concerne"]':
@@ -155,6 +161,8 @@ elements: |-
       '#title': Motorisation
       '#vocabulary': motorisation
       '#empty_option': Sélectionnez
+      '#attributes':
+        data-vehicle-role: motorisation
       '#states':
         visible:
           - ':input[name="demande_concerne"]':

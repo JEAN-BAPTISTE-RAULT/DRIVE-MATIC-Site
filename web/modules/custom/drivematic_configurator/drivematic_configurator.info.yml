@@ -1,0 +1,8 @@
+name: 'DRIVE-MATIC Configurateur'
+type: module
+description: 'Configurateur de devis (F14) : selection vehicule et equipements, reserve aux partenaires.'
+package: 'DRIVE-MATIC'
+core_version_requirement: ^11
+dependencies:
+  - drupal:taxonomy
+  - drivematic_forms:drivematic_forms

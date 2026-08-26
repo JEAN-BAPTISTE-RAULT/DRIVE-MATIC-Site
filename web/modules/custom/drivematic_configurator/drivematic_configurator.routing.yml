@@ -1,0 +1,7 @@
+drivematic_configurator.configuration:
+  path: '/configurer'
+  defaults:
+    _form: '\Drupal\drivematic_configurator\Form\ConfigurationForm'
+    _title: 'Configurez votre véhicule et obtenez votre tarif'
+  requirements:
+    _role: 'partenaire'
