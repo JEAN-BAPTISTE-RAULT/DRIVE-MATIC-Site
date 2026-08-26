@@ -387,7 +387,14 @@
 // --- Bouton d'envoi (« Btn rouge » de la maquette). -----------------------
 
 .webform-submission-form .form-actions .form-submit {
+  // Sans ce reset, certains moteurs de rendu conservent un rendu natif
+  // (`type="submit"`) qui reserve sa propre marge horizontale (~15px de
+  // chaque cote) — invisible ici tant qu'aucune largeur n'est forcee, mais
+  // qui empeche un `width: 100%` (ex. bouton "Valider" du webform "Demande
+  // de creation de compte") d'atteindre reellement les bords du conteneur.
+  appearance: none;
   display: inline-block;
+  margin: 0;
   padding: 14px 16px;
   border: 0;
   border-radius: 4px;
@@ -402,6 +409,18 @@
 
 .webform-submission-form .form-actions .form-submit:hover {
   background: var(--dm-color-anthracite);
+}
+
+// Bouton « Valider » du webform "Demande de création de compte" (page
+// /demande-de-creation-de-compte) : pleine largeur en mobile uniquement,
+// demande explicite qui ne concerne pas les autres webforms du site — d'ou
+// le scope sur la classe stable posee par Webform sur CE formulaire
+// (`webform-submission-account-request-form`, independante du node id,
+// contrairement a `webform-submission-account-request-node-<nid>-form`).
+@media (width < 992px) {
+  .webform-submission-account-request-form .form-actions .form-submit {
+    width: 100%;
+  }
 }
 
 // --- Grille desktop. -------------------------------------------------------

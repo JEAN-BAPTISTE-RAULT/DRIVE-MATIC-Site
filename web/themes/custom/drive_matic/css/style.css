@@ -112,6 +112,7 @@ button,
 input,
 select,
 textarea {
+  margin: 0;
   font: inherit;
 }
 
@@ -509,7 +510,11 @@ textarea) {
 }
 
 .webform-submission-form .form-actions .form-submit {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
   display: inline-block;
+  margin: 0;
   padding: 14px 16px;
   border: 0;
   border-radius: 4px;
@@ -526,6 +531,11 @@ textarea) {
   background: var(--dm-color-anthracite);
 }
 
+@media (width < 992px) {
+  .webform-submission-account-request-form .form-actions .form-submit {
+    width: 100%;
+  }
+}
 @media (width >= 992px) {
   .webform-submission-form,
   .webform-submission-form .fieldset-wrapper {
@@ -842,6 +852,7 @@ textarea) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   padding: 14px 16px;
   border: 1px solid var(--dm-color-steel);
   border-radius: 4px;
@@ -849,11 +860,17 @@ textarea) {
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
+  line-height: normal;
   text-decoration: none;
 }
 
 .drivematic-partner-personal-information-form .form-actions .form-submit {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
   display: inline-block;
+  width: 100%;
+  margin: 0;
   padding: 14px 16px;
   border: 0;
   border-radius: 4px;
@@ -873,6 +890,10 @@ textarea) {
 @media (width >= 992px) {
   .drivematic-partner-personal-information-form .fieldset-wrapper {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .drivematic-partner-personal-information-form .personal-information-form__password-link,
+  .drivematic-partner-personal-information-form .form-actions .form-submit {
+    width: auto;
   }
 }
 .user-form {

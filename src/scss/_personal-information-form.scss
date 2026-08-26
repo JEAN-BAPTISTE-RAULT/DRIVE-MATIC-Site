@@ -160,25 +160,46 @@
   gap: 16px;
 }
 
+// Pleine largeur mobile-first (empilement), largeur naturelle restauree au
+// palier desktop (grille "Actions" plus bas) : les 2 boutons doivent occuper
+// toute la largeur en mobile, mais rester cote a cote sur leur ligne
+// naturelle en desktop.
 // stylelint-disable selector-class-pattern -- classe posee par PersonalInformationForm, hors SDC
 .drivematic-partner-personal-information-form
   .personal-information-form__password-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   padding: 14px 16px;
   border: 1px solid var(--dm-color-steel);
   border-radius: 4px;
   color: var(--dm-color-steel);
   font-family: var(--dm-font-body);
+
+  // Sans cette ligne, le lien herite du `line-height` ambiant du corps de
+  // texte (`--dm-body-line`, 28px) au lieu de celui, plus resserre, d'un
+  // bouton — sa hauteur naturelle grimpait alors a 58px contre 46px pour le
+  // bouton d'envoi voisin (`line-height: normal` ci-dessous), un ecart
+  // visible que le seul passage en pleine largeur n'aurait pas resorbe.
   font-size: 0.9375rem;
   font-weight: 500;
+  line-height: normal;
   text-decoration: none;
 }
 // stylelint-enable selector-class-pattern
 
 .drivematic-partner-personal-information-form .form-actions .form-submit {
+  // Sans ce reset, certains moteurs de rendu conservent un rendu natif
+  // (`type="submit"`) qui reserve sa propre marge horizontale (~15px de
+  // chaque cote), invisible en isolation mais suffisante pour deborder de
+  // la largeur du conteneur (`width: 100%` n'atteignait alors pas le bord
+  // droit du champ voisin) et desynchroniser sa hauteur de celle du lien
+  // « Modifier mon mot de passe ».
+  appearance: none;
   display: inline-block;
+  width: 100%;
+  margin: 0;
   padding: 14px 16px;
   border: 0;
   border-radius: 4px;
@@ -201,4 +222,14 @@
   .drivematic-partner-personal-information-form .fieldset-wrapper {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  // Retour a la largeur naturelle : cote a cote sur leur ligne (`.form-actions`
+  // est deja `flex; justify-content: flex-end`), plus etires en pleine largeur.
+  // stylelint-disable selector-class-pattern -- classe posee par PersonalInformationForm, hors SDC
+  .drivematic-partner-personal-information-form
+    .personal-information-form__password-link,
+  .drivematic-partner-personal-information-form .form-actions .form-submit {
+    width: auto;
+  }
+  // stylelint-enable selector-class-pattern
 }

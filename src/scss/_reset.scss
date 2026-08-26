@@ -22,9 +22,15 @@ a {
   color: inherit;
 }
 
+// Sans ce reset, `<input>`/`<button>` gardent la marge par defaut du
+// navigateur (ex. Chrome : `2px` de chaque cote) — invisible tant qu'aucun
+// autre element n'a besoin de s'aligner dessus, mais suffisant pour
+// desaligner un bouton cense toucher le bord droit d'un conteneur
+// `justify-content: flex-end` (rencontre sur `.personal-information-form`).
 button,
 input,
 select,
 textarea {
+  margin: 0;
   font: inherit;
 }
