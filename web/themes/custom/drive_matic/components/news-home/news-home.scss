@@ -111,9 +111,11 @@
     margin-top: var(--dm-space-element);
   }
 
+  // 24px : taille minimale de cible tactile (WCAG 2.5.8) — la maquette prevoit
+  // un point de 12px, mais la zone cliquable doit atteindre 24px.
   & .swiper-pagination-bullet {
-    width: 12px;
-    height: 12px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: var(--dm-color-grey-metal);
     opacity: 1;
