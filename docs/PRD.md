@@ -379,9 +379,11 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 ### F17 : Referentiel vehicules & catalogue produits
 
 **Criteres d'acceptation** :
-- [ ] Referentiel marques / modeles / types alimente depuis le fichier Excel fourni (aussi utilise par les listbox du formulaire de contact).
-- [ ] Catalogue produits (auto-ecole & PMR) avec tarifs catalogue HT, utilises par le configurateur.
-- [ ] `[A PRECISER]` : modalites d'import/mise a jour du fichier Excel (import manuel, script, saisie back-office).
+- [x] Referentiel marques / modeles / types alimente depuis le fichier Excel fourni (aussi utilise par les listbox du formulaire de contact).
+- [x] Catalogue produits (4 equipements du configurateur : télécommande VOR, pédalier, rétrovision ext./int.) avec tarifs catalogue HT, tarifant par véhicule × motorisation pour télécommande VOR et pédalier.
+- [x] Modalites d'import/mise a jour : formulaire d'upload back-office (Batch API), route `/admin/content/catalogue-tarifs/import` — voir [ADR-030](../.claude/decisions/030-catalogue-tarifs-import.md) et `docs/plans/catalogue-tarifs-import.md`.
+
+**Mise en oeuvre — le 2026-08-27** ([ADR-030](../.claude/decisions/030-catalogue-tarifs-import.md)) : module `drivematic_catalog`, entite custom `equipment_price` (catalogue vivant, entierement recree a chaque import), import par rapprochement par nom pour `vehicle_brand`/`vehicle_model` (pas de suppression totale, pour ne pas casser les soumissions webform existantes qui referencent un ID de terme). **Hors perimetre** : branchement des tarifs reels dans `ConfigurationForm.php` (F14), entites Devis/Configuration/Ligne d'equipement (F15) qui geleront ces prix a la creation d'un devis — le catalogue est concu pour etre compatible avec ce futur mecanisme, sans l'implementer.
 
 ---
 
@@ -422,7 +424,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 Le modele de contenu editorial (types de contenu, taxonomie, mapping paragraphes) est acte dans [ADR-002](../.claude/decisions/002-types-de-contenu.md) et detaille dans `docs/content-model.md` : **12 nodes publics** (`homepage`, `transform`, `product`, `faq`, `documents`, `corporate`, `brands`, `contact`, `simple_form`, `legals`, `news`, `all_news`), **2 nodes « fragments »** sans page publique (`question`, `brand` — hors sitemap, URL bloquee ; le fragment `document` a ete supprime le 2026-08-18), **1 taxonomie** (`categories`). **Livre en totalite.** Conventions transverses : champ « lien » interne/externe + cible d'onglet ; « fichier telechargeable » avec nom/format/poids ; **titre unique porte par le `title`**, qui alimente l'affichage, l'alias, le fil d'Ariane et la balise title ([ADR-014](../.claude/decisions/014-titre-unique-porte-par-le-title.md), qui remplace l'ADR-011) ; metatags (body→description) ; sitemap = nodes inclus / entites exclues. `simple_form` (ex-`partner`) est **multi-instance** depuis le 2026-08-25 ([ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md)) — porte « Devenir partenaire » et « Demande de création de compte ».
 
 ### Referentiel vehicules (partage)
-Trois taxonomies reutilisables (cf. [ADR-003](../.claude/decisions/003-referentiel-vehicules.md)), partagees par le webform contact (F10) et le configurateur (F14/F17) : `vehicle_brand` (31 marques), `vehicle_model` (124 modeles ; champs `field_brand` + `field_motorisations`), `motorisation` (4 : Manuelle, Automatique, Hybride, Électrique). Vocabulaires + champs versionnes ; termes = contenu (seeds depuis l'Excel, a recreer en prod).
+Trois taxonomies reutilisables (cf. [ADR-003](../.claude/decisions/003-referentiel-vehicules.md)), partagees par le webform contact (F10) et le configurateur (F14/F17) : `vehicle_brand` (29 marques), `vehicle_model` (138 modeles ; champs `field_brand` + `field_motorisations`), `motorisation` (4 : Manuelle, Automatique, Hybride, Électrique). Vocabulaires + champs versionnes ; termes = contenu, desormais importes/mis a jour depuis le combinatoire Excel via `/admin/content/catalogue-tarifs/import` (F17, [ADR-030](../.claude/decisions/030-catalogue-tarifs-import.md)) plutot que par script Drush ponctuel.
 
 ### Regles de coherence
 - Un devis porte 1 a **10** configurations maximum.

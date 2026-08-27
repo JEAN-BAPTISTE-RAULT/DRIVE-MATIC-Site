@@ -1,0 +1,4 @@
+administer catalog import:
+  title: 'Importer le combinatoire de tarifs'
+  description: 'Importer le fichier Excel qui vide et recree le referentiel vehicules et le catalogue de tarifs des equipements. Reserve aux administrateurs DRIVE-MATIC, jamais au role partenaire.'
+  restrict access: true

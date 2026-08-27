@@ -1,0 +1,8 @@
+name: 'DRIVE-MATIC Catalogue de tarifs'
+type: module
+description: 'Referentiel vehicules et catalogue de tarifs des equipements (F17), importe depuis le combinatoire Excel.'
+package: 'DRIVE-MATIC'
+core_version_requirement: ^11
+dependencies:
+  - drupal:taxonomy
+  - drupal:file

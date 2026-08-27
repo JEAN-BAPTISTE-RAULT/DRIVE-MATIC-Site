@@ -1,0 +1,19 @@
+entity.equipment_price.collection:
+  path: '/admin/content/catalogue-tarifs'
+  defaults:
+    _entity_list: 'equipment_price'
+    _title: 'Catalogue de tarifs'
+  requirements:
+    _permission: 'administer catalog import'
+  options:
+    _admin_route: TRUE
+
+drivematic_catalog.import:
+  path: '/admin/content/catalogue-tarifs/import'
+  defaults:
+    _form: '\Drupal\drivematic_catalog\Form\CatalogImportForm'
+    _title: 'Importer le combinatoire de tarifs'
+  requirements:
+    _permission: 'administer catalog import'
+  options:
+    _admin_route: TRUE

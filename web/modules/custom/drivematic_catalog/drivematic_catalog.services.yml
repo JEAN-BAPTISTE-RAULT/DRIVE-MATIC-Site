@@ -1,0 +1,5 @@
+services:
+  drivematic_catalog.importer:
+    class: Drupal\drivematic_catalog\Service\CatalogImporter
+    arguments:
+      - '@entity_type.manager'

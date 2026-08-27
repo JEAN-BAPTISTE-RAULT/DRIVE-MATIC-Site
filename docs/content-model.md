@@ -87,6 +87,25 @@ Les fragments restent **hors de la convention ADR-011** : pas de `field_title` (
 | Vocabulaire | Label | Termes | Utilisé par |
 |-------------|-------|--------|-------------|
 | `categories` | Catégories | Général, Auto-école, PMR | champ de `question` + filtre BEF de la page `faq` |
+| `vehicle_brand` | Marque | 29 (ADR-003) | webform contact (F10), configurateur (F14), catalogue de tarifs (F17, ADR-030) |
+| `vehicle_model` | Modèle | 138 ; champs `field_brand` (obl, → `vehicle_brand`) + `field_motorisations` (obl, multi, → `motorisation`) | idem |
+| `motorisation` | Motorisation | Manuelle, Automatique, Hybride, Électrique (ADR-003) | idem |
+
+`vehicle_brand`/`vehicle_model` sont la **source secondaire** du référentiel véhicules : le
+combinatoire Excel fait foi, importé via `/admin/content/catalogue-tarifs/import` (module
+`drivematic_catalog`, ADR-030) qui rapproche les termes par nom (upsert, pas de suppression
+totale — préserve les ID référencés par les soumissions webform existantes).
+
+## Catalogue de tarifs (F17)
+
+Entité de contenu custom `equipment_price` (module `drivematic_catalog`, ADR-030) — une ligne
+par combinaison tarifée des 4 équipements du configurateur (télécommande VOR, pédalier,
+rétrovision extérieure, rétrovision intérieure). Champs : `type_equipement` (liste fermée),
+`vehicle_model` / `motorisation` (références, selon le type), `tarif_ht`, `reference`,
+`type_chassis`. Entièrement vidée et recréée à chaque import du combinatoire (pas de
+rapprochement — rien ne la référence ailleurs). Liste en lecture seule :
+`/admin/content/catalogue-tarifs` (pas d'écran d'édition ligne par ligne : corriger = corriger
+le fichier Excel et réimporter).
 
 ## Conventions transverses
 

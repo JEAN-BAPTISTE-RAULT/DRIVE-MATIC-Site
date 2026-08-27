@@ -1,0 +1,13 @@
+drivematic_catalog.collection:
+  title: 'Catalogue de tarifs'
+  description: 'Référentiel véhicules et tarifs des équipements du configurateur (F17).'
+  route_name: entity.equipment_price.collection
+  parent: system.admin_content
+  weight: 10
+
+drivematic_catalog.import:
+  title: 'Importer le combinatoire'
+  description: 'Importer le fichier Excel qui remplace le référentiel véhicules et le catalogue de tarifs.'
+  route_name: drivematic_catalog.import
+  parent: drivematic_catalog.collection
+  weight: 0
