@@ -193,6 +193,34 @@ Deux allers-retours avec l'utilisatrice après la livraison initiale :
     24px, rayon 5px, aucun débordement horizontal, plafond serveur confirmé
     par contournement réel (pas seulement lu dans le code).
 
+## Corrections post-livraison (27/08/2026)
+
+Deux retours supplémentaires de l'utilisatrice sur le même sélecteur de quantité.
+
+13. **Champ central du pilulier toujours arrondi (8px) malgré le rayon 5px
+    corrigé au point 12.** Cause distincte : le point 12 corrigeait le rayon
+    des coins EXTÉRIEURS des boutons -/+ (`.field-prefix`/`.field-suffix`),
+    pas celui du champ `<input>` central, qui hérite silencieusement du
+    `border-radius: 8px` posé par la fondation `forms`
+    (`.webform-submission-form input[type='number']`, `_forms.scss:203`) —
+    la règle du configurateur redéclarait déjà `padding`/`border-block`/
+    `border-inline` mais jamais `border-radius`, laissant fuiter cette seule
+    propriété (le CSS s'applique propriété par propriété, pas règle par
+    règle). Corrigé en ajoutant `border-radius: 0` à la règle existante —
+    la maquette (508:12884) ne rayonne que le rectangle de fond sous les
+    boutons, jamais le champ. Règle générale ajoutée au CLAUDE.md.
+14. **Pilulier de la quantité rétrovision mal placé en mobile** (maquette
+    606:36813/606:37136, node-id Figma 606-36813) : flush avec la case à
+    cocher (x=32, comme les 4 autres cases) au lieu de s'aligner sous le
+    LIBELLÉ « Rétrovision extérieure » (x=62), à la différence du desktop
+    (508:12885) qui reste volontairement flush avec la case — deux choix de
+    maquette distincts selon le gabarit, pas une divergence à unifier.
+    Corrigé par `margin-inline-start: 29px` (largeur case 20px + gap 9px de
+    la fondation `.form-type-checkbox`) scopé à `< 992px`. Résultat mesuré :
+    indentation identique au pixel près entre le pilulier et le libellé
+    (`getBoundingClientRect`), verticalement toujours entre la case et
+    « Rétrovision intérieure ».
+
 ## Commandes executees
 
 | Commande | Resultat | Notes |
