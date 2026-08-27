@@ -1136,6 +1136,10 @@ textarea) {
     width: 100%;
   }
 }
+.configurator-form__submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
 .configurator-form__stepper {
   display: flex;
   justify-content: center;
@@ -1418,6 +1422,9 @@ textarea) {
 .configurator-form .form-actions .configurator-form__add:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+:where(html.js) .configurator-form__card:not(.has-vehicle) .configurator-form__equipment, :where(html.js) .configurator-form__card:not(.has-vehicle) .configurator-form__vehicle-count {
+  display: none;
 }
 
 .view-faq .view-filters {

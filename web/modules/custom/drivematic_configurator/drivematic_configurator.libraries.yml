@@ -5,3 +5,11 @@ quantity_stepper:
   dependencies:
     - core/drupal
     - core/once
+
+configurator_reveal:
+  version: 1.x
+  js:
+    js/configurator-reveal.js: {}
+  dependencies:
+    - core/drupal
+    - core/once

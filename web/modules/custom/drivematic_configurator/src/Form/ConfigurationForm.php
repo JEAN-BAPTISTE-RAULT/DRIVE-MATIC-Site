@@ -96,6 +96,7 @@ final class ConfigurationForm extends FormBase {
     $form['#attributes']['class'][] = 'configurator-form';
     $form['#attached']['library'][] = 'drivematic_forms/vehicle_select';
     $form['#attached']['library'][] = 'drivematic_configurator/quantity_stepper';
+    $form['#attached']['library'][] = 'drivematic_configurator/configurator_reveal';
     $form['#attached']['drupalSettings']['drivematicForms'] = drivematic_forms_vehicle_map();
 
     $keys = $form_state->get('configuration_keys');
@@ -528,9 +529,42 @@ final class ConfigurationForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
+    // Une configuration sans aucun equipement coche est abandonnee : c'est
+    // le SEUL controle qui compte (le bouton desactive tant qu'aucune case
+    // n'est cochee, cote client, n'est qu'une amelioration progressive —
+    // configurator-reveal.js — jamais fiable seule, cf. meme logique deja
+    // appliquee aux bornes de quantite de la rétrovision exterieure).
+    $configurations = $form_state->getValue('configurations') ?? [];
+    $valid_configurations = array_filter(
+      $configurations,
+      fn (array $configuration): bool => $this->hasEquipmentChecked($configuration),
+    );
+
     // L'etape « Devis » (F14 etape 2/3) n'existe pas encore : pas de calcul
     // de tarif ni d'entite Devis/Configuration a ce stade du chantier.
-    $this->messenger()->addStatus($this->t('Configuration enregistrée. La suite du parcours (devis) arrive bientôt.'));
+    $this->messenger()->addStatus($this->formatPlural(
+      count($valid_configurations),
+      '1 configuration enregistrée. La suite du parcours (devis) arrive bientôt.',
+      '@count configurations enregistrées. La suite du parcours (devis) arrive bientôt.',
+    ));
+  }
+
+  /**
+   * Determine si au moins un equipement est coche sur une configuration.
+   *
+   * @param array $configuration
+   *   Valeurs soumises d'un bloc de configuration.
+   *
+   * @return bool
+   *   TRUE si au moins une des 4 cases equipement est cochee.
+   */
+  private function hasEquipmentChecked(array $configuration): bool {
+    foreach (array_keys(self::EQUIPMENT_LABELS) as $field_name) {
+      if (!empty($configuration['card']['equipment'][$field_name])) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
 }

@@ -91,6 +91,15 @@
     }
   }
 
+  // Desactive par configurator-reveal.js tant qu'aucun equipement n'est
+  // coche (amelioration progressive — sans JS le bouton reste actif, meme
+  // logique que les boutons -/+ de quantite, `&__quantity-decrement` plus
+  // bas).
+  &__submit:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
   // --- Fil d'etapes (Configuration / Devis / Livraison). -------------------
 
   &__stepper {
@@ -636,5 +645,20 @@
       cursor: not-allowed;
       opacity: 0.5;
     }
+  }
+
+  // --- Affichage progressif etape 1 (configurator-reveal.js). --------------
+
+  // Amelioration progressive (html.js, meme pattern que l'accordeon) : les
+  // sections equipements/quantite restent masquees tant que le vehicule
+  // n'est pas entierement selectionne (classe `has-vehicle` posee sur
+  // `&__card` une fois marque+modele+motorisation tous renseignes). Sans JS,
+  // tout reste visible — le controle qui compte (configuration sans
+  // equipement abandonnee) reste cote serveur. Placee en fin de fichier :
+  // les selecteurs `&__equipment`/`&__vehicle-count` qu'elle cible sont
+  // definis plus haut (regle stylelint no-descending-specificity).
+  :where(html.js) &__card:not(.has-vehicle) &__equipment,
+  :where(html.js) &__card:not(.has-vehicle) &__vehicle-count {
+    display: none;
   }
 }
