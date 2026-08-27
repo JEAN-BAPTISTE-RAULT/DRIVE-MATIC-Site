@@ -19,7 +19,6 @@ dependencies:
     - node.type.question
     - node.type.simple_form
     - node.type.transform
-    - taxonomy.vocabulary.tags
   module:
     - contextual
     - file
@@ -27,7 +26,6 @@ dependencies:
     - node
     - path
     - system
-    - taxonomy
 _core:
   default_config_hash: og55Zu0F-q-X8zG0Ohrls49zws6IrmmosZS-30Es8vw
 id: content_editor
@@ -57,7 +55,6 @@ permissions:
   - 'create product content'
   - 'create question content'
   - 'create simple_form content'
-  - 'create terms in tags'
   - 'create transform content'
   - 'create url aliases'
   - 'delete any all_news content'
@@ -78,7 +75,6 @@ permissions:
   - 'delete any simple_form content'
   - 'delete any transform content'
   - 'delete own files'
-  - 'delete terms in tags'
   - 'edit any all_news content'
   - 'edit any brand content'
   - 'edit any brands content'
@@ -95,7 +91,6 @@ permissions:
   - 'edit any question content'
   - 'edit any simple_form content'
   - 'edit any transform content'
-  - 'edit terms in tags'
   - 'revert all revisions'
   - 'update any media'
   - 'view all revisions'

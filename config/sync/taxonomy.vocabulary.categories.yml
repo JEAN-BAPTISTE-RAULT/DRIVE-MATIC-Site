@@ -4,6 +4,6 @@ status: true
 dependencies: {  }
 name: Catégories
 vid: categories
-description: 'Classement des questions de la FAQ : Général, Auto-école, PMR.'
+description: null
 weight: 0
 new_revision: false
