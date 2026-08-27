@@ -1335,6 +1335,14 @@ textarea) {
 .configurator-form__equipment-quantity .configurator-form__quantity {
   grid-area: ret-ext-qty;
   justify-self: start;
+}
+@media (width < 992px) {
+  .configurator-form__equipment-quantity .configurator-form__quantity {
+    -webkit-margin-start: 29px;
+            margin-inline-start: 29px;
+  }
+}
+.configurator-form__equipment-quantity .configurator-form__quantity {
   -webkit-margin-after: var(--dm-form-gap);
           margin-block-end: var(--dm-form-gap);
 }
@@ -1346,6 +1354,7 @@ textarea) {
   padding: 0;
   border-block: 1px solid var(--dm-color-grey-outline);
   border-inline: 0;
+  border-radius: 0;
   background: var(--dm-color-white);
   color: var(--dm-color-anthracite);
   text-align: center;

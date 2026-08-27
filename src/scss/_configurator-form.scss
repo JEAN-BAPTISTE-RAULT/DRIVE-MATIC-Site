@@ -498,6 +498,17 @@
     // `1fr` y sert au libelle visible, pas au pilulier lui-meme.
     justify-self: start;
 
+    // Mobile uniquement : la maquette (606:37136, x=62) aligne le pilulier
+    // sous le LIBELLE de la case, pas sous la case elle-meme — indentation
+    // = largeur de la case (20px) + son gap vers le libelle (9px, fondation
+    // `forms` `.form-type-checkbox`, `_forms.scss:327`), mesures identiques
+    // en vif (`getBoundingClientRect`). Le desktop (508:12885, x=60 = x de
+    // la case 508:12858, x=61) reste au contraire flush avec la case : pas
+    // le meme choix de maquette aux deux gabarits, ne pas unifier.
+    @media (width < 992px) {
+      margin-inline-start: 29px;
+    }
+
     // Marge de fin inconditionnelle (pas seulement mobile). En mobile, la
     // quantite est un item DU MILIEU (entre ret-ext et ret-int) : il lui
     // faut sa propre marge pour l'ecart avec l'item suivant. En desktop,
@@ -529,6 +540,11 @@
     padding: 0;
     border-block: 1px solid var(--dm-color-grey-outline);
     border-inline: 0;
+
+    // La fondation `forms` pose 8px (`input[type='number']`) : le champ du
+    // milieu doit rester a angles droits (maquette 508:12884, le rayon de
+    // 4.713px n'appartient qu'au rectangle de base sous les boutons -/+).
+    border-radius: 0;
     background: var(--dm-color-white);
     color: var(--dm-color-anthracite);
     text-align: center;
