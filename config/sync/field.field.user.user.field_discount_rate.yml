@@ -1,0 +1,22 @@
+uuid: 29fec9db-278f-4b1e-af58-051a8ede22ad
+langcode: fr
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_discount_rate
+id: user.user.field_discount_rate
+field_name: field_discount_rate
+entity_type: user
+bundle: user
+label: 'Taux de remise par défaut (%)'
+description: 'Remise commerciale appliquée par défaut aux devis de ce partenaire (F14). Une remise exceptionnelle peut être saisie ligne par ligne sur un devis donné sans modifier ce taux (PRD F15/F16).'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0.0
+  max: 100.0
+  prefix: ''
+  suffix: ''
+field_type: decimal

@@ -129,7 +129,14 @@ function drivematic_partner_form_user_logout_confirm_alter(array &$form, FormSta
 }
 
 /**
- * Noms des 11 champs du profil partenaire portes par l'entite User.
+ * Noms des 12 champs du profil partenaire portes par l'entite User.
+ *
+ * `field_discount_rate` (taux de remise, PRD F16) n'est ni affiche ni
+ * modifiable par le partenaire nulle part, contrairement aux 11 autres
+ * (visibles en lecture seule sur PersonalInformationForm pour le bloc
+ * entreprise) : c'est une donnee commerciale interne, jamais exposee en
+ * front. Le masquer ici sur `/user/{uid}/edit` suffit puisqu'il n'apparait
+ * par ailleurs sur aucun formulaire consultable par le partenaire.
  *
  * @return string[]
  *   Les noms machine des champs.
@@ -147,5 +154,6 @@ function _drivematic_partner_profile_field_names(): array {
     'field_address_complement',
     'field_postal_code',
     'field_city',
+    'field_discount_rate',
   ];
 }

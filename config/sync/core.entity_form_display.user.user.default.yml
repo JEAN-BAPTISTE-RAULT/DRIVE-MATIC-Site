@@ -8,6 +8,7 @@ dependencies:
     - field.field.user.user.field_civility
     - field.field.user.user.field_company_address
     - field.field.user.user.field_company_name
+    - field.field.user.user.field_discount_rate
     - field.field.user.user.field_first_name
     - field.field.user.user.field_job_title
     - field.field.user.user.field_last_name
@@ -66,6 +67,13 @@ content:
     region: content
     settings:
       size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_discount_rate:
+    type: number
+    weight: 18
+    region: content
+    settings:
       placeholder: ''
     third_party_settings: {  }
   field_first_name:

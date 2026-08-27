@@ -371,8 +371,8 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 **Criteres d'acceptation** :
 - [ ] Creation / modification / suspension / suppression des comptes partenaires.
-- [ ] Gestion des conditions commerciales : **taux de remise par defaut** par partenaire + **remise exceptionnelle temporaire par ligne** sur un devis donne.
-- [ ] Donnees partenaire structurees selon le fichier « partenaires » (structure a integrer). `[A PRECISER]` : champs exacts du fichier. **Identite/coordonnees deja couvertes** par les 10 champs ajoutes a l'entite `user` pour F12 (ADR-026) ; restent `[A PRECISER]` : taux de remise par defaut et tout champ specifique au fichier source non repris par le webform `account_request`.
+- [x] Gestion des conditions commerciales : **taux de remise par defaut** par partenaire (`field_discount_rate`, decimal %, champ 12 de l'entite `user`, ADR-026 — modifiable uniquement en back-office, jamais expose au partenaire) + **remise exceptionnelle temporaire par ligne** sur un devis donne `[ ]` (necessite l'entite Ligne d'equipement, F15, pas encore implementee).
+- [ ] Donnees partenaire structurees selon le fichier « partenaires » (structure a integrer). `[A PRECISER]` : champs exacts du fichier. **Identite/coordonnees deja couvertes** par les 11 champs ajoutes a l'entite `user` pour F12 (ADR-026), **taux de remise par defaut desormais couvert** (12e champ) ; reste `[A PRECISER]` : tout champ specifique au fichier source non repris par le webform `account_request`.
 
 ---
 
