@@ -35,7 +35,7 @@ content:
       responsive_image_style: dm_12_5
       image_link: ''
       image_loading:
-        attribute: lazy
+        attribute: eager
     third_party_settings: {  }
     weight: 0
     region: content
