@@ -1,4 +1,5 @@
 .news-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -49,6 +50,15 @@
   background-color: var(--dm-color-red);
   -webkit-mask: url("../../images/icons/chevron-right.svg") no-repeat center;
           mask: url("../../images/icons/chevron-right.svg") no-repeat center;
+  transition: transform 0.2s ease;
+}
+.news-card__more:hover::after {
+  transform: translateX(6px);
+}
+.news-card__more::before {
+  content: "";
+  position: absolute;
+  inset: 0;
 }
 .news-card__more:hover {
   text-decoration: underline;

@@ -11,7 +11,6 @@
   --dm-news-teaser-gap: 60px;
   --dm-news-teaser-height: 183px;
 
-  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--dm-space-element);
@@ -26,6 +25,14 @@
   &__media {
     overflow: hidden;
     border-radius: 16px;
+
+    // Amelioration progressive (meme pattern que `help-modal`/`quantity-
+    // stepper`) : le curseur ne promet un clic sur l'image qu'une fois le
+    // comportement JS attache (`news-teaser.js`) — sans lui, l'image n'est
+    // pas cliquable (seul le bloc de texte l'est, via `&__more::before`).
+    .news-teaser.is-ready & {
+      cursor: pointer;
+    }
   }
 
   &__media img {
@@ -34,10 +41,21 @@
     height: auto;
   }
 
+  // `justify-self: start` : l'item ne s'etire plus a la largeur de sa
+  // colonne de grille (745px desktop, pleine largeur de la ligne en mobile)
+  // mais se limite a son propre contenu — necessaire pour que `&__more::
+  // before` (plus bas), etire sur CE bloc, ne couvre pas le vide a droite
+  // d'un titre court. Sans effet sur le retour a la ligne du titre : un
+  // titre qui a besoin des 745px pour tenir en 2 lignes (fit-content s'y
+  // resout alors a la meme largeur que le stretch precedent) continue de
+  // les occuper, seuls les titres deja plus courts que leur colonne
+  // retrecissent la boite (aucun changement visuel dans ce cas).
   &__body {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    justify-self: start;
 
     @media (width >= 768px) {
       min-height: var(--dm-news-teaser-height);
@@ -97,11 +115,25 @@
     height: 24px;
     background-color: var(--dm-color-red);
     mask: url('../../images/icons/chevron-right.svg') no-repeat center;
+    transition: transform 0.2s ease;
   }
 
-  // Lien étiré : le seul `<a>` de la ligne étend sa zone cliquable à toute la
-  // carte (image + titre + date comprises), sans dupliquer de lien ni imbriquer
-  // d'ancre — `inset: 0` se résout contre `.news-teaser`, seul ancêtre positionné.
+  // Rollover du motif « Lien » (243:5551, Variant2) : le gap texte/chevron
+  // passe de 4px à 10px, soit un chevron qui glisse de 6px vers la droite.
+  &__more:hover::after {
+    transform: translateX(6px);
+  }
+
+  // Lien étiré : le seul `<a>` du bloc texte étend sa zone cliquable à tout
+  // `&__body` (titre + date comprises), sans dupliquer de lien ni imbriquer
+  // d'ancre — `inset: 0` se résout contre `&__body` (positionné plus haut),
+  // pas contre `.news-teaser` : la colonne de texte (`1fr`) est plus large
+  // que son contenu, et étirer contre la ligne entière rendait cliquable le
+  // vide à droite d'un titre court, jusqu'au bord de la colonne de contenu
+  // (régression signalée le 27/08). L'image, elle, est une SŒUR de l'ancre
+  // (pas une descendante) : elle ne peut pas hériter ce `::before` et passe
+  // par `news-teaser.js` (clic délégué), seul morceau que le CSS seul ne
+  // peut pas couvrir.
   &__more::before {
     content: '';
     position: absolute;

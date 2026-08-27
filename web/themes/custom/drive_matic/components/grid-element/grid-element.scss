@@ -59,7 +59,14 @@
         height: 24px;
         background-color: var(--dm-color-red);
         mask: url('../../images/icons/chevron-right.svg') no-repeat center;
+        transition: transform 0.2s ease;
       }
+    }
+
+    // Rollover du motif « Lien » (243:5551, Variant2) : le gap texte/chevron
+    // passe de 4px à 10px, soit un chevron qui glisse de 6px vers la droite.
+    a:hover::after {
+      transform: translateX(6px);
     }
 
     a:hover {

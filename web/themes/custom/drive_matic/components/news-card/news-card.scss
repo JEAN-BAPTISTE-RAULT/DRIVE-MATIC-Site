@@ -3,6 +3,7 @@
 // texte, titre H3 acier puis lien à 16px. Seuls le titre et l'image de
 // l'actualité sont utilisés (ni date, ni chapô).
 .news-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -58,6 +59,23 @@
     height: 24px;
     background-color: var(--dm-color-red);
     mask: url('../../images/icons/chevron-right.svg') no-repeat center;
+    transition: transform 0.2s ease;
+  }
+
+  // Rollover du motif « Lien » (243:5551, Variant2) : le gap texte/chevron
+  // passe de 4px à 10px, soit un chevron qui glisse de 6px vers la droite.
+  &__more:hover::after {
+    transform: translateX(6px);
+  }
+
+  // Lien étiré : le seul `<a>` de la carte étend sa zone cliquable à toute la
+  // carte (image + titre compris), sans dupliquer de lien ni imbriquer
+  // d'ancre — `inset: 0` se résout contre `.news-card` (positionné plus
+  // haut). `::before`, pas `::after` : `::after` porte déjà le chevron.
+  &__more::before {
+    content: '';
+    position: absolute;
+    inset: 0;
   }
 
   &__more:hover {

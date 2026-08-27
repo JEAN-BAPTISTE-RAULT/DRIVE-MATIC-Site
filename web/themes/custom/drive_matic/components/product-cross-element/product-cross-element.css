@@ -34,6 +34,10 @@
   background-color: var(--dm-color-red);
   -webkit-mask: url("../../images/icons/chevron-right.svg") no-repeat center;
           mask: url("../../images/icons/chevron-right.svg") no-repeat center;
+  transition: transform 0.2s ease;
+}
+.product-cross-element__title a:hover::after {
+  transform: translateX(6px);
 }
 .product-cross-element__title a:hover {
   text-decoration: underline;

@@ -51,6 +51,10 @@
   background-color: var(--dm-color-red);
   -webkit-mask: url("../../images/icons/chevron-right.svg") no-repeat center;
           mask: url("../../images/icons/chevron-right.svg") no-repeat center;
+  transition: transform 0.2s ease;
+}
+.grid-element__links a:hover::after {
+  transform: translateX(6px);
 }
 .grid-element__links a:hover {
   text-decoration: underline;
