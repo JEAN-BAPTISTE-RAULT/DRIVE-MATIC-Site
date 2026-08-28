@@ -13,3 +13,11 @@ configurator_reveal:
   dependencies:
     - core/drupal
     - core/once
+
+quote_toggle:
+  version: 1.x
+  js:
+    js/quote-toggle.js: {}
+  dependencies:
+    - core/drupal
+    - core/once

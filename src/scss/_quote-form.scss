@@ -1,0 +1,181 @@
+// Écran « Devis » du configurateur (F14, étape 2/3, route /configurer/devis).
+// Même dérogation qu'ADR-015 §1 / `_configurator-form.scss` : markup
+// FormBase, plusieurs « cartes » (une par configuration) au lieu d'une
+// enveloppe unique — pas de composant SDC, un formulaire ne s'y prête pas.
+
+@use 'button-mixins' as btn;
+
+.quote-form {
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--dm-space-element);
+  }
+
+  &__configurations {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dm-space-block);
+  }
+
+  &__configuration {
+    border-radius: 12px;
+    background-color: var(--dm-color-grey-lighter);
+  }
+
+  &__configuration-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--dm-space-element);
+    padding: var(--dm-form-card-padding-block)
+      var(--dm-form-card-padding-inline) 0;
+  }
+
+  &__configuration-title {
+    margin: 0;
+    margin-inline-end: auto;
+  }
+
+  &__modify,
+  &__delete {
+    appearance: none;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  &__delete {
+    color: var(--dm-color-red);
+  }
+
+  // --- Résumé repliable (bouton, toute la largeur). -------------------------
+
+  &__summary-trigger {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    padding: 16px var(--dm-form-card-padding-inline);
+    border: 0;
+    background: none;
+    cursor: pointer;
+    gap: 4px 16px;
+    text-align: start;
+  }
+
+  &__summary-vehicle {
+    flex: 1 1 auto;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  &__summary-count {
+    flex-basis: 100%;
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+  }
+
+  &__summary-total {
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  &__summary-chevron {
+    width: 16px;
+    height: 16px;
+    background-color: var(--dm-color-steel);
+    mask: url('../images/icons/chevron-down.svg') no-repeat center / contain;
+    transition: transform 0.2s ease;
+  }
+
+  &__configuration.is-expanded &__summary-chevron {
+    transform: rotate(180deg);
+  }
+
+  // --- Détail (tableau + totaux). Replié sous JS + mobile uniquement. ------
+
+  &__details {
+    padding: 0 var(--dm-form-card-padding-inline)
+      var(--dm-form-card-padding-block);
+  }
+
+  @media (width < 992px) {
+    :where(html.js) &__configuration:not(.is-expanded) &__details {
+      display: none;
+    }
+  }
+
+  &__equipment-table {
+    width: 100%;
+    margin-block-end: var(--dm-space-element);
+    border-collapse: collapse;
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+
+    th,
+    td {
+      padding: 8px 4px;
+      border-bottom: 1px solid var(--dm-color-grey-metal);
+      text-align: end;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: start;
+    }
+  }
+
+  &__totals {
+    h3 {
+      margin-block-end: 8px;
+      font-family: var(--dm-font-body);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      padding-block: 4px;
+      font-family: var(--dm-font-body);
+      font-size: 0.875rem;
+    }
+  }
+
+  &__grand-totals {
+    padding: var(--dm-form-card-padding-block)
+      var(--dm-form-card-padding-inline);
+    border-radius: 12px;
+    background-color: var(--dm-color-steel);
+    color: var(--dm-color-white);
+
+    li {
+      color: inherit;
+    }
+  }
+
+  &__note {
+    margin: 0;
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+  }
+}

@@ -1176,6 +1176,21 @@ textarea) {
   background-color: var(--dm-color-steel);
   color: var(--dm-color-white);
 }
+.configurator-form__step.is-done {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-color: var(--dm-color-steel);
+}
+.configurator-form__step.is-done::before {
+  display: block;
+  width: 12px;
+  height: 12px;
+  content: "";
+  background-color: var(--dm-color-steel);
+  -webkit-mask: url("../images/icons/check.svg") no-repeat center/contain;
+          mask: url("../images/icons/check.svg") no-repeat center/contain;
+}
 .configurator-form__step:not(:last-child)::after {
   position: absolute;
   top: 50%;
@@ -1425,6 +1440,152 @@ textarea) {
 }
 :where(html.js) .configurator-form__card:not(.has-vehicle) .configurator-form__equipment, :where(html.js) .configurator-form__card:not(.has-vehicle) .configurator-form__vehicle-count {
   display: none;
+}
+
+.quote-form__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--dm-space-element);
+}
+.quote-form__configurations {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dm-space-block);
+}
+.quote-form__configuration {
+  border-radius: 12px;
+  background-color: var(--dm-color-grey-lighter);
+}
+.quote-form__configuration-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dm-space-element);
+  padding: var(--dm-form-card-padding-block) var(--dm-form-card-padding-inline) 0;
+}
+.quote-form__configuration-title {
+  margin: 0;
+  -webkit-margin-end: auto;
+          margin-inline-end: auto;
+}
+.quote-form__modify, .quote-form__delete {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.quote-form__delete {
+  color: var(--dm-color-red);
+}
+.quote-form__summary-trigger {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  padding: 16px var(--dm-form-card-padding-inline);
+  border: 0;
+  background: none;
+  cursor: pointer;
+  gap: 4px 16px;
+  text-align: start;
+}
+.quote-form__summary-vehicle {
+  flex: 1 1 auto;
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-body);
+  font-size: 1rem;
+  font-weight: 700;
+}
+.quote-form__summary-count {
+  flex-basis: 100%;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+}
+.quote-form__summary-total {
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.quote-form__summary-chevron {
+  width: 16px;
+  height: 16px;
+  background-color: var(--dm-color-steel);
+  -webkit-mask: url("../images/icons/chevron-down.svg") no-repeat center/contain;
+          mask: url("../images/icons/chevron-down.svg") no-repeat center/contain;
+  transition: transform 0.2s ease;
+}
+.quote-form__configuration.is-expanded .quote-form__summary-chevron {
+  transform: rotate(180deg);
+}
+.quote-form__details {
+  padding: 0 var(--dm-form-card-padding-inline) var(--dm-form-card-padding-block);
+}
+@media (width < 992px) {
+  :where(html.js) .quote-form__configuration:not(.is-expanded) .quote-form__details {
+    display: none;
+  }
+}
+.quote-form__equipment-table {
+  width: 100%;
+  -webkit-margin-after: var(--dm-space-element);
+          margin-block-end: var(--dm-space-element);
+  border-collapse: collapse;
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+}
+.quote-form__equipment-table th,
+.quote-form__equipment-table td {
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--dm-color-grey-metal);
+  text-align: end;
+}
+.quote-form__equipment-table th:first-child,
+.quote-form__equipment-table td:first-child {
+  text-align: start;
+}
+.quote-form__totals h3 {
+  -webkit-margin-after: 8px;
+          margin-block-end: 8px;
+  font-family: var(--dm-font-body);
+  font-size: 1rem;
+  font-weight: 700;
+}
+.quote-form__totals ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.quote-form__totals li {
+  display: flex;
+  justify-content: space-between;
+  padding-block: 4px;
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+}
+.quote-form__grand-totals {
+  padding: var(--dm-form-card-padding-block) var(--dm-form-card-padding-inline);
+  border-radius: 12px;
+  background-color: var(--dm-color-steel);
+  color: var(--dm-color-white);
+}
+.quote-form__grand-totals li {
+  color: inherit;
+}
+.quote-form__note {
+  margin: 0;
+  color: var(--dm-color-grey-text);
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
 }
 
 .view-faq .view-filters {

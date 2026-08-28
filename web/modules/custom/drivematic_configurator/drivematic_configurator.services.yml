@@ -1,0 +1,5 @@
+services:
+  drivematic_configurator.quote_calculator:
+    class: Drupal\drivematic_configurator\Service\QuoteCalculator
+    arguments:
+      - '@entity_type.manager'

@@ -138,6 +138,24 @@
       color: var(--dm-color-white);
     }
 
+    // Etape franchie (etape 2 « Devis » : « Configuration » est derriere) —
+    // maquette mobile 606:37565, pastille contour + coche.
+    &.is-done {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-color: var(--dm-color-steel);
+
+      &::before {
+        display: block;
+        width: 12px;
+        height: 12px;
+        content: '';
+        background-color: var(--dm-color-steel);
+        mask: url('../images/icons/check.svg') no-repeat center / contain;
+      }
+    }
+
     // Connecteur en pointilles entre deux etapes, porte par l'etape qui
     // precede (aucun apres la derniere) : positionne hors du flux pour ne
     // pas perturber la boite de la pastille (bordure/fond).

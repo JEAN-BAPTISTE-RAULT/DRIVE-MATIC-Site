@@ -5,3 +5,11 @@ drivematic_configurator.configuration:
     _title: 'Configurez votre véhicule et obtenez votre tarif'
   requirements:
     _role: 'partenaire'
+
+drivematic_configurator.quote:
+  path: '/configurer/devis'
+  defaults:
+    _form: '\Drupal\drivematic_configurator\Form\QuoteForm'
+    _title: 'Votre devis'
+  requirements:
+    _role: 'partenaire'

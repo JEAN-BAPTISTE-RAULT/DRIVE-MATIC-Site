@@ -47,6 +47,13 @@
    *   Les identifiants autorises.
    */
   function rebuild(select, cached, allowed) {
+    // Preserve la valeur courante si elle reste valide dans la nouvelle
+    // liste — necessaire au premier attach d'un formulaire pre-rempli
+    // (brouillon tempstore, configurateur etape 1) : sans ca, cette
+    // reconstruction (appelee inconditionnellement a l'attache, pas
+    // seulement sur un changement utilisateur) effacait modele/motorisation
+    // deja valides, y compris quand la marque n'avait pas change.
+    const currentValue = select.value;
     const emptyOption = select.querySelector('option[value=""]');
     select.innerHTML = '';
     if (emptyOption) {
@@ -60,7 +67,8 @@
         select.appendChild(node);
       }
     });
-    select.value = '';
+    select.value =
+      allowed.indexOf(parseInt(currentValue, 10)) !== -1 ? currentValue : '';
   }
 
   Drupal.behaviors.drivematicVehicleSelect = {

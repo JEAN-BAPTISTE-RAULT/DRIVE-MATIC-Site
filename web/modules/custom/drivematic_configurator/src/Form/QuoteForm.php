@@ -1,0 +1,487 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drupal\drivematic_configurator\Form;
+
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\TempStore\PrivateTempStore;
+use Drupal\Core\TempStore\PrivateTempStoreFactory;
+use Drupal\Core\Url;
+use Drupal\drivematic_configurator\Service\QuoteCalculator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+/**
+ * Ecran « Devis » du configurateur (F14, etape 2/3).
+ *
+ * Lit le brouillon laisse par ConfigurationForm (etape 1) dans une
+ * PrivateTempStore — jamais de BDD a ce stade : decision explicite de
+ * l'utilisatrice, un enregistrement reel (entite Devis/Configuration/Ligne
+ * d'equipement, F15) n'a lieu qu'a l'etape 3 (Livraison, pas encore
+ * implementee), sur un clic « Enregistrer le devis » ou « Commander ».
+ * `PrivateTempStore` scope automatiquement par utilisateur courant : un seul
+ * brouillon par partenaire a la fois, coherent avec le parcours lineaire
+ * actuel (pas de devis en parallele).
+ *
+ * Les calculs (tarifs, remise, TVA, totaux) sont delegues a
+ * QuoteCalculator, pense pour etre rejoue tel quel par la future
+ * persistance F15 (memes formules pour geler les prix a la creation).
+ */
+final class QuoteForm extends FormBase {
+
+  private const TEMPSTORE_COLLECTION = 'drivematic_configurator';
+  private const TEMPSTORE_KEY = 'draft';
+
+  public function __construct(
+    protected EntityTypeManagerInterface $entityTypeManager,
+    protected PrivateTempStoreFactory $tempStoreFactory,
+    protected AccountProxyInterface $currentUser,
+    protected QuoteCalculator $quoteCalculator,
+  ) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): static {
+    return new static(
+      $container->get('entity_type.manager'),
+      $container->get('tempstore.private'),
+      $container->get('current_user'),
+      $container->get('drivematic_configurator.quote_calculator'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormId(): string {
+    return 'drivematic_configurator_quote_form';
+  }
+
+  /**
+   * Brouillon du devis en cours (voir la note de classe).
+   */
+  private function tempStore(): PrivateTempStore {
+    return $this->tempStoreFactory->get(self::TEMPSTORE_COLLECTION);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state): array {
+    $title = $this->t('Votre devis');
+    $form['#prefix'] = '<div class="configurator-page"><h1 class="page-title configurator-form__title">' . $title . '</h1>';
+    $form['#suffix'] = '</div>';
+    $form['#attributes']['class'][] = 'webform-submission-form';
+    $form['#attributes']['class'][] = 'configurator-form';
+    $form['#attributes']['class'][] = 'quote-form';
+    $form['#attached']['library'][] = 'drivematic_configurator/quote_toggle';
+
+    $form['stepper'] = $this->buildStepper();
+
+    $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
+    if (!$draft) {
+      $form['empty'] = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['quote-form__empty']],
+        'message' => [
+          '#type' => 'html_tag',
+          '#tag' => 'p',
+          '#value' => $this->t('Aucun devis en cours.'),
+        ],
+        'link' => [
+          '#type' => 'link',
+          '#title' => $this->t('Configurer un véhicule'),
+          '#url' => Url::fromRoute('drivematic_configurator.configuration'),
+          '#attributes' => ['class' => ['configurator-form__submit']],
+        ],
+      ];
+      return $form;
+    }
+
+    $account = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+    $discount_rate = $account->get('field_discount_rate')->value;
+    $result = $this->quoteCalculator->calculate($draft, $discount_rate);
+
+    $brand_labels = $this->loadTermLabels('vehicle_brand');
+    $model_labels = $this->loadTermLabels('vehicle_model');
+    $motorisation_labels = $this->loadTermLabels('motorisation');
+
+    $form['configurations'] = [
+      '#type' => 'container',
+      '#tree' => TRUE,
+      '#attributes' => ['class' => ['quote-form__configurations']],
+    ];
+
+    $position = 0;
+    foreach ($result['configurations'] as $key => $configuration) {
+      $position++;
+      $form['configurations'][$key] = $this->buildConfigurationDisplay(
+        $key,
+        $position,
+        $configuration,
+        $draft[$key]['card']['vehicle'],
+        $brand_labels,
+        $model_labels,
+        $motorisation_labels,
+      );
+    }
+
+    $form['grand_totals'] = $this->buildTotals($this->t('Total configuration(s)'), $result['grand_totals'], 'quote-form__grand-totals');
+    $form['note'] = [
+      '#type' => 'html_tag',
+      '#tag' => 'p',
+      '#value' => $this->t('Devis hors frais de livraison.'),
+      '#attributes' => ['class' => ['quote-form__note']],
+    ];
+
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['add'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Ajouter une configuration'),
+      '#submit' => ['::addConfigurationSubmit'],
+      '#limit_validation_errors' => [],
+      '#attributes' => ['class' => ['configurator-form__add']],
+    ];
+    $form['actions']['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Choisir ma livraison'),
+      '#submit' => ['::deliveryPlaceholderSubmit'],
+      '#attributes' => ['class' => ['configurator-form__submit']],
+    ];
+
+    return $form;
+  }
+
+  /**
+   * Construit le fil d'etapes (variante de celui de ConfigurationForm).
+   *
+   * « Configuration » y est marquee comme franchie et « Devis » courante.
+   *
+   * @return array
+   *   Render array du fil d'etapes.
+   */
+  private function buildStepper(): array {
+    return [
+      '#type' => 'html_tag',
+      '#tag' => 'ol',
+      '#attributes' => ['class' => ['configurator-form__stepper']],
+      'configuration' => [
+        '#type' => 'html_tag',
+        '#tag' => 'li',
+        '#value' => $this->t('Configuration'),
+        '#attributes' => ['class' => ['configurator-form__step', 'is-done']],
+      ],
+      'quote' => [
+        '#type' => 'html_tag',
+        '#tag' => 'li',
+        '#value' => $this->t('Devis'),
+        '#attributes' => ['class' => ['configurator-form__step', 'is-current']],
+      ],
+      'delivery' => [
+        '#type' => 'html_tag',
+        '#tag' => 'li',
+        '#value' => $this->t('Livraison'),
+        '#attributes' => ['class' => ['configurator-form__step']],
+      ],
+    ];
+  }
+
+  /**
+   * Construit l'affichage d'une configuration (resume repliable + detail).
+   *
+   * @param int $key
+   *   Cle stable de la configuration dans le brouillon.
+   * @param int $position
+   *   Position affichee (1-based).
+   * @param array $configuration
+   *   Resultat calcule (QuoteCalculator) pour cette configuration.
+   * @param array $vehicle
+   *   Valeurs brutes `card.vehicle` du brouillon (term id bruts).
+   * @param array $brand_labels
+   *   Term id => libelle, vocabulaire vehicle_brand.
+   * @param array $model_labels
+   *   Term id => libelle, vocabulaire vehicle_model.
+   * @param array $motorisation_labels
+   *   Term id => libelle, vocabulaire motorisation.
+   *
+   * @return array
+   *   Render array de la configuration.
+   */
+  private function buildConfigurationDisplay(
+    int $key,
+    int $position,
+    array $configuration,
+    array $vehicle,
+    array $brand_labels,
+    array $model_labels,
+    array $motorisation_labels,
+  ): array {
+    $vehicle_label = implode(' / ', array_filter([
+      $brand_labels[$vehicle['brand']] ?? NULL,
+      $model_labels[$vehicle['model']] ?? NULL,
+      $motorisation_labels[$vehicle['motorisation']] ?? NULL,
+    ]));
+
+    $element = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['quote-form__configuration']],
+    ];
+
+    $element['header'] = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['quote-form__configuration-header']],
+      'title' => [
+        '#type' => 'html_tag',
+        '#tag' => 'h2',
+        '#value' => $this->t('Configuration @number', ['@number' => $position]),
+        '#attributes' => ['class' => ['quote-form__configuration-title']],
+      ],
+      'modify' => [
+        '#type' => 'link',
+        '#title' => $this->t('Modifier'),
+        '#url' => Url::fromRoute('drivematic_configurator.configuration'),
+        '#attributes' => ['class' => ['quote-form__modify']],
+      ],
+      'delete' => [
+        '#type' => 'submit',
+        '#value' => $this->t('Supprimer la configuration @number', ['@number' => $position]),
+        '#name' => 'remove_configuration_' . $key,
+        '#configuration_key' => $key,
+        '#submit' => ['::removeConfigurationSubmit'],
+        '#limit_validation_errors' => [],
+        '#attributes' => [
+          'class' => ['quote-form__delete'],
+          'aria-label' => $this->t('Supprimer la configuration @number', ['@number' => $position]),
+        ],
+      ],
+    ];
+
+    $element['summary'] = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['quote-form__summary'], 'data-quote-toggle' => TRUE],
+      'trigger' => [
+        '#type' => 'html_tag',
+        '#tag' => 'button',
+        '#attributes' => [
+          'type' => 'button',
+          'class' => ['quote-form__summary-trigger'],
+          'aria-expanded' => 'false',
+        ],
+        'vehicle' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => $vehicle_label,
+          '#attributes' => ['class' => ['quote-form__summary-vehicle']],
+        ],
+        'count' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => $this->formatPlural($configuration['vehicle_count'], '1 véhicule', '@count véhicules'),
+          '#attributes' => ['class' => ['quote-form__summary-count']],
+        ],
+        'total' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => $this->t('Total TTC : @amount', ['@amount' => $this->formatPrice($configuration['totals']['ttc'])]),
+          '#attributes' => ['class' => ['quote-form__summary-total']],
+        ],
+        'chevron' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => '',
+          '#attributes' => ['class' => ['quote-form__summary-chevron'], 'aria-hidden' => 'true'],
+        ],
+      ],
+    ];
+
+    $element['details'] = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['quote-form__details']],
+      'table' => $this->buildEquipmentTable($configuration['lines']),
+      'totals' => $this->buildTotals($this->t('Totaux'), $configuration['totals'], 'quote-form__configuration-totals'),
+    ];
+
+    return $element;
+  }
+
+  /**
+   * Construit le tableau d'equipements d'une configuration.
+   *
+   * @param array $lines
+   *   Lignes calculees (QuoteCalculator) pour une configuration.
+   *
+   * @return array
+   *   Render array `#type: table`.
+   */
+  private function buildEquipmentTable(array $lines): array {
+    $rows = [];
+    foreach ($lines as $line) {
+      if ($line['unavailable']) {
+        $rows[] = [
+          $line['label'],
+          ['data' => $this->t('Tarif indisponible — contactez Drive Matic'), 'colspan' => 4],
+        ];
+        continue;
+      }
+      $rows[] = [
+        $line['label'],
+        $this->formatPrice($line['unit_price']),
+        $this->formatPrice($line['discounted_unit_price']),
+        $line['quantity_per_vehicle'],
+        $line['quantity_total'],
+        $this->formatPrice($line['discounted_ht']),
+      ];
+    }
+
+    return [
+      '#type' => 'table',
+      '#header' => [
+        $this->t('Équipement(s)'),
+        $this->t('Tarif catalogue unitaire (€ HT)'),
+        $this->t('Tarif unitaire remisé (€ HT)'),
+        $this->t('Qté par véhicule'),
+        $this->t('Qté totale'),
+        $this->t('Total remisé (€ HT)'),
+      ],
+      '#rows' => $rows,
+      '#attributes' => ['class' => ['quote-form__equipment-table']],
+    ];
+  }
+
+  /**
+   * Construit un bloc de totaux (Total HT/Remise HT/TVA/Total TTC).
+   *
+   * @param \Drupal\Core\StringTranslation\TranslatableMarkup $title
+   *   Titre du bloc de totaux.
+   * @param array $totals
+   *   Totaux calcules par QuoteCalculator (cles ht/discount/discounted_ht/
+   *   vat/ttc).
+   * @param string $modifier_class
+   *   Classe BEM supplementaire (configuration vs total general).
+   *
+   * @return array
+   *   Render array du bloc de totaux.
+   */
+  private function buildTotals(TranslatableMarkup $title, array $totals, string $modifier_class): array {
+    return [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['quote-form__totals', $modifier_class]],
+      'title' => [
+        '#type' => 'html_tag',
+        '#tag' => 'h3',
+        '#value' => $title,
+      ],
+      'list' => [
+        '#theme' => 'item_list',
+        '#items' => [
+          $this->t('Total HT : @amount', ['@amount' => $this->formatPrice($totals['ht'])]),
+          $this->t('Remise HT : @amount', ['@amount' => $this->formatPrice($totals['discount'])]),
+          $this->t('Total remisé HT : @amount', ['@amount' => $this->formatPrice($totals['discounted_ht'])]),
+          $this->t('TVA 20 % : @amount', ['@amount' => $this->formatPrice($totals['vat'])]),
+          $this->t('Total TTC : @amount', ['@amount' => $this->formatPrice($totals['ttc'])]),
+        ],
+      ],
+    ];
+  }
+
+  /**
+   * Formate un montant en euros (convention francaise : virgule, espace).
+   */
+  private function formatPrice(float $amount): string {
+    return number_format($amount, 2, ',', ' ') . ' €';
+  }
+
+  /**
+   * Charge les termes d'un vocabulaire, indexes par libelle.
+   *
+   * @return array<string,int>
+   *   Term id => libelle, pour un vocabulaire donne.
+   */
+  private function loadTermLabels(string $vocabulary): array {
+    $terms = $this->entityTypeManager->getStorage('taxonomy_term')
+      ->loadByProperties(['vid' => $vocabulary]);
+    $labels = [];
+    foreach ($terms as $term) {
+      $labels[$term->id()] = $term->label();
+    }
+    return $labels;
+  }
+
+  /**
+   * Callback #submit de « Supprimer la configuration ».
+   *
+   * Retire l'entree du brouillon et reste sur cette page (contrairement a
+   * ConfigurationForm, pas d'AJAX ici : chaque suppression recharge
+   * l'ecran, plus simple pour un premier jet, sans etat client a
+   * synchroniser).
+   */
+  public function removeConfigurationSubmit(array &$form, FormStateInterface $form_state): void {
+    $triggering_element = $form_state->getTriggeringElement();
+    $key = $triggering_element['#configuration_key'] ?? NULL;
+    if ($key === NULL) {
+      return;
+    }
+
+    $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
+    unset($draft[$key]);
+    if ($draft) {
+      $this->tempStore()->set(self::TEMPSTORE_KEY, $draft);
+    }
+    else {
+      $this->tempStore()->delete(self::TEMPSTORE_KEY);
+    }
+    $form_state->setRebuild(TRUE);
+  }
+
+  /**
+   * Callback #submit de « Ajouter une configuration ».
+   *
+   * Ajoute un bloc vide au brouillon puis renvoie a l'etape 1, ou
+   * ConfigurationForm le pre-remplira avec le reste du brouillon (cf. sa
+   * note de classe).
+   */
+  public function addConfigurationSubmit(array &$form, FormStateInterface $form_state): void {
+    $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
+    $new_key = $draft ? max(array_keys($draft)) + 1 : 0;
+    $draft[$new_key] = [
+      'card' => [
+        'vehicle' => ['brand' => '', 'model' => '', 'motorisation' => ''],
+        'equipment' => [
+          'equipment_retrovision_ext' => 0,
+          'equipment_retrovision_int' => 0,
+          'equipment_telecommande_vor' => 0,
+          'equipment_double_pedalier' => 0,
+          'retrovision_ext_quantity' => ['quantity' => 1],
+        ],
+        'vehicle_count' => ['quantity' => 1],
+      ],
+    ];
+    $this->tempStore()->set(self::TEMPSTORE_KEY, $draft);
+    $form_state->setRedirect('drivematic_configurator.configuration');
+  }
+
+  /**
+   * Callback #submit de « Choisir ma livraison ».
+   *
+   * L'etape 3 n'existe pas encore (F14 3/3, hors perimetre) : message
+   * temporaire, meme logique que le placeholder d'origine de
+   * ConfigurationForm::submitForm().
+   */
+  public function deliveryPlaceholderSubmit(array &$form, FormStateInterface $form_state): void {
+    $this->messenger()->addStatus($this->t("L'étape Livraison arrive bientôt."));
+    $form_state->setRebuild(TRUE);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
+    // Non utilise : chaque bouton a son propre #submit.
+  }
+
+}

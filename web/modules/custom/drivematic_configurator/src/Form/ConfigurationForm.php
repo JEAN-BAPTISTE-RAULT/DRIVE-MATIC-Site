@@ -8,6 +8,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\TempStore\PrivateTempStore;
+use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -40,19 +42,38 @@ final class ConfigurationForm extends FormBase {
     'equipment_double_pedalier' => 'Double pédalier auto-école',
   ];
 
+  /**
+   * Collection et cle du brouillon tempstore (voir self::tempStore()).
+   */
+  private const TEMPSTORE_COLLECTION = 'drivematic_configurator';
+  private const TEMPSTORE_KEY = 'draft';
+
   public function __construct(
-    // `protected`, pas `private` : ce formulaire utilise #ajax (rechargement
-    // du bloc « configurations »), qui repasse par un cycle serialize/
-    // unserialize du form_state (cache_form). `DependencySerializationTrait`
-    // (deja incluse par FormBase) restaure cette propriete a la
-    // deserialisation, mais son `__sleep()` est defini dans FormBase — une
+    // `protected`, pas `private` sur les deux : ce formulaire utilise #ajax
+    // (rechargement du bloc « configurations »), qui repasse par un cycle
+    // serialize/unserialize du form_state (cache_form).
+    // `DependencySerializationTrait` (deja incluse par FormBase) restaure
+    // ces proprietes a la deserialisation, mais son `__sleep()` est defini
+    // dans FormBase — une
     // propriete `private` declaree ici, dans la sous-classe, lui est
     // invisible (portee `private` = classe declarante uniquement) et reste
     // donc non initialisee. Pas non plus `readonly` : `__wakeup()` doit
-    // pouvoir la reaffecter. Rencontre au 2e clic « Ajouter une
+    // pouvoir les reaffecter. Rencontre au 2e clic « Ajouter une
     // configuration » (500 sur /configurer?ajax_form=1).
     protected EntityTypeManagerInterface $entityTypeManager,
+    protected PrivateTempStoreFactory $tempStoreFactory,
   ) {}
+
+  /**
+   * Brouillon du devis en cours (meme mecanisme que QuoteForm, etape 2).
+   *
+   * Voir la note de classe de QuoteForm pour le raisonnement complet. Un
+   * seul brouillon par partenaire a la fois, le parcours etant strictement
+   * lineaire (pas de devis en parallele).
+   */
+  private function tempStore(): PrivateTempStore {
+    return $this->tempStoreFactory->get(self::TEMPSTORE_COLLECTION);
+  }
 
   /**
    * {@inheritdoc}
@@ -60,6 +81,7 @@ final class ConfigurationForm extends FormBase {
   public static function create(ContainerInterface $container): static {
     return new static(
       $container->get('entity_type.manager'),
+      $container->get('tempstore.private'),
     );
   }
 
@@ -99,10 +121,19 @@ final class ConfigurationForm extends FormBase {
     $form['#attached']['library'][] = 'drivematic_configurator/configurator_reveal';
     $form['#attached']['drupalSettings']['drivematicForms'] = drivematic_forms_vehicle_map();
 
+    // Le brouillon tempstore n'est lu qu'au tout premier rendu (pas a chaque
+    // reconstruction AJAX, qui a deja sa propre saisie en cours dans
+    // $form_state) : permet "Modifier"/"Ajouter une configuration" depuis
+    // l'etape 2 (QuoteForm) de revenir ici avec les configurations
+    // precedemment validees pre-remplies.
     $keys = $form_state->get('configuration_keys');
+    $defaults = $form_state->get('configuration_defaults') ?? [];
     if ($keys === NULL) {
-      $keys = [0];
+      $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
+      $keys = $draft ? array_keys($draft) : [0];
+      $defaults = $draft;
       $form_state->set('configuration_keys', $keys);
+      $form_state->set('configuration_defaults', $defaults);
     }
 
     $brand_options = $this->loadTermOptions('vehicle_brand');
@@ -128,6 +159,7 @@ final class ConfigurationForm extends FormBase {
         $brand_options,
         $model_options,
         $motorisation_options,
+        $defaults[$key] ?? NULL,
       );
     }
 
@@ -203,6 +235,9 @@ final class ConfigurationForm extends FormBase {
    *   Options du select modele, liste complete (filtree en JS).
    * @param array $motorisation_options
    *   Options du select type/motorisation, liste complete (filtree en JS).
+   * @param array|null $defaults
+   *   Valeurs du brouillon tempstore pour ce bloc (meme structure que les
+   *   valeurs soumises), ou NULL pour un bloc vierge.
    *
    * @return array
    *   Render array du bloc.
@@ -214,6 +249,7 @@ final class ConfigurationForm extends FormBase {
     array $brand_options,
     array $model_options,
     array $motorisation_options,
+    ?array $defaults = NULL,
   ): array {
     // Groupe purement presentationnel : le titre « Configuration N » est
     // visuellement HORS de la carte grise (maquette 508:7306, y=0, vs la
@@ -273,6 +309,7 @@ final class ConfigurationForm extends FormBase {
       '#required' => TRUE,
       '#empty_option' => $this->t('Sélectionnez'),
       '#options' => $brand_options,
+      '#default_value' => $defaults['card']['vehicle']['brand'] ?? NULL,
       '#attributes' => ['data-vehicle-role' => 'brand'],
     ];
     $element['card']['vehicle']['model'] = [
@@ -281,6 +318,7 @@ final class ConfigurationForm extends FormBase {
       '#required' => TRUE,
       '#empty_option' => $this->t('Sélectionnez'),
       '#options' => $model_options,
+      '#default_value' => $defaults['card']['vehicle']['model'] ?? NULL,
       '#attributes' => ['data-vehicle-role' => 'model'],
     ];
     $element['card']['vehicle']['motorisation'] = [
@@ -289,6 +327,7 @@ final class ConfigurationForm extends FormBase {
       '#required' => TRUE,
       '#empty_option' => $this->t('Sélectionnez'),
       '#options' => $motorisation_options,
+      '#default_value' => $defaults['card']['vehicle']['motorisation'] ?? NULL,
       '#attributes' => ['data-vehicle-role' => 'motorisation'],
     ];
 
@@ -301,6 +340,7 @@ final class ConfigurationForm extends FormBase {
       $element['card']['equipment'][$field_name] = [
         '#type' => 'checkbox',
         '#title' => $this->t('@label', ['@label' => $label]),
+        '#default_value' => !empty($defaults['card']['equipment'][$field_name]),
         // Classe stable (independante du delta de configuration, contrairement
         // a la classe `form-item-configurations-N-...` que Drupal genere) :
         // permet a la grille CSS de placer chaque equipement par role plutot
@@ -326,7 +366,7 @@ final class ConfigurationForm extends FormBase {
       'quantity' => $this->buildQuantityStepper(
         1,
         2,
-        1,
+        (int) ($defaults['card']['equipment']['retrovision_ext_quantity']['quantity'] ?? 1),
         $this->t('Quantité de rétrovision extérieure'),
         FALSE,
       ),
@@ -343,7 +383,7 @@ final class ConfigurationForm extends FormBase {
       'quantity' => $this->buildQuantityStepper(
         1,
         NULL,
-        1,
+        (int) ($defaults['card']['vehicle_count']['quantity'] ?? 1),
         $this->t('Nombre de véhicule(s) identique(s) à équiper'),
       ),
     ];
@@ -540,13 +580,18 @@ final class ConfigurationForm extends FormBase {
       fn (array $configuration): bool => $this->hasEquipmentChecked($configuration),
     );
 
-    // L'etape « Devis » (F14 etape 2/3) n'existe pas encore : pas de calcul
-    // de tarif ni d'entite Devis/Configuration a ce stade du chantier.
-    $this->messenger()->addStatus($this->formatPlural(
-      count($valid_configurations),
-      '1 configuration enregistrée. La suite du parcours (devis) arrive bientôt.',
-      '@count configurations enregistrées. La suite du parcours (devis) arrive bientôt.',
-    ));
+    if (!$valid_configurations) {
+      // Aucune redirection vers l'etape 2 : rien a y montrer. Le brouillon
+      // existant (le cas echeant) n'est pas touche.
+      $this->messenger()->addWarning($this->t('Aucune configuration valide : sélectionnez au moins un équipement par véhicule avant de continuer.'));
+      return;
+    }
+
+    // Pas d'entite Devis/Configuration a ce stade (decision utilisatrice) :
+    // le brouillon ne devient un enregistrement qu'a l'etape 3 (Livraison),
+    // sur "Enregistrer le devis" ou "Commander" — hors perimetre ici.
+    $this->tempStore()->set(self::TEMPSTORE_KEY, $valid_configurations);
+    $form_state->setRedirect('drivematic_configurator.quote');
   }
 
   /**

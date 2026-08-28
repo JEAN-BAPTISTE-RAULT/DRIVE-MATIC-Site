@@ -6,3 +6,4 @@ core_version_requirement: ^11
 dependencies:
   - drupal:taxonomy
   - drivematic_forms:drivematic_forms
+  - drivematic_catalog:drivematic_catalog
