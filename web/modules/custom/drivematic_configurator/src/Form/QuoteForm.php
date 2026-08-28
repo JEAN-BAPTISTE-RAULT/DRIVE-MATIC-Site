@@ -131,7 +131,7 @@ final class QuoteForm extends FormBase {
       );
     }
 
-    $form['grand_totals'] = $this->buildTotals($this->t('Total configuration(s)'), $result['grand_totals'], 'quote-form__grand-totals');
+    $form['grand_totals'] = $this->buildGrandTotals($result['grand_totals']);
     $form['note'] = [
       '#type' => 'html_tag',
       '#tag' => 'p',
@@ -278,49 +278,62 @@ final class QuoteForm extends FormBase {
       ],
     ];
 
-    $element['summary'] = [
+    $element['card'] = [
       '#type' => 'container',
-      '#attributes' => ['class' => ['quote-form__summary'], 'data-quote-toggle' => TRUE],
+      '#attributes' => ['class' => ['quote-form__card'], 'data-quote-toggle' => TRUE],
+      // Bandeau sombre repliable : maquette mobile uniquement (606:37565,
+      // Group 106/107) — le desktop (508:13961) n'a pas de vehicule en
+      // bandeau, il l'affiche en 1re colonne du tableau (cf. rowspan
+      // buildEquipmentTable ci-dessous). Masque en desktop par CSS.
       'trigger' => [
         '#type' => 'html_tag',
         '#tag' => 'button',
         '#attributes' => [
           'type' => 'button',
-          'class' => ['quote-form__summary-trigger'],
+          'class' => ['quote-form__card-trigger'],
           'aria-expanded' => 'false',
         ],
         'vehicle' => [
           '#type' => 'html_tag',
           '#tag' => 'span',
           '#value' => $vehicle_label,
-          '#attributes' => ['class' => ['quote-form__summary-vehicle']],
+          '#attributes' => ['class' => ['quote-form__card-trigger-vehicle']],
         ],
         'count' => [
           '#type' => 'html_tag',
           '#tag' => 'span',
           '#value' => $this->formatPlural($configuration['vehicle_count'], '1 véhicule', '@count véhicules'),
-          '#attributes' => ['class' => ['quote-form__summary-count']],
-        ],
-        'total' => [
-          '#type' => 'html_tag',
-          '#tag' => 'span',
-          '#value' => $this->t('Total TTC : @amount', ['@amount' => $this->formatPrice($configuration['totals']['ttc'])]),
-          '#attributes' => ['class' => ['quote-form__summary-total']],
+          '#attributes' => ['class' => ['quote-form__card-trigger-count']],
         ],
         'chevron' => [
           '#type' => 'html_tag',
           '#tag' => 'span',
           '#value' => '',
-          '#attributes' => ['class' => ['quote-form__summary-chevron'], 'aria-hidden' => 'true'],
+          '#attributes' => ['class' => ['quote-form__card-chevron'], 'aria-hidden' => 'true'],
         ],
       ],
-    ];
-
-    $element['details'] = [
-      '#type' => 'container',
-      '#attributes' => ['class' => ['quote-form__details']],
-      'table' => $this->buildEquipmentTable($configuration['lines']),
-      'totals' => $this->buildTotals($this->t('Totaux'), $configuration['totals'], 'quote-form__configuration-totals'),
+      // Apercu replie (mobile uniquement) : seul le Total TTC est visible
+      // tant que le detail n'est pas deplie (maquette 671:20896).
+      'collapsed_total' => [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['quote-form__card-collapsed-total']],
+        'label' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => $this->t('Total TTC'),
+        ],
+        'value' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => $this->formatPrice($configuration['totals']['ttc']),
+        ],
+      ],
+      'details' => [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['quote-form__card-details']],
+        'table' => $this->buildEquipmentTable($configuration['lines'], $vehicle_label, $configuration['vehicle_count']),
+        'totals' => $this->buildConfigurationTotals($configuration),
+      ],
     ];
 
     return $element;
@@ -329,41 +342,87 @@ final class QuoteForm extends FormBase {
   /**
    * Construit le tableau d'equipements d'une configuration.
    *
+   * 1re colonne (marque/modele/type + nombre de vehicules) en rowspan sur
+   * tout le groupe : n'apparait qu'une fois par configuration, comme dans
+   * la maquette desktop (508:13961, Group 105 : « Citroen / C5 / Manuelle /
+   * Nombre de véhicule(s) : 3 » ne se repete pas par ligne d'equipement).
+   * Masquee en mobile par CSS, ou cette meme info vient du bandeau
+   * repliable (`quote-form__card-trigger`) plutot que d'une colonne.
+   *
    * @param array $lines
    *   Lignes calculees (QuoteCalculator) pour une configuration.
+   * @param string $vehicle_label
+   *   Libelle marque/modele/type (deja resolu par l'appelant).
+   * @param int $vehicle_count
+   *   Nombre de vehicules de la configuration.
    *
    * @return array
    *   Render array `#type: table`.
    */
-  private function buildEquipmentTable(array $lines): array {
+  private function buildEquipmentTable(array $lines, string $vehicle_label, int $vehicle_count): array {
     $rows = [];
+    $first = TRUE;
     foreach ($lines as $line) {
-      if ($line['unavailable']) {
-        $rows[] = [
-          $line['label'],
-          ['data' => $this->t('Tarif indisponible — contactez Drive Matic'), 'colspan' => 4],
+      $row = [];
+      if ($first) {
+        $row[] = [
+          'data' => [
+            'name' => [
+              '#type' => 'html_tag',
+              '#tag' => 'span',
+              '#value' => $vehicle_label,
+              '#attributes' => ['class' => ['quote-form__vehicle-name']],
+            ],
+            'count' => [
+              '#type' => 'html_tag',
+              '#tag' => 'span',
+              '#value' => $this->t('Nombre de véhicule(s) : @count', ['@count' => $vehicle_count]),
+              '#attributes' => ['class' => ['quote-form__vehicle-count']],
+            ],
+          ],
+          'rowspan' => count($lines),
+          'class' => ['quote-form__col--vehicle'],
         ];
+        $first = FALSE;
+      }
+
+      $row[] = ['data' => $line['label'], 'class' => ['quote-form__col--equipment']];
+      if ($line['unavailable']) {
+        $row[] = [
+          'data' => $this->t('Tarif indisponible — contactez Drive Matic'),
+          'colspan' => 5,
+        ];
+        $rows[] = $row;
         continue;
       }
-      $rows[] = [
-        $line['label'],
-        $this->formatPrice($line['unit_price']),
-        $this->formatPrice($line['discounted_unit_price']),
-        $line['quantity_per_vehicle'],
-        $line['quantity_total'],
-        $this->formatPrice($line['discounted_ht']),
+
+      $row[] = ['data' => $this->formatPrice($line['unit_price']), 'class' => ['quote-form__col--catalog-price']];
+      $row[] = [
+        'data' => $this->formatPrice($line['discounted_unit_price']),
+        'class' => ['quote-form__col--discounted-price'],
       ];
+      $row[] = ['data' => $line['quantity_per_vehicle'], 'class' => ['quote-form__col--qty-vehicle']];
+      $row[] = ['data' => $line['quantity_total'], 'class' => ['quote-form__col--qty-total']];
+      $row[] = ['data' => $this->formatPrice($line['discounted_ht']), 'class' => ['quote-form__col--total']];
+      $rows[] = $row;
     }
 
     return [
       '#type' => 'table',
       '#header' => [
-        $this->t('Équipement(s)'),
-        $this->t('Tarif catalogue unitaire (€ HT)'),
-        $this->t('Tarif unitaire remisé (€ HT)'),
-        $this->t('Qté par véhicule'),
-        $this->t('Qté totale'),
-        $this->t('Total remisé (€ HT)'),
+        ['data' => $this->t('Marque/ modèle/ type'), 'class' => ['quote-form__col--vehicle']],
+        ['data' => $this->t('Equipement(s)'), 'class' => ['quote-form__col--equipment']],
+        ['data' => $this->t('Tarif catalogue unitaire € HT'), 'class' => ['quote-form__col--catalog-price']],
+        ['data' => $this->t('Tarif unitaire remisé € HT'), 'class' => ['quote-form__col--discounted-price']],
+        [
+          'data' => $this->buildColumnLabel($this->t('Quantité par véhicule'), $this->t('Qté par véhicule')),
+          'class' => ['quote-form__col--qty-vehicle'],
+        ],
+        ['data' => $this->t('Quantité totale'), 'class' => ['quote-form__col--qty-total']],
+        [
+          'data' => $this->buildColumnLabel($this->t('Total remisé € HT'), $this->t('Total remisé HT')),
+          'class' => ['quote-form__col--total'],
+        ],
       ],
       '#rows' => $rows,
       '#attributes' => ['class' => ['quote-form__equipment-table']],
@@ -371,39 +430,162 @@ final class QuoteForm extends FormBase {
   }
 
   /**
-   * Construit un bloc de totaux (Total HT/Remise HT/TVA/Total TTC).
+   * Construit un libelle de colonne dont le texte differe en mobile.
    *
-   * @param \Drupal\Core\StringTranslation\TranslatableMarkup $title
-   *   Titre du bloc de totaux.
-   * @param array $totals
-   *   Totaux calcules par QuoteCalculator (cles ht/discount/discounted_ht/
-   *   vat/ttc).
-   * @param string $modifier_class
-   *   Classe BEM supplementaire (configuration vs total general).
+   * Deux libelles distincts sont mesures sur les maquettes (508:13961
+   * desktop / 671:20897 mobile) pour « Quantité par véhicule » ->
+   * « Qté par véhicule » et « Total remisé € HT » -> « Total remisé HT » :
+   * CSS bascule entre les deux versions par media query, jamais de
+   * troncature ni d'abreviation deduite au hasard.
+   *
+   * @param \Drupal\Core\StringTranslation\TranslatableMarkup $full
+   *   Libelle desktop.
+   * @param \Drupal\Core\StringTranslation\TranslatableMarkup $short
+   *   Libelle mobile.
    *
    * @return array
-   *   Render array du bloc de totaux.
+   *   Render array du libelle (deux `<span>`, un seul visible a la fois).
    */
-  private function buildTotals(TranslatableMarkup $title, array $totals, string $modifier_class): array {
+  private function buildColumnLabel(TranslatableMarkup $full, TranslatableMarkup $short): array {
+    return [
+      'full' => [
+        '#type' => 'html_tag',
+        '#tag' => 'span',
+        '#value' => $full,
+        '#attributes' => ['class' => ['quote-form__col-label--full']],
+      ],
+      'short' => [
+        '#type' => 'html_tag',
+        '#tag' => 'span',
+        '#value' => $short,
+        '#attributes' => ['class' => ['quote-form__col-label--short']],
+      ],
+    ];
+  }
+
+  /**
+   * Construit le(s) bandeau(x) de totaux d'une configuration.
+   *
+   * Un seul bandeau « Tarif par véhicule » si la configuration ne compte
+   * qu'un vehicule (les deux seraient identiques — maquette 508:13961,
+   * Frame 106, configuration « Renault », 1 vehicule) ; deux bandeaux
+   * (« Tarif par véhicule » puis « Tarif total véhicules ») des que
+   * `vehicle_count` depasse 1 (meme maquette, configuration « Citroen »,
+   * 3 vehicules).
+   *
+   * @param array $configuration
+   *   Resultat calcule (QuoteCalculator) pour cette configuration.
+   *
+   * @return array
+   *   Render array des bandeaux de totaux.
+   */
+  private function buildConfigurationTotals(array $configuration): array {
+    $element = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['quote-form__totals', 'quote-form__configuration-totals']],
+      'per_vehicle' => $this->buildTotalsRow($configuration['totals_per_vehicle'], $this->t('Tarif par véhicule :')),
+    ];
+    if ($configuration['vehicle_count'] > 1) {
+      $element['all_vehicles'] = $this->buildTotalsRow($configuration['totals'], $this->t('Tarif total véhicules :'));
+    }
+    return $element;
+  }
+
+  /**
+   * Construit le bandeau de total general (toutes configurations).
+   *
+   * @param array $totals
+   *   Totaux cumules (QuoteCalculator::calculate()['grand_totals']).
+   *
+   * @return array
+   *   Render array du bloc de total general.
+   */
+  private function buildGrandTotals(array $totals): array {
     return [
       '#type' => 'container',
-      '#attributes' => ['class' => ['quote-form__totals', $modifier_class]],
+      '#attributes' => ['class' => ['quote-form__totals', 'quote-form__grand-totals']],
       'title' => [
         '#type' => 'html_tag',
         '#tag' => 'h3',
-        '#value' => $title,
+        '#value' => $this->t('Total configuration(s)'),
+        '#attributes' => ['class' => ['quote-form__totals-title']],
       ],
-      'list' => [
-        '#theme' => 'item_list',
-        '#items' => [
-          $this->t('Total HT : @amount', ['@amount' => $this->formatPrice($totals['ht'])]),
-          $this->t('Remise HT : @amount', ['@amount' => $this->formatPrice($totals['discount'])]),
-          $this->t('Total remisé HT : @amount', ['@amount' => $this->formatPrice($totals['discounted_ht'])]),
-          $this->t('TVA 20 % : @amount', ['@amount' => $this->formatPrice($totals['vat'])]),
-          $this->t('Total TTC : @amount', ['@amount' => $this->formatPrice($totals['ttc'])]),
-        ],
+      'row' => $this->buildTotalsRow($totals, NULL),
+    ];
+  }
+
+  /**
+   * Construit un bandeau de totaux (Total HT/Remise HT/TVA/Total TTC).
+   *
+   * @param array $totals
+   *   Totaux calcules par QuoteCalculator (cles ht/discount/discounted_ht/
+   *   vat/ttc).
+   * @param \Drupal\Core\StringTranslation\TranslatableMarkup|null $row_label
+   *   Libelle affiche a gauche du bandeau (« Tarif par véhicule : »...),
+   *   ou NULL pour un bandeau sans libelle (total general).
+   *
+   * @return array
+   *   Render array du bandeau de totaux.
+   */
+  private function buildTotalsRow(array $totals, ?TranslatableMarkup $row_label): array {
+    $metrics_definitions = [
+      ['label' => $this->t('Total HT'), 'value' => $totals['ht']],
+      ['label' => $this->t('Remise HT'), 'value' => $totals['discount']],
+      ['label' => $this->t('Total remisé HT'), 'value' => $totals['discounted_ht']],
+      ['label' => $this->t('TVA 20 %'), 'value' => $totals['vat']],
+      ['label' => $this->t('Total TTC'), 'value' => $totals['ttc']],
+    ];
+
+    // Le libelle est toujours rendu (vide sur le total general, sans
+    // libelle) : reserve la meme largeur sur les 3 bandeaux (CSS,
+    // `&__totals-row-label`) pour que les tarifs demarrent au meme x et
+    // s'alignent en colonnes entre « Tarif par véhicule », « Tarif total
+    // véhicules » et « Total configuration(s) » — sans quoi la largeur
+    // variable du libelle deciderait a chaque fois d'un depart different.
+    $row = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['quote-form__totals-row']],
+      'label' => [
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#value' => $row_label ?? '',
+        '#attributes' => $row_label
+          ? ['class' => ['quote-form__totals-row-label']]
+          : ['class' => ['quote-form__totals-row-label'], 'aria-hidden' => 'true'],
       ],
     ];
+
+    $metrics = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['quote-form__totals-metrics']],
+    ];
+    $column_modifiers = ['ht', 'discount', 'discounted-ht', 'vat', 'ttc'];
+    $last_index = count($metrics_definitions) - 1;
+    foreach ($metrics_definitions as $index => $metric) {
+      $classes = ['quote-form__metric', 'quote-form__metric--' . $column_modifiers[$index]];
+      if ($index === $last_index) {
+        $classes[] = 'quote-form__metric--emphasis';
+      }
+      $metrics[$index] = [
+        '#type' => 'container',
+        '#attributes' => ['class' => $classes],
+        'label' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => $this->t('@label :', ['@label' => $metric['label']]),
+          '#attributes' => ['class' => ['quote-form__metric-label']],
+        ],
+        'value' => [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => $this->formatPrice($metric['value']),
+          '#attributes' => ['class' => ['quote-form__metric-value']],
+        ],
+      ];
+    }
+    $row['metrics'] = $metrics;
+
+    return $row;
   }
 
   /**

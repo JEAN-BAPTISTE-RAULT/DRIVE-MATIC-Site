@@ -69,3 +69,29 @@ réel (pas en relisant le code) — cf. CLAUDE.md, « conforme n'est pas intégr
 - Un brouillon expire avec la `PrivateTempStore` (durée par défaut du cœur) : un partenaire qui
   abandonne son parcours perd sa saisie — accepté, cohérent avec l'absence de persistance voulue
   avant l'étape 3.
+
+## Addendum du 28/08 — mise en conformité stricte aux maquettes (508:13961/606:37565)
+
+La première intégration de l'écran approximait plusieurs éléments visuels sans mesure Figma
+préalable (boutons Modifier/Supprimer, structure de la carte, couleurs des bandeaux de totaux) —
+corrigé après retour explicite de l'utilisatrice. Voir la mémoire `figma-rigor-not-approximation`.
+
+Changements structurels (measurés via `get_design_context`, pas approximés) :
+- **Colonne « Marque/ modèle/ type » en rowspan** sur le tableau desktop (une seule fois par
+  configuration, pas répétée par ligne d'équipement) — `QuoteForm::buildEquipmentTable()`.
+- **Deux bandeaux de totaux distincts par configuration** : `totals_per_vehicle` (nouveau, dans
+  `QuoteCalculator`) affiché seul si `vehicle_count === 1`, ou accompagné de `totals` (« Tarif total
+  véhicules ») si `vehicle_count > 1` — les deux seraient identiques sinon.
+- **Bandeau sombre repliable mobile uniquement** (`&__card-trigger`) : le desktop n'a pas
+  d'équivalent, il affiche le véhicule en 1re colonne du tableau. Les deux variantes cohabitent dans
+  le même DOM, basculées par media query — pas de markup dupliqué côté serveur.
+- **Libellés de colonne différents par breakpoint** (« Quantité par véhicule » → « Qté par
+  véhicule », « Total remisé € HT » → « Total remisé HT ») : les deux textes sont rendus, un seul
+  visible à la fois (`buildColumnLabel()`), jamais une troncature CSS.
+
+**Extrapolation assumée, non observée directement** : la maquette mobile (606:37565) ne montre le
+cas `vehicle_count > 1` qu'à l'état **replié** (Configuration 1, 3 véhicules) — son état déplié
+n'est illustré que pour la configuration à 1 véhicule. L'affichage mobile empilé des deux bandeaux
+« Tarif par véhicule »/« Tarif total véhicules » quand `vehicle_count > 1` est donc déduit du même
+principe que le desktop (508:13961, qui montre bien les deux cas), pas mesuré sur une maquette
+mobile équivalente. À corriger si une maquette mobile de ce cas apparaît et diverge.

@@ -19,19 +19,17 @@
     gap: var(--dm-space-block);
   }
 
-  &__configuration {
-    border-radius: 12px;
-    background-color: var(--dm-color-grey-lighter);
-  }
-
+  // Le titre + Modifier/Supprimer restent sur le fond blanc de la page (pas
+  // de carte) : seul `&__card` ci-dessous porte un fond, aligne sur son
+  // bord gauche (x=156 desktop, egal des deux cotes dans la maquette
+  // 508:13961).
   &__configuration-header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: var(--dm-space-element);
-    padding: var(--dm-form-card-padding-block)
-      var(--dm-form-card-padding-inline) 0;
+    margin-block-end: 8px;
   }
 
   &__configuration-title {
@@ -87,64 +85,93 @@
       16px;
   }
 
-  // --- Résumé repliable (bouton, toute la largeur). -------------------------
+  // --- Carte (bandeau titres + corps + totaux, un seul fond arrondi). ------
+  // `overflow: hidden` porte a lui seul l'arrondi des 4 coins : le bandeau
+  // sombre (haut) et les bandeaux de totaux (bas) n'ont pas besoin de leur
+  // propre `border-radius`, quel que soit celui qui se trouve visuellement
+  // en dernier (desktop vs mobile replie/deplie).
 
-  &__summary-trigger {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+  &__card {
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: var(--dm-color-grey-lighter);
+  }
+
+  // Bandeau sombre repliable : mobile uniquement (maquette 606:37565,
+  // Group 106/107). Le desktop (508:13961) n'a pas de bandeau vehicule, il
+  // l'affiche en 1re colonne du tableau (&__col--vehicle).
+  &__card-trigger {
+    display: none;
     width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
     padding: 16px var(--dm-form-card-padding-inline);
     border: 0;
-    background: none;
+    background-color: var(--dm-color-grey-text);
     cursor: pointer;
-    gap: 4px 16px;
     text-align: start;
+
+    @media (width < 992px) {
+      display: flex;
+    }
   }
 
-  &__summary-vehicle {
-    flex: 1 1 auto;
-    color: var(--dm-color-anthracite);
-    font-family: var(--dm-font-body);
-    font-size: 1rem;
-    font-weight: 700;
-  }
-
-  &__summary-count {
+  &__card-trigger-vehicle {
     flex-basis: 100%;
-    color: var(--dm-color-grey-text);
-    font-family: var(--dm-font-body);
-    font-size: 0.875rem;
-  }
-
-  &__summary-total {
-    color: var(--dm-color-anthracite);
+    color: var(--dm-color-white);
     font-family: var(--dm-font-body);
     font-size: 0.875rem;
     font-weight: 700;
   }
 
-  &__summary-chevron {
+  &__card-trigger-count {
+    color: var(--dm-color-white);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+  }
+
+  &__card-chevron {
     width: 16px;
     height: 16px;
-    background-color: var(--dm-color-steel);
+    background-color: var(--dm-color-white);
     mask: url('../images/icons/chevron-down.svg') no-repeat center / contain;
     transition: transform 0.2s ease;
   }
 
-  &__configuration.is-expanded &__summary-chevron {
+  &__card.is-expanded &__card-chevron {
     transform: rotate(180deg);
   }
 
-  // --- Détail (tableau + totaux). Replié sous JS + mobile uniquement. ------
+  // Aperçu replie : mobile uniquement, tant que le detail n'est pas
+  // deplie — seul le Total TTC est visible (maquette 671:20896).
+  &__card-collapsed-total {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px var(--dm-form-card-padding-inline);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
 
-  &__details {
-    padding: 0 var(--dm-form-card-padding-inline)
-      var(--dm-form-card-padding-block);
+    @media (width < 992px) {
+      display: flex;
+    }
   }
 
+  &__card.is-expanded &__card-collapsed-total {
+    display: none;
+  }
+
+  // --- Détail (tableau + totaux). Replié sous JS + mobile uniquement. ------
+  // Pas de padding-block-end ici : le dernier bandeau de totaux doit
+  // atteindre le bord arrondi de la carte sans laisser depasser le fond
+  // (grey-lighter) de la carte en dessous (maquettes 508:13961/671:20897,
+  // le fond gris clair des totaux va jusqu'au bord de la carte).
+
   @media (width < 992px) {
-    :where(html.js) &__configuration:not(.is-expanded) &__details {
+    :where(html.js) &__card:not(.is-expanded) &__card-details {
       display: none;
     }
   }
@@ -153,55 +180,246 @@
     width: 100%;
     margin-block-end: var(--dm-space-element);
     border-collapse: collapse;
+    color: var(--dm-color-anthracite);
     font-family: var(--dm-font-body);
     font-size: 0.875rem;
 
+    // Herite par tous les th/td (`text-align` est une propriete heritee) :
+    // laisse `&__col--vehicle`/`&__col--equipment` (ci-dessous, hors de ce
+    // bloc pour rester atteignables via `&`) l'emporter sans lutte de
+    // specificite — un `th, td { text-align: end }` ici serait plus
+    // specifique que leur classe seule et gagnerait a tort.
+    text-align: end;
+
     th,
     td {
-      padding: 8px 4px;
-      border-bottom: 1px solid var(--dm-color-grey-metal);
-      text-align: end;
+      padding: 8px 16px;
     }
 
-    th:first-child,
-    td:first-child {
-      text-align: start;
-    }
-  }
-
-  &__totals {
-    h3 {
-      margin-block-end: 8px;
-      font-family: var(--dm-font-body);
-      font-size: 1rem;
+    th {
+      background-color: var(--dm-color-grey-text);
+      color: var(--dm-color-white);
       font-weight: 700;
     }
 
-    ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
+    // Mobile (671:20897) : plus de bandeau sombre pour les libelles de
+    // colonne (deja porte par le fond clair de la carte), texte acier —
+    // seul le bandeau vehicule (`&__card-trigger`) reste sombre. Colonnes
+    // absentes : seules Equipement(s)/Qté par véhicule/Total remisé HT
+    // restent, le vehicule venant de ce meme bandeau plutot que d'une
+    // colonne.
+    @media (width < 992px) {
+      th {
+        background-color: transparent;
+        color: var(--dm-color-steel);
+      }
 
-    li {
-      display: flex;
-      justify-content: space-between;
-      padding-block: 4px;
-      font-family: var(--dm-font-body);
-      font-size: 0.875rem;
+      td {
+        font-size: 0.8125rem;
+      }
     }
   }
 
-  &__grand-totals {
-    padding: var(--dm-form-card-padding-block)
-      var(--dm-form-card-padding-inline);
+  // Libelles de colonne dont le texte differe en mobile (« Qté par
+  // véhicule », « Total remisé HT ») — cf. buildColumnLabel().
+  &__col-label--short {
+    display: none;
+  }
+
+  @media (width < 992px) {
+    &__col-label--full {
+      display: none;
+    }
+
+    &__col-label--short {
+      display: inline;
+    }
+  }
+
+  // Regles par colonne (th ET td partagent la meme classe) : declarees hors
+  // `&__equipment-table` pour rester atteignables via `&`, seule ecriture de
+  // classe BEM admise par stylelint (`selector-class-pattern`) sur ce theme.
+  &__col--vehicle,
+  &__col--equipment {
+    text-align: start;
+  }
+
+  // Largeur minimale desktop pour eviter le retour a la ligne du contenu le
+  // plus long mesure (« Nombre de véhicule(s) : 3 » ~171px, « Double
+  // pédalier auto-école » ~180px, texte nu hors padding) + marge de confort
+  // au-dela du strict necessaire.
+  @media (width >= 992px) {
+    &__col--vehicle {
+      min-width: 220px;
+    }
+
+    &__col--equipment {
+      min-width: 240px;
+    }
+  }
+
+  @media (width < 992px) {
+    &__col--vehicle,
+    &__col--catalog-price,
+    &__col--discounted-price,
+    &__col--qty-total {
+      display: none;
+    }
+  }
+
+  &__vehicle-name,
+  &__vehicle-count {
+    display: block;
+  }
+
+  // --- Bandeaux de totaux (par configuration et total general). -----------
+  // Meme structure (label optionnel + 5 metriques) pour les deux contextes,
+  // seules les couleurs different (&__grand-totals ci-dessous).
+
+  &__totals-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--dm-space-element);
+
+    // 16px, comme les cellules du tableau (`padding: 8px 16px` ci-dessus) :
+    // aligne le libelle sur la colonne « Marque/ modèle/ type » (maquette
+    // 508:13961, x=176 identique pour les deux).
+    padding: 8px 16px;
+    background-color: var(--dm-color-grey-light);
+    color: var(--dm-color-steel);
+  }
+
+  &__totals-row-label {
+    margin: 0;
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  // Largeur fixe (desktop) reservee au libelle sur les 3 bandeaux, y
+  // compris quand il est vide (total general) : sans ca, les tarifs de
+  // « Tarif par véhicule »/« Tarif total véhicules »/« Total
+  // configuration(s) » ne demarreraient pas au meme x — leur libelle n'a
+  // pas la meme largeur (« Tarif total véhicules : » mesure ~143px, la
+  // plus longue). Decision utilisatrice : ceci prime desormais sur
+  // l'alignement du 1er tarif du total general avec « Marque/ modèle/
+  // type » (qui ne tient plus).
+  @media (width >= 992px) {
+    &__totals-row-label {
+      flex: 0 0 auto;
+      min-width: 170px;
+    }
+  }
+
+  @media (width < 992px) {
+    &__totals-row-label:empty {
+      display: none;
+    }
+  }
+
+  &__totals-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--dm-space-element);
+    margin-inline-start: auto;
+  }
+
+  &__metric {
+    display: inline-flex;
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  // Largeurs fixes par colonne (desktop) : memes valeurs sur les 3
+  // bandeaux (per-vehicule/total-vehicules/general), le contenu s'aligne a
+  // droite dans son propre slot — les tarifs des 3 lignes s'alignent alors
+  // en colonnes malgre des montants de longueurs differentes. Largeurs
+  // mesurees sur le contenu le plus long observe + marge.
+  @media (width >= 992px) {
+    &__metric {
+      justify-content: flex-end;
+    }
+
+    &__metric--ht {
+      width: 145px;
+    }
+
+    &__metric--discount {
+      width: 130px;
+    }
+
+    &__metric--discounted-ht {
+      width: 190px;
+    }
+
+    &__metric--vat {
+      width: 145px;
+    }
+
+    &__metric--ttc {
+      width: 160px;
+    }
+  }
+
+  // Espace apres « : » : porte en CSS plutot que dans la chaine traduisible
+  // (jamais d'espace de fin dans un `t()`, PHPCS Drupal.Semantics.FunctionT).
+  &__metric-label {
+    margin-inline-end: 0.25em;
+  }
+
+  &__metric--emphasis {
+    font-weight: 700;
+  }
+
+  @media (width < 992px) {
+    &__totals-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__totals-metrics {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      margin-inline-start: 0;
+    }
+
+    &__metric {
+      justify-content: space-between;
+      white-space: normal;
+    }
+  }
+
+  &__totals-title {
+    margin: 0 0 12px;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+    font-weight: 700;
+  }
+
+  // 16px en inline, comme &__totals-row/le tableau ci-dessus : la derniere
+  // valeur (Total TTC) reste alignee sur les montants des bandeaux
+  // au-dessus. Le libelle vide (&__totals-row-label ci-dessus) reserve la
+  // meme largeur que les 2 bandeaux « Tarif... » : les tarifs s'alignent
+  // donc en colonnes entre les 3 bandeaux, mais Total HT ne demarre plus
+  // au meme x que « Marque/ modèle/ type » (compromis assume).
+  &__grand-totals &__totals-row {
+    padding: var(--dm-form-card-padding-block) 16px;
     border-radius: 12px;
     background-color: var(--dm-color-steel);
     color: var(--dm-color-white);
+  }
 
-    li {
-      color: inherit;
-    }
+  // Ligne de separation blanche entre « Tarif par véhicule » et « Tarif
+  // total véhicules » quand les deux bandeaux sont affiches (maquette
+  // 508:13961, configuration a plusieurs véhicules).
+  &__configuration-totals &__totals-row + &__totals-row {
+    border-block-start: 1px solid var(--dm-color-white);
   }
 
   &__note {

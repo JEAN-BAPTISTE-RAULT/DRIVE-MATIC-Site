@@ -81,7 +81,12 @@ final class QuoteCalculator {
    *
    * @return array
    *   ['vehicle_model' => tid, 'motorisation' => tid, 'vehicle_count' => int,
-   *   'lines' => [...], 'totals' => [...]].
+   *   'lines' => [...], 'totals' => [...], 'totals_per_vehicle' => [...]].
+   *   `totals` porte le cumul pour tous les vehicules de la configuration ;
+   *   `totals_per_vehicle` le meme calcul divise par `vehicle_count` (les
+   *   deux sont affiches separement des que la configuration compte plus
+   *   d'un vehicule, maquette 508:13961 « Tarif par vehicule » / « Tarif
+   *   total vehicules »).
    */
   private function calculateConfiguration(array $configuration, float $discount_rate): array {
     $vehicle = $configuration['card']['vehicle'];
@@ -148,12 +153,18 @@ final class QuoteCalculator {
     $totals['vat'] = $totals['discounted_ht'] * self::VAT_RATE;
     $totals['ttc'] = $totals['discounted_ht'] + $totals['vat'];
 
+    $totals_per_vehicle = array_map(
+      static fn (float $value): float => $value / $vehicle_count,
+      $totals,
+    );
+
     return [
       'vehicle_model' => $model_tid,
       'motorisation' => $motorisation_tid,
       'vehicle_count' => $vehicle_count,
       'lines' => $lines,
       'totals' => $totals,
+      'totals_per_vehicle' => $totals_per_vehicle,
     ];
   }
 
