@@ -241,22 +241,39 @@ final class QuoteForm extends FormBase {
         '#value' => $this->t('Configuration @number', ['@number' => $position]),
         '#attributes' => ['class' => ['quote-form__configuration-title']],
       ],
-      'modify' => [
-        '#type' => 'link',
-        '#title' => $this->t('Modifier'),
-        '#url' => Url::fromRoute('drivematic_configurator.configuration'),
-        '#attributes' => ['class' => ['quote-form__modify']],
-      ],
-      'delete' => [
-        '#type' => 'submit',
-        '#value' => $this->t('Supprimer la configuration @number', ['@number' => $position]),
-        '#name' => 'remove_configuration_' . $key,
-        '#configuration_key' => $key,
-        '#submit' => ['::removeConfigurationSubmit'],
-        '#limit_validation_errors' => [],
-        '#attributes' => [
-          'class' => ['quote-form__delete'],
-          'aria-label' => $this->t('Supprimer la configuration @number', ['@number' => $position]),
+      'actions' => [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['quote-form__actions']],
+        'modify' => [
+          '#type' => 'link',
+          '#title' => [
+            'icon' => [
+              '#type' => 'html_tag',
+              '#tag' => 'span',
+              '#value' => '',
+              '#attributes' => ['class' => ['quote-form__modify-icon']],
+            ],
+            'text' => [
+              '#plain_text' => $this->t('Modifier'),
+            ],
+          ],
+          '#url' => Url::fromRoute('drivematic_configurator.configuration'),
+          '#attributes' => [
+            'class' => ['quote-form__modify'],
+            'aria-label' => $this->t('Modifier la configuration @number', ['@number' => $position]),
+          ],
+        ],
+        'delete' => [
+          '#type' => 'submit',
+          '#value' => $this->t('Supprimer'),
+          '#name' => 'remove_configuration_' . $key,
+          '#configuration_key' => $key,
+          '#submit' => ['::removeConfigurationSubmit'],
+          '#limit_validation_errors' => [],
+          '#attributes' => [
+            'class' => ['quote-form__delete'],
+            'aria-label' => $this->t('Supprimer la configuration @number', ['@number' => $position]),
+          ],
         ],
       ],
     ];

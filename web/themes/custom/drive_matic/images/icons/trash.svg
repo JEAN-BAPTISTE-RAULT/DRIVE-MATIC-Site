@@ -1,3 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-  <path d="M4 7H20M9 7V5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7M6 7L7 20C7 21.1046 7.89543 22 9 22H15C16.1046 22 17 21.1046 17 20L18 7M10 11V17M14 11V17" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Trash-2">
+<path id="Vector" d="M2 4H14M12.6667 4V13.3333C12.6667 14 12 14.6667 11.3333 14.6667H4.66667C4 14.6667 3.33333 14 3.33333 13.3333V4M5.33333 4V2.66667C5.33333 2 6 1.33333 6.66667 1.33333H9.33333C10 1.33333 10.6667 2 10.6667 2.66667V4M6.66667 7.33333V11.3333M9.33333 7.33333V11.3333" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
 </svg>

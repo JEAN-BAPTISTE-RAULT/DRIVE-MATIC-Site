@@ -274,7 +274,7 @@ final class ConfigurationForm extends FormBase {
     if ($show_remove) {
       $element['header']['remove'] = [
         '#type' => 'submit',
-        '#value' => $this->t('Supprimer la configuration @number', ['@number' => $position]),
+        '#value' => $this->t('Supprimer'),
         '#name' => 'remove_configuration_' . $key,
         '#configuration_key' => $key,
         '#submit' => ['::removeConfigurationSubmit'],

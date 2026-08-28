@@ -1231,23 +1231,15 @@ textarea) {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
-  flex: 0 0 auto;
-  width: 24px;
-  height: 24px;
-  padding: 0;
+  margin: 0;
+  padding: 0 0 0 26px;
   border: 0;
-  background-color: var(--dm-color-grey-metal);
-  color: transparent;
+  background: url("../images/icons/trash.svg") no-repeat left center/16px 16px;
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-body);
+  font-size: 0.75rem;
+  line-height: var(--dm-body-line);
   cursor: pointer;
-  -webkit-mask: url("../images/icons/trash.svg") no-repeat center;
-          mask: url("../images/icons/trash.svg") no-repeat center;
-}
-.configurator-form__remove:hover {
-  background-color: var(--dm-color-red);
-}
-.configurator-form__remove:focus-visible {
-  outline: 2px solid var(--dm-color-red);
-  outline-offset: 2px;
 }
 .configurator-form__card {
   display: flex;
@@ -1461,29 +1453,47 @@ textarea) {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: var(--dm-space-element);
   padding: var(--dm-form-card-padding-block) var(--dm-form-card-padding-inline) 0;
 }
 .quote-form__configuration-title {
   margin: 0;
-  -webkit-margin-end: auto;
-          margin-inline-end: auto;
+}
+.quote-form__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--dm-space-element);
 }
 .quote-form__modify, .quote-form__delete {
+  display: inline-flex;
+  align-items: center;
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-body);
+  font-size: 0.75rem;
+  line-height: var(--dm-body-line);
+  text-decoration: none;
+  cursor: pointer;
+}
+.quote-form__modify {
+  gap: 10px;
+}
+.quote-form__modify-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  background-color: var(--dm-color-anthracite);
+  -webkit-mask: url("../images/icons/pen.svg") no-repeat center/contain;
+          mask: url("../images/icons/pen.svg") no-repeat center/contain;
+}
+.quote-form__delete {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
-  padding: 0;
+  margin: 0;
+  padding: 0 0 0 26px;
   border: 0;
-  background: none;
-  color: var(--dm-color-steel);
-  font-family: var(--dm-font-body);
-  font-size: 0.875rem;
-  text-decoration: underline;
-  cursor: pointer;
-}
-.quote-form__delete {
-  color: var(--dm-color-red);
+  background: url("../images/icons/trash.svg") no-repeat left center/16px 16px;
 }
 .quote-form__summary-trigger {
   display: flex;
