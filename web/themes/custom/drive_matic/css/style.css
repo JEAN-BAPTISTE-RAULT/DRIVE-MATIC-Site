@@ -1735,21 +1735,6 @@ textarea) {
   white-space: nowrap;
 }
 @media (width >= 992px) {
-  .quote-form__metric {
-    justify-content: flex-start;
-  }
-  .quote-form__metric--ht {
-    width: 145px;
-  }
-  .quote-form__metric--discount {
-    width: 130px;
-  }
-  .quote-form__metric--discounted-ht {
-    width: 190px;
-  }
-  .quote-form__metric--vat {
-    width: 145px;
-  }
   .quote-form__metric--ttc {
     width: 160px;
     justify-content: flex-end;

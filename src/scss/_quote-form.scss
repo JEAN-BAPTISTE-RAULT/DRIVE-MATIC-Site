@@ -472,20 +472,9 @@
     align-items: center;
     gap: var(--dm-space-element);
 
-    // Resserre (20px au lieu des 24px generiques ci-dessus) : avec un
-    // libelle elargi (--quote-form-label-column-width), les 5 colonnes a
-    // largeur fixe + le gap generique depassaient de quelques px la
-    // largeur du bandeau et forcaient un retour a la ligne. Nichee ici
-    // (pas dans le bloc media plus haut) pour rester APRES la regle de
-    // base dans le CSS compile — sinon cette derniere l'emporte a
+    // Nichee ici (pas dans le bloc media plus haut) pour rester APRES la
+    // regle de base dans le CSS compile — sinon cette derniere l'emporte a
     // specificite egale, piege deja rencontre sur ce meme fichier.
-    // ⚠️ Les 5 largeurs de metrique restent en px fixe (pas en %, contrairement
-    // aux colonnes du tableau ci-dessus) : sous ~1210px de viewport, ce
-    // bandeau peut manquer de place et repasser en 2 lignes via
-    // `flex-wrap: wrap` deja pose — degradation gracieuse acceptee (pas de
-    // debordement de page, contrairement au tableau), la colonne alignee
-    // sur toute la largeur du bandeau n'etant garantie qu'a partir
-    // d'environ 1210px.
     @media (width >= 992px) {
       gap: 20px;
     }
@@ -498,38 +487,33 @@
     white-space: nowrap;
   }
 
-  // Largeurs fixes par colonne (desktop) : memes valeurs sur les 3
-  // bandeaux (per-vehicule/total-vehicules/general). Decision utilisatrice :
-  // seul « Total TTC » (derniere metrique) est aligne a droite — son texte
-  // doit demarrer/finir au meme x que « Total TTC » des lignes au-dessus
-  // (le tableau, colonne « Total remisé € HT »). Les 4 autres restent
-  // alignees a GAUCHE dans leur slot, comme « Total HT » (qui doit demarrer
-  // au meme x que « Équipement(s) »).
+  // Ecart volontaire a l'ancienne maquette figee en px (145/130/190/145
+  // pour HT/remise/remise-HT/TVA) : ces largeurs fixes gardaient les 4
+  // premieres metriques alignees verticalement entre les 3 bandeaux
+  // (per-vehicule/total-vehicules/general), mais le contenu reel (les
+  // montants) ne les remplit jamais uniformement — l'espace visible APRES
+  // chaque texte variait donc fortement (13 a 31px mesures sur un devis
+  // reel) et « Remise HT » (130px) pouvait meme deborder de sa propre
+  // boite des qu'une remise depassait ~140€. Decision utilisatrice : un
+  // espace reellement identique apres chaque texte prime desormais sur cet
+  // alignement colonne par colonne — chaque metrique s'etire a son propre
+  // contenu (`display:inline-flex` sans `width`, deja le comportement par
+  // defaut) et c'est le `gap: 20px` du conteneur ci-dessus, uniforme par
+  // construction, qui separe les metriques. Consequence assumee : les
+  // libelles (« Remise HT », « TVA »...) ne demarrent plus forcement au
+  // meme x entre les 3 bandeaux ou entre configurations, puisque les
+  // montants n'ont pas le meme nombre de chiffres d'une ligne a l'autre.
   @media (width >= 992px) {
-    &__metric {
-      justify-content: flex-start;
-    }
-
-    &__metric--ht {
-      width: 145px;
-    }
-
-    &__metric--discount {
-      width: 130px;
-    }
-
-    &__metric--discounted-ht {
-      width: 190px;
-    }
-
-    &__metric--vat {
-      width: 145px;
-    }
-
     // `margin-inline-start: auto` (pas juste `justify-content: flex-end`
     // sur le conteneur, essaye avant et abandonne) : ne pousse QUE cette
     // metrique au bord droit du conteneur, sans deplacer les 4 precedentes
     // qui restent group_ees a gauche avec leur `gap` normal entre elles.
+    // Seule metrique a garder une largeur fixe : son texte doit
+    // demarrer/finir au meme x que « Total TTC » des lignes au-dessus (le
+    // tableau, colonne « Total remisé € HT ») — alignement independant du
+    // choix ci-dessus, non concerne par la demande (elle n'est pas
+    // sequentiellement espacee des autres, deja poussee a part au bord
+    // droit).
     &__metric--ttc {
       width: 160px;
       justify-content: flex-end;
