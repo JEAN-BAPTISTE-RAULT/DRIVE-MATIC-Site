@@ -27,6 +27,11 @@
   606-37565. Détail technique (raisons des 2 structures DOM parallèles
   desktop/mobile, formule `calc()` de la ligne générale) : README.md
   (section configurateur écran 2) et mémoire auto.
+- **3 corrections post-livraison (même jour)** : débordement horizontal
+  mobile (fil d'étapes + tableau d'équipements) et espace inégal après
+  chaque métrique des bandeaux de totaux (4 métriques perdent leur
+  largeur fixe au profit d'un espace uniforme, [ADR-032](../../../.claude/decisions/032-espacement-metriques-devis.md)).
+  Détail : README.md, `docs/E2E_SCENARIOS.md` (S14), mémoire auto.
 - **Hors périmètre de cet écran** : étape Livraison (F14 3/3), entités
   métier Devis/Configuration/Ligne d'équipement (F15).
 

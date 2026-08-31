@@ -34,6 +34,9 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-027](027-confirmation-deconnexion.md) | Confirmation de deconnexion (`/user/logout/confirm`) : question injectee via form-alter (pas de bloc titre sur route non-node), alignement sur la boite du header | Accepte | 2026-08-26 |
 | [ADR-028](028-configurateur-formbase-vs-webform.md) | Configurateur de devis (F14, ecran 1) : FormBase custom plutot que Webform, `/configurer` repris du node placeholder | Accepte | 2026-08-26 |
 | [ADR-029](029-mixin-boutons-partage.md) | Mixin Sass partage pour les boutons (couleurs + hauteur), `--load-path` supplementaire pour les SDC | Accepte | 2026-08-26 |
+| [ADR-030](030-catalogue-tarifs-import.md) | Catalogue de tarifs (F17) — entite custom et import par rapprochement | Accepte | 2026-08-27 |
+| [ADR-031](031-devis-tempstore.md) | Ecran Devis (F14 etape 2/3) — PrivateTempStore, pas de persistance avant l'etape 3 | Accepte | 2026-08-27 |
+| [ADR-032](032-espacement-metriques-devis.md) | Bandeaux de totaux du devis — espace identique entre metriques plutot qu'alignement colonne par colonne | Accepte | 2026-08-31 |
 
 ## Quand creer un ADR
 
