@@ -15,11 +15,20 @@
 
   // Titre centré ET flèches à droite : la colonne vide de gauche équilibre le
   // titre, sans élément de remplissage dans le markup.
+  // ⚠️ `.news-home` n'a qu'un `padding-left` (le `padding-right` est laissé à
+  // 0 pour que `&__viewport` puisse déborder à droite) : sans correction, ce
+  // bloc hérite de cette boîte asymétrique et son centrage se cale sur un
+  // point décalé de gutter/2 vers la droite du vrai centre de page. La
+  // correction en `calc(50vw - 50%)` de `&__viewport`/`.history__header` ne
+  // marche pas ici : elle s'annule à zéro dès que `.news-home` atteint son
+  // `max-width` (le cas au palier 1440px, une largeur d'écran courante) —
+  // repose un `padding-right` fixe a la place, independant de la largeur.
   &__head {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 16px;
+    padding-right: var(--dm-gutter);
     margin-bottom: var(--dm-space-element);
   }
 
@@ -101,6 +110,7 @@
 
   // Pagination (points) sous la piste, centrée — maquette mobile (Group 3).
   // Meme motif que `jumbo-home` : point actif rouge, points inactifs gris.
+  // Meme correction de gutter asymetrique que `&__head` ci-dessus.
   &__pagination.swiper-pagination {
     --swiper-pagination-bullet-horizontal-gap: 0;
 
@@ -109,6 +119,7 @@
     gap: 10px;
     justify-content: center;
     margin-top: var(--dm-space-element);
+    padding-right: var(--dm-gutter);
   }
 
   // 24px : taille minimale de cible tactile (WCAG 2.5.8) — la maquette prevoit
@@ -127,10 +138,12 @@
 
   // « Voir toutes les actualités » : bouton gris de la maquette, centré sous la
   // piste. Le wrapper de champ Drupal est neutralisé pour centrer le lien.
+  // Meme correction de gutter asymetrique que `&__head` ci-dessus.
   &__more {
     display: flex;
     justify-content: center;
     margin-top: var(--dm-space-element);
+    padding-right: var(--dm-gutter);
 
     > * {
       display: contents;
