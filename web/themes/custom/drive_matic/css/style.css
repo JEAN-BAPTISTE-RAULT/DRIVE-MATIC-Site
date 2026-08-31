@@ -1205,6 +1205,10 @@ textarea) {
     width: 33px;
   }
 }
+.configurator-form__step-link {
+  color: inherit;
+  text-decoration: none;
+}
 .configurator-form__card-header {
   display: flex;
   align-items: center;
@@ -1405,26 +1409,32 @@ textarea) {
   display: block;
 }
 .configurator-form .form-actions .configurator-form__add {
+  border: 1px solid var(--dm-color-steel);
+  background-color: transparent;
+  color: var(--dm-color-steel);
+}
+.configurator-form .form-actions .configurator-form__add:hover {
+  background-color: var(--dm-color-steel);
+  color: var(--dm-color-white);
+}
+.configurator-form .form-actions .configurator-form__add {
+  line-height: normal;
+  padding-block: 10px;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
   display: inline-block;
-  padding: 13px 16px 13px 44px;
-  border: 1px solid var(--dm-color-steel);
+  padding-inline: 50px 16px;
   border-radius: 6px;
   background: var(--dm-color-white) url("../images/icons/plus-circle.svg") no-repeat 16px center;
-  background-size: 20px;
-  color: var(--dm-color-steel);
+  background-size: 24px;
   font-family: var(--dm-font-body);
   font-size: 0.9375rem;
   font-weight: 500;
-  line-height: normal;
   cursor: pointer;
 }
 .configurator-form .form-actions .configurator-form__add:hover {
-  background-color: var(--dm-color-steel);
   background-image: url("../images/icons/plus-circle-white.svg");
-  color: var(--dm-color-white);
 }
 .configurator-form .form-actions .configurator-form__add:disabled {
   cursor: not-allowed;
@@ -1434,6 +1444,9 @@ textarea) {
   display: none;
 }
 
+.quote-form {
+  --quote-form-vehicle-fraction: 20.2655%;
+}
 .quote-form__empty {
   display: flex;
   flex-direction: column;
@@ -1456,6 +1469,11 @@ textarea) {
 }
 .quote-form__configuration-title {
   margin: 0;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+  font-weight: 700;
 }
 .quote-form__actions {
   display: flex;
@@ -1562,8 +1580,6 @@ textarea) {
 }
 .quote-form__equipment-table {
   width: 100%;
-  -webkit-margin-after: var(--dm-space-element);
-          margin-block-end: var(--dm-space-element);
   border-collapse: collapse;
   color: var(--dm-color-anthracite);
   font-family: var(--dm-font-body);
@@ -1603,11 +1619,29 @@ textarea) {
   text-align: start;
 }
 @media (width >= 992px) {
+  .quote-form__equipment-table {
+    table-layout: fixed;
+  }
   .quote-form__col--vehicle {
-    min-width: 220px;
+    width: var(--quote-form-vehicle-fraction);
   }
   .quote-form__col--equipment {
-    min-width: 240px;
+    width: 21.2389%;
+  }
+  .quote-form__col--catalog-price {
+    width: 14.1593%;
+  }
+  .quote-form__col--discounted-price {
+    width: 12.5664%;
+  }
+  .quote-form__col--qty-vehicle {
+    width: 11.7699%;
+  }
+  .quote-form__col--qty-total {
+    width: 9.823%;
+  }
+  .quote-form__col--total {
+    width: 10.0885%;
   }
 }
 @media (width < 992px) {
@@ -1623,9 +1657,29 @@ textarea) {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--dm-space-element);
-  padding: 8px 16px;
+}
+.quote-form__totals-label-cell, .quote-form__totals-metrics-cell {
   background-color: var(--dm-color-grey-light);
   color: var(--dm-color-steel);
+}
+.quote-form__totals-label-cell {
+  text-align: start;
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.quote-form__totals-tr + .quote-form__totals-tr .quote-form__totals-label-cell, .quote-form__totals-tr + .quote-form__totals-tr .quote-form__totals-metrics-cell {
+  -webkit-border-before: 1px solid var(--dm-color-white);
+          border-block-start: 1px solid var(--dm-color-white);
+}
+@media (width < 992px) {
+  .quote-form__equipment-table tfoot {
+    display: none;
+  }
+}
+.quote-form__mobile-totals {
+  display: none;
 }
 .quote-form__totals-row-label {
   margin: 0;
@@ -1633,15 +1687,18 @@ textarea) {
   font-size: 0.875rem;
   font-weight: 700;
 }
-@media (width >= 992px) {
-  .quote-form__totals-row-label {
-    flex: 0 0 auto;
-    min-width: 170px;
-  }
-}
 @media (width < 992px) {
-  .quote-form__totals-row-label:empty {
-    display: none;
+  .quote-form__mobile-totals {
+    display: block;
+  }
+  .quote-form__mobile-totals .quote-form__totals-row {
+    padding: 8px 16px;
+    background-color: var(--dm-color-grey-light);
+    color: var(--dm-color-steel);
+  }
+  .quote-form__mobile-totals .quote-form__totals-row + .quote-form__totals-row {
+    -webkit-border-before: 1px solid var(--dm-color-white);
+            border-block-start: 1px solid var(--dm-color-white);
   }
 }
 .quote-form__totals-metrics {
@@ -1649,8 +1706,11 @@ textarea) {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--dm-space-element);
-  -webkit-margin-start: auto;
-          margin-inline-start: auto;
+}
+@media (width >= 992px) {
+  .quote-form__totals-metrics {
+    gap: 20px;
+  }
 }
 .quote-form__metric {
   display: inline-flex;
@@ -1660,7 +1720,7 @@ textarea) {
 }
 @media (width >= 992px) {
   .quote-form__metric {
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
   .quote-form__metric--ht {
     width: 145px;
@@ -1676,6 +1736,14 @@ textarea) {
   }
   .quote-form__metric--ttc {
     width: 160px;
+    justify-content: flex-end;
+    -webkit-margin-start: auto;
+            margin-inline-start: auto;
+  }
+  .quote-form__grand-totals .quote-form__totals-metrics {
+    flex: 1;
+    -webkit-padding-start: calc(var(--quote-form-vehicle-fraction) + 6.485px);
+            padding-inline-start: calc(var(--quote-form-vehicle-fraction) + 6.485px);
   }
 }
 .quote-form__metric-label {
@@ -1694,8 +1762,6 @@ textarea) {
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    -webkit-margin-start: 0;
-            margin-inline-start: 0;
   }
   .quote-form__metric {
     justify-content: space-between;
@@ -1716,9 +1782,20 @@ textarea) {
   background-color: var(--dm-color-steel);
   color: var(--dm-color-white);
 }
-.quote-form__configuration-totals .quote-form__totals-row + .quote-form__totals-row {
-  -webkit-border-before: 1px solid var(--dm-color-white);
-          border-block-start: 1px solid var(--dm-color-white);
+.quote-form__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dm-space-element);
+}
+@media (width >= 992px) {
+  .quote-form__footer {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
+.quote-form__footer .form-actions {
+  margin-top: 0;
 }
 .quote-form__note {
   margin: 0;

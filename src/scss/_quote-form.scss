@@ -6,6 +6,23 @@
 @use 'button-mixins' as btn;
 
 .quote-form {
+  // Largeur (desktop) de la colonne « Marque/ modèle/ type » du tableau
+  // (&__col--vehicle, en `table-layout: fixed` — voir plus bas, largeur
+  // alors autoritaire et non redistribuee).
+  // ⚠️ En pourcentage, pas en px fixe : la colonne du tableau ET la carte
+  // qui la contient ne sont PAS toujours larges de 1130px — au-dessous
+  // d'environ 1210px de viewport, `.configurator-page`'s
+  // `calc(50vw - 565px)` cesse de plafonner la largeur de la carte
+  // (`padding-inline` retombe sur `--dm-gutter`, plus petit), qui devient
+  // alors plus etroite que 1130px. Une largeur fixe y depassait le
+  // conteneur de la carte (`table-layout: fixed` sur un total plus large
+  // que le conteneur DEBORDE au lieu de retrecir), provoquant un
+  // scroll horizontal de toute la page — constate en testant a 1100px,
+  // pas seulement au-dela de 1280px.
+  // 20.2655% = 229px / 1130px (proportion mesuree a la largeur de
+  // reference).
+  --quote-form-vehicle-fraction: 20.2655%;
+
   &__empty {
     display: flex;
     flex-direction: column;
@@ -32,8 +49,16 @@
     margin-block-end: 8px;
   }
 
+  // « Titre H3 » Figma (meme style que &__totals-title plus bas) : jamais
+  // explicitement pose jusqu'ici, retombait sur le style <h2> par defaut du
+  // theme (repere en verifiant contre la maquette 508:13961).
   &__configuration-title {
     margin: 0;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+    font-weight: 700;
   }
 
   // Modifier + Supprimer, groupes et alignes a droite sur la meme ligne que
@@ -176,9 +201,13 @@
     }
   }
 
+  // Pas de `margin-block-end` : les bandeaux de totaux sont maintenant le
+  // `<tfoot>` de CE tableau (buildTotalsFooterRows()), donc son dernier
+  // element — un ecart ici repousserait a tort le fond gris clair du
+  // dernier bandeau du bord arrondi de la carte (meme regle que
+  // `&__card-details` plus haut, « pas de padding-block-end »).
   &__equipment-table {
     width: 100%;
-    margin-block-end: var(--dm-space-element);
     border-collapse: collapse;
     color: var(--dm-color-anthracite);
     font-family: var(--dm-font-body);
@@ -244,17 +273,52 @@
     text-align: start;
   }
 
-  // Largeur minimale desktop pour eviter le retour a la ligne du contenu le
-  // plus long mesure (« Nombre de véhicule(s) : 3 » ~171px, « Double
-  // pédalier auto-école » ~180px, texte nu hors padding) + marge de confort
-  // au-dela du strict necessaire.
+  // Largeurs desktop en pourcentage pour toutes les colonnes (pas
+  // seulement vehicule/equipement) : `table-layout: fixed` (ci-dessus) les
+  // rend autoritaires — en layout `auto` (par defaut), un `min-width` sur
+  // une seule colonne est retraite par l'algorithme de repartition du
+  // tableau, qui absorbe la largeur disponible et fait deriver la largeur
+  // reelle a chaque changement (constate en cherchant a aligner
+  // &__totals-row-label dessus). En px fixe (essaye avant les %), le total
+  // des colonnes pouvait aussi depasser une carte devenue plus etroite que
+  // 1130px (sous ~1210px de viewport, cf. commentaire sur
+  // --quote-form-vehicle-fraction plus haut) : `table-layout: fixed` ne
+  // retrecit pas des largeurs fixes qui debordent, il laisse deborder —
+  // scroll horizontal de toute la page, constate a 1100px. En %, le total
+  // reste toujours 100% de la largeur reelle de la carte, quelle qu'elle
+  // soit. Valeurs = proportions mesurees a la largeur de reference
+  // (1130px), pour ne rien deplacer visuellement a cette largeur-la.
   @media (width >= 992px) {
+    &__equipment-table {
+      table-layout: fixed;
+    }
+
     &__col--vehicle {
-      min-width: 220px;
+      width: var(--quote-form-vehicle-fraction);
     }
 
     &__col--equipment {
-      min-width: 240px;
+      width: 21.2389%;
+    }
+
+    &__col--catalog-price {
+      width: 14.1593%;
+    }
+
+    &__col--discounted-price {
+      width: 12.5664%;
+    }
+
+    &__col--qty-vehicle {
+      width: 11.7699%;
+    }
+
+    &__col--qty-total {
+      width: 9.823%;
+    }
+
+    &__col--total {
+      width: 10.0885%;
     }
   }
 
@@ -273,21 +337,72 @@
   }
 
   // --- Bandeaux de totaux (par configuration et total general). -----------
-  // Meme structure (label optionnel + 5 metriques) pour les deux contextes,
-  // seules les couleurs different (&__grand-totals ci-dessous).
+  // Par configuration : de vraies lignes du tableau d'equipements
+  // (buildTotalsFooterRows(), `<tfoot>`) — voir &__totals-tr plus bas.
+  // Le total general (&__grand-totals) n'est rattache a aucun tableau ; il
+  // reste ce bloc flex independant.
 
   &__totals-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--dm-space-element);
+  }
 
-    // 16px, comme les cellules du tableau (`padding: 8px 16px` ci-dessus) :
-    // aligne le libelle sur la colonne « Marque/ modèle/ type » (maquette
-    // 508:13961, x=176 identique pour les deux).
-    padding: 8px 16px;
+  // Lignes de totaux PAR CONFIGURATION : 2 vraies cellules du tableau
+  // d'equipements (1re = libelle, sur la colonne vehicule ; 2e = les 5
+  // metriques, `colspan` sur les 6 colonnes restantes) — « Total HT » (1re
+  // metrique) demarre alors necessairement au meme x que « Equipement(s) »,
+  // les deux venant de la MEME mise en page de tableau (pas de valeur a
+  // synchroniser entre deux elements distincts, cf. memoire
+  // table-layout-auto-redistribution : un calc()/pourcentage partage entre
+  // deux elements independants n'est jamais fiable a 100% d'un moteur de
+  // rendu a l'autre).
+  &__totals-label-cell,
+  &__totals-metrics-cell {
     background-color: var(--dm-color-grey-light);
     color: var(--dm-color-steel);
+  }
+
+  &__totals-label-cell {
+    // `text-align: start` : la regle heritee du tableau (`text-align: end`
+    // sur &__equipment-table) s'appliquerait sinon a cette cellule.
+    text-align: start;
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  // Ligne de separation blanche entre « Tarif par véhicule » et « Tarif
+  // total véhicules » quand les deux bandeaux sont affiches (maquette
+  // 508:13961, configuration a plusieurs véhicules) — portee par les
+  // cellules, pas le `<tr>` (rendu de bordure peu fiable sur `<tr>` avec
+  // `border-collapse: collapse`).
+  &__totals-tr + &__totals-tr &__totals-label-cell,
+  &__totals-tr + &__totals-tr &__totals-metrics-cell {
+    border-block-start: 1px solid var(--dm-color-white);
+  }
+
+  // Mobile : le `<tfoot>` du tableau (bandeaux desktop) est masque au
+  // profit de &__mobile-totals ci-dessous (doublon flex independant,
+  // buildMobileTotals()) — forcer un `<tr>`/`<td>` a se comporter en bloc
+  // empilable pour retrouver la presentation mobile (671:20897, libelle
+  // au-dessus des metriques) s'est avere peu fiable : un `<tfoot>` reste
+  // contraint par l'algorithme de mise en page du tableau meme avec
+  // `display: block` force sur toute la chaine d'ancetres (largeur figee a
+  // la portion visible du colspan d'origine, colonnes masquees comptees
+  // pour 0px mais toujours prises en compte).
+  @media (width < 992px) {
+    &__equipment-table tfoot {
+      display: none;
+    }
+  }
+
+  // Doublon mobile de &__totals-label-cell/&__totals-metrics-cell — meme
+  // fond/typo, en bloc flex plutot qu'en cellules de tableau.
+  &__mobile-totals {
+    display: none;
   }
 
   &__totals-row-label {
@@ -297,24 +412,22 @@
     font-weight: 700;
   }
 
-  // Largeur fixe (desktop) reservee au libelle sur les 3 bandeaux, y
-  // compris quand il est vide (total general) : sans ca, les tarifs de
-  // « Tarif par véhicule »/« Tarif total véhicules »/« Total
-  // configuration(s) » ne demarreraient pas au meme x — leur libelle n'a
-  // pas la meme largeur (« Tarif total véhicules : » mesure ~143px, la
-  // plus longue). Decision utilisatrice : ceci prime desormais sur
-  // l'alignement du 1er tarif du total general avec « Marque/ modèle/
-  // type » (qui ne tient plus).
-  @media (width >= 992px) {
-    &__totals-row-label {
-      flex: 0 0 auto;
-      min-width: 170px;
-    }
-  }
-
   @media (width < 992px) {
-    &__totals-row-label:empty {
-      display: none;
+    &__mobile-totals {
+      display: block;
+    }
+
+    // flex-direction/align-items deja poses par la regle generique
+    // &__totals-row ci-dessous — seuls le fond et la couleur sont propres
+    // a ce contexte.
+    &__mobile-totals &__totals-row {
+      padding: 8px 16px;
+      background-color: var(--dm-color-grey-light);
+      color: var(--dm-color-steel);
+    }
+
+    &__mobile-totals &__totals-row + &__totals-row {
+      border-block-start: 1px solid var(--dm-color-white);
     }
   }
 
@@ -323,7 +436,24 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--dm-space-element);
-    margin-inline-start: auto;
+
+    // Resserre (20px au lieu des 24px generiques ci-dessus) : avec un
+    // libelle elargi (--quote-form-label-column-width), les 5 colonnes a
+    // largeur fixe + le gap generique depassaient de quelques px la
+    // largeur du bandeau et forcaient un retour a la ligne. Nichee ici
+    // (pas dans le bloc media plus haut) pour rester APRES la regle de
+    // base dans le CSS compile — sinon cette derniere l'emporte a
+    // specificite egale, piege deja rencontre sur ce meme fichier.
+    // ⚠️ Les 5 largeurs de metrique restent en px fixe (pas en %, contrairement
+    // aux colonnes du tableau ci-dessus) : sous ~1210px de viewport, ce
+    // bandeau peut manquer de place et repasser en 2 lignes via
+    // `flex-wrap: wrap` deja pose — degradation gracieuse acceptee (pas de
+    // debordement de page, contrairement au tableau), la colonne alignee
+    // sur toute la largeur du bandeau n'etant garantie qu'a partir
+    // d'environ 1210px.
+    @media (width >= 992px) {
+      gap: 20px;
+    }
   }
 
   &__metric {
@@ -334,13 +464,15 @@
   }
 
   // Largeurs fixes par colonne (desktop) : memes valeurs sur les 3
-  // bandeaux (per-vehicule/total-vehicules/general), le contenu s'aligne a
-  // droite dans son propre slot — les tarifs des 3 lignes s'alignent alors
-  // en colonnes malgre des montants de longueurs differentes. Largeurs
-  // mesurees sur le contenu le plus long observe + marge.
+  // bandeaux (per-vehicule/total-vehicules/general). Decision utilisatrice :
+  // seul « Total TTC » (derniere metrique) est aligne a droite — son texte
+  // doit demarrer/finir au meme x que « Total TTC » des lignes au-dessus
+  // (le tableau, colonne « Total remisé € HT »). Les 4 autres restent
+  // alignees a GAUCHE dans leur slot, comme « Total HT » (qui doit demarrer
+  // au meme x que « Équipement(s) »).
   @media (width >= 992px) {
     &__metric {
-      justify-content: flex-end;
+      justify-content: flex-start;
     }
 
     &__metric--ht {
@@ -359,8 +491,37 @@
       width: 145px;
     }
 
+    // `margin-inline-start: auto` (pas juste `justify-content: flex-end`
+    // sur le conteneur, essaye avant et abandonne) : ne pousse QUE cette
+    // metrique au bord droit du conteneur, sans deplacer les 4 precedentes
+    // qui restent group_ees a gauche avec leur `gap` normal entre elles.
     &__metric--ttc {
       width: 160px;
+      justify-content: flex-end;
+      margin-inline-start: auto;
+    }
+
+    // Le bandeau general (&__grand-totals) n'est pas une ligne du tableau :
+    // son « Total HT » doit neanmoins demarrer au meme x que celui des
+    // bandeaux par configuration au-dessus (donc que « Équipement(s) »).
+    // Fiable ici (contrairement a la mise en garde generale sur les
+    // calc()/pourcentages partages entre elements independants) car
+    // &__totals-row et &__equipment-table rendent a EXACTEMENT la meme
+    // largeur (meme colonne de contenu, meme carte) — verifie au navigateur
+    // (getBoundingClientRect, 1130px les deux, meme bord gauche).
+    // `flex: 1` : sans lui, le conteneur des metriques se limite a sa
+    // largeur de contenu (somme des 5 metriques + gaps) et le
+    // `margin-inline-start: auto` de &__metric--ttc n'a plus d'espace a
+    // consommer pour atteindre le bord droit du bandeau.
+    // `padding-inline-start` : reproduit la largeur de la colonne vehicule
+    // du tableau (--quote-form-vehicle-fraction) + son padding de cellule
+    // (16px) — le `%` d'un padding se resout contre la largeur de CONTENU
+    // du conteneur (deja amputee de son propre padding de 16px de chaque
+    // cote, cf. memoire table-layout-auto-redistribution), d'ou le
+    // `+ 6.485px` (20.2655% x 32px de padding a compenser).
+    &__grand-totals &__totals-metrics {
+      flex: 1;
+      padding-inline-start: calc(var(--quote-form-vehicle-fraction) + 6.485px);
     }
   }
 
@@ -384,7 +545,6 @@
       flex-direction: column;
       align-items: stretch;
       gap: 0;
-      margin-inline-start: 0;
     }
 
     &__metric {
@@ -402,12 +562,10 @@
     font-weight: 700;
   }
 
-  // 16px en inline, comme &__totals-row/le tableau ci-dessus : la derniere
-  // valeur (Total TTC) reste alignee sur les montants des bandeaux
-  // au-dessus. Le libelle vide (&__totals-row-label ci-dessus) reserve la
-  // meme largeur que les 2 bandeaux « Tarif... » : les tarifs s'alignent
-  // donc en colonnes entre les 3 bandeaux, mais Total HT ne demarre plus
-  // au meme x que « Marque/ modèle/ type » (compromis assume).
+  // Total general : bloc flex independant (pas de tableau), sans libelle —
+  // les 5 metriques suivent le meme decoupage que les bandeaux par
+  // configuration (&__metric--ttc ci-dessus se pousse deja seule a droite
+  // via son propre `margin-inline-start: auto`).
   &__grand-totals &__totals-row {
     padding: var(--dm-form-card-padding-block) 16px;
     border-radius: 12px;
@@ -415,11 +573,27 @@
     color: var(--dm-color-white);
   }
 
-  // Ligne de separation blanche entre « Tarif par véhicule » et « Tarif
-  // total véhicules » quand les deux bandeaux sont affiches (maquette
-  // 508:13961, configuration a plusieurs véhicules).
-  &__configuration-totals &__totals-row + &__totals-row {
-    border-block-start: 1px solid var(--dm-color-white);
+  // Note + boutons sur une meme ligne en desktop (maquette 508:13961 :
+  // texte a gauche, boutons a droite) ; empiles en mobile (606:37565, note
+  // au-dessus des boutons).
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dm-space-element);
+
+    @media (width >= 992px) {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    // Neutralise la marge du coeur sur `.form-actions` (~16px, prevue pour
+    // un bloc seul en bas de formulaire) : l'ecart est deja porte par le
+    // `gap` ci-dessus, sans quoi le haut des boutons ne s'aligne pas sur
+    // celui du texte malgre `align-items: flex-start`.
+    .form-actions {
+      margin-top: 0;
+    }
   }
 
   &__note {

@@ -1,6 +1,8 @@
 // Habillage du formulaire « Configuration » du configurateur de devis (F14
 // etape 1/3), route /configurer, module drivematic_configurator.
 
+@use 'button-mixins' as btn;
+
 // Meme derogation qu'ADR-015 (`forms`, `personal-information-form`) : le
 // markup vient de l'API Form de Drupal (FormBase), pas d'un composant.
 // Contrairement aux autres formulaires du site, celui-ci porte PLUSIEURS
@@ -172,6 +174,15 @@
         width: 33px;
       }
     }
+  }
+
+  // Etape « Configuration » (etape 2/3 « Devis ») : seule pastille
+  // cliquable, retour a l'etape 1 (QuoteForm::buildStepper()) — le lien
+  // hérite juste la couleur/le style du texte ambiant, la pastille
+  // (bordure, coche, fond) reste portee par le `<li>`.
+  &__step-link {
+    color: inherit;
+    text-decoration: none;
   }
 
   // --- En-tete de bloc (« Configuration N » + suppression). ----------------
@@ -633,26 +644,30 @@
   // `&` ne duplique pas le contexte englobant quand il est deja utilise
   // explicitement dans le selecteur) ne suffit pas, piege deja rencontre une
   // fois sur ce meme bouton.
+  // Mixins partages (ADR-029, `dm-btn-outline`/`dm-btn-height`) plutot
+  // qu'une definition maison : ce bouton datait d'avant l'harmonisation et
+  // n'avait jamais ete migre (repere en verifiant contre la maquette
+  // 508:13961 « Btn contour-icone » — icone 24px/padding-block 10px de la
+  // maquette, contre 20px/13px ici). Padding-inline-start = 16 (boite) + 24
+  // (icone) + 10 (gap texte/icone, maquette) = 50px.
   .configurator-form .form-actions &__add {
+    @include btn.dm-btn-outline;
+    @include btn.dm-btn-height($content: icon, $bordered: true);
+
     appearance: none;
     display: inline-block;
-    padding: 13px 16px 13px 44px;
-    border: 1px solid var(--dm-color-steel);
+    padding-inline: 50px 16px;
     border-radius: 6px;
     background: var(--dm-color-white) url('../images/icons/plus-circle.svg')
       no-repeat 16px center;
-    background-size: 20px;
-    color: var(--dm-color-steel);
+    background-size: 24px;
     font-family: var(--dm-font-body);
     font-size: 0.9375rem;
     font-weight: 500;
-    line-height: normal;
     cursor: pointer;
 
     &:hover {
-      background-color: var(--dm-color-steel);
       background-image: url('../images/icons/plus-circle-white.svg');
-      color: var(--dm-color-white);
     }
 
     &:disabled {
