@@ -112,8 +112,42 @@
     padding: 0;
     list-style: none;
 
+    // Sur mobile, l'etape "Configuration" franchie (pastille + coche, ecran
+    // Devis) elargit le fil au point de deborder de la carte a partir
+    // d'environ 430px de viewport (mesure : 3 pastilles + 2 gaps ~= 370px de
+    // large, largeur de carte disponible ~= 330-360px sur un mobile courant).
+    // Gap resserre (8px, connecteur assorti plus bas) + padding horizontal
+    // des pastilles resserre (`&__step`, 20px -> 12px, ci-dessous) : besoin
+    // total ~= 272px, qui rentre desormais avec marge (~16px) meme au
+    // gabarit mobile le plus etroit reellement rencontre (320px, ~288px de
+    // large disponible) — un 1er resserrement (gap seul, 33px -> 16px)
+    // avait laisse un residu visible sur les gabarits etroits (« Livraison »
+    // tronquee en bord d'ecran, sans barre de defilement visible : LU comme
+    // un debordement par l'utilisatrice au meme titre qu'un vrai scroll de
+    // page, meme si c'etait techniquement contenu) — corrige en visant un
+    // ajustement qui elimine tout troncage plutot qu'un qui le contient.
+    // Filet de securite (scroll horizontal PROPRE AU FIL, jamais remonte a
+    // la page) conserve pour les cas extremes non couverts (zoom de texte
+    // accessibilite, traduction plus longue) : `justify-content: flex-start`
+    // + `width: fit-content` + `margin-inline: auto` plutot que
+    // `justify-content: center` seul, pour que seul le bord de fin
+    // (« Livraison ») soit concerne si ce filet doit un jour se declencher,
+    // jamais les deux bouts a la fois. Barre de defilement masquee
+    // (`scrollbar-width`/`::-webkit-scrollbar`) : un fil de 3 pastilles n'a
+    // pas de barre dans la maquette, le defilement tactile reste
+    // fonctionnel sans elle.
     @media (width < 992px) {
-      gap: 33px;
+      gap: 8px;
+      justify-content: flex-start;
+      width: fit-content;
+      max-width: 100%;
+      margin-inline: auto;
+      overflow-x: auto;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 
@@ -131,6 +165,7 @@
     white-space: nowrap;
 
     @media (width < 992px) {
+      padding: 2px 12px;
       font-size: 0.75rem;
     }
 
@@ -171,7 +206,7 @@
       transform: translateY(-50%);
 
       @media (width < 992px) {
-        width: 33px;
+        width: 8px;
       }
     }
   }

@@ -238,6 +238,27 @@
     // restent, le vehicule venant de ce meme bandeau plutot que d'une
     // colonne.
     @media (width < 992px) {
+      th,
+      td {
+        // `table-layout: auto` (mobile, volontaire — cf. commentaire plus
+        // bas) ne redistribue jamais une colonne EN DESSOUS de son mot le
+        // plus long non coupable : a 320px de large, le padding 16px
+        // d'origine (repris du desktop) faisait deborder les 3 colonnes
+        // visibles de ~13px hors de la carte (silencieux, `&__card` a
+        // `overflow: hidden` pour ses coins arrondis — pas de barre de
+        // defilement, juste du contenu rogne). Mesure au navigateur
+        // (`ctx.measureText`, police reelle) : le minimum incompressible
+        // vient de « Télécommande » (equipement, mot le plus long sans
+        // espace/trait d'union, ~94px), « véhicule » (entete Qté par
+        // véhicule, ~51px) et « remisé »/un fragment de prix (~42-46px) —
+        // aucun n'est reductible sans couper un mot ou changer le contenu.
+        // Seul le padding (une valeur de mise en page, pas une donnee) est
+        // ajustable ici : 10px de marge, ~23px de reserve au-dela du
+        // minimum mesure a 320px (le gabarit le plus etroit reellement
+        // rencontre).
+        padding-inline: 10px;
+      }
+
       th {
         background-color: transparent;
         color: var(--dm-color-steel);
@@ -313,12 +334,26 @@
       width: 11.7699%;
     }
 
+    // Ecart volontaire aux proportions mesurees sur la maquette (9.823% /
+    // 10.0885%, valeurs d'origine) : l'entete « Total remisé € HT » cassait
+    // sur 3 lignes (contre 2 pour toutes ses voisines, y compris des
+    // libelles plus longs comme « Tarif unitaire remisé € HT ») a n'importe
+    // quelle largeur de viewport, y compris a la largeur de reference
+    // 1130px elle-meme — la colonne (114px, ~82px de texte utilisable)
+    // etait trop etroite pour son PROPRE entete, ayant ete dimensionnee sur
+    // les valeurs de prix (donnees, plus courtes) qu'elle contient. 8px
+    // repris a `&__col--qty-total` (son entete, « Quantité totale », garde
+    // ~20px de marge avant de risquer de casser a son tour sur 3 lignes) et
+    // donnes a `&__col--total` (marge de ~8px au-dela du minimum mesure
+    // necessaire a 2 lignes, `ctx.measureText` sur le rendu reel) —
+    // decision utilisatrice, qty-total etant la colonne jugee la moins
+    // sensible visuellement des deux candidates.
     &__col--qty-total {
-      width: 9.823%;
+      width: 9.115%;
     }
 
     &__col--total {
-      width: 10.0885%;
+      width: 10.7965%;
     }
   }
 

@@ -1150,7 +1150,18 @@ textarea) {
 }
 @media (width < 992px) {
   .configurator-form__stepper {
-    gap: 33px;
+    gap: 8px;
+    justify-content: flex-start;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .configurator-form__stepper::-webkit-scrollbar {
+    display: none;
   }
 }
 .configurator-form__step {
@@ -1168,6 +1179,7 @@ textarea) {
 }
 @media (width < 992px) {
   .configurator-form__step {
+    padding: 2px 12px;
     font-size: 0.75rem;
   }
 }
@@ -1202,7 +1214,7 @@ textarea) {
 }
 @media (width < 992px) {
   .configurator-form__step:not(:last-child)::after {
-    width: 33px;
+    width: 8px;
   }
 }
 .configurator-form__step-link {
@@ -1596,6 +1608,10 @@ textarea) {
   font-weight: 700;
 }
 @media (width < 992px) {
+  .quote-form__equipment-table th,
+  .quote-form__equipment-table td {
+    padding-inline: 10px;
+  }
   .quote-form__equipment-table th {
     background-color: transparent;
     color: var(--dm-color-steel);
@@ -1638,10 +1654,10 @@ textarea) {
     width: 11.7699%;
   }
   .quote-form__col--qty-total {
-    width: 9.823%;
+    width: 9.115%;
   }
   .quote-form__col--total {
-    width: 10.0885%;
+    width: 10.7965%;
   }
 }
 @media (width < 992px) {
