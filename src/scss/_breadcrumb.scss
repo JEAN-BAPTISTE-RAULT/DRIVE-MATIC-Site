@@ -43,13 +43,22 @@
   }
 }
 
+// Masque en mobile (demande explicite de l'utilisatrice) : seul le contenu du
+// fil est cache, pas `.breadcrumb` lui-meme, qui porte l'ecart vertical
+// menu -> ce qui suit (cf. `padding-block` plus haut) — le retirer aurait
+// aussi supprime cet ecart partout ou le fil precede un titre de page ou un
+// premier paragraphe hero.
 .breadcrumb ol {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   align-items: center;
   margin: 0;
   padding: 0;
   list-style: none;
+
+  @media (width >= 992px) {
+    display: flex;
+  }
 }
 
 .breadcrumb li {

@@ -2008,12 +2008,17 @@ textarea) {
 }
 
 .breadcrumb ol {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   align-items: center;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+@media (width >= 992px) {
+  .breadcrumb ol {
+    display: flex;
+  }
 }
 
 .breadcrumb li {
