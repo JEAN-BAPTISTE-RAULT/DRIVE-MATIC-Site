@@ -104,3 +104,14 @@ apres verification visuelle :
 ## Alternatives rejetees
 
 Voir les options ci-dessus.
+
+## Addendum du 2026-08-31 : masque en mobile
+
+Demande explicite de l'utilisatrice : le fil d'Ariane ne doit plus s'afficher
+sous 992px. Seul le contenu (`.breadcrumb ol`, `display: none` puis `flex` a
+`>= 992px`) est masque — pas `.breadcrumb` lui-meme, qui continue de porter
+son `padding-block` (`--dm-space-element`) a toutes les largeurs. Ce choix
+preserve exactement l'invariant de la section « Consequences » ci-dessus (le
+bloc titre / premier paragraphe hero ne repose toujours pas son propre
+`padding-block-start`) : rien a reposer ailleurs, l'ecart existe meme quand
+le fil est visuellement vide en mobile.

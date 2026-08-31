@@ -94,6 +94,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - **Corrige le 2026-08-24** : le bouton « Demander un devis » pointe desormais vers la page `contact` (F10, le vrai formulaire public de demande de devis) au lieu de `configurator` (F14, page reservee a l'espace partenaire authentifie et encore a l'etat de placeholder — un visiteur anonyme ne pouvait pas l'atteindre). Cote tiroir mobile (maquettes 526-23592 et 526-23698) : le bouton « Demander un devis » du pied de tiroir occupe desormais toute la largeur du menu (il etait centre sur son contenu) ; le sous-menu « Drive Matic » n'affiche plus, en mobile, les filets separant ses 3 groupes de liens (utiles en desktop pour marquer les colonnes) — liste plate a ecart uniforme, conforme a la maquette.
 - **Corrige le 2026-08-27** : le lien « Supprimer mon compte » (stub `<nolink>`, aucune page ne le portant) est retire du menu `account` (`menu_link_content` id 46, entite de contenu, pas de config a synchroniser). Le menu ne montre plus que 4 liens ; « Tableau de bord » et « Mes devis » restent en `<nolink>` (F13/F15).
 - **Mise en oeuvre — fil d'Ariane stylise le 2026-08-21** ([ADR-023](../.claude/decisions/023-fil-ariane-style.md)) : aucune maquette ne le montrait (ecart assume, cf. `docs/active/maquette-integration/progress.md`) — typographie et couleurs reprises du registre `pager`, ecart egal au-dessus et au-dessous (`--dm-space-element`, 24px, porte par le fil d'Ariane lui-meme pour couvrir aussi les pages sans bloc titre comme `product`), et alignement horizontal cale sur le bandeau du header (logo compris), pas sur la colonne de contenu — les deux divergent au-dela de ~980px de large.
+- **Corrige le 2026-08-31** (addendum [ADR-023](../.claude/decisions/023-fil-ariane-style.md)) : le fil d'Ariane est desormais masque sous 992px (demande explicite). Seul son contenu disparait visuellement — le bloc conserve son `padding-block`, donc l'ecart vertical vers le titre de page (ou le premier paragraphe sur les gabarits hero) n'est pas affecte.
 
 ---
 
@@ -438,7 +439,7 @@ Trois taxonomies reutilisables (cf. [ADR-003](../.claude/decisions/003-referenti
 
 ### Patterns de navigation
 - **Menu principal multi-niveaux** (niveaux 1 et 2), avec sous-menu authentifie pour l'espace partenaire.
-- **Fil d'Ariane** present partout **sauf** en home page.
+- **Fil d'Ariane** present partout **sauf** en home page ; masque en mobile (sous 992px) depuis le 2026-08-31.
 - **Footer** riche : coordonnees, solutions auto-ecole/PMR, assistance (contact, FAQ), reseaux sociaux, liens legaux.
 - Comportement responsive attendu (audience grand public + exigence RGAA/WCAG AA). `[INFERE]`
 
