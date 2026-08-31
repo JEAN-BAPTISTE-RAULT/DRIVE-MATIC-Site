@@ -1,6 +1,6 @@
 # Progress — Configurateur de devis (F14)
 
-> Point de reprise pour la suite du chantier F14. Etat au 2026-08-26.
+> Point de reprise pour la suite du chantier F14. Etat au 2026-08-31.
 
 ## Fait (écran 1 « Configuration »)
 
@@ -14,26 +14,34 @@
   [verification.md](verification.md),
   [ADR-028](../../../.claude/decisions/028-configurateur-formbase-vs-webform.md).
 
-## Reste à faire (hors périmètre de cet écran)
+## Fait (écran 2 « Devis »)
 
-- **Écran 2 « Devis »** : tableau récapitulatif par configuration (tarif
-  catalogue HT, tarif remise HT, quantités, totaux), totaux véhicule /
-  configuration / général (HT, remise, TVA 20 %, TTC). Dépend du catalogue
-  produit (F17) pour les tarifs.
+- Route `/configurer/devis` (`QuoteForm`), brouillon `PrivateTempStore`,
+  calcul des tarifs/remise/TVA/totaux par `QuoteCalculator`. Modifier/
+  Ajouter une configuration/pastille « Configuration » du fil d'étapes
+  ramènent tous les 3 à l'étape 1 avec le même brouillon prérempli.
+  Commité (`e9aa974`, `0323b2d`) — [ADR-031](../../../.claude/decisions/031-devis-tempstore.md).
+- Totaux (« Tarif par véhicule »/« Tarif total véhicules »/« Total
+  configuration(s) ») alignés au pixel près sur les colonnes du tableau
+  d'équipements, conformes aux maquettes desktop 508-13961/mobile
+  606-37565. Détail technique (raisons des 2 structures DOM parallèles
+  desktop/mobile, formule `calc()` de la ligne générale) : README.md
+  (section configurateur écran 2) et mémoire auto.
+- **Hors périmètre de cet écran** : étape Livraison (F14 3/3), entités
+  métier Devis/Configuration/Ligne d'équipement (F15).
+
+## Reste à faire
+
 - **Écran 3 « Livraison »** : adresse de facturation (lecture seule),
   choix/ajout/modification d'adresse de livraison persistée en back-office.
 - **Entités métier Devis/Configuration** (F14-F15) : rien n'est persisté au
-  delà de `form_state` pour l'instant — le bouton « Voir mon devis » affiche
-  un message de confirmation temporaire et ne fait rien d'autre.
-  Numérotation `WAAAAMMJJ-001`, cycle de vie (à finaliser / en cours /
-  archives) à concevoir.
-- **Catalogue produit / équipements (F17)** : les 4 équipements resteront
-  codés en dur tant que ce chantier n'est pas pris — impacte directement
-  l'écran 2 (pas de tarif catalogue sans lui).
+  delà de la session (`PrivateTempStore`) pour l'instant — le CTA final de
+  l'écran Devis (« Choisir ma livraison ») est un placeholder. Numérotation
+  `WAAAAMMJJ-001`, cycle de vie (à finaliser / en cours / archives) à
+  concevoir.
 - `docs/content-model.md` ne référence toujours pas les 3 taxonomies
   véhicule (dérive documentaire antérieure à ce chantier, non corrigée).
 
 ## Repère pour la suite
 
-Avant de reprendre, `/plan` sur l'écran 2 — dépend de F17 (catalogue) pour
-les tarifs, donc probablement à séquencer après ou en parallèle de F17.
+Avant de reprendre, `/plan` sur l'écran 3 « Livraison ».
