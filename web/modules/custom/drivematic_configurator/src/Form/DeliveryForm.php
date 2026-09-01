@@ -119,17 +119,25 @@ final class DeliveryForm extends FormBase {
     $form['billing'] = $this->buildBillingSection($account);
     $form['delivery_address'] = $this->buildAddressSelector($account);
 
-    $form['actions'] = ['#type' => 'actions'];
-    $form['actions']['add_address'] = [
-      '#type' => 'link',
-      '#title' => $this->t('Ajouter une nouvelle adresse'),
-      '#url' => Url::fromRoute('drivematic_configurator.delivery_address_add'),
-      '#attributes' => [
-        'class' => ['use-ajax', 'configurator-form__add', 'delivery-form__add-address'],
-        'data-dialog-type' => 'modal',
-        'data-dialog-options' => Json::encode(['width' => 760]),
+    // Rangee propre (maquette 511:14844) : « Ajouter une nouvelle adresse »
+    // n'est PAS group avec Enregistrer/Commander (2 rangees d'actions
+    // distinctes, la 2e nettement plus bas) — jamais dans le meme
+    // `#type: actions` que les boutons de soumission finale.
+    $form['add_address'] = [
+      '#type' => 'container',
+      'link' => [
+        '#type' => 'link',
+        '#title' => $this->t('Ajouter une nouvelle adresse'),
+        '#url' => Url::fromRoute('drivematic_configurator.delivery_address_add'),
+        '#attributes' => [
+          'class' => ['use-ajax', 'delivery-form__add-address'],
+          'data-dialog-type' => 'modal',
+          'data-dialog-options' => Json::encode(['width' => 760]),
+        ],
       ],
     ];
+
+    $form['actions'] = ['#type' => 'actions'];
     $form['actions']['save_draft'] = [
       '#type' => 'submit',
       '#value' => $this->t('Enregistrer le devis'),
@@ -314,62 +322,74 @@ final class DeliveryForm extends FormBase {
       $address->get('ville')->value,
     );
 
+    // Wrapper EXTERIEUR volontairement nu (aucune classe visuelle) : la
+    // fondation `forms` applique `display: contents` a tout
+    // `.fieldset-wrapper > div.js-form-wrapper` (Drupal ajoute cette classe
+    // a tout `#type: container`, et ce conteneur est un enfant DIRECT du
+    // fieldset) — annule silencieusement toute mise en page posee dessus
+    // (meme piege documente sur `&__equipment-quantity`,
+    // `_configurator-form.scss`). La vraie carte visuelle (`&__address-row`)
+    // est donc un niveau plus bas (`card`), petit-enfant du fieldset,
+    // jamais cible par ce selecteur.
     return [
       '#type' => 'container',
-      '#attributes' => ['class' => ['delivery-form__address-row']],
-      'radio' => [
-        '#type' => 'radio',
-        '#title' => $summary,
-        '#title_display' => 'invisible',
-        '#return_value' => $id,
-        '#parents' => ['delivery_address'],
-        '#default_value' => $selectedId,
-        '#attributes' => ['class' => ['delivery-form__address-radio']],
-      ],
-      'content' => array_merge(
-        [
-          '#type' => 'container',
-          '#attributes' => ['class' => ['delivery-form__address-text'], 'aria-hidden' => 'true'],
-        ],
-        $this->buildAddressTextLines(
-          $address->get('raison_sociale')->value,
-          $address->get('adresse')->value,
-          $address->get('complement')->value,
-          $address->get('code_postal')->value,
-          $address->get('ville')->value,
-        ),
-      ),
-      'actions' => [
+      'card' => [
         '#type' => 'container',
-        '#attributes' => ['class' => ['delivery-form__address-actions']],
-        'modify' => [
-          '#type' => 'link',
-          '#title' => [
-            'icon' => [
-              '#type' => 'html_tag',
-              '#tag' => 'span',
-              '#value' => '',
-              '#attributes' => ['class' => ['delivery-form__modify-icon']],
-            ],
-            'text' => ['#plain_text' => $this->t('Modifier')],
-          ],
-          '#url' => Url::fromRoute('drivematic_configurator.delivery_address_edit', ['delivery_address' => $id]),
-          '#attributes' => [
-            'class' => ['use-ajax', 'delivery-form__modify'],
-            'data-dialog-type' => 'modal',
-            'data-dialog-options' => Json::encode(['width' => 760]),
-            'aria-label' => $this->t('Modifier cette adresse de livraison'),
-          ],
+        '#attributes' => ['class' => ['delivery-form__address-row']],
+        'radio' => [
+          '#type' => 'radio',
+          '#title' => $summary,
+          '#title_display' => 'invisible',
+          '#return_value' => $id,
+          '#parents' => ['delivery_address'],
+          '#default_value' => $selectedId,
+          '#attributes' => ['class' => ['delivery-form__address-radio']],
         ],
-        'delete' => [
-          '#type' => 'link',
-          '#title' => $this->t('Supprimer'),
-          '#url' => Url::fromRoute('drivematic_configurator.delivery_address_delete', ['delivery_address' => $id]),
-          '#attributes' => [
-            'class' => ['use-ajax', 'delivery-form__delete'],
-            'data-dialog-type' => 'modal',
-            'data-dialog-options' => Json::encode(['width' => 500]),
-            'aria-label' => $this->t('Supprimer cette adresse de livraison'),
+        'content' => array_merge(
+          [
+            '#type' => 'container',
+            '#attributes' => ['class' => ['delivery-form__address-text'], 'aria-hidden' => 'true'],
+          ],
+          $this->buildAddressTextLines(
+            $address->get('raison_sociale')->value,
+            $address->get('adresse')->value,
+            $address->get('complement')->value,
+            $address->get('code_postal')->value,
+            $address->get('ville')->value,
+          ),
+        ),
+        'actions' => [
+          '#type' => 'container',
+          '#attributes' => ['class' => ['delivery-form__address-actions']],
+          'modify' => [
+            '#type' => 'link',
+            '#title' => [
+              'icon' => [
+                '#type' => 'html_tag',
+                '#tag' => 'span',
+                '#value' => '',
+                '#attributes' => ['class' => ['delivery-form__modify-icon']],
+              ],
+              'text' => ['#plain_text' => $this->t('Modifier')],
+            ],
+            '#url' => Url::fromRoute('drivematic_configurator.delivery_address_edit', ['delivery_address' => $id]),
+            '#attributes' => [
+              'class' => ['use-ajax', 'delivery-form__modify'],
+              'data-dialog-type' => 'modal',
+              'data-dialog-options' => Json::encode(['width' => 760]),
+              'aria-label' => $this->t('Modifier cette adresse de livraison'),
+            ],
+          ],
+          'delete' => [
+            '#type' => 'link',
+            '#title' => $this->t('Supprimer'),
+            '#url' => Url::fromRoute('drivematic_configurator.delivery_address_delete', ['delivery_address' => $id]),
+            '#attributes' => [
+              'class' => ['use-ajax', 'delivery-form__delete'],
+              'data-dialog-type' => 'modal',
+              'data-dialog-options' => Json::encode(['width' => 500]),
+              'aria-label' => $this->t('Supprimer cette adresse de livraison'),
+            ],
           ],
         ],
       ],

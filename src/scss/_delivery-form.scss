@@ -5,10 +5,11 @@
 @use 'button-mixins' as btn;
 
 .delivery-form {
-  &__section {
-    margin-block-end: var(--dm-space-block);
-  }
-
+  // Pas de `margin-block-end` ici : `.configurator-form` (racine du
+  // formulaire) est deja en `display: flex; gap: var(--dm-space-block)`
+  // entre TOUS ses enfants directs (dont `&__section`) — un margin
+  // supplementaire s'additionnerait au lieu de le remplacer (meme piege que
+  // `&__addresses` plus bas, CLAUDE.md : deux ecarts ne s'additionnent pas).
   &__section-title {
     margin: 0 0 var(--dm-space-element);
     color: var(--dm-color-steel);
@@ -20,7 +21,7 @@
 
   &__address-text p {
     margin: 0;
-    color: var(--dm-color-grey-primary);
+    color: var(--dm-color-grey-text);
     font-family: var(--dm-font-body);
     font-size: var(--dm-body-size);
     line-height: var(--dm-body-line);
@@ -35,10 +36,38 @@
 
   // Reinitialise le rendu natif du fieldset (bordure/padding), meme piege
   // deja rencontre sur `&__equipment` de `_configurator-form.scss`.
-  &__addresses {
-    margin: 0;
+  // `.form-wrapper` (classe native Drupal, deja posee sur tout fieldset)
+  // ajoute pour battre `.webform-submission-form fieldset { margin: 0 }`
+  // (0,1,1) — `&__addresses` seule (0,1,0) ne suffit pas, meme piege de
+  // specificite deja rencontre sur `&__equipment`.
+
+  // Marge negative volontaire : `.configurator-form` (racine du formulaire)
+  // est en `display: flex; gap: var(--dm-space-block)` (32px, deja entre
+  // TOUS ses enfants directs, dont ce fieldset) — l'ecart mesure sur la
+  // maquette 511:14844 avant « Ajouter une nouvelle adresse » n'est que de
+  // 20px, plus etroit que ce gap automatique. Deux paddings/gaps ne
+  // s'additionnent pas (CLAUDE.md) : on retranche l'exces (32 - 20 = 12px)
+  // plutot que d'empiler un 2e ecart par-dessus le premier.
+  &__addresses.form-wrapper {
+    margin: 0 0 -12px;
     padding: 0;
     border: 0;
+  }
+
+  // La fondation `forms` passe TOUT `.fieldset-wrapper` en grille 3 colonnes
+  // a partir de 992px (`.webform-submission-form .fieldset-wrapper`, regle
+  // generique pour les groupes de champs courts) : chaque carte d'adresse
+  // s'y retrouvait sur 1/3 de largeur au lieu de 100%. Meme specificite
+  // (0,2,0) que la fondation, mais compilee apres elle (`style.scss`) donc
+  // gagne par l'ordre — repasse a 1 colonne pour cette liste precise. Le
+  // `gap` de cette meme grille (`--dm-form-gap`, 20/30px) porte aussi
+  // l'ecart ENTRE cartes (8px, maquette 511:14844) : un `margin` pose sur
+  // `&__address-row` ne le pourrait pas, les cartes n'etant plus des
+  // freres DOM directs depuis l'ajout du wrapper `display: contents` juste
+  // au-dessus (cf. commentaire sur `buildAddressRow()`, DeliveryForm.php).
+  &__addresses .fieldset-wrapper {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
   }
 
   &__addresses > legend {
@@ -57,14 +86,14 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--dm-space-element);
-    padding: 16px;
-    border: 1px solid var(--dm-color-grey-light);
-    border-radius: 12px;
-    background-color: var(--dm-color-grey-lighter);
-  }
 
-  &__address-row + &__address-row {
-    margin-block-start: var(--dm-space-element);
+    // `min-height`, pas `height` : un plancher (maquette 511:14844, cartes
+    // desktop a 128px) — une adresse plus longue (complement, empilement
+    // mobile) doit pouvoir depasser cette hauteur sans etre rognee.
+    min-height: 128px;
+    padding: 24px;
+    border-radius: 8px;
+    background-color: var(--dm-color-grey-lighter);
   }
 
   // Le radio garde son propre wrapper natif (`.form-item.form-type-radio`,
@@ -123,13 +152,50 @@
     }
   }
 
-  // --- Actions de bas de page (Ajouter/Enregistrer/Commander). -------------
+  // --- Bouton « Ajouter une nouvelle adresse » (rangee propre). ------------
+  // Maquette 511:14844 : PAS group avec Enregistrer/Commander — sa propre
+  // rangee, alignee a gauche, juste sous les cartes d'adresses.
+
+  // Lien (ouverture de modale), jamais un `<input type="submit">` — sans
+  // icone dans cette maquette (composant Figma « Btn contour » simple,
+  // contrairement au bouton icone de `configurator-form__add`).
+  &__add-address {
+    @include btn.dm-btn-outline;
+    @include btn.dm-btn-height($bordered: true);
+
+    display: inline-block;
+    padding-inline: 16px;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+
+  @media (width < 992px) {
+    &__add-address {
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  // --- Rangee finale (Enregistrer le devis / Commander). -------------------
+  // Nettement separee de « Ajouter » (maquette 511:14844) : le `gap: var(
+  // --dm-space-block)` (32px) deja pose par `.configurator-form` entre TOUS
+  // ses enfants directs suffit (pas de margin supplementaire a poser ici,
+  // deux ecarts ne s'additionnent pas) — plus etroit que l'espace demesure
+  // du fichier Figma (~300px, lu comme un artefact de canevas, pas une
+  // instruction de mise en page : aucune autre page du site n'a un tel vide
+  // entre deux blocs d'action).
 
   .form-actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: 16px;
+
+    // Neutralise la marge du coeur sur `.form-actions` (~16px, prevue pour
+    // un bloc seul en bas de formulaire) : meme piege deja rencontre sur
+    // `_quote-form.scss`, l'ecart voulu est deja porte par le `gap` du
+    // flex parent ci-dessus.
+    margin-top: 0;
   }
 
   @media (width < 992px) {
@@ -138,40 +204,23 @@
     }
   }
 
-  // Lien « Ajouter une nouvelle adresse » : meme habillage contour+icone que
-  // `configurator-form__add`, mais un `<a>` (ouverture de modale), jamais un
-  // `<input type="submit">` — peut donc porter l'icone en `mask` (pas de
-  // contrainte `::before` a contourner).
-  &__add-address {
-    @include btn.dm-btn-outline;
-    @include btn.dm-btn-height($content: icon, $bordered: true);
-
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding-inline: 16px;
-    border-radius: 6px;
-    text-decoration: none;
-
-    &::before {
-      display: block;
-      width: 24px;
-      height: 24px;
-      content: '';
-      background-color: currentcolor;
-      mask: url('../images/icons/plus-circle.svg') no-repeat center / contain;
-    }
-  }
-
   // « Enregistrer le devis » : la fondation `forms` applique `dm-btn-red` a
   // TOUT `.form-submit` de ce formulaire via `.webform-submission-form
   // .form-actions .form-submit` (3 classes, `_forms.scss`) — ce bouton doit
-  // rester en contour (maquette 671:21277), seul « Commander » reste rouge
+  // rester en contour (maquette 511:14844), seul « Commander » reste rouge
   // (herite sans surcharge). `.delivery-form` repete en tete (litteral,
   // meme piege de specificite deja rencontre sur `configurator-form__add`) :
   // `.form-actions &__save` seul (2 classes) ne suffit pas face aux 3
   // classes de la fondation.
   .delivery-form .form-actions &__save {
     @include btn.dm-btn-outline;
+
+    // La fondation applique `dm-btn-height` sans bordure (`bordered:
+    // false` implicite, `.form-submit` n'a pas de `border`) : ce bouton EN
+    // acquiert une via `dm-btn-outline` juste au-dessus, donc doit aussi
+    // recevoir la compensation de padding correspondante — sinon 1px de
+    // trop par rapport a « Commander » (piege documente CLAUDE.md, deja
+    // rencontre lors de l'harmonisation des boutons, ADR-029).
+    @include btn.dm-btn-height($bordered: true);
   }
 }
