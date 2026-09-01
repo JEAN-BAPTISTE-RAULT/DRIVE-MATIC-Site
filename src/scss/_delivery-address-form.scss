@@ -24,13 +24,49 @@
 @media (width >= 992px) {
   .delivery-address-form {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 30px;
+    gap: 0 30px;
   }
 
-  // « Raison sociale » seule sur sa ligne (maquette 521:17375) : les champs
-  // suivants (Adresse/Complément, Code postal/Ville) remplissent ensuite la
-  // grille 2 colonnes par simple ordre d'apparition, sans autre reglage.
+  // Placement explicite (maquette 521:17375) : « Raison sociale » seule en
+  // colonne 1 de la ligne 1 (colonne 2 vide sur cette ligne — PAS une pleine
+  // largeur), puis 2 champs par ligne. Les 3 ecarts verticaux mesures sur la
+  // maquette ne sont PAS uniformes (20px, puis 30px, puis 40px avant le
+  // bouton) : reproduits tels quels (`margin-top` par ligne, `gap` ne
+  // pouvant varier d'une ligne a l'autre) plutot que moyennes.
   .delivery-address-form .form-item-raison-sociale {
-    grid-column: 1 / -1;
+    grid-column: 1;
+    grid-row: 1;
   }
+
+  .delivery-address-form .form-item-adresse {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 20px;
+  }
+
+  .delivery-address-form .form-item-complement {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 20px;
+  }
+
+  .delivery-address-form .form-item-code-postal {
+    grid-column: 1;
+    grid-row: 3;
+    margin-top: 30px;
+  }
+
+  .delivery-address-form .form-item-ville {
+    grid-column: 2;
+    grid-row: 3;
+    margin-top: 30px;
+  }
+
+  // Pas de regle ici pour `.form-actions` (le bouton « Ajouter cette
+  // adresse ») : jQuery UI le deplace hors de cette grille, dans
+  // `.ui-dialog-buttonpane` (voir `_dialog.scss`) — un `grid-column`/
+  // `grid-row` pose ici ne viserait que le doublon masque laisse derriere
+  // par ce deplacement, jamais le bouton reellement affiche. L'ecart de
+  // 40px avant le bouton est donc porte par le padding-top de
+  // `.ui-dialog-buttonpane`, pas par cette grille.
 }

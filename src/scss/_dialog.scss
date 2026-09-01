@@ -28,11 +28,18 @@
   box-shadow: 0 4px 24px rgb(0 0 0 / 15%);
 }
 
+// Le theme jQuery UI par defaut pose une bordure grise via la classe
+// combinee `.ui-widget.ui-widget-content` (2 classes) — plus specifique que
+// notre selecteur `.ui-dialog` seul (1 classe) : `border: 0` ci-dessus ne
+// suffit donc pas a l'annuler (la regle d'agregation "categorie avant
+// poids" ne s'applique qu'a specificite EGALE, jamais face a une regle plus
+// specifique). Meme specificite (2 classes) ici pour la neutraliser.
+.ui-dialog.ui-widget-content {
+  border: 0;
+}
+
 .ui-dialog .ui-dialog-titlebar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--dm-space-element);
+  position: relative;
   padding: 18px;
   border: 0;
   border-radius: 0;
@@ -45,7 +52,10 @@
   // (`data-dialog-options` largeur 500, confirmation de suppression) recoit
   // une question longue. Repasse en retour a la ligne normal.
   overflow: visible;
-  flex: 1 1 auto;
+  width: auto; // le coeur pose `width: 90%` (jquery.ui.dialog.css), non repris ici
+  // Reserve la place de la croix (position absolute ci-dessous, hors flux) :
+  // icone (20px) + meme ecart que le reste du site (--dm-space-element).
+  padding-inline-end: calc(20px + var(--dm-space-element));
   margin: 0;
   color: var(--dm-color-steel);
   font-family: var(--dm-font-body);
@@ -55,14 +65,20 @@
   white-space: normal;
 }
 
-// Le bouton de fermeture du coeur est positionne en `absolute` par jQuery UI
-// (centre verticalement dans la barre de titre) : neutralise pour redevenir
-// un item flex normal, aligne a droite par le `justify-content` ci-dessus.
+// Repose sur `position: absolute` (mecanisme d'origine de jQuery UI, simplement
+// re-theme) plutot que sur un flex `justify-content: space-between` : mesure
+// a l'ecran (getBoundingClientRect), ce dernier reservait ~48px de trop de
+// chaque cote de la ligne — le bouton contient encore le texte brut "Close"
+// du coeur (masque via `text-indent`/`overflow: hidden` plus bas, jamais
+// retire du DOM), et sa presence faussait le calcul d'espace disponible du
+// flex-grow du titre, meme avec un `flex-basis` fige en px. `position:
+// absolute`, ancre sur `top`/`right` egaux au padding du conteneur (memes
+// valeurs des deux cotes → alignement pixel-parfait avec la maquette
+// 521:17375, sans dependre du calcul flex).
 .ui-dialog .ui-dialog-titlebar-close {
-  position: static;
-  top: auto;
-  right: auto;
-  flex: 0 0 auto;
+  position: absolute;
+  top: 18px;
+  right: 18px;
   overflow: hidden;
   width: 20px;
   height: 20px;
@@ -94,7 +110,14 @@
     width: 100%;
     height: 100%;
     background-color: var(--dm-color-anthracite);
-    mask: url('../images/icons/close.svg') no-repeat center / contain;
+
+    // 50%, pas `contain` : le glyphe X de la maquette (521:17375/671:22383)
+    // occupe seulement la moitie de son cadre (12px dans 24px au desktop,
+    // 10px dans 20px au mobile — meme ratio aux deux tailles). `contain`
+    // etirait le SVG (deja recadre au plus pres du trait, sans marge
+    // interne) jusqu'a remplir tout le cadre, doublant la taille visible
+    // de la croix.
+    mask: url('../images/icons/close.svg') no-repeat center / 50%;
   }
 
   &:hover::before {
@@ -128,6 +151,18 @@
   flex-wrap: wrap;
   gap: 16px;
   justify-content: flex-start;
+}
+
+// Meme piege que `.ui-dialog.ui-widget-content` plus haut : le coeur pose
+// `float: right` via un selecteur a 3 classes (`.ui-dialog .ui-dialog-
+// buttonpane .ui-dialog-buttonset`), plus specifique que notre `.ui-dialog
+// .form-actions` (2 classes) — un bouton de FormBase simple (pas seulement
+// ConfirmFormBase) est deplace ici par jQuery UI des que son wrapper porte
+// la classe `form-actions`. Sans ce correctif le bouton se retrouve colle
+// au bord droit malgre `justify-content: flex-start`. Meme specificite (3
+// classes) pour le neutraliser.
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+  float: none;
 }
 
 // Bouton de soumission d'une modale SANS la classe `webform-submission-form`
@@ -175,18 +210,30 @@
     font-family: var(--dm-font-title);
     font-size: var(--dm-h3-size);
     line-height: var(--dm-h3-line);
+    padding-inline-end: calc(24px + var(--dm-space-element));
   }
 
   .ui-dialog .ui-dialog-titlebar-close {
+    top: 30px;
+    right: 50px;
     width: 24px;
     height: 24px;
   }
 
   .ui-dialog .ui-dialog-content {
-    padding: 0 50px 50px;
+    // padding-top mesure sur la maquette 521:17375 : 103px separent le sommet
+    // de la modale du 1er champ, contre 62px sans lui (30px de padding du
+    // titre + 32px de hauteur de ligne du titre, sans espace ajoute) — 41px
+    // manquants entre le titre et le contenu. Pas de padding-bottom : le
+    // bouton d'un formulaire simple (`#type: actions`) est deplace par
+    // jQuery UI dans `.ui-dialog-buttonpane` (meme mecanisme que
+    // `ConfirmFormBase`), qui porte donc seul l'ecart avant les boutons.
+    padding: 41px 50px 0;
   }
 
   .ui-dialog .ui-dialog-buttonpane {
-    padding: 0 50px 50px;
+    // 40px avant les boutons, 48px apres (maquette 521:17375 : bouton a
+    // 436px du sommet, modale haute de 530px).
+    padding: 40px 50px 48px;
   }
 }

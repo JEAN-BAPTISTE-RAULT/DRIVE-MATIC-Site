@@ -67,3 +67,48 @@ projet a utiliser le systeme de modale Drupal core.
   de la modale (`openDialog`), re-affichage avec erreurs
   (`insert` + message), fermeture+redirection au succes (`closeDialog` +
   `redirect`) — voir §9 du plan pour le detail de la boucle de verification.
+
+## Addendum du 01/09 : fidelite pixel a la maquette 521:17375
+
+Premier passage de stylisation (`_dialog.scss`) approximatif — verifie
+seulement a l'oeil, pas mesure. `getBoundingClientRect()` face aux
+coordonnees exactes de `get_metadata`/`get_design_context` a revele 5 bugs,
+tous causes par du CSS brut jQuery UI (`ui-dialog.css`, non tokenise) plus
+specifique que nos selecteurs (voir CLAUDE.md, section SCSS/SDC) :
+
+1. `.ui-widget.ui-widget-content { border: 1px solid #c5c5c5 }` (2 classes)
+   battait `.ui-dialog { border: 0 }` (1 classe) — bordure fantome.
+2. `.ui-dialog .ui-dialog-title { width: 90% }` (meme specificite que notre
+   regle, mais propriete jamais redeclaree par nous) — largeur figee.
+3. Le texte brut "Close" du coeur (masque a l'ecran, jamais retire du DOM)
+   faussait le calcul d'espace du `flex-grow` du titre — la croix "volait"
+   ~48px de trop des deux cotes. Corrige en abandonnant le flex pour la
+   croix : `position: absolute`, ancree sur les memes valeurs `top`/`right`
+   que le padding du conteneur (mecanisme d'origine de jQuery UI, simplement
+   re-theme).
+4. Le titre et le contenu n'avaient aucun ecart vertical entre eux (padding
+   top absent sur `.ui-dialog-content`) — 41px manquants mesures sur la
+   maquette.
+5. `.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset { float: right }`
+   (3 classes) battait `.ui-dialog .form-actions { justify-content:
+   flex-start }` (2 classes) — le bouton d'un `FormBase` simple (pas
+   seulement `ConfirmFormBase`) est deplace par jQuery UI hors de la grille
+   du formulaire des que son wrapper porte la classe `form-actions` :
+   `grid-column`/`grid-row` pose sur `.form-actions` ne visait qu'un
+   doublon masque (`display: none`), jamais le bouton reellement affiche.
+
+Grille de champs (`_delivery-address-form.scss`) corrigee de la meme
+maniere : « Raison sociale » etait etiree en pleine largeur
+(`grid-column: 1 / -1`, hypothese jamais mesuree) au lieu de rester en
+colonne 1 seule (315px, colonne 2 vide sur cette ligne, verifie
+521:17375) ; placement de chaque champ desormais explicite
+(`grid-column`/`grid-row`) plutot que delegue a l'auto-placement, dont le
+resultat n'etait pas celui attendu des que 6 elements (5 champs + actions)
+se disputent une grille a 2 colonnes avec une case vide.
+
+Resultat final mesure (`getBoundingClientRect`, coordonnees relatives au
+coin superieur gauche de `.ui-dialog`) : modale 760×530 (identique au
+frame), titre (50,30), croix (686,30,24×24), 3 lignes de champs a
+(50/395,103) (50/395,204) (50/395,315) chacune 315×81, bouton (50,436,
+185×46) — correspond exactement aux coordonnees de `get_metadata` sur
+521:17375 (ecarts de 2-3px negligeables, imputables au rendu de police).
