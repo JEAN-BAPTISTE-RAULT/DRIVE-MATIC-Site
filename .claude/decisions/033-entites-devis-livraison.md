@@ -108,13 +108,32 @@ l'ecran) — voir `docs/active/` si une trace ecrite est necessaire.
 Jusqu'ici aucun handler n'etait declare sur `Quote` (ni `list_builder`, ni
 route) : un devis enregistre n'etait consultable nulle part, meme pas en
 back-office (question posee par l'utilisatrice, cf. discussion en session).
-Ajoute `QuoteListBuilder` (meme pattern qu'`EquipmentPriceListBuilder`,
-ADR-030) : ecran en lecture seule (reference, partenaire, statut, total
-TTC, date de creation), route `entity.quote.collection` a
-`/admin/content/devis`, lien menu enfant de `system.admin_content` (visible
-depuis `/admin/content`, exactement comme « Catalogue de tarifs »),
-permission dediee `view drivematic configurator quotes` (`restrict access:
-true`, aucun role ne l'a explicitement — seul `administrator`, bypass
-`is_admin`, y accede aujourd'hui). Aucune operation d'edition/suppression
-ligne par ligne : le statut est pilote par le parcours partenaire et le
-cron, jamais modifie a la main depuis cet ecran.
+Premier essai avec un `QuoteListBuilder` (meme pattern qu'`EquipmentPriceListBuilder`,
+ADR-030) — remplace peu apres par une **Vue** (`views.view.quotes`),
+l'utilisatrice ayant demande du tri par colonne, un filtre par statut et une
+recherche par numero : un `EntityListBuilder` PHP simple n'offre aucun de
+ces trois sans reimplementer a la main ce que Views fait deja. Ecran en
+lecture seule (reference, partenaire, statut, total TTC, date de creation,
+5 colonnes triables), a `/admin/content/devis` (chemin de la page de la
+Vue, remplace l'ancienne route `entity.quote.collection`), lien menu enfant
+de `system.admin_content` (visible depuis `/admin/content`, exactement
+comme « Catalogue de tarifs » — mis a jour pour pointer vers la route
+generee par la Vue, `view.quotes.page_1`), permission dediee `view
+drivematic configurator quotes` (`restrict access: true`, aucun role ne l'a
+explicitement — seul `administrator`, bypass `is_admin`, y accede
+aujourd'hui) portee par l'access plugin `perm` de la Vue. Filtre Statut en
+**filtre groupe** (`plugin_id: string` + `group_info`), pas `list_field` :
+ce plugin de filtre n'existe pas pour un champ `list_string` porte par un
+champ de base d'entite custom (voir CLAUDE.md). Aucune operation
+d'edition/suppression ligne par ligne : le statut est pilote par le
+parcours partenaire et le cron, jamais modifie a la main depuis cet ecran.
+
+**Prealable non documente au depart** : une entite content custom n'expose
+rien a Views tant que son attribut ne declare pas
+`handlers: ['views_data' => \Drupal\views\EntityViewsData::class]` —
+absent initialement, la Vue s'importait sans erreur mais plantait en 500 a
+l'affichage (`SELECT` vide, `ORDER BY "unknown"`). Ajoute a `Quote`
+(+ dependance `drupal:views` dans `drivematic_configurator.info.yml`) ;
+**pas encore fait sur `equipment_price`/`delivery_address`/
+`quote_configuration`** — a reprendre si une Vue est un jour necessaire sur
+l'une de ces 3 entites. Detail dans CLAUDE.md (section PHP/Drupal).

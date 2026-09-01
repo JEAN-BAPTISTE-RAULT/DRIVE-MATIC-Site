@@ -9,9 +9,9 @@ use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Drupal\drivematic_configurator\QuoteListBuilder;
 use Drupal\user\EntityOwnerInterface;
 use Drupal\user\EntityOwnerTrait;
+use Drupal\views\EntityViewsData;
 
 /**
  * Devis d'un partenaire (F14 3/3 / F15, PRD §5).
@@ -40,7 +40,7 @@ use Drupal\user\EntityOwnerTrait;
     'owner' => 'uid',
   ],
   handlers: [
-    'list_builder' => QuoteListBuilder::class,
+    'views_data' => EntityViewsData::class,
   ],
   admin_permission: 'view drivematic configurator quotes',
   base_table: 'quote',

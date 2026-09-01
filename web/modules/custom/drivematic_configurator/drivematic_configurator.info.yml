@@ -5,5 +5,6 @@ package: 'DRIVE-MATIC'
 core_version_requirement: ^11
 dependencies:
   - drupal:taxonomy
+  - drupal:views
   - drivematic_forms:drivematic_forms
   - drivematic_catalog:drivematic_catalog
