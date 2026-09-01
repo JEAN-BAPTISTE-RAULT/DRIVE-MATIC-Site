@@ -99,7 +99,7 @@
   // Le radio garde son propre wrapper natif (`.form-item.form-type-radio`,
   // pose par Drupal meme pour un `#type: radio` isole) : seul le contenu
   // visuel (texte + actions) est construit a la main ici.
-  &__address-content {
+  &__address-text {
     flex: 1 1 auto;
     min-width: 0;
   }
@@ -142,13 +142,16 @@
   }
 
   @media (width < 992px) {
-    &__address-row {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
+    // Le radio reste a GAUCHE du texte d'adresse (pas au-dessus) : la
+    // rangee garde `flex-direction: row` (heritee de la base) — seul
+    // `&__address-actions` (Modifier/Supprimer, plus etroit que radio +
+    // texte + actions sur un mobile courant) passe a la ligne via le
+    // `flex-wrap: wrap` deja pose sur `&__address-row`, sans qu'un
+    // `flex-direction: column` empile tout, radio y compris.
     &__address-actions {
-      margin-inline-start: 0;
+      // Indente sous le texte (pas sous le radio) quand elle passe a la
+      // ligne : 20px (largeur du radio) + l'ecart entre radio et texte.
+      margin-inline-start: calc(20px + var(--dm-space-element));
     }
   }
 

@@ -1855,7 +1855,7 @@ textarea) {
   border-radius: 8px;
   background-color: var(--dm-color-grey-lighter);
 }
-.delivery-form__address-content {
+.delivery-form__address-text {
   flex: 1 1 auto;
   min-width: 0;
 }
@@ -1893,13 +1893,9 @@ textarea) {
   background: url("../images/icons/trash.svg") no-repeat left center/16px 16px;
 }
 @media (width < 992px) {
-  .delivery-form__address-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
   .delivery-form__address-actions {
-    -webkit-margin-start: 0;
-            margin-inline-start: 0;
+    -webkit-margin-start: calc(20px + var(--dm-space-element));
+            margin-inline-start: calc(20px + var(--dm-space-element));
   }
 }
 .delivery-form__add-address {
