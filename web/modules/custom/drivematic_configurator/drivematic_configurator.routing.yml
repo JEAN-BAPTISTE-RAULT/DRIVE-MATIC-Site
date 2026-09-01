@@ -1,3 +1,13 @@
+entity.quote.collection:
+  path: '/admin/content/devis'
+  defaults:
+    _entity_list: 'quote'
+    _title: 'Devis'
+  requirements:
+    _permission: 'view drivematic configurator quotes'
+  options:
+    _admin_route: TRUE
+
 drivematic_configurator.configuration:
   path: '/configurer'
   defaults:

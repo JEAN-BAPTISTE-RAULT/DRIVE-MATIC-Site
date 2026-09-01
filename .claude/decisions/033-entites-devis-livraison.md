@@ -95,3 +95,26 @@ verification explicite en tete de chaque submit handler.
   partenaire) et le reste de F15 (onglets « Mes devis », Dupliquer, PDF,
   archivage manuel, remise exceptionnelle par ligne) — seules la
   persistance et les 2 messages de confirmation sont implementes ici.
+
+## Addendum du 01/09 : verification de la persistance + visibilite back-office
+
+Verifie de bout en bout par un parcours complet (Configuration -> Devis ->
+Livraison -> « Commander ») : `Quote`/`QuoteConfiguration`/
+`QuoteEquipmentLine` sont bien crees, avec les valeurs gelees attendues
+(`billing_*`/`delivery_*` copies depuis le compte/l'adresse retenue,
+`reference` au format `WAAAAMMJJ-001`, totaux identiques a ceux affiches a
+l'ecran) — voir `docs/active/` si une trace ecrite est necessaire.
+
+Jusqu'ici aucun handler n'etait declare sur `Quote` (ni `list_builder`, ni
+route) : un devis enregistre n'etait consultable nulle part, meme pas en
+back-office (question posee par l'utilisatrice, cf. discussion en session).
+Ajoute `QuoteListBuilder` (meme pattern qu'`EquipmentPriceListBuilder`,
+ADR-030) : ecran en lecture seule (reference, partenaire, statut, total
+TTC, date de creation), route `entity.quote.collection` a
+`/admin/content/devis`, lien menu enfant de `system.admin_content` (visible
+depuis `/admin/content`, exactement comme « Catalogue de tarifs »),
+permission dediee `view drivematic configurator quotes` (`restrict access:
+true`, aucun role ne l'a explicitement — seul `administrator`, bypass
+`is_admin`, y accede aujourd'hui). Aucune operation d'edition/suppression
+ligne par ligne : le statut est pilote par le parcours partenaire et le
+cron, jamais modifie a la main depuis cet ecran.

@@ -1,0 +1,6 @@
+drivematic_configurator.quotes:
+  title: 'Devis'
+  description: 'Devis enregistrés par les partenaires depuis le configurateur (F14/F15).'
+  route_name: entity.quote.collection
+  parent: system.admin_content
+  weight: 20

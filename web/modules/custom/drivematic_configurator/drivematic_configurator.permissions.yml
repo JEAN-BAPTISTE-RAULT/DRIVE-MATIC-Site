@@ -1,0 +1,4 @@
+view drivematic configurator quotes:
+  title: 'Voir les devis du configurateur'
+  description: 'Consulter la liste des devis enregistrés par les partenaires (référence, statut, totaux). Réservé aux administrateurs DRIVE-MATIC, jamais au rôle partenaire.'
+  restrict access: true

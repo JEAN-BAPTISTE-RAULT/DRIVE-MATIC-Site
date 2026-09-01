@@ -9,6 +9,7 @@ use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\drivematic_configurator\QuoteListBuilder;
 use Drupal\user\EntityOwnerInterface;
 use Drupal\user\EntityOwnerTrait;
 
@@ -38,6 +39,10 @@ use Drupal\user\EntityOwnerTrait;
     'label' => 'reference',
     'owner' => 'uid',
   ],
+  handlers: [
+    'list_builder' => QuoteListBuilder::class,
+  ],
+  admin_permission: 'view drivematic configurator quotes',
   base_table: 'quote',
 )]
 final class Quote extends ContentEntityBase implements EntityOwnerInterface {
