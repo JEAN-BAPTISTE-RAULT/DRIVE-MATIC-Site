@@ -2034,6 +2034,7 @@ textarea) {
   flex-wrap: wrap;
   gap: 16px;
   justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
@@ -2077,9 +2078,14 @@ textarea) {
   line-height: normal;
   padding-block: 13px;
   display: inline-block;
+  margin: 0;
   padding-inline: 16px;
   border-radius: 4px;
   text-decoration: none;
+}
+
+.ui-dialog .ui-dialog-buttonpane .dialog-cancel {
+  margin: 0;
 }
 
 @media (width >= 992px) {

@@ -172,7 +172,8 @@ final class DeliveryAddressForm extends FormBase {
    * via `use-ajax`/`data-dialog-type: modal`). Sur succes, ferme la modale et
    * redirige vers l'ecran Livraison — la liste d'adresses s'y recharge donc
    * a jour, sans synchronisation AJAX partielle a maintenir (meme choix de
-   * simplicite que QuoteForm::removeConfigurationSubmit(), ADR-031).
+   * simplicite que les modales de confirmation de suppression du module,
+   * DeliveryAddressDeleteForm/QuoteConfigurationDeleteForm, ADR-031).
    *
    * @return array|\Drupal\Core\Ajax\AjaxResponse
    *   Le formulaire (erreurs) ou une reponse AJAX de fermeture+redirection.

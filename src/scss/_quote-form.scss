@@ -93,14 +93,13 @@
     mask: url('../images/icons/pen.svg') no-repeat center / contain;
   }
 
-  // <input type="submit"> ne peut pas porter de ::before/::after pour y
-  // heberger un mask (meme limite que configurator-form__remove) : icone en
-  // background-image (couleur figee dans l'asset Figma), texte pousse par
-  // un padding (16px icone + 10px ecart, comme le lien voisin).
-  // `margin: 0` explicite : la classe `.button` (posee par Drupal sur tout
-  // `#type => submit`) porte sa propre marge en `em` — a specificite egale
-  // (une classe), le theme l'emporte sur ce composant du coeur (regle
-  // d'agregation CSS de Drupal), mais seulement si on la redeclare ici.
+  // Devenu un lien (`use-ajax` + modale de confirmation) : `appearance`/
+  // `margin`/`border` restent poses ici en filet de securite (inoffensifs
+  // sur un `<a>`), heritage d'une epoque ou cet element etait un
+  // `<input type="submit">` (meme limite que configurator-form__remove sur
+  // ce point). Icone en background-image (couleur figee dans l'asset
+  // Figma) plutot qu'en mask, comme `&__modify-icon` : jamais reconverti,
+  // aucun besoin fonctionnel de le faire.
   &__delete {
     appearance: none;
     margin: 0;

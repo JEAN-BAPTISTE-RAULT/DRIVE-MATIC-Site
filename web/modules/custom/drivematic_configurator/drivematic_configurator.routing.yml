@@ -14,6 +14,15 @@ drivematic_configurator.quote:
   requirements:
     _role: 'partenaire'
 
+drivematic_configurator.quote_configuration_delete:
+  path: '/configurer/devis/configuration/{configuration_key}/supprimer'
+  defaults:
+    _form: '\Drupal\drivematic_configurator\Form\QuoteConfigurationDeleteForm'
+    _title: 'Supprimer une configuration'
+  requirements:
+    _role: 'partenaire'
+    configuration_key: '\d+'
+
 drivematic_configurator.delivery:
   path: '/configurer/livraison'
   defaults:

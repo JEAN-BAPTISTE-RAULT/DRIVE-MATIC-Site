@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\drivematic_configurator\Form;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -83,6 +84,12 @@ final class QuoteForm extends FormBase {
     $form['#attributes']['class'][] = 'configurator-form';
     $form['#attributes']['class'][] = 'quote-form';
     $form['#attached']['library'][] = 'drivematic_configurator/quote_toggle';
+    // Requis par le lien « Supprimer » (use-ajax + data-dialog-type: modal,
+    // voir buildConfigurationDisplay()) : contrairement a un CSS de theme,
+    // ce comportement JS n'est pas charge sitewide — chaque formulaire qui
+    // ouvre une modale Drupal core doit le demander explicitement (meme
+    // attache que DeliveryForm::buildForm()).
+    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
 
     $form['stepper'] = $this->buildStepper();
 
@@ -279,14 +286,13 @@ final class QuoteForm extends FormBase {
           ],
         ],
         'delete' => [
-          '#type' => 'submit',
-          '#value' => $this->t('Supprimer'),
-          '#name' => 'remove_configuration_' . $key,
-          '#configuration_key' => $key,
-          '#submit' => ['::removeConfigurationSubmit'],
-          '#limit_validation_errors' => [],
+          '#type' => 'link',
+          '#title' => $this->t('Supprimer'),
+          '#url' => Url::fromRoute('drivematic_configurator.quote_configuration_delete', ['configuration_key' => $key]),
           '#attributes' => [
-            'class' => ['quote-form__delete'],
+            'class' => ['use-ajax', 'quote-form__delete'],
+            'data-dialog-type' => 'modal',
+            'data-dialog-options' => Json::encode(['width' => 500]),
             'aria-label' => $this->t('Supprimer la configuration @number', ['@number' => $position]),
           ],
         ],
@@ -721,32 +727,6 @@ final class QuoteForm extends FormBase {
       $labels[$term->id()] = $term->label();
     }
     return $labels;
-  }
-
-  /**
-   * Callback #submit de « Supprimer la configuration ».
-   *
-   * Retire l'entree du brouillon et reste sur cette page (contrairement a
-   * ConfigurationForm, pas d'AJAX ici : chaque suppression recharge
-   * l'ecran, plus simple pour un premier jet, sans etat client a
-   * synchroniser).
-   */
-  public function removeConfigurationSubmit(array &$form, FormStateInterface $form_state): void {
-    $triggering_element = $form_state->getTriggeringElement();
-    $key = $triggering_element['#configuration_key'] ?? NULL;
-    if ($key === NULL) {
-      return;
-    }
-
-    $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
-    unset($draft[$key]);
-    if ($draft) {
-      $this->tempStore()->set(self::TEMPSTORE_KEY, $draft);
-    }
-    else {
-      $this->tempStore()->delete(self::TEMPSTORE_KEY);
-    }
-    $form_state->setRebuild(TRUE);
   }
 
   /**

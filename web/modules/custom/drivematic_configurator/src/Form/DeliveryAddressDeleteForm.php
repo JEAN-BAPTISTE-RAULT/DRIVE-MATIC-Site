@@ -74,7 +74,7 @@ final class DeliveryAddressDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getDescription(): TranslatableMarkup {
-    return $this->t('Souhaitez-vous vraiment supprimer cette adresse');
+    return $this->t('Voulez-vous vraiment supprimer cette adresse ?');
   }
 
   /**

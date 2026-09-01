@@ -36,7 +36,9 @@ re-affiche dans la modale, mecanisme standard) soit un `AjaxResponse`
 (`CloseModalDialogCommand` + `RedirectCommand` vers `/configurer/livraison`,
 succes).
 - Avantages : **zero JS custom** ecrit pour ce projet (`core/drupal.dialog.
-  ajax`, deja charge sitewide via `drive_matic/dialog`) ; validation serveur,
+  ajax`, requis en `#attached` par chaque formulaire ouvrant une modale —
+  `drive_matic/dialog` n'est que le CSS brut de jQuery UI, pas ce mecanisme
+  JS, voir addendum du 01/09 (2e partie)) ; validation serveur,
   focus trap et fermeture Echap/clic-fond gratuits (jQuery UI dialog,
   eprouve) ; degradation sans JS native (le lien `use-ajax` redevient un
   `<a href>` normal, chaque route fonctionne aussi en page complete — verifie
@@ -112,3 +114,52 @@ frame), titre (50,30), croix (686,30,24×24), 3 lignes de champs a
 (50/395,103) (50/395,204) (50/395,315) chacune 315×81, bouton (50,436,
 185×46) — correspond exactement aux coordonnees de `get_metadata` sur
 521:17375 (ecarts de 2-3px negligeables, imputables au rendu de police).
+
+## Addendum du 01/09 (2e partie) : croix surdimensionnee, bouton « Oui »
+difforme, `Drupal.ajax` absent sur `QuoteForm`
+
+Retour utilisatrice apres le premier addendum : 3 problemes supplementaires,
+tous du meme registre (CSS brut du coeur plus specifique, ou mecanisme non
+charge) — jamais visibles sur une simple capture, seulement a la mesure ou
+au `getComputedStyle`.
+
+1. **Croix surdimensionnee** : `mask-size: contain` etirait le SVG
+   `close.svg` (deja recadre au plus pres du trait, 14×14, sans marge
+   interne) jusqu'a remplir tout le cadre (24×24 desktop/20×20 mobile) — la
+   maquette (521:17375 ET 671:22383, verifie aux deux tailles) cadre en
+   realite le glyphe a **50% seulement** de son cadre (12px dans 24px,
+   10px dans 20px, meme ratio). Corrige : `mask-size: 50%` au lieu de
+   `contain`.
+2. **Bouton « Oui » etire a une hauteur ~2x trop grande** (62px au lieu de
+   46px) : `align-items` par defaut (`normal` → `stretch`) sur
+   `.ui-dialog-buttonset`. Cause exacte non isolee malgre forcage en
+   `!important` de `flex-shrink`, `white-space`, `line-height` (aucun effet
+   — seul un `height` explicite en dur repondait, signe d'une resolution
+   flex interne plutot que d'une propriete CSS classique) : `getBoundingClient
+   Rect()` sur le texte lui-meme (`Range`) confirmait pourtant une seule
+   ligne, 18px de haut, correctement centree. Fix qui MARCHE sans
+   comprendre la cause exacte : `align-items: flex-start` sur `.ui-dialog
+   .form-actions` (n'affecte pas « Non », qui n'etait pas etire).
+3. **Bouton « Non » decale de 8px vers le bas par rapport a « Oui »** : le
+   coeur pose `margin: 0.5em 0.4em 0.5em 0` via
+   `.ui-dialog .ui-dialog-buttonpane button` (2 classes + 1 element =
+   plus specifique que notre `.ui-dialog .dialog-cancel`, 2 classes
+   seules) — `.form-submit` (« Oui ») en etait deja protege par sa propre
+   regle `margin: 0`, mais `.dialog-cancel` n'en avait pas. Corrige avec
+   la meme structure de selecteur (`.ui-dialog .ui-dialog-buttonpane
+   .dialog-cancel { margin: 0 }`) pour l'emporter a coup sur.
+4. **`QuoteConfigurationDeleteForm` (nouvelle modale, suppression d'une
+   configuration a l'etape 2/3 « Devis », remplace l'ancien
+   `QuoteForm::removeConfigurationSubmit()` sans confirmation) n'ouvrait
+   pas la modale du tout : `Drupal.ajax` etait absent de la page.**
+   `core/drupal.dialog.ajax` n'est **pas** charge sitewide (contrairement a
+   ce que disait ce document jusqu'ici) — chaque formulaire qui ouvre une
+   modale Drupal core doit l'attacher explicitement
+   (`DeliveryForm::buildForm()` le fait deja depuis le debut ;
+   `QuoteForm::buildForm()` ne le faisait pas, n'ayant jamais eu besoin de
+   modale avant ce chantier). Symptome : le lien `use-ajax` degradait
+   silencieusement en navigation de page complete (fonctionnellement
+   correct, juste pas la modale attendue) — verifie via
+   `!!window.Drupal?.ajax` dans la console. Reflexe pour toute future
+   modale : verifier que le formulaire qui la declenche attache bien
+   `core/drupal.dialog.ajax`, pas seulement que le lien porte `use-ajax`.

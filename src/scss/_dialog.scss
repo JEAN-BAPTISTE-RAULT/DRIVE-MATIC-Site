@@ -151,6 +151,16 @@
   flex-wrap: wrap;
   gap: 16px;
   justify-content: flex-start;
+
+  // Sans lui (defaut `stretch`), le bouton « Oui » (ConfirmFormBase, cree a
+  // neuf par jQuery UI dans .ui-dialog-buttonset) est etire a une hauteur
+  // deux fois trop grande (~62px au lieu de 46px, mesure) — cause non
+  // isolee avec certitude (jQuery UI recalcule la taille du bouton via son
+  // widget `button()`, sans qu'aucune regle CSS declaree n'explique
+  // l'ecart), mais `flex-start` neutralise l'etirement quelle qu'en soit la
+  // cause exacte, sans effet visible sur « Non »/« Annuler » (dialog-cancel),
+  // qui n'etait pas etire.
+  align-items: flex-start;
 }
 
 // Meme piege que `.ui-dialog.ui-widget-content` plus haut : le coeur pose
@@ -189,16 +199,29 @@
 
 // Bouton « Annuler » d'une modale de confirmation (`ConfirmFormBase`,
 // `dialog-cancel`, classe posee par le coeur) : aucun habillage par defaut,
-// jamais un `.form-submit` (c'est un lien, pas un bouton de formulaire) —
-// meme famille visuelle (contour) que les autres actions secondaires du site.
+// jamais `.form-submit` (route differente : jQuery UI le recree en `<button>`
+// au meme titre que le bouton de confirmation, voir plus bas) — meme famille
+// visuelle (contour) que les autres actions secondaires du site.
 .ui-dialog .dialog-cancel {
   @include btn.dm-btn-outline;
   @include btn.dm-btn-height($bordered: true);
 
   display: inline-block;
+  margin: 0;
   padding-inline: 16px;
   border-radius: 4px;
   text-decoration: none;
+}
+
+// Meme piege encore une fois, sous une 3e forme : le coeur pose une marge
+// via `.ui-dialog .ui-dialog-buttonpane button` (2 classes + 1 element =
+// plus specifique que notre `.ui-dialog .dialog-cancel`, 2 classes seules)
+// — « Non » se retrouvait ainsi decale de 8px (0.5em) vers le bas par
+// rapport a « Oui » (deja protege par sa propre regle `.form-submit`, elle,
+// a 3 classes). `margin: 0` ci-dessus ne suffit donc pas seul : meme
+// structure de selecteur ici pour la battre a coup sur.
+.ui-dialog .ui-dialog-buttonpane .dialog-cancel {
+  margin: 0;
 }
 
 @media (width >= 992px) {
