@@ -26,9 +26,11 @@ use Drupal\user\EntityOwnerTrait;
  * field_company_address/field_address_complement/field_postal_code/
  * field_city) a la premiere visite de l'ecran Livraison si le partenaire n'a
  * encore aucune adresse (DeliveryForm::ensureAtLeastOneAddress()) — voir
- * docs/plans/configurateur-etape-3-livraison.md §7. Une fois creee, une
- * adresse est traitee comme n'importe quelle autre (modifiable/supprimable),
- * sans cas particulier.
+ * docs/plans/configurateur-etape-3-livraison.md §7. Cette adresse par
+ * defaut (`is_default`, seule obligatoire a la creation du compte, identique
+ * a l'adresse de facturation) reste persistee comme une entite normale,
+ * mais n'expose pas les liens Modifier/Supprimer (retour utilisatrice) :
+ * seules les adresses ajoutees en plus par le partenaire le sont.
  *
  * Une adresse deja utilisee par un devis reste modifiable/supprimable sans
  * risque : le devis gele ses propres valeurs a la creation
@@ -85,6 +87,15 @@ final class DeliveryAddress extends ContentEntityBase implements EntityOwnerInte
       ->setLabel(new TranslatableMarkup('Ville'))
       ->setRequired(TRUE)
       ->setSetting('max_length', 255);
+
+    // TRUE uniquement pour l'adresse amorcee automatiquement depuis le
+    // compte (DeliveryForm::ensureAtLeastOneAddress()) — jamais posee a TRUE
+    // par le formulaire d'ajout/edition (DeliveryAddressForm), qui laisse la
+    // valeur par defaut FALSE. Pilote l'affichage des liens Modifier/
+    // Supprimer (DeliveryForm::buildAddressRow()), jamais l'acces lui-meme.
+    $fields['is_default'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(new TranslatableMarkup('Adresse par défaut (compte)'))
+      ->setDefaultValue(FALSE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Créée le'));

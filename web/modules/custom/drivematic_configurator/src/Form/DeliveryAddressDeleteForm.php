@@ -58,9 +58,23 @@ final class DeliveryAddressDeleteForm extends ConfirmFormBase {
 
   /**
    * {@inheritdoc}
+   *
+   * Vide volontairement (demande utilisatrice) : cette modale n'a pas de
+   * titre — la question se lit dans `getDescription()`, seul texte visible.
+   * Rien a traduire ici (PHPCS le signale), mais le type de retour de
+   * l'interface exige un `TranslatableMarkup` : derogation ciblee plutot
+   * qu'un texte factice.
    */
   public function getQuestion(): TranslatableMarkup {
-    return $this->t('Supprimer cette adresse de livraison ?');
+    // phpcs:ignore Drupal.Semantics.FunctionT.EmptyString
+    return new TranslatableMarkup('');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDescription(): TranslatableMarkup {
+    return $this->t('Souhaitez-vous vraiment supprimer cette adresse');
   }
 
   /**
@@ -74,7 +88,14 @@ final class DeliveryAddressDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getConfirmText(): TranslatableMarkup {
-    return $this->t('Supprimer');
+    return $this->t('Oui');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCancelText(): TranslatableMarkup {
+    return $this->t('Non');
   }
 
   /**
@@ -87,9 +108,11 @@ final class DeliveryAddressDeleteForm extends ConfirmFormBase {
 
     // Voir DeliveryAddressForm::buildForm() : meme piege (pas de <h1> hors
     // route de node), meme omission en modale (titre deja porte par le
-    // dialogue).
+    // dialogue). `getQuestion()` etant vide (pas de titre dans la modale,
+    // demande utilisatrice), la description sert de titre de repli ici —
+    // seul texte disponible qui ait un sens hors modale.
     if (!$this->isModalRequest()) {
-      $form['#prefix'] = '<h1 class="page-title">' . $this->getQuestion() . '</h1>';
+      $form['#prefix'] = '<h1 class="page-title">' . $this->getDescription() . '</h1>';
     }
 
     return $form;

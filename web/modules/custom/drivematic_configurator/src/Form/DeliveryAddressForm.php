@@ -69,7 +69,7 @@ final class DeliveryAddressForm extends FormBase {
     // titre. Omis quand la route est ouverte en modale (dialog Drupal core,
     // qui porte deja son propre titre accessible) pour ne pas le dupliquer.
     if (!$this->isModalRequest()) {
-      $title = $delivery_address ? $this->t('Modifier une adresse de livraison') : $this->t('Ajouter une nouvelle adresse');
+      $title = $delivery_address ? $this->t('Modifier une adresse') : $this->t('Ajouter une nouvelle adresse');
       $form['#prefix'] = '<h1 class="page-title">' . $title . '</h1>';
     }
 

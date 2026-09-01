@@ -34,7 +34,7 @@ drivematic_configurator.delivery_address_edit:
   path: '/configurer/livraison/adresse/{delivery_address}/modifier'
   defaults:
     _form: '\Drupal\drivematic_configurator\Form\DeliveryAddressForm'
-    _title: 'Modifier une adresse de livraison'
+    _title: 'Modifier une adresse'
   requirements:
     # Les deux exigences se cumulent (ET) : `_role` maintient la
     # redirection anonyme->connexion sitewide (PartnerAccessRedirectSubscriber
