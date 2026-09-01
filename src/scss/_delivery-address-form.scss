@@ -1,0 +1,36 @@
+// Habillage du formulaire « Ajouter/Modifier une adresse de livraison »
+// (modale, F14 3/3, module drivematic_configurator). Meme derogation
+// qu'ADR-015 : le markup vient de l'API Form, pas d'un composant.
+
+// La fondation `forms` traite `.webform-submission-form` comme UNE carte
+// (grille 1 colonne / 3 a partir de 992px, padding, fond gris, coins
+// arrondis — voir `_forms.scss`) : annulee ici, la modale (`.ui-dialog`,
+// `_dialog.scss`) porte deja ce cadre — une 2e carte imbriquee ferait
+// doublon. Grille reconstruite a 2 colonnes (maquette 521:17375), la seule
+// dont ce formulaire a besoin.
+
+// Reference : maquettes Figma desktop 521:17375 / mobile 671:22383
+// (fileKey ZmmVBSOWSsHVkok6EU2Ays).
+
+.delivery-address-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  padding: 0;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+@media (width >= 992px) {
+  .delivery-address-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 30px;
+  }
+
+  // « Raison sociale » seule sur sa ligne (maquette 521:17375) : les champs
+  // suivants (Adresse/Complément, Code postal/Ville) remplissent ensuite la
+  // grille 2 colonnes par simple ordre d'apparition, sans autre reglage.
+  .delivery-address-form .form-item-raison-sociale {
+    grid-column: 1 / -1;
+  }
+}

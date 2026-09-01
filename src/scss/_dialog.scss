@@ -1,0 +1,192 @@
+// Habillage des modales Drupal core (`use-ajax` + `data-dialog-type: modal`,
+// systeme jQuery UI dialog — ADR-034). Meme derogation qu'ADR-015 (`forms`) :
+// le markup vient du coeur, pas d'un composant, et sert TOUTES les modales du
+// site (actuelles et futures) — le mettre en fondation evite de le repeter
+// par formulaire. Reprend le meme langage visuel que le SDC `help-modal`
+// (seul autre systeme de modale du site, `<dialog>` natif) : coins 24px,
+// en-tete titre + croix, icone `close.svg` — les deux mecanismes doivent
+// se ressembler malgre leur implementation differente.
+
+// Remplace le CSS brut non tokenise de `css/components/dialog.css` /
+// `ui-dialog.css` (bibliotheques core copiees telles quelles a l'installation
+// du theme, jamais restylees) : categorie `theme` (ce fichier) l'emporte
+// toujours sur leur categorie `component`, quel que soit l'ordre de poids —
+// aucun besoin de les modifier ni de les supprimer (regle d'agregation CSS
+// de Drupal, CLAUDE.md).
+
+// Reference : maquettes Figma desktop 521:17375 / mobile 671:22383
+// (fileKey ZmmVBSOWSsHVkok6EU2Ays).
+
+@use 'button-mixins' as btn;
+
+.ui-dialog {
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background-color: var(--dm-color-white);
+  box-shadow: 0 4px 24px rgb(0 0 0 / 15%);
+}
+
+.ui-dialog .ui-dialog-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--dm-space-element);
+  padding: 18px;
+  border: 0;
+  border-radius: 0;
+  background-color: var(--dm-color-white);
+}
+
+.ui-dialog .ui-dialog-title {
+  // Le coeur tronque le titre sur une ligne (`overflow: hidden;
+  // white-space: nowrap`) — trop court des qu'une modale etroite
+  // (`data-dialog-options` largeur 500, confirmation de suppression) recoit
+  // une question longue. Repasse en retour a la ligne normal.
+  overflow: visible;
+  flex: 1 1 auto;
+  margin: 0;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+  white-space: normal;
+}
+
+// Le bouton de fermeture du coeur est positionne en `absolute` par jQuery UI
+// (centre verticalement dans la barre de titre) : neutralise pour redevenir
+// un item flex normal, aligne a droite par le `justify-content` ci-dessus.
+.ui-dialog .ui-dialog-titlebar-close {
+  position: static;
+  top: auto;
+  right: auto;
+  flex: 0 0 auto;
+  overflow: hidden;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+
+  // jQuery UI ajoute « Close » en texte BRUT (pas dans un element) apres ses
+  // 2 `<span>` d'icone — ni `display: none` (rien a cibler) ni
+  // `visually-hidden` (classe du coeur) ne peuvent l'atteindre. Decale hors
+  // champ plutot que masque : reste lu par les lecteurs d'ecran (nom
+  // accessible du bouton), invisible a l'ecran.
+  text-indent: 200%;
+  white-space: nowrap;
+
+  // Les 2 `<span>` d'icone de jQuery UI, eux, peuvent etre masques : remplaces
+  // par le meme mask que `help-modal__close` (asset deja existant, jamais
+  // duplique).
+  .ui-icon,
+  .ui-button-icon-space {
+    display: none;
+  }
+
+  &::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: var(--dm-color-anthracite);
+    mask: url('../images/icons/close.svg') no-repeat center / contain;
+  }
+
+  &:hover::before {
+    background-color: var(--dm-color-steel);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--dm-color-red);
+    outline-offset: 2px;
+  }
+}
+
+.ui-dialog .ui-dialog-content {
+  padding: 0 18px 18px;
+}
+
+// Le coeur deplace `.form-actions` d'un `ConfirmFormBase` (« Supprimer »/
+// « Annuler ») hors de `.ui-dialog-content`, dans un `.ui-dialog-buttonpane`
+// distinct (mecanisme natif jQuery UI) — la bande grise/bordure heritee de
+// l'ancien `dialog.css` non tokenise (jamais restyle jusqu'ici) est
+// neutralisee pour continuer le meme fond blanc que le reste de la modale.
+.ui-dialog .ui-dialog-buttonpane {
+  margin: 0;
+  padding: 0 18px 18px;
+  border: 0;
+  background-color: var(--dm-color-white);
+}
+
+.ui-dialog .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start;
+}
+
+// Bouton de soumission d'une modale SANS la classe `webform-submission-form`
+// (`ConfirmFormBase` — « Supprimer » — n'a pas de champ, une carte grise
+// heritee de cette classe ferait doublon avec la carte deja portee par
+// `.ui-dialog` lui-meme). Meme habillage que `.form-submit` des autres
+// formulaires du site (`_forms.scss`), scope ici plutot que d'y ajouter
+// cette classe sur la racine du formulaire.
+.ui-dialog .form-actions .form-submit {
+  @include btn.dm-btn-red;
+  @include btn.dm-btn-height;
+
+  appearance: none;
+  display: inline-block;
+  margin: 0;
+  padding-inline: 16px;
+  border: 0;
+  border-radius: 4px;
+  font-family: var(--dm-font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+// Bouton « Annuler » d'une modale de confirmation (`ConfirmFormBase`,
+// `dialog-cancel`, classe posee par le coeur) : aucun habillage par defaut,
+// jamais un `.form-submit` (c'est un lien, pas un bouton de formulaire) —
+// meme famille visuelle (contour) que les autres actions secondaires du site.
+.ui-dialog .dialog-cancel {
+  @include btn.dm-btn-outline;
+  @include btn.dm-btn-height($bordered: true);
+
+  display: inline-block;
+  padding-inline: 16px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+@media (width >= 992px) {
+  .ui-dialog .ui-dialog-titlebar {
+    padding: 30px 50px 0;
+  }
+
+  .ui-dialog .ui-dialog-title {
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+  }
+
+  .ui-dialog .ui-dialog-titlebar-close {
+    width: 24px;
+    height: 24px;
+  }
+
+  .ui-dialog .ui-dialog-content {
+    padding: 0 50px 50px;
+  }
+
+  .ui-dialog .ui-dialog-buttonpane {
+    padding: 0 50px 50px;
+  }
+}

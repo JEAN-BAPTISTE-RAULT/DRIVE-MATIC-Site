@@ -33,6 +33,12 @@
 // `configurator-form`.
 // `delivery-form` : meme derogation, pour l'ecran « Livraison » (FormBase,
 // route /configurer/livraison, F14 etape 3/3).
+// `dialog` : meme derogation, pour le systeme de modale Drupal core
+// (`.ui-dialog`, jQuery UI) — sert TOUTES les modales du site, actuelles et
+// futures (ADR-034).
+// `delivery-address-form` : meme derogation, pour le formulaire d'adresse de
+// livraison ouvert dans cette modale (F14 3/3) — carte de la fondation
+// `forms` neutralisee (deja portee par `.ui-dialog`), grille 2 colonnes.
 
 @use 'tokens';
 @use 'fonts';
@@ -48,6 +54,8 @@
 @use 'configurator-form';
 @use 'quote-form';
 @use 'delivery-form';
+@use 'dialog';
+@use 'delivery-address-form';
 @use 'views-faq';
 @use 'page-title';
 @use 'pager';
