@@ -159,7 +159,7 @@ final class QuoteForm extends FormBase {
     $form['footer']['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Choisir ma livraison'),
-      '#submit' => ['::deliveryPlaceholderSubmit'],
+      '#submit' => ['::deliverySubmit'],
       '#attributes' => ['class' => ['configurator-form__submit']],
     ];
 
@@ -778,14 +778,9 @@ final class QuoteForm extends FormBase {
 
   /**
    * Callback #submit de « Choisir ma livraison ».
-   *
-   * L'etape 3 n'existe pas encore (F14 3/3, hors perimetre) : message
-   * temporaire, meme logique que le placeholder d'origine de
-   * ConfigurationForm::submitForm().
    */
-  public function deliveryPlaceholderSubmit(array &$form, FormStateInterface $form_state): void {
-    $this->messenger()->addStatus($this->t("L'étape Livraison arrive bientôt."));
-    $form_state->setRebuild(TRUE);
+  public function deliverySubmit(array &$form, FormStateInterface $form_state): void {
+    $form_state->setRedirect('drivematic_configurator.delivery');
   }
 
   /**

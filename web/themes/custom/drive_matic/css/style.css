@@ -1805,6 +1805,156 @@ textarea) {
   font-size: 0.875rem;
 }
 
+.delivery-form__section {
+  -webkit-margin-after: var(--dm-space-block);
+          margin-block-end: var(--dm-space-block);
+}
+.delivery-form__section-title {
+  margin: 0 0 var(--dm-space-element);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+  font-weight: 700;
+}
+.delivery-form__address-text p {
+  margin: 0;
+  color: var(--dm-color-grey-primary);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: var(--dm-body-line);
+}
+.delivery-form__billing-contact {
+  margin: var(--dm-space-element) 0 0;
+  font-family: var(--dm-font-body);
+  font-size: 0.875rem;
+  color: var(--dm-color-grey-text);
+}
+.delivery-form__addresses {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.delivery-form__addresses > legend {
+  width: 100%;
+  margin: 0 0 var(--dm-space-element);
+  padding: 0;
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-title);
+  font-size: var(--dm-h3-size);
+  line-height: var(--dm-h3-line);
+  font-weight: 700;
+}
+.delivery-form__address-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--dm-space-element);
+  padding: 16px;
+  border: 1px solid var(--dm-color-grey-light);
+  border-radius: 12px;
+  background-color: var(--dm-color-grey-lighter);
+}
+.delivery-form__address-row + .delivery-form__address-row {
+  -webkit-margin-before: var(--dm-space-element);
+          margin-block-start: var(--dm-space-element);
+}
+.delivery-form__address-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.delivery-form__address-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--dm-space-element);
+  -webkit-margin-start: auto;
+          margin-inline-start: auto;
+}
+.delivery-form__modify, .delivery-form__delete {
+  display: inline-flex;
+  align-items: center;
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-body);
+  font-size: 0.75rem;
+  line-height: var(--dm-body-line);
+  text-decoration: none;
+  cursor: pointer;
+}
+.delivery-form__modify {
+  gap: 10px;
+}
+.delivery-form__modify-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  background-color: var(--dm-color-anthracite);
+  -webkit-mask: url("../images/icons/pen.svg") no-repeat center/contain;
+          mask: url("../images/icons/pen.svg") no-repeat center/contain;
+}
+.delivery-form__delete {
+  -webkit-padding-start: 26px;
+          padding-inline-start: 26px;
+  background: url("../images/icons/trash.svg") no-repeat left center/16px 16px;
+}
+@media (width < 992px) {
+  .delivery-form__address-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .delivery-form__address-actions {
+    -webkit-margin-start: 0;
+            margin-inline-start: 0;
+  }
+}
+.delivery-form .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 16px;
+}
+@media (width < 992px) {
+  .delivery-form .form-actions > * {
+    width: 100%;
+  }
+}
+.delivery-form__add-address {
+  border: 1px solid var(--dm-color-steel);
+  background-color: transparent;
+  color: var(--dm-color-steel);
+}
+.delivery-form__add-address:hover {
+  background-color: var(--dm-color-steel);
+  color: var(--dm-color-white);
+}
+.delivery-form__add-address {
+  line-height: normal;
+  padding-block: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-inline: 16px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+.delivery-form__add-address::before {
+  display: block;
+  width: 24px;
+  height: 24px;
+  content: "";
+  background-color: currentcolor;
+  -webkit-mask: url("../images/icons/plus-circle.svg") no-repeat center/contain;
+          mask: url("../images/icons/plus-circle.svg") no-repeat center/contain;
+}
+.delivery-form .form-actions .delivery-form__save {
+  border: 1px solid var(--dm-color-steel);
+  background-color: transparent;
+  color: var(--dm-color-steel);
+}
+.delivery-form .form-actions .delivery-form__save:hover {
+  background-color: var(--dm-color-steel);
+  color: var(--dm-color-white);
+}
+
 .view-faq .view-filters {
   padding-block: var(--dm-space-page);
   padding-inline: var(--dm-gutter);

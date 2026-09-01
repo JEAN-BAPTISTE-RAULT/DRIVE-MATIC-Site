@@ -352,7 +352,7 @@
 - Quantite retrovision exterieure hors bornes 1-2 → refus. `[INFERE]`
 
 **Mise en oeuvre (a rejouer) — ecran 1 « Configuration » livre le 2026-08-26** (module `drivematic_configurator`, [ADR-028](../.claude/decisions/028-configurateur-formbase-vs-webform.md), maquettes 493:16990/606:36813/508:13222) :
-- Les **etapes 1 (Configuration) et 2 (Devis)** de ce scenario sont aujourd'hui rejouables, sur `/configurer` et `/configurer/devis` (role `partenaire`). L'**etape 3 (Livraison) n'est pas implementee** — le bouton « Choisir ma livraison » est un placeholder (F14 3/3, F15).
+- Les **3 etapes** de ce scenario sont aujourd'hui rejouables, sur `/configurer`, `/configurer/devis` et `/configurer/livraison` (role `partenaire`) — voir S15/S16 pour le detail de l'etape 3, livree le 2026-09-01.
 - Cascade vehicule (marque/modele/motorisation) : memes taxonomies et meme mecanisme que le formulaire de contact (F10), generalise pour plusieurs cascades independantes sur une page.
 - **Quantite retrovision exterieure bornee 1-2, verifiee par contournement reel du controle client** (attribut HTML `max` retire puis valeur 5 soumise) : refusee cote serveur avec le message natif Drupal de l'element `#type: number` — pas seulement desactivee visuellement.
 - **11e configuration bloquee cote serveur**, pas seulement par la desactivation du bouton « Ajouter une configuration ».
@@ -384,6 +384,30 @@
 - L'adresse de facturation est en lecture seule.
 - Une adresse de livraison ajoutee/modifiee en front est **automatiquement enregistree en back-office**.
 
+**Mise en oeuvre (a rejouer) — livre le 2026-09-01** ([ADR-033](../.claude/decisions/033-entites-devis-livraison.md), [ADR-034](../.claude/decisions/034-modale-drupal-core.md)) :
+- `/configurer/livraison` : adresse de facturation en lecture seule + lien
+  « Contactez-nous » (ecart utilisatrice — pas de formulaire d'edition,
+  pointe vers le node `contact`).
+- Liste « Sélectionner une adresse de livraison » **toujours affichee**
+  (meme a une seule adresse), radios + liens Modifier/Supprimer par ligne
+  (meme pattern que les configurations de l'ecran 2). A la 1re visite, si le
+  partenaire n'a aucune adresse, une **vraie entite** `delivery_address` est
+  amorcee automatiquement depuis les champs du compte — traitee ensuite
+  comme n'importe quelle autre (aucun cas particulier). Le bloc « Mon
+  adresse de livraison » + bouton « Modifier l'adresse de livraison »
+  isole de la maquette (671:21277) est un residu retire (retour
+  utilisatrice).
+- Ajout/edition d'adresse via une **modale Drupal core** (`use-ajax`,
+  premiere utilisation de ce pattern dans le projet) : verifie en conditions
+  reelles (requete AJAX authentifiee) — ouverture, revalidation avec message
+  d'erreur sur un code postal invalide (sans fermer la modale), fermeture +
+  redirection au succes.
+- **IDOR verifie** : un partenaire ne peut ni voir ni modifier/supprimer
+  l'adresse d'un autre (403, `DeliveryAddressAccessControlHandler`), teste
+  avec 2 comptes distincts.
+- Suppression d'une adresse deja utilisee par un devis existant : le devis
+  garde ses propres donnees gelees (`Quote::delivery_*`), jamais affecte.
+
 ---
 
 ## S16 — Finaliser & commander un devis
@@ -397,6 +421,21 @@
 - Message « Felicitations, votre commande a bien ete enregistree... ».
 - Statut passe a « Commande le jj/mm/aaaa » ; le montant HT s'affiche.
 - E-mail de confirmation **avec PDF du devis** (au partenaire + `info@`).
+
+**Mise en oeuvre partielle (a rejouer) — livre le 2026-09-01** (ADR-033) :
+sur `/configurer/livraison`, les boutons **« Enregistrer le devis »**
+(statut « À finaliser ») et **« Commander »** (statut « En cours »,
+`date_commande` posee) materialisent le brouillon en entites `quote`/
+`quote_configuration`/`quote_equipment_line` (prix geles, identiques a
+l'ecran 2) et affichent le message de confirmation attendu (avec un lien
+« Contactez-nous » pour le bon de commande). Redirige vers l'etape 1 (pas de
+page « Mes devis » pour l'instant). **Hors perimetre, confirme avec
+l'utilisatrice** : page « Mes devis »/« Tableau de bord » (F13/F15), e-mail
+de confirmation, PDF du devis, statut intermediaire « A commander » distinct
+de « Commande le jj/mm/aaaa » (2 statuts implementes pour l'instant : « À
+finaliser »/« En cours »). Archivage automatique a J+30 apres
+`date_commande` **implemente et verifie** (`hook_cron`, J+29 non archive
+vs J+31 archive).
 
 ---
 
@@ -585,6 +624,7 @@
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-01 | **F14 — configurateur de devis, ecran 3 « Livraison » livre** ([ADR-033](../.claude/decisions/033-entites-devis-livraison.md), [ADR-034](../.claude/decisions/034-modale-drupal-core.md), maquettes 508:13965/671:21277/521:17375/671:22383) : route `/configurer/livraison`, 4 nouvelles entites custom (`quote`, `quote_configuration`, `quote_equipment_line`, `delivery_address` — premiere entite multi-instance par partenaire du projet, controle d'acces par proprietaire). Liste d'adresses de livraison toujours affichee (radios + Modifier/Supprimer par ligne), amorcee automatiquement depuis le compte a la 1re visite ; le bloc « Mon adresse de livraison » + bouton isole de la maquette est un residu retire (retour utilisatrice). Ajout/edition d'adresse en modale Drupal core (`use-ajax`, premiere utilisation de ce pattern, zero JS custom). « Enregistrer le devis »/« Commander » materialisent le brouillon `PrivateTempStore` en entites (prix geles, numerotation `WAAAAMMJJ-001`) et purgent le brouillon. Archivage automatique a J+30 (`hook_cron`). **Bug corrige en verifiant** : `$form_state->setRedirect()` dans `buildForm()` n'a aucun effet sur une requete GET (uniquement pris en compte apres soumission) — l'etat vide (brouillon absent) doit etre rendu inline, pas redirige, meme pattern que `QuoteForm`. **Hors perimetre, confirme avec l'utilisatrice** : F13 (Tableau de bord), reste de F15 (page « Mes devis », Dupliquer, PDF, e-mail de confirmation, archivage manuel). **A rejouer** : S15, S16 (mobile et desktop, IDOR avec 2 comptes partenaire) | S15, S16 |
 | 2026-08-31 | **F2 — fil d'Ariane masque en mobile** (addendum [ADR-023](../.claude/decisions/023-fil-ariane-style.md), demande explicite) : `.breadcrumb ol` passe a `display: none` sous 992px, `.breadcrumb` conserve son `padding-block` (l'ecart vers le titre de page/premier paragraphe hero n'est pas affecte). **A rejouer** : S1, en mobile (< 992px) sur une page avec et sans bloc titre | S1 |
 | 2026-08-31 | **F3 — `news_home` (bloc actualites home) : titre, points de pagination et bouton « voir toutes » recentres** : `.news-home` n'a qu'un `padding-left` (le droit est laisse libre pour le debordement volontaire de la piste de cartes) — ces 3 elements en heritaient et se retrouvaient decales de `gutter/2` (20px a 1440px) a droite du vrai centre de page. Corrige par un `padding-right: var(--dm-gutter)` fixe sur chacun (pas le pattern `calc(50vw - 50%)` habituel, qui s'annule a zero ici — cf. CLAUDE.md, section SCSS/SDC). Verifie par mesure DOM en desktop et mobile, pas a l'oeil. **A rejouer** : S2 (bloc actualites, desktop et mobile) | S2 |
 | 2026-08-31 | **F14 — configurateur de devis, ecran 2 « Devis », 3 corrections post-livraison** ([ADR-032](../.claude/decisions/032-espacement-metriques-devis.md)) : (1) fil d'etapes debordant horizontalement en mobile (l'etape « Configuration » y passe en etat franchi, plus large que sur l'ecran 1) — gap/padding resserres, filet de securite `overflow-x: auto` corrige pour ne plus tronquer les deux pastilles extremes a parts egales au repos (`flex-start` + `width: fit-content` au lieu de `center` seul). (2) Tableau d'equipements debordant aussi en mobile (`table-layout: auto` sous son mot le plus long), invisible en scroll de page (`overflow: hidden` des coins arrondis rognait en silence) — padding des cellules resserre. (3) Espace inegal (13 a 31px) apres chaque texte des 4 premieres metriques des bandeaux de totaux, largeurs fixes remplacees par un espace uniforme (20px) — perte assumee de l'alignement colonne par colonne entre bandeaux pour ces 4 metriques (compromis presente et tranche par l'utilisatrice). **A rejouer** : S14 (etape 2, mobile 320-390px et desktop) | S14 |

@@ -31,6 +31,8 @@
 // `quote-form` : meme derogation, pour l'ecran « Devis » (FormBase, route
 // /configurer/devis, F14 etape 2/3) — meme structure multi-cartes que
 // `configurator-form`.
+// `delivery-form` : meme derogation, pour l'ecran « Livraison » (FormBase,
+// route /configurer/livraison, F14 etape 3/3).
 
 @use 'tokens';
 @use 'fonts';
@@ -45,6 +47,7 @@
 @use 'user-logout-confirm-form';
 @use 'configurator-form';
 @use 'quote-form';
+@use 'delivery-form';
 @use 'views-faq';
 @use 'page-title';
 @use 'pager';

@@ -327,7 +327,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - [x] Le tarif remise applique = remise commerciale du partenaire (back-office, `field_discount_rate`). `[ ]` remise « exceptionnelle » saisie par Drive Matic pour ce devis precis — necessite la Ligne d'equipement (F15), pas encore implementee.
 - [x] Les tarifs **n'incluent pas** les frais de livraison (integres hors site, dans le bon de commande) — mention « Devis hors frais de livraison » affichee.
 - [x] Chaque configuration est modifiable / supprimable dans l'etape Devis.
-- [ ] Une adresse de livraison ajoutee/modifiee en front est automatiquement enregistree en back-office — etape Livraison (F14 3/3) pas encore implementee.
+- [x] Une adresse de livraison ajoutee/modifiee en front est automatiquement enregistree en back-office (entite `delivery_address`, ADR-033).
 - [x] Calculs TVA a 20 %.
 
 **Cas limites** :
@@ -337,6 +337,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - **Mise en oeuvre — ecran 1 « Configuration » le 2026-08-26** (maquettes desktop 493-16990, mobile 606-36813, multi-config 508-13222), [ADR-028](../.claude/decisions/028-configurateur-formbase-vs-webform.md) : module `drivematic_configurator`, FormBase custom (pas Webform) sur la route `/configurer` — reprend le node placeholder du meme alias, desormais supprime. Selection vehicule par cascade (marque/modele/motorisation, taxonomies ADR-003, meme mecanisme que F10 generalise pour plusieurs instances sur une page) ; 4 equipements codes en dur en attendant le catalogue F17 (retrovision exterieure avec quantite 1-2, retrovision interieure, telecommande VOR, double pedalier) ; quantite hors bornes 1-2 refusee cote serveur, verifie par un contournement reel du controle client (`#max` de l'element `number`, pas seulement l'attribut HTML) ; blocs de configuration repetables (max 10, verifie cote serveur) avec suppression a partir du 2e bloc. Route reservee au role `partenaire` ; un anonyme est redirige vers la connexion plutot que de recevoir un 403 brut (mecanisme sitewide, `PartnerAccessRedirectSubscriber`, applique a toute route `_role: partenaire`).
 - **Mise en oeuvre — reactivite ecran 1 le 2026-08-27** : les sections equipements/quantite restent masquees tant que marque+modele+motorisation ne sont pas tous renseignes ; « Voir mon devis » reste desactive tant qu'aucun equipement n'est coche ; une configuration sans equipement est abandonnee cote serveur au submit (jamais fie au seul controle client). Amelioration progressive (`html.js`), degrade en tout-visible/tout-actif sans JS.
 - **Mise en oeuvre — ecran 2 « Devis » le 2026-08-27** ([ADR-031](../.claude/decisions/031-devis-tempstore.md)) : route `/configurer/devis` (`QuoteForm`), donnees transmises via `PrivateTempStore` (pas de BDD avant l'etape 3) — calcul des tarifs/remise/TVA/totaux par le service `QuoteCalculator`, reutilisant le catalogue (F17) et `field_discount_rate` (F16). Modifier/Supprimer/Ajouter une configuration operationnels ; CTA final vers l'etape 3 en placeholder. **Hors perimetre** : etape Livraison (F14 3/3), entites metier Devis/Configuration/Ligne d'equipement (rien n'est persiste au-dela de la session tant que le partenaire n'a pas explicitement enregistre/commande — F15). Detail des corrections post-livraison etape 1 : `docs/active/configurateur-etape-1/verification.md`.
+- **Mise en oeuvre — ecran 3 « Livraison » le 2026-09-01** ([ADR-033](../.claude/decisions/033-entites-devis-livraison.md), [ADR-034](../.claude/decisions/034-modale-drupal-core.md)) : route `/configurer/livraison` (`DeliveryForm`) — adresse de facturation en lecture seule (lien de contact a la place d'un formulaire d'edition, ecart utilisatrice) ; liste « Sélectionner une adresse de livraison » (radios + Modifier/Supprimer par ligne, meme pattern que les configurations de l'ecran 2), amorcee automatiquement depuis le compte a la 1re visite si aucune adresse n'existe encore ; ajout/edition d'adresse via une modale Drupal core (premiere utilisation de ce pattern dans le projet, ADR-034). Au clic « Enregistrer le devis »/« Commander », le brouillon `PrivateTempStore` est materialise en entites `quote`/`quote_configuration`/`quote_equipment_line` (statuts « À finaliser »/« En cours », numerotation `WAAAAMMJJ-001`) et le brouillon est purge. Archivage automatique a J+30 apres commande (`hook_cron`). **Hors perimetre**, confirme avec l'utilisatrice : F13 (Tableau de bord partenaire) et le reste de F15 (onglets « Mes devis », Dupliquer, PDF, archivage manuel) — le message de confirmation renvoie vers un « tableau de bord » qui n'existe pas encore.
 
 ---
 
@@ -349,18 +350,18 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Resultat attendu** : Suivi complet du cycle de vie devis → commande → archive.
 
 **Criteres d'acceptation** :
-- [ ] Numerotation devis : `WAAAAMMJJ-001`.
-- [ ] **Onglet « A finaliser »** : devis non commandes ; dernier en tete ; colonnes date / marque / modele / type / equipements / statut ; pagination 10 ; fonctions **Modifier, Dupliquer, Supprimer** (avec confirmation).
-- [ ] **Onglet « En cours »** : devis finalises non commandes **et** commandes ; ajoute colonnes n° devis + montant HT ; statuts « A commander » ou « Commande le jj/mm/aaaa ».
+- [x] Numerotation devis : `WAAAAMMJJ-001` (compteur journalier, `QuoteReferenceGenerator`, ADR-033).
+- [ ] **Onglet « A finaliser »** : devis non commandes ; dernier en tete ; colonnes date / marque / modele / type / equipements / statut ; pagination 10 ; fonctions **Modifier, Dupliquer, Supprimer** (avec confirmation). `[ ]` page « Mes devis » elle-meme non implementee (hors perimetre F14 3/3, cf. ADR-033).
+- [ ] **Onglet « En cours »** : devis finalises non commandes **et** commandes ; ajoute colonnes n° devis + montant HT ; statuts « A commander » ou « Commande le jj/mm/aaaa ». `[INFERE]` Le statut implemente a ce stade (F14 3/3) est simplifie a 2 valeurs (« À finaliser »/« En cours »), sur demande explicite de l'utilisatrice — la distinction « A commander »/« Commande le jj/mm/aaaa » decrite ici reste a affiner quand ce cycle de vie complet sera implemente.
   - Devis non commande : **Commander** (renvoi a l'etape Devis du configurateur), Modifier, Dupliquer, Supprimer.
   - Devis commande : Dupliquer, Archiver (confirmation).
-- [ ] **Commander** : enregistre la date de commande, affiche « Felicitations, votre commande a bien ete enregistree... », envoie l'e-mail de confirmation **avec PDF du devis** (au partenaire + `info@drivematiclegrand.com`).
-- [ ] **Onglet « Archives »** : devis archives (manuellement ou **auto a 30 jours** pour les commandes) ; dernier en tete ; **Telecharger le devis (PDF)** ; un devis archive **ne peut plus etre duplique**.
+- [ ] **Commander** : enregistre la date de commande [x] (`Quote::date_commande`), affiche « Felicitations, votre commande a bien ete enregistree... » [x] (DeliveryForm), envoie l'e-mail de confirmation **avec PDF du devis** (au partenaire + `info@drivematiclegrand.com`) `[ ]` non implemente.
+- [ ] **Onglet « Archives »** : devis archives (manuellement ou **auto a 30 jours** pour les commandes [x], `hook_cron`, ADR-033) ; dernier en tete ; **Telecharger le devis (PDF)** ; un devis archive **ne peut plus etre duplique**. `[ ]` page « Mes devis »/PDF non implementes.
 - [ ] Un devis peut etre archive manuellement qu'il soit commande ou non.
 
 **Cas limites** :
 - Remise supplementaire : le partenaire appelle Drive Matic ; DM saisit une remise temporaire par ligne en back-office tant que le devis n'a **pas** ete commande (statut « a commander ») ; le taux de remise par defaut du client reste inchange.
-- Devis commande depuis > 30 jours → archivage automatique.
+- [x] Devis commande depuis > 30 jours → archivage automatique (`drivematic_configurator_cron()`, verifie J+29 vs J+31).
 
 ---
 

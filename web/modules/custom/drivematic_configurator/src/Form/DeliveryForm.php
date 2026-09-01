@@ -1,0 +1,514 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drupal\drivematic_configurator\Form;
+
+use Drupal\Component\Serialization\Json;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Core\TempStore\PrivateTempStore;
+use Drupal\Core\TempStore\PrivateTempStoreFactory;
+use Drupal\Core\Url;
+use Drupal\drivematic_configurator\Entity\DeliveryAddress;
+use Drupal\drivematic_configurator\Entity\Quote;
+use Drupal\drivematic_configurator\Service\QuotePersister;
+use Drupal\user\UserInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
+/**
+ * Ecran « Livraison » du configurateur (F14, etape 3/3, /configurer/livraison).
+ *
+ * Dernier ecran : adresse de facturation en lecture seule (compte, jamais
+ * modifiable en front, PRD F14), choix d'une adresse de livraison parmi
+ * celles du partenaire (amorcees automatiquement depuis le compte a la
+ * premiere visite, voir ensureAtLeastOneAddress()), et les deux actions
+ * finales qui font passer le brouillon `PrivateTempStore` (ADR-031) a une
+ * persistance reelle (entites Quote/QuoteConfiguration/QuoteEquipmentLine,
+ * QuotePersister) : « Enregistrer le devis » (Quote::STATUS_A_FINALISER) ou
+ * « Commander » (Quote::STATUS_EN_COURS).
+ *
+ * Hors perimetre (confirme avec l'utilisatrice, voir
+ * docs/plans/configurateur-etape-3-livraison.md §6) : la page « Tableau de
+ * bord »/« Mes devis » (F13/F15) qui permettrait de consulter/reprendre un
+ * devis apres coup — seuls la persistance et les messages de confirmation
+ * sont implementes ici.
+ */
+final class DeliveryForm extends FormBase {
+
+  private const TEMPSTORE_COLLECTION = 'drivematic_configurator';
+  private const TEMPSTORE_KEY = 'draft';
+
+  public function __construct(
+    protected EntityTypeManagerInterface $entityTypeManager,
+    protected PrivateTempStoreFactory $tempStoreFactory,
+    protected AccountProxyInterface $currentUser,
+    protected QuotePersister $quotePersister,
+  ) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): static {
+    return new static(
+      $container->get('entity_type.manager'),
+      $container->get('tempstore.private'),
+      $container->get('current_user'),
+      $container->get('drivematic_configurator.quote_persister'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormId(): string {
+    return 'drivematic_configurator_delivery_form';
+  }
+
+  /**
+   * Brouillon du devis en cours (meme mecanisme que ConfigurationForm).
+   */
+  private function tempStore(): PrivateTempStore {
+    return $this->tempStoreFactory->get(self::TEMPSTORE_COLLECTION);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state): array {
+    $title = $this->t('Configurez votre véhicule et obtenez votre tarif');
+    $form['#prefix'] = '<div class="configurator-page"><h1 class="page-title configurator-form__title">' . $title . '</h1>';
+    $form['#suffix'] = '</div>';
+    $form['#attributes']['class'][] = 'webform-submission-form';
+    $form['#attributes']['class'][] = 'configurator-form';
+    $form['#attributes']['class'][] = 'delivery-form';
+    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+
+    $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
+    $form['stepper'] = $this->buildStepper();
+
+    if (!$draft) {
+      // `$form_state->setRedirect()` n'a aucun effet sur une requete GET
+      // (uniquement pris en compte apres une soumission) : etat vide inline,
+      // meme pattern que QuoteForm quand le brouillon est absent.
+      $form['empty'] = [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['quote-form__empty']],
+        'message' => [
+          '#type' => 'html_tag',
+          '#tag' => 'p',
+          '#value' => $this->t('Aucun devis en cours.'),
+        ],
+        'link' => [
+          '#type' => 'link',
+          '#title' => $this->t('Configurer un véhicule'),
+          '#url' => Url::fromRoute('drivematic_configurator.configuration'),
+          '#attributes' => ['class' => ['configurator-form__submit']],
+        ],
+      ];
+      return $form;
+    }
+
+    /** @var \Drupal\user\UserInterface $account */
+    $account = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+
+    $form['billing'] = $this->buildBillingSection($account);
+    $form['delivery_address'] = $this->buildAddressSelector($account);
+
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['add_address'] = [
+      '#type' => 'link',
+      '#title' => $this->t('Ajouter une nouvelle adresse'),
+      '#url' => Url::fromRoute('drivematic_configurator.delivery_address_add'),
+      '#attributes' => [
+        'class' => ['use-ajax', 'configurator-form__add', 'delivery-form__add-address'],
+        'data-dialog-type' => 'modal',
+        'data-dialog-options' => Json::encode(['width' => 760]),
+      ],
+    ];
+    $form['actions']['save_draft'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Enregistrer le devis'),
+      '#submit' => ['::saveDraftSubmit'],
+      '#attributes' => ['class' => ['delivery-form__save']],
+    ];
+    $form['actions']['order'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Commander'),
+      '#submit' => ['::orderSubmit'],
+      '#attributes' => ['class' => ['delivery-form__order']],
+    ];
+
+    return $form;
+  }
+
+  /**
+   * Construit le fil d'etapes (variante de celui de QuoteForm).
+   *
+   * « Configuration » et « Devis » sont franchies (cliquables), « Livraison »
+   * courante.
+   *
+   * @return array
+   *   Render array du fil d'etapes.
+   */
+  private function buildStepper(): array {
+    return [
+      '#type' => 'html_tag',
+      '#tag' => 'ol',
+      '#attributes' => ['class' => ['configurator-form__stepper']],
+      'configuration' => [
+        '#type' => 'link',
+        '#title' => $this->t('Configuration'),
+        '#url' => Url::fromRoute('drivematic_configurator.configuration'),
+        '#prefix' => '<li class="configurator-form__step is-done">',
+        '#suffix' => '</li>',
+        '#attributes' => ['class' => ['configurator-form__step-link']],
+      ],
+      'quote' => [
+        '#type' => 'link',
+        '#title' => $this->t('Devis'),
+        '#url' => Url::fromRoute('drivematic_configurator.quote'),
+        '#prefix' => '<li class="configurator-form__step is-done">',
+        '#suffix' => '</li>',
+        '#attributes' => ['class' => ['configurator-form__step-link']],
+      ],
+      'delivery' => [
+        '#type' => 'html_tag',
+        '#tag' => 'li',
+        '#value' => $this->t('Livraison'),
+        '#attributes' => ['class' => ['configurator-form__step', 'is-current']],
+      ],
+    ];
+  }
+
+  /**
+   * Construit le bloc « Mon adresse de facturation » (lecture seule).
+   *
+   * Deviation utilisatrice #1 (non modifiable en front) : lien de contact a
+   * la place, jamais de formulaire d'edition — l'adresse de facturation
+   * reste pilotee par le back-office (meme regle que
+   * PersonalInformationForm).
+   */
+  private function buildBillingSection(UserInterface $account): array {
+    $element = [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['delivery-form__section']],
+      'title' => [
+        '#type' => 'html_tag',
+        '#tag' => 'h2',
+        '#value' => $this->t('Mon adresse de facturation'),
+        '#attributes' => ['class' => ['delivery-form__section-title']],
+      ],
+      'address' => $this->buildAddressTextLines(
+        $account->get('field_company_name')->value,
+        $account->get('field_company_address')->value,
+        $account->get('field_address_complement')->value,
+        $account->get('field_postal_code')->value,
+        $account->get('field_city')->value,
+      ),
+    ];
+    $element['address']['siret'] = [
+      '#type' => 'html_tag',
+      '#tag' => 'p',
+      '#value' => $this->t('Siret @siret', ['@siret' => $account->get('field_siret')->value]),
+    ];
+
+    $contact_url = $this->loadContactUrl();
+    if ($contact_url) {
+      $element['contact'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#attributes' => ['class' => ['delivery-form__billing-contact']],
+        'link' => [
+          '#type' => 'link',
+          '#title' => $this->t('Vous souhaitez modifier votre adresse de facturation ? Contactez-nous.'),
+          '#url' => $contact_url,
+        ],
+      ];
+    }
+
+    return $element;
+  }
+
+  /**
+   * Construit la section « Sélectionner une adresse de livraison ».
+   *
+   * Amorce une premiere adresse si le partenaire n'en a encore aucune
+   * (ensureAtLeastOneAddress()). Toujours affichee (meme a une seule
+   * adresse) — retour utilisatrice du 2026-09-01, voir §7 du plan.
+   */
+  private function buildAddressSelector(UserInterface $account): array {
+    $addresses = $this->ensureAtLeastOneAddress($account);
+    $selected_id = (string) reset($addresses)->id();
+
+    $element = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Sélectionner une adresse de livraison :'),
+      '#attributes' => ['class' => ['delivery-form__section', 'delivery-form__addresses']],
+    ];
+
+    foreach ($addresses as $address) {
+      $element[$address->id()] = $this->buildAddressRow($address, $selected_id);
+    }
+
+    return $element;
+  }
+
+  /**
+   * Charge les adresses du partenaire, en amorçant la premiere au besoin.
+   *
+   * Aucun cas particulier ensuite : l'adresse amorcee est une vraie entite
+   * `delivery_address`, modifiable/supprimable comme n'importe quelle autre
+   * (si elle est supprimee et qu'il n'en reste aucune, une nouvelle copie
+   * est ré-amorcee au prochain passage sur cet ecran).
+   *
+   * @return \Drupal\drivematic_configurator\Entity\DeliveryAddress[]
+   *   Les adresses du partenaire, au moins une.
+   */
+  private function ensureAtLeastOneAddress(UserInterface $account): array {
+    $storage = $this->entityTypeManager->getStorage('delivery_address');
+    $ids = $storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('uid', $account->id())
+      ->sort('id', 'ASC')
+      ->execute();
+
+    if ($ids) {
+      return array_values($storage->loadMultiple($ids));
+    }
+
+    /** @var \Drupal\drivematic_configurator\Entity\DeliveryAddress $seed */
+    $seed = $storage->create([
+      'uid' => $account->id(),
+      'raison_sociale' => $account->get('field_company_name')->value,
+      'adresse' => $account->get('field_company_address')->value,
+      'complement' => $account->get('field_address_complement')->value,
+      'code_postal' => $account->get('field_postal_code')->value,
+      'ville' => $account->get('field_city')->value,
+    ]);
+    $seed->save();
+
+    return [$seed];
+  }
+
+  /**
+   * Construit une ligne de la liste d'adresses (radio + texte + actions).
+   *
+   * Radio construit hors de `#type: radios` (elements `#type: radio`
+   * individuels partageant le meme `#parents`, meme mecanisme que
+   * `#type: tableselect`) : place le texte et les liens Modifier/Supprimer
+   * en dehors du `<label>` du bouton radio, pour eviter qu'un clic sur un
+   * lien ne selectionne aussi la radio (un lien a l'interieur du `<label>`
+   * genere par `#type: radios` declencherait les deux a la fois). L'intitule
+   * accessible complet reste porte par la radio elle-meme
+   * (`#title_display: invisible`) ; le bloc visuel est donc masque aux
+   * lecteurs d'ecran (`aria-hidden`) pour ne pas le faire annoncer deux fois.
+   */
+  private function buildAddressRow(DeliveryAddress $address, string $selectedId): array {
+    $id = (string) $address->id();
+    $summary = trim(sprintf(
+      '%s, %s, %s %s',
+      $address->get('raison_sociale')->value,
+      $address->get('adresse')->value,
+      $address->get('code_postal')->value,
+      $address->get('ville')->value,
+    ));
+
+    return [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['delivery-form__address-row']],
+      'radio' => [
+        '#type' => 'radio',
+        '#title' => $summary,
+        '#title_display' => 'invisible',
+        '#return_value' => $id,
+        '#parents' => ['delivery_address'],
+        '#default_value' => $selectedId,
+        '#attributes' => ['class' => ['delivery-form__address-radio']],
+      ],
+      'content' => array_merge(
+        [
+          '#type' => 'container',
+          '#attributes' => ['class' => ['delivery-form__address-text'], 'aria-hidden' => 'true'],
+        ],
+        $this->buildAddressTextLines(
+          $address->get('raison_sociale')->value,
+          $address->get('adresse')->value,
+          $address->get('complement')->value,
+          $address->get('code_postal')->value,
+          $address->get('ville')->value,
+        ),
+      ),
+      'actions' => [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['delivery-form__address-actions']],
+        'modify' => [
+          '#type' => 'link',
+          '#title' => [
+            'icon' => [
+              '#type' => 'html_tag',
+              '#tag' => 'span',
+              '#value' => '',
+              '#attributes' => ['class' => ['delivery-form__modify-icon']],
+            ],
+            'text' => ['#plain_text' => $this->t('Modifier')],
+          ],
+          '#url' => Url::fromRoute('drivematic_configurator.delivery_address_edit', ['delivery_address' => $id]),
+          '#attributes' => [
+            'class' => ['use-ajax', 'delivery-form__modify'],
+            'data-dialog-type' => 'modal',
+            'data-dialog-options' => Json::encode(['width' => 760]),
+            'aria-label' => $this->t('Modifier cette adresse de livraison'),
+          ],
+        ],
+        'delete' => [
+          '#type' => 'link',
+          '#title' => $this->t('Supprimer'),
+          '#url' => Url::fromRoute('drivematic_configurator.delivery_address_delete', ['delivery_address' => $id]),
+          '#attributes' => [
+            'class' => ['use-ajax', 'delivery-form__delete'],
+            'data-dialog-type' => 'modal',
+            'data-dialog-options' => Json::encode(['width' => 500]),
+            'aria-label' => $this->t('Supprimer cette adresse de livraison'),
+          ],
+        ],
+      ],
+    ];
+  }
+
+  /**
+   * Construit les 3 lignes de texte d'une adresse.
+   *
+   * Reutilise pour la facturation (lecture seule) et chaque ligne de la
+   * liste de livraison : raison sociale, adresse + complément, code postal
+   * + ville.
+   *
+   * @return array
+   *   3 elements `html_tag` (paragraphes), a fusionner dans un conteneur.
+   */
+  private function buildAddressTextLines(?string $raisonSociale, ?string $adresse, ?string $complement, ?string $codePostal, ?string $ville): array {
+    return [
+      'raison_sociale' => ['#type' => 'html_tag', '#tag' => 'p', '#value' => $raisonSociale],
+      'adresse' => ['#type' => 'html_tag', '#tag' => 'p', '#value' => $this->formatAddressLine($adresse, $complement)],
+      'ville' => ['#type' => 'html_tag', '#tag' => 'p', '#value' => trim($codePostal . ' ' . $ville)],
+    ];
+  }
+
+  /**
+   * Formate la ligne « adresse, complément » (complément optionnel).
+   */
+  private function formatAddressLine(?string $adresse, ?string $complement): string {
+    return $complement ? $adresse . ', ' . $complement : (string) $adresse;
+  }
+
+  /**
+   * Charge l'URL de la page Contact.
+   *
+   * Node de type `contact`, exemplaire unique du site.
+   *
+   * @return \Drupal\Core\Url|null
+   *   L'URL de la page, ou NULL si le node n'existe pas (degradation
+   *   gracieuse : le lien est simplement omis).
+   */
+  private function loadContactUrl(): ?Url {
+    $nodes = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => 'contact', 'status' => 1]);
+    $node = reset($nodes);
+    return $node ? $node->toUrl() : NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
+    if (!$this->tempStore()->get(self::TEMPSTORE_KEY)) {
+      return;
+    }
+
+    $address_id = $form_state->getValue('delivery_address');
+    $address = $address_id ? $this->entityTypeManager->getStorage('delivery_address')->load($address_id) : NULL;
+
+    // Ne fait jamais confiance a l'ID soumis sans verifier la propriete :
+    // une valeur trafiquee pourrait pointer vers l'adresse d'un autre
+    // partenaire (IDOR).
+    if (!$address || (int) $address->getOwnerId() !== (int) $this->currentUser->id()) {
+      $form_state->setErrorByName('delivery_address', $this->t('Adresse de livraison invalide.'));
+      return;
+    }
+
+    $form_state->set('selected_delivery_address', $address);
+  }
+
+  /**
+   * {@inheritdoc}
+   *
+   * Non utilise : chaque bouton a son propre #submit (meme pattern que
+   * QuoteForm).
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
+  }
+
+  /**
+   * Callback #submit de « Enregistrer le devis ».
+   */
+  public function saveDraftSubmit(array &$form, FormStateInterface $form_state): void {
+    $this->persistQuote($form_state, Quote::STATUS_A_FINALISER);
+  }
+
+  /**
+   * Callback #submit de « Commander ».
+   */
+  public function orderSubmit(array &$form, FormStateInterface $form_state): void {
+    $this->persistQuote($form_state, Quote::STATUS_EN_COURS);
+  }
+
+  /**
+   * Persiste le devis, affiche le message de confirmation et repart a zero.
+   *
+   * Redirige vers l'etape 1 plutot qu'un « tableau de bord » : cette page
+   * n'existe pas encore (F13/F15, hors perimetre — confirme avec
+   * l'utilisatrice), seuls la persistance et les messages sont implementes
+   * ici.
+   */
+  private function persistQuote(FormStateInterface $form_state, string $status): void {
+    $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
+    $address = $form_state->get('selected_delivery_address');
+    if (!$draft || !$address) {
+      throw new AccessDeniedHttpException();
+    }
+
+    /** @var \Drupal\user\UserInterface $account */
+    $account = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+    $this->quotePersister->persist($draft, $status, $account, $address);
+    $this->tempStore()->delete(self::TEMPSTORE_KEY);
+
+    $this->messenger()->addStatus($this->buildConfirmationMessage($status));
+    $form_state->setRedirect('drivematic_configurator.configuration');
+  }
+
+  /**
+   * Construit le message de confirmation (texte fourni par l'utilisatrice).
+   */
+  private function buildConfirmationMessage(string $status): Markup {
+    if ($status !== Quote::STATUS_EN_COURS) {
+      return Markup::create((string) $this->t("Votre devis a bien été enregistré mais n'est pas finalisé. Vous pouvez le retrouver dès à présent dans votre tableau de bord afin de le reprendre."));
+    }
+
+    $lines = [
+      $this->t('Félicitations, votre commande a bien été enregistrée et transmise à notre équipe !'),
+      $this->t('Vous allez recevoir par mail un bon de commande à signer et à nous retourner.'),
+      $this->t('Pensez à surveiller votre courrier indésirable.'),
+    ];
+
+    $contact_url = $this->loadContactUrl();
+    $lines[] = $contact_url
+      ? $this->t("Vous n'avez pas reçu votre bon de commande ? <a href=':url'>Contactez-nous ici</a>.", [':url' => $contact_url->toString()])
+      : $this->t("Vous n'avez pas reçu votre bon de commande ? Contactez-nous.");
+
+    return Markup::create(implode('<br>', array_map('strval', $lines)));
+  }
+
+}

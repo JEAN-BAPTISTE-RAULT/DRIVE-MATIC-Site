@@ -1,0 +1,177 @@
+// Écran « Livraison » du configurateur (F14, étape 3/3, route
+// /configurer/livraison). Même dérogation qu'ADR-015 §1 / `_configurator-form.scss`/
+// `_quote-form.scss` : markup FormBase, pas un composant SDC.
+
+@use 'button-mixins' as btn;
+
+.delivery-form {
+  &__section {
+    margin-block-end: var(--dm-space-block);
+  }
+
+  &__section-title {
+    margin: 0 0 var(--dm-space-element);
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+    font-weight: 700;
+  }
+
+  &__address-text p {
+    margin: 0;
+    color: var(--dm-color-grey-primary);
+    font-family: var(--dm-font-body);
+    font-size: var(--dm-body-size);
+    line-height: var(--dm-body-line);
+  }
+
+  &__billing-contact {
+    margin: var(--dm-space-element) 0 0;
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    color: var(--dm-color-grey-text);
+  }
+
+  // Reinitialise le rendu natif du fieldset (bordure/padding), meme piege
+  // deja rencontre sur `&__equipment` de `_configurator-form.scss`.
+  &__addresses {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  &__addresses > legend {
+    width: 100%;
+    margin: 0 0 var(--dm-space-element);
+    padding: 0;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h3-size);
+    line-height: var(--dm-h3-line);
+    font-weight: 700;
+  }
+
+  &__address-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--dm-space-element);
+    padding: 16px;
+    border: 1px solid var(--dm-color-grey-light);
+    border-radius: 12px;
+    background-color: var(--dm-color-grey-lighter);
+  }
+
+  &__address-row + &__address-row {
+    margin-block-start: var(--dm-space-element);
+  }
+
+  // Le radio garde son propre wrapper natif (`.form-item.form-type-radio`,
+  // pose par Drupal meme pour un `#type: radio` isole) : seul le contenu
+  // visuel (texte + actions) est construit a la main ici.
+  &__address-content {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__address-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--dm-space-element);
+    margin-inline-start: auto;
+  }
+
+  &__modify,
+  &__delete {
+    display: inline-flex;
+    align-items: center;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 0.75rem;
+    line-height: var(--dm-body-line);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  &__modify {
+    gap: 10px;
+  }
+
+  &__modify-icon {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    background-color: var(--dm-color-anthracite);
+    mask: url('../images/icons/pen.svg') no-repeat center / contain;
+  }
+
+  &__delete {
+    padding-inline-start: 26px;
+    background: url('../images/icons/trash.svg') no-repeat left center / 16px
+      16px;
+  }
+
+  @media (width < 992px) {
+    &__address-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__address-actions {
+      margin-inline-start: 0;
+    }
+  }
+
+  // --- Actions de bas de page (Ajouter/Enregistrer/Commander). -------------
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+
+  @media (width < 992px) {
+    .form-actions > * {
+      width: 100%;
+    }
+  }
+
+  // Lien « Ajouter une nouvelle adresse » : meme habillage contour+icone que
+  // `configurator-form__add`, mais un `<a>` (ouverture de modale), jamais un
+  // `<input type="submit">` — peut donc porter l'icone en `mask` (pas de
+  // contrainte `::before` a contourner).
+  &__add-address {
+    @include btn.dm-btn-outline;
+    @include btn.dm-btn-height($content: icon, $bordered: true);
+
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding-inline: 16px;
+    border-radius: 6px;
+    text-decoration: none;
+
+    &::before {
+      display: block;
+      width: 24px;
+      height: 24px;
+      content: '';
+      background-color: currentcolor;
+      mask: url('../images/icons/plus-circle.svg') no-repeat center / contain;
+    }
+  }
+
+  // « Enregistrer le devis » : la fondation `forms` applique `dm-btn-red` a
+  // TOUT `.form-submit` de ce formulaire via `.webform-submission-form
+  // .form-actions .form-submit` (3 classes, `_forms.scss`) — ce bouton doit
+  // rester en contour (maquette 671:21277), seul « Commander » reste rouge
+  // (herite sans surcharge). `.delivery-form` repete en tete (litteral,
+  // meme piege de specificite deja rencontre sur `configurator-form__add`) :
+  // `.form-actions &__save` seul (2 classes) ne suffit pas face aux 3
+  // classes de la fondation.
+  .delivery-form .form-actions &__save {
+    @include btn.dm-btn-outline;
+  }
+}

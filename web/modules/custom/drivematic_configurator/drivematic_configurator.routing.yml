@@ -13,3 +13,50 @@ drivematic_configurator.quote:
     _title: 'Votre devis'
   requirements:
     _role: 'partenaire'
+
+drivematic_configurator.delivery:
+  path: '/configurer/livraison'
+  defaults:
+    _form: '\Drupal\drivematic_configurator\Form\DeliveryForm'
+    _title: 'Livraison'
+  requirements:
+    _role: 'partenaire'
+
+drivematic_configurator.delivery_address_add:
+  path: '/configurer/livraison/adresse/ajouter'
+  defaults:
+    _form: '\Drupal\drivematic_configurator\Form\DeliveryAddressForm'
+    _title: 'Ajouter une nouvelle adresse'
+  requirements:
+    _role: 'partenaire'
+
+drivematic_configurator.delivery_address_edit:
+  path: '/configurer/livraison/adresse/{delivery_address}/modifier'
+  defaults:
+    _form: '\Drupal\drivematic_configurator\Form\DeliveryAddressForm'
+    _title: 'Modifier une adresse de livraison'
+  requirements:
+    # Les deux exigences se cumulent (ET) : `_role` maintient la
+    # redirection anonyme->connexion sitewide (PartnerAccessRedirectSubscriber
+    # ne l'applique qu'aux routes portant explicitement `_role: partenaire`) ;
+    # `_entity_access` empeche un partenaire connecte d'agir sur l'adresse
+    # d'un autre (IDOR).
+    _role: 'partenaire'
+    _entity_access: 'delivery_address.update'
+  options:
+    parameters:
+      delivery_address:
+        type: entity:delivery_address
+
+drivematic_configurator.delivery_address_delete:
+  path: '/configurer/livraison/adresse/{delivery_address}/supprimer'
+  defaults:
+    _form: '\Drupal\drivematic_configurator\Form\DeliveryAddressDeleteForm'
+    _title: 'Supprimer une adresse de livraison'
+  requirements:
+    _role: 'partenaire'
+    _entity_access: 'delivery_address.delete'
+  options:
+    parameters:
+      delivery_address:
+        type: entity:delivery_address

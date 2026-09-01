@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @file
+ * Configurateur de devis DRIVE-MATIC (F14).
+ */
+
+use Drupal\drivematic_configurator\Entity\Quote;
+
+/**
+ * Implements hook_cron().
+ *
+ * Archive automatiquement tout devis « En cours » dont la date de commande
+ * depasse 30 jours (PRD F15, « cas limites » : « Devis commandé depuis
+ * > 30 jours → archivage automatique »). L'archivage manuel (tous statuts) et
+ * le reste du cycle de vie F15 (onglets « Mes devis », Dupliquer, PDF)
+ * restent hors perimetre de cette implementation.
+ */
+function drivematic_configurator_cron(): void {
+  $threshold = \Drupal::time()->getRequestTime() - 30 * 24 * 60 * 60;
+
+  $storage = \Drupal::entityTypeManager()->getStorage('quote');
+  $ids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('status', Quote::STATUS_EN_COURS)
+    ->condition('date_commande', $threshold, '<=')
+    ->execute();
+
+  if (!$ids) {
+    return;
+  }
+
+  $now = \Drupal::time()->getRequestTime();
+  foreach ($storage->loadMultiple($ids) as $quote) {
+    $quote->set('status', Quote::STATUS_ARCHIVE);
+    $quote->set('date_archivage', $now);
+    $quote->save();
+  }
+}
