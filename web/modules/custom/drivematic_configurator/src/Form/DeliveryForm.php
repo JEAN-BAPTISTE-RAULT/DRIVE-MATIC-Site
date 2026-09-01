@@ -214,7 +214,7 @@ final class DeliveryForm extends FormBase {
     $element['address']['siret'] = [
       '#type' => 'html_tag',
       '#tag' => 'p',
-      '#value' => $this->t('Siret @siret', ['@siret' => $account->get('field_siret')->value]),
+      '#value' => $this->t('SIRET : @siret', ['@siret' => $account->get('field_siret')->value]),
     ];
 
     $contact_url = $this->loadContactUrl();
@@ -223,11 +223,7 @@ final class DeliveryForm extends FormBase {
         '#type' => 'html_tag',
         '#tag' => 'p',
         '#attributes' => ['class' => ['delivery-form__billing-contact']],
-        'link' => [
-          '#type' => 'link',
-          '#title' => $this->t('Vous souhaitez modifier votre adresse de facturation ? Contactez-nous.'),
-          '#url' => $contact_url,
-        ],
+        '#value' => $this->t("Veuillez <a href=':url'>nous contacter</a> si vous souhaitez modifier votre adresse de facturation.", [':url' => $contact_url->toString()]),
       ];
     }
 
@@ -310,13 +306,13 @@ final class DeliveryForm extends FormBase {
    */
   private function buildAddressRow(DeliveryAddress $address, string $selectedId): array {
     $id = (string) $address->id();
-    $summary = trim(sprintf(
-      '%s, %s, %s %s',
+    $summary = $this->formatAddressSummary(
       $address->get('raison_sociale')->value,
       $address->get('adresse')->value,
+      $address->get('complement')->value,
       $address->get('code_postal')->value,
       $address->get('ville')->value,
-    ));
+    );
 
     return [
       '#type' => 'container',
@@ -381,21 +377,43 @@ final class DeliveryForm extends FormBase {
   }
 
   /**
-   * Construit les 3 lignes de texte d'une adresse.
+   * Construit le texte d'une adresse sur 3 lignes (`<br>`), sans saut.
    *
-   * Reutilise pour la facturation (lecture seule) et chaque ligne de la
-   * liste de livraison : raison sociale, adresse + complément, code postal
-   * + ville.
+   * Un seul `<p>` (pas 3), donc aucune marge/paragraphe entre les lignes —
+   * seulement des retours a la ligne (`<br>`). Reutilise pour la
+   * facturation (lecture seule) et chaque ligne de la liste de livraison —
+   * le saut de ligne qui precede le Siret (facturation uniquement) reste
+   * porte par son propre `<p>`, ajoute a part par l'appelant.
    *
    * @return array
-   *   3 elements `html_tag` (paragraphes), a fusionner dans un conteneur.
+   *   1 element `html_tag` (paragraphe), a fusionner dans un conteneur.
    */
   private function buildAddressTextLines(?string $raisonSociale, ?string $adresse, ?string $complement, ?string $codePostal, ?string $ville): array {
     return [
-      'raison_sociale' => ['#type' => 'html_tag', '#tag' => 'p', '#value' => $raisonSociale],
-      'adresse' => ['#type' => 'html_tag', '#tag' => 'p', '#value' => $this->formatAddressLine($adresse, $complement)],
-      'ville' => ['#type' => 'html_tag', '#tag' => 'p', '#value' => trim($codePostal . ' ' . $ville)],
+      'summary' => [
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#value' => $this->t('@raison_sociale<br>@adresse<br>@code_postal @ville', [
+          '@raison_sociale' => $raisonSociale,
+          '@adresse' => $this->formatAddressLine($adresse, $complement),
+          '@code_postal' => $codePostal,
+          '@ville' => $ville,
+        ]),
+      ],
     ];
+  }
+
+  /**
+   * Formate une adresse sur une seule ligne : « Raison, Adresse, CP Ville ».
+   */
+  private function formatAddressSummary(?string $raisonSociale, ?string $adresse, ?string $complement, ?string $codePostal, ?string $ville): string {
+    return trim(sprintf(
+      '%s, %s, %s %s',
+      $raisonSociale,
+      $this->formatAddressLine($adresse, $complement),
+      $codePostal,
+      $ville,
+    ));
   }
 
   /**
