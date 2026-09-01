@@ -84,19 +84,40 @@
 
 ## Non teste / a rejouer avec attention
 
-- **Mesures pixel-perfect desktop face a la maquette Figma** : le node-id
-  fourni pour l'ecran 3 desktop (508-13965) pointait vers un simple calque
-  de titre, pas le cadre complet — la structure a ete construite a partir
-  de la maquette **mobile** (671:21277, entierement lue) et des conventions
-  deja etablies pour les ecrans 1/2 (reflow desktop en colonnes), jamais
-  verifiee via `get_design_context` sur un cadre desktop dedie. A remesurer
-  au prochain retour utilisatrice avec le bon node-id.
-- Parcours complet en navigateur reel, sans aucune interruption/relance
-  (le Browser MCP de cette session a ete instable sur les clics apres un
-  cycle AJAX — resolu en verifiant le meme comportement via requetes AJAX
-  authentifiees en curl, qui donnent un signal plus fiable mais ne
-  remplacent pas un vrai clic humain).
 - E-mail de confirmation de commande + PDF (hors perimetre, F15).
+
+## Mise a jour du 2026-09-01 (session suivante) : fidelite maquette + persistance + back-office
+
+Le point de moindre confiance signale ci-dessus (pixel-perfect desktop) a
+ete **resolu** : les 3 modales (ajout/edition/suppression d'adresse) ont
+ete remesurees au pixel pres contre la maquette 521:17375
+(`getBoundingClientRect()` face aux coordonnees exactes de
+`get_metadata`), 5 bugs de CSS trouves et corriges (bordure fantome,
+largeur de titre figee, croix de fermeture surdimensionnee, boutons
+« Oui »/« Non » mal alignes) — voir l'addendum du 01/09 (2e partie)
+d'[ADR-034](../../../.claude/decisions/034-modale-drupal-core.md). Le
+gabarit desktop de l'ecran lui-meme (508:13965) reste construit par
+extrapolation depuis le mobile (671:21277), non remesure specifiquement.
+
+Trois ajouts au perimetre initial, tous verifies :
+- **Persistance verifiee de bout en bout** par un vrai parcours navigateur
+  (Configuration → Devis → Livraison → « Commander ») : `Quote`/
+  `QuoteConfiguration`/`QuoteEquipmentLine` bien crees, valeurs gelees
+  correctes, reference generee au bon format. Aucun bug trouve.
+- **Listing back-office des devis** (`/admin/content/devis`, Vue
+  `views.view.quotes`) : jusque-la un devis enregistre n'etait consultable
+  nulle part. Tri par colonne, filtre Statut, recherche par reference —
+  voir l'addendum du 01/09 d'ADR-033.
+- **Recapitulatif en lecture seule des adresses de livraison** sur
+  `/user/{uid}/edit` cote admin — voir
+  [ADR-035](../../../.claude/decisions/035-recap-adresses-livraison-admin.md).
+- **Modale de confirmation ajoutee** sur la suppression d'une configuration
+  (ecran Devis, etape 2/3) : remplace une suppression jusque-la immediate
+  et sans confirmation (`QuoteConfigurationDeleteForm`, meme mecanisme
+  qu'ADR-034).
+
+Chantier considere clos : archive vers `docs/archive/` (voir
+`docs/archive/README.md`).
 
 ## Self-review
 

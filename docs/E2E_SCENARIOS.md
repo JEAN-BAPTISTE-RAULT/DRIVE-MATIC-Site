@@ -362,7 +362,7 @@
 **Mise en oeuvre (a rejouer) — ecran 2 « Devis » finalise le 2026-08-31** ([ADR-031](../.claude/decisions/031-devis-tempstore.md), maquettes desktop 508:13961/mobile 606:37565) :
 - Tableau par configuration (tarif catalogue, tarif remise, quantites, total remise HT par ligne) + bandeaux de totaux (« Tarif par vehicule », « Tarif total vehicules » si plusieurs vehicules, « Total configuration(s) ») — HT/remise/remise HT/TVA 20 %/TTC. Seul le debut de « Total HT » s'aligne au pixel pres sur la colonne « Equipement(s) » du tableau (et « Total TTC », pousse a part au bord droit, sur la colonne « Total remise € HT ») ; les 3 metriques intermediaires n'alignent plus leur position entre les bandeaux depuis le 2026-08-31, cf. correction ci-dessous.
 - **3 chemins de retour vers l'etape 1**, tous rechargent le meme brouillon `PrivateTempStore` prerempli : bouton « Modifier » d'une configuration, « Ajouter une configuration », pastille « Configuration » du fil d'etapes (desormais cliquable).
-- Suppression d'une configuration (bouton « Supprimer ») : retire du brouillon, pas de confirmation intermediaire.
+- Suppression d'une configuration (bouton « Supprimer ») : depuis le 2026-09-01, ouvre une **modale de confirmation** (« Voulez-vous vraiment supprimer cette configuration ? », `QuoteConfigurationDeleteForm`, meme mecanisme qu'ADR-034) avant de retirer l'entree du brouillon — auparavant suppression immediate, sans confirmation.
 - Note « Devis hors frais de livraison. » toujours affichee ; aucune entite Devis/Configuration creee a ce stade (donnees perdues si le brouillon expire sans passage a l'etape 3).
 - Repli mobile : cartes repliables par configuration (`quote-toggle.js`), amelioration progressive.
 
@@ -408,6 +408,20 @@
 - Suppression d'une adresse deja utilisee par un devis existant : le devis
   garde ses propres donnees gelees (`Quote::delivery_*`), jamais affecte.
 
+**Mise en oeuvre (a rejouer) — suite le 2026-09-01** (addendum [ADR-034](../.claude/decisions/034-modale-drupal-core.md)) :
+- Les 3 modales (ajout/edition/suppression d'adresse) realignees **au pixel
+  pres** sur la maquette 521:17375 (`getBoundingClientRect()` face aux
+  coordonnees exactes de `get_metadata`) : bordure fantome, largeur de
+  titre figee, croix de fermeture surdimensionnee et boutons « Oui »/« Non »
+  mal alignes, tous corriges (CSS brut jQuery UI plus specifique que le
+  notre — voir CLAUDE.md).
+- Texte de la modale de suppression change en « Voulez-vous vraiment
+  supprimer cette adresse ? ».
+- Un admin (`administer users`) dispose desormais d'un recapitulatif en
+  lecture seule des adresses de livraison d'un partenaire sur
+  `/user/{uid}/edit` — voir [ADR-035](../.claude/decisions/035-recap-adresses-livraison-admin.md)
+  et S26.
+
 ---
 
 ## S16 — Finaliser & commander un devis
@@ -436,6 +450,16 @@ de « Commande le jj/mm/aaaa » (2 statuts implementes pour l'instant : « À
 finaliser »/« En cours »). Archivage automatique a J+30 apres
 `date_commande` **implemente et verifie** (`hook_cron`, J+29 non archive
 vs J+31 archive).
+
+**Verifie de bout en bout — meme jour (2026-09-01)** : parcours navigateur
+reel complet (Configuration → Devis → Livraison → « Commander »), sans
+detour par curl — reference generee (`W20260901-001`), adresses de
+facturation/livraison gelees correctement, totaux `QuoteConfiguration`/
+`QuoteEquipmentLine` identiques a ceux affiches a l'ecran 2. Un devis
+enregistre n'etait consultable **nulle part** (pas meme en back-office) :
+ajout d'un listing admin `/admin/content/devis` (Vue Drupal `quotes`, tri
+par colonne, filtre expose Statut, recherche par reference — permission
+`view drivematic configurator quotes`). Voir S26.
 
 ---
 
@@ -596,6 +620,49 @@ vs J+31 archive).
 
 ---
 
+## S26 — Back-office : consultation des devis et des adresses de livraison
+
+**Objectif** : Verifier qu'un admin (`administer users`) retrouve, cote back-office, des donnees jusque-la invisibles hors de l'espace partenaire.
+
+**Etapes** :
+1. En tant qu'admin, ouvrir `/admin/content/devis`.
+2. Trier sur chaque colonne (N° de devis, Partenaire, Statut, Total TTC, Date de creation).
+3. Filtrer par Statut (« Archive ») ; verifier qu'un devis « En cours » disparait de la liste.
+4. Rechercher un devis par une portion de sa reference (« N° de devis »).
+5. Ouvrir `/user/{uid}/edit` d'**un autre** compte partenaire (pas le sien).
+6. Ouvrir `/user/{uid}/edit` de **son propre** compte admin.
+
+**Resultats attendus** :
+- Etape 1 : les devis enregistres s'affichent (reference, partenaire, statut lisible, total TTC, date).
+- Etape 2 : chaque colonne est triable, sans erreur.
+- Etape 3 : le filtre Statut exclut correctement les autres statuts.
+- Etape 4 : la recherche par reference fonctionne (correspondance partielle).
+- Etape 5 : un bloc « Adresses de livraison » en lecture seule (aucun lien Modifier/Supprimer) liste les adresses du partenaire, ou l'etat vide « Aucune adresse de livraison enregistree. ».
+- Etape 6 : le bloc « Adresses de livraison » **n'apparait pas** (jamais sur son propre compte, meme admin).
+- Un compte sans la permission `view drivematic configurator quotes` (role `partenaire`) recoit un 403 sur `/admin/content/devis`.
+
+**Mise en oeuvre (a rejouer) — livre le 2026-09-01** ([ADR-035](../.claude/decisions/035-recap-adresses-livraison-admin.md), addendum [ADR-033](../.claude/decisions/033-entites-devis-livraison.md)) :
+- `/admin/content/devis` : Vue Drupal (`views.view.quotes`), pas un simple
+  `EntityListBuilder` — necessaire pour le tri par colonne, le filtre
+  Statut (filtre **groupe** sur un champ `string`, le plugin `list_field`
+  n'existant pas pour un champ `list_string` de base d'entite custom) et la
+  recherche par reference. Lien menu enfant de `system.admin_content`,
+  visible depuis `/admin/content`.
+- Recapitulatif adresses sur `/user/{uid}/edit` : ajoute dans
+  `drivematic_partner_form_user_form_alter()`, visible uniquement quand un
+  compte `administer users` edite le compte de **quelqu'un d'autre**.
+  `DeliveryAddressAccessControlHandler` ouvre l'operation `view` (pas
+  `update`/`delete`) a tout compte `administer users`.
+- **Piege corrige en construisant** : une entite content custom n'expose
+  rien a Views (pas meme ses champs de base) sans
+  `handlers: ['views_data' => \Drupal\views\EntityViewsData::class]`
+  explicite sur l'entite — absent au depart, la Vue s'importait sans erreur
+  mais plantait en 500 a l'affichage. Voir CLAUDE.md (section PHP/Drupal) ;
+  `equipment_price`/`delivery_address`/`quote_configuration` n'ont pas
+  encore ce handler.
+
+---
+
 ## Matrice de couverture (scenario → feature)
 
 | Scenario | Features couvertes |
@@ -618,12 +685,14 @@ vs J+31 archive).
 | S23 | F18 |
 | S24 | F9 (volet FAQ) |
 | S25 | F2, F11, F12 (page login, ADR-024) |
-| Transverse (S1-S25) | F1 (Paragraphes), decision #8 (RGAA/WCAG AA) |
+| S26 | F14, F15 (back-office : devis + adresses de livraison) |
+| Transverse (S1-S26) | F1 (Paragraphes), decision #8 (RGAA/WCAG AA) |
 
 ## Historique des modifications
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-01 | **F14/F15 — suite ecran 3 « Livraison » : persistance verifiee, modales realignees au pixel pres, listing admin des devis, recap admin des adresses** ([ADR-033](../.claude/decisions/033-entites-devis-livraison.md) addendum, [ADR-034](../.claude/decisions/034-modale-drupal-core.md) addendum, [ADR-035](../.claude/decisions/035-recap-adresses-livraison-admin.md)) : parcours complet (Configuration → Devis → Livraison → « Commander ») rejoue en navigateur reel, entites/reference/totaux confirmes corrects en base. Suppression d'une configuration (ecran Devis) dotee d'une modale de confirmation (`QuoteConfigurationDeleteForm`), remplace l'ancienne suppression immediate sans confirmation. Un devis n'etant consultable nulle part cote back-office, ajout d'un listing `/admin/content/devis` (Vue Drupal, tri/filtre Statut/recherche par reference) et d'un recap en lecture seule des adresses de livraison sur `/user/{uid}/edit` admin. 3 modales d'adresse realignees au pixel pres sur 521:17375 (bordure fantome, titre a largeur figee, croix surdimensionnee, boutons « Oui »/« Non » mal alignes — CSS brut jQuery UI plus specifique que le notre, regle generalisee dans CLAUDE.md). **Piege generalisable** : une entite content custom n'expose rien a Views sans `handlers: ['views_data' => EntityViewsData::class]` explicite. **A rejouer** : S15, S16, S26 | S15, S16, S26 |
 | 2026-09-01 | **F14 — configurateur de devis, ecran 3 « Livraison » livre** ([ADR-033](../.claude/decisions/033-entites-devis-livraison.md), [ADR-034](../.claude/decisions/034-modale-drupal-core.md), maquettes 508:13965/671:21277/521:17375/671:22383) : route `/configurer/livraison`, 4 nouvelles entites custom (`quote`, `quote_configuration`, `quote_equipment_line`, `delivery_address` — premiere entite multi-instance par partenaire du projet, controle d'acces par proprietaire). Liste d'adresses de livraison toujours affichee (radios + Modifier/Supprimer par ligne), amorcee automatiquement depuis le compte a la 1re visite ; le bloc « Mon adresse de livraison » + bouton isole de la maquette est un residu retire (retour utilisatrice). Ajout/edition d'adresse en modale Drupal core (`use-ajax`, premiere utilisation de ce pattern, zero JS custom). « Enregistrer le devis »/« Commander » materialisent le brouillon `PrivateTempStore` en entites (prix geles, numerotation `WAAAAMMJJ-001`) et purgent le brouillon. Archivage automatique a J+30 (`hook_cron`). **Bug corrige en verifiant** : `$form_state->setRedirect()` dans `buildForm()` n'a aucun effet sur une requete GET (uniquement pris en compte apres soumission) — l'etat vide (brouillon absent) doit etre rendu inline, pas redirige, meme pattern que `QuoteForm`. **Hors perimetre, confirme avec l'utilisatrice** : F13 (Tableau de bord), reste de F15 (page « Mes devis », Dupliquer, PDF, e-mail de confirmation, archivage manuel). **A rejouer** : S15, S16 (mobile et desktop, IDOR avec 2 comptes partenaire) | S15, S16 |
 | 2026-08-31 | **F2 — fil d'Ariane masque en mobile** (addendum [ADR-023](../.claude/decisions/023-fil-ariane-style.md), demande explicite) : `.breadcrumb ol` passe a `display: none` sous 992px, `.breadcrumb` conserve son `padding-block` (l'ecart vers le titre de page/premier paragraphe hero n'est pas affecte). **A rejouer** : S1, en mobile (< 992px) sur une page avec et sans bloc titre | S1 |
 | 2026-08-31 | **F3 — `news_home` (bloc actualites home) : titre, points de pagination et bouton « voir toutes » recentres** : `.news-home` n'a qu'un `padding-left` (le droit est laisse libre pour le debordement volontaire de la piste de cartes) — ces 3 elements en heritaient et se retrouvaient decales de `gutter/2` (20px a 1440px) a droite du vrai centre de page. Corrige par un `padding-right: var(--dm-gutter)` fixe sur chacun (pas le pattern `calc(50vw - 50%)` habituel, qui s'annule a zero ici — cf. CLAUDE.md, section SCSS/SDC). Verifie par mesure DOM en desktop et mobile, pas a l'oeil. **A rejouer** : S2 (bloc actualites, desktop et mobile) | S2 |
