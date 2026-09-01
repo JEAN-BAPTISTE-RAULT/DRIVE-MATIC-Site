@@ -12,7 +12,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\drivematic_configurator\Entity\DeliveryAddress;
 
 /**
- * Controle d'acces de `delivery_address` : proprietaire uniquement.
+ * Controle d'acces de `delivery_address` : proprietaire, + lecture admin.
  *
  * Premiere entite multi-instance par partenaire du projet (voir
  * docs/plans/configurateur-etape-3-livraison.md §4) : empeche un partenaire
@@ -20,6 +20,13 @@ use Drupal\drivematic_configurator\Entity\DeliveryAddress;
  * URL forgee. Les routes d'edition/suppression s'appuient sur
  * `_entity_access: 'delivery_address.update'`/`'.delete'`, verifiees ici
  * cote serveur avant tout rendu de formulaire.
+ *
+ * La lecture ('view') est en plus ouverte a tout compte ayant la permission
+ * `administer users` : consomme par le recapitulatif en lecture seule ajoute
+ * a `/user/{uid}/edit` (drivematic_partner_form_user_form_alter()), pour que
+ * l'admin retrouve les adresses de livraison d'un partenaire sans avoir a
+ * se connecter a sa place. 'update'/'delete' restent strictement
+ * proprietaire : aucun besoin metier de les ouvrir a l'admin.
  */
 final class DeliveryAddressAccessControlHandler extends EntityAccessControlHandler {
 
@@ -29,6 +36,10 @@ final class DeliveryAddressAccessControlHandler extends EntityAccessControlHandl
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account): AccessResultInterface {
     if (!$entity instanceof DeliveryAddress || !in_array($operation, ['view', 'update', 'delete'], TRUE)) {
       return AccessResult::neutral();
+    }
+
+    if ($operation === 'view' && $account->hasPermission('administer users')) {
+      return AccessResult::allowed()->cachePerPermissions();
     }
 
     return AccessResult::allowedIf((int) $entity->getOwnerId() === (int) $account->id())

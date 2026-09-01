@@ -5,3 +5,4 @@ package: 'DRIVE-MATIC'
 core_version_requirement: ^11
 dependencies:
   - drupal:user
+  - drivematic_configurator:drivematic_configurator

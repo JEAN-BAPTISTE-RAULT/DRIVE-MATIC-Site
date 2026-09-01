@@ -39,6 +39,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-032](032-espacement-metriques-devis.md) | Bandeaux de totaux du devis — espace identique entre metriques plutot qu'alignement colonne par colonne | Accepte | 2026-08-31 |
 | [ADR-033](033-entites-devis-livraison.md) | Entites Devis/Configuration/Ligne d'equipement/Adresse de livraison (F14 etape 3/3) : modele normalise, gel des donnees, IDOR | Accepte | 2026-09-01 |
 | [ADR-034](034-modale-drupal-core.md) | Modales d'adresse de livraison : dialogue Drupal core (`use-ajax`) plutot que `help-modal` | Accepte | 2026-09-01 |
+| [ADR-035](035-recap-adresses-livraison-admin.md) | Recapitulatif en lecture seule des adresses de livraison sur `/user/{uid}/edit` (consolidation back-office, entite conservee) | Accepte | 2026-09-01 |
 
 ## Quand creer un ADR
 

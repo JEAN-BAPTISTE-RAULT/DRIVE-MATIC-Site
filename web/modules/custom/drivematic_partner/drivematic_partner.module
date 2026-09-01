@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\user\UserInterface;
 
 /**
  * Implements hook_form_FORM_ID_alter() for user_form.
@@ -32,13 +33,21 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * Tout cela reste visible/editable/inchange quand un compte avec la
  * permission `administer users` (seul `administrator`, bypass `is_admin`,
- * aujourd'hui) edite le compte de quelqu'un d'autre.
+ * aujourd'hui) edite le compte de quelqu'un d'autre — ce cas ajoute en plus
+ * un recapitulatif en lecture seule des adresses de livraison du partenaire
+ * (_drivematic_partner_add_delivery_addresses_summary()), consolidation
+ * demandee cote back-office.
  */
 function drivematic_partner_form_user_form_alter(array &$form, FormStateInterface $form_state): void {
   $account = $form_state->getFormObject()->getEntity();
   $editing_own_account = (int) $account->id() === (int) \Drupal::currentUser()->id();
+  $is_admin = \Drupal::currentUser()->hasPermission('administer users');
 
-  if (!$editing_own_account || \Drupal::currentUser()->hasPermission('administer users')) {
+  if (!$editing_own_account && $is_admin) {
+    _drivematic_partner_add_delivery_addresses_summary($form, $account);
+  }
+
+  if (!$editing_own_account || $is_admin) {
     return;
   }
 
@@ -65,6 +74,56 @@ function drivematic_partner_form_user_form_alter(array &$form, FormStateInterfac
  */
 function _drivematic_partner_user_form_redirect(array &$form, FormStateInterface $form_state): void {
   $form_state->setRedirect('drivematic_partner.personal_information');
+}
+
+/**
+ * Ajoute un recapitulatif en lecture seule des adresses de livraison.
+ *
+ * Consolide sur `/user/{uid}/edit` une information sinon consultable
+ * uniquement depuis l'espace partenaire lui-meme (entite `delivery_address`,
+ * module drivematic_configurator, ecran `/configurer/livraison`) : sans
+ * cela, un admin doit se connecter a la place du partenaire pour voir ses
+ * adresses. Lecture seule (aucun lien modifier/supprimer) : la gestion
+ * reste du ressort exclusif du partenaire, depuis son propre espace.
+ *
+ * `DeliveryAddressAccessControlHandler` ouvre deja l'operation 'view' a tout
+ * compte `administer users` — pas de verification d'acces supplementaire
+ * requise ici, cet appel n'etant execute que dans ce meme contexte (voir
+ * drivematic_partner_form_user_form_alter()).
+ */
+function _drivematic_partner_add_delivery_addresses_summary(array &$form, UserInterface $account): void {
+  $addresses = \Drupal::entityTypeManager()
+    ->getStorage('delivery_address')
+    ->loadByProperties(['uid' => $account->id()]);
+
+  $items = [];
+  foreach ($addresses as $address) {
+    $complement = $address->get('complement')->value;
+    $summary = sprintf(
+      '%s, %s%s, %s %s',
+      $address->get('raison_sociale')->value,
+      $address->get('adresse')->value,
+      $complement ? ', ' . $complement : '',
+      $address->get('code_postal')->value,
+      $address->get('ville')->value,
+    );
+    if ($address->get('is_default')->value) {
+      $summary .= ' — ' . t('adresse par défaut');
+    }
+    $items[] = $summary;
+  }
+
+  $form['delivery_addresses'] = [
+    '#type' => 'details',
+    '#title' => t('Adresses de livraison'),
+    '#open' => TRUE,
+    '#weight' => 5,
+    'list' => [
+      '#theme' => 'item_list',
+      '#items' => $items,
+      '#empty' => t('Aucune adresse de livraison enregistrée.'),
+    ],
+  ];
 }
 
 /**
