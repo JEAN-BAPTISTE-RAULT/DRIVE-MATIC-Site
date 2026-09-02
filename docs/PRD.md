@@ -361,7 +361,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - [x] Un devis peut etre archive manuellement **uniquement depuis le statut « A commander »**, jamais depuis « Commande » (ADR-038, decision utilisatrice du 2026-09-02 — corrige la version precedente de cette ligne, qui disait « qu'il soit commande ou non », ecrite avant que la distinction « A commander »/« Commande » n'existe).
 
 **Cas limites** :
-- [x] Remise supplementaire : le partenaire appelle Drive Matic ; DM saisit une remise temporaire par ligne en back-office (`QuoteDiscountForm`, ADR-038) tant que le devis n'a **pas** ete commande (statut « a commander ») ; le taux de remise par defaut du client reste inchange. S'applique en cascade sur le prix deja remise par la remise globale du partenaire (jamais recalcule sur le catalogue brut) ; enregistrer une remise remet aussi le compteur des 30 jours a zero.
+- [x] Remise supplementaire : le partenaire appelle Drive Matic ; DM saisit une remise temporaire par ligne en back-office (`QuoteDiscountForm`, ADR-038) tant que le devis n'a **pas** ete commande (statut « a commander ») ; le taux de remise par defaut du client reste inchange. S'applique en cascade sur le prix deja remise par la remise globale du partenaire (jamais recalcule sur le catalogue brut) ; enregistrer une remise remet aussi le compteur des 30 jours a zero. **Tracee dans l'historique du devis** (qui a accorde quelle remise, sur quelle ligne, et quand — entite `quote_discount_change`, ADR-040), au meme titre que les changements de statut.
 - [x] Devis commande depuis > 30 jours → archivage automatique (`drivematic_configurator_cron()`, verifie J+29 vs J+31 ; ne s'applique jamais a un devis au statut « Commande »).
 
 ---
