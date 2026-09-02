@@ -646,12 +646,14 @@ navigateur).
 3. Filtrer par Statut (« Archive ») ; verifier qu'un devis « A commander » disparait de la liste.
 4. Rechercher un devis par une portion de sa reference (« N° de devis »).
 5. Cliquer la reference d'un devis « A commander » pour ouvrir sa page de detail.
-6. Sur cette page : verifier resume/facturation/livraison/configurations et lignes d'equipement, puis saisir une remise Drive Matic (%) sur une ligne et l'enregistrer.
-7. Cliquer « Marquer comme commande », confirmer.
-8. Sur un **autre** devis « A commander », cliquer « Archiver », confirmer.
-9. Tenter d'acceder directement a l'URL d'archivage d'un devis « Commande » (pas « A commander »).
-10. Ouvrir `/user/{uid}/edit` d'**un autre** compte partenaire (pas le sien).
-11. Ouvrir `/user/{uid}/edit` de **son propre** compte admin.
+6. Sur cette page : verifier « Resume » (partenaire cliquable, remise partenaire, statut, totaux — sans les dates individuelles), « Historique » (une ligne par changement de statut, du plus ancien au plus recent, avec date + auteur), facturation/livraison, puis les configurations et leurs lignes d'equipement (sans colonne « dont remise DM »).
+7. Dans « Remise exceptionnelle par equipement » (devis a au moins 2 configurations partageant un equipement homonyme, ex. 2x « Retrovision exterieure ») : verifier que chaque configuration a sa propre sous-section, saisir des remises DIFFERENTES sur les 2 lignes homonymes et enregistrer.
+8. Cliquer « Marquer comme commande », confirmer.
+9. Sur un **autre** devis « A commander », cliquer « Archiver », confirmer.
+10. Tenter d'acceder directement a l'URL d'archivage d'un devis « Commande » (pas « A commander »).
+11. Ouvrir la page de detail d'un devis cree **avant** l'ajout de l'historique (aucune entree `quote_status_change`).
+12. Ouvrir `/user/{uid}/edit` d'**un autre** compte partenaire (pas le sien).
+13. Ouvrir `/user/{uid}/edit` de **son propre** compte admin.
 
 **Resultats attendus** :
 - Etape 1 : les devis enregistres s'affichent (reference, partenaire, statut lisible, total TTC, date).
@@ -659,12 +661,14 @@ navigateur).
 - Etape 3 : le filtre Statut exclut correctement les autres statuts.
 - Etape 4 : la recherche par reference fonctionne (correspondance partielle).
 - Etape 5 : la reference est un lien cliquable vers `/admin/content/devis/{id}`.
-- Etape 6 : totaux recalcules (remise cumulee avec la remise partenaire, en cascade), `date de commande` remise a l'heure actuelle, colonne « dont remise DM » a jour.
-- Etape 7 : statut devient « Commande le [date du jour] », les boutons d'action et le formulaire de remise disparaissent de la page.
-- Etape 8 : statut devient « Archive », date d'archivage posee.
-- Etape 9 : refuse cote serveur (« Ce devis n'est pas (ou plus) au statut « A commander » : action impossible. »), pas seulement en cachant le bouton.
-- Etape 10 : un bloc « Adresses de livraison » en lecture seule (aucun lien Modifier/Supprimer) liste les adresses du partenaire, ou l'etat vide « Aucune adresse de livraison enregistree. ».
-- Etape 11 : le bloc « Adresses de livraison » **n'apparait pas** (jamais sur son propre compte, meme admin).
+- Etape 6 : chaque section s'affiche correctement, notamment le lien partenaire (vers `/user/{uid}/edit`) et le taux de remise partenaire courant.
+- Etape 7 : chaque ligne homonyme recoit sa propre remise INDEPENDANTE (verifiable aux totaux recalcules par configuration) ; `date de commande` remise a l'heure actuelle (redemarre le delai des 30 jours).
+- Etape 8 : statut devient « Commande le [date du jour] », les boutons d'action et le formulaire de remise disparaissent de la page ; une nouvelle ligne apparait dans « Historique » (date + « Commande » + le compte admin courant).
+- Etape 9 : statut devient « Archive », date d'archivage posee, nouvelle ligne d'historique correspondante.
+- Etape 10 : refuse cote serveur (« Ce devis n'est pas (ou plus) au statut « A commander » : action impossible. »), pas seulement en cachant le bouton.
+- Etape 11 : « Historique » affiche au moins une ligne (date de creation du devis + statut initial deduit + partenaire), jamais une section vide.
+- Etape 12 : un bloc « Adresses de livraison » en lecture seule (aucun lien Modifier/Supprimer) liste les adresses du partenaire, ou l'etat vide « Aucune adresse de livraison enregistree. ».
+- Etape 13 : le bloc « Adresses de livraison » **n'apparait pas** (jamais sur son propre compte, meme admin).
 - Un compte sans la permission `view drivematic configurator quotes` (role `partenaire`) recoit un 403 sur `/admin/content/devis` et sur `/admin/content/devis/{id}`.
 - Un compte avec `view` mais sans `edit drivematic configurator quotes` voit la page de detail mais aucun bouton d'action ni formulaire de remise.
 
@@ -691,6 +695,10 @@ navigateur).
 **Mise en oeuvre (a rejouer) — page de detail du 2026-09-02** ([ADR-037](../.claude/decisions/037-page-detail-devis-admin.md)) : la reference, dans le listing, ouvre desormais `/admin/content/devis/{id}` (`QuoteDetailController`, 1er `Controller` du projet — tout le reste etait en `_form`) — resume, facturation/livraison gelees, une section par configuration avec ses lignes d'equipement. Aucun handler d'acces custom : le handler par defaut de Drupal accorde deja toutes les operations a qui a l'`admin_permission` de l'entite (`view drivematic configurator quotes`).
 
 **Mise en oeuvre (a rejouer) — 4 statuts + actions + remise du 2026-09-02** ([ADR-038](../.claude/decisions/038-cycle-de-vie-devis-4-statuts.md)) : statut renomme en base (`en_cours` → `a_commander`, `hook_update_N`, 1er fichier `.install` du module), nouveau statut « Commande » (`date_confirmation`, distinct de `date_commande`). Nouvelle permission `edit drivematic configurator quotes` (moindre privilege, distincte de la permission de lecture). Verifie reellement via un serveur de test local (pas seulement en cliquant a l'oeil) : remise 10% DM sur une ligne deja remisee 10% partenaire → totaux exacts (Remise HT 164,35€, TTC 840,78€), `date_commande` remise a l'heure actuelle ; marquer commande puis tentative d'archivage direct par URL → refuse cote serveur ; devis « A commander »/« Commande » de 31 jours → seul le premier s'archive automatiquement par cron.
+
+**Retours utilisatrice, meme jour** (addendum ADR-038) : 4 points corriges d'un coup — section « Historique » (nouvelle entite `quote_status_change`, une entree par transition avec date+auteur, remplace les dates isolees de « Resume ») ; ligne « Remise partenaire » + partenaire cliquable vers `/user/{uid}/edit` ; colonne « dont remise DM » retiree (redondante) ; `QuoteDiscountForm` regroupe par configuration (verifie sur un devis a 2 configurations partageant un equipement homonyme — chaque ligne recoit sa propre remise, totaux exacts 400,00€ HT / 324,50€ remise / 64,90€ TVA). **Piege trouve en testant** : une cellule `#type: table` dont la valeur est un render array doit etre enveloppee dans `['data' => ...]`, sinon 500 (voir CLAUDE.md, section PHP/Drupal).
+
+**Correctif du 2026-09-02 (suite)** : les devis crees avant l'ajout de cet historique n'affichaient aucune ligne, pas meme la date de creation — `buildCreationRow()` synthetise desormais systematiquement cette 1ere ligne quand le journal est vide (statut initial deduit de la presence de `date_commande`, jamais de doublon pour un devis cree depuis). Verifie sur les devis existants ET sur un devis passe par le vrai `QuotePersister::persist()` (une seule ligne, pas de doublon).
 
 ---
 
@@ -723,6 +731,7 @@ navigateur).
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-02 | **F15 — page de detail du devis, retours utilisatrice** (addendum [ADR-038](../.claude/decisions/038-cycle-de-vie-devis-4-statuts.md)) : nouvelle entite `quote_status_change` (historique des statuts, date+auteur, remplace les dates isolees de « Resume », toujours au moins une ligne de creation meme pour un devis anterieur a cette entite) ; ligne « Remise partenaire » + partenaire cliquable ; colonne « dont remise DM » retiree ; `QuoteDiscountForm` regroupe par configuration (verifie sur un devis a 2 configurations partageant un equipement homonyme, chaque ligne recoit sa propre remise). **2 bugs reels trouves en verifiant** (pas une relecture de code) : une cellule `#type: table` dont la valeur est un render array plante en 500 sans wrapper `['data' => ...]` (voir CLAUDE.md) ; l'historique d'un devis anterieur a la journalisation etait totalement vide, meme la date de creation — corrige par une ligne de repli synthetisee (`buildCreationRow()`), verifiee sans doublon sur un devis passe par le vrai `QuotePersister::persist()`. **A rejouer** : S26 | S26 |
 | 2026-09-02 | **F15 — cycle de vie du devis a 4 statuts, actions manuelles et remise DM par ligne** ([ADR-038](../.claude/decisions/038-cycle-de-vie-devis-4-statuts.md)) : statut renomme en base (`en_cours` → `a_commander`, `hook_update_N`, 1er `.install` du module) + nouveau statut « Commande » (`date_confirmation`) ; 2 `ConfirmFormBase` (marquer commande, archiver — chacun re-verifie cote serveur que le devis est bien « A commander », pas seulement en cachant le bouton) ; remise Drive Matic par ligne (`QuoteDiscountForm`, embarquee dans la page de detail) calculee en cascade sur le prix deja remise par le partenaire, jamais stockee dans les champs geles (prix effectif calcule a la lecture, `QuoteEquipmentLine::getEffectiveDiscountedHt()`, pour eviter qu'une remise reappliquee ne se cumule sur elle-meme) ; enregistrer une remise remet `date_commande` a l'heure actuelle (redemarre le delai des 30 jours). Nouvelle permission `edit drivematic configurator quotes` (moindre privilege). **Divergence PRD signalee et tranchee avec l'utilisatrice** : l'archivage manuel n'est possible que depuis « A commander », jamais depuis « Commande » (corrige une ligne PRD ecrite avant cette distinction). Verifie reellement (serveur de test local, pas de clic a l'oeil) : calcul cascade exact (10%+10% → 700,65€ HT remise, TTC 840,78€), garde-fous serveur sur les 2 actions, cron n'archive jamais un devis « Commande » meme a 31 jours. **A rejouer** : S16, S26 (parcours navigateur reel complet) | S16, S26 |
 | 2026-09-02 | **F15 — page de detail d'un devis en back-office** ([ADR-037](../.claude/decisions/037-page-detail-devis-admin.md)) : la reference, dans `/admin/content/devis`, ouvre desormais sa page de detail complete (`QuoteDetailController`, 1er `Controller` du projet) — resume, facturation/livraison gelees, configurations et lignes d'equipement. Aucun handler d'acces custom (le handler par defaut de Drupal accorde deja tout via `admin_permission`). **A rejouer** : S26 | S26 |
 | 2026-09-02 | **F15 — e-mails de confirmation de commande** ([ADR-036](../.claude/decisions/036-email-confirmation-commande.md)) : au clic « Commander » (jamais « Enregistrer le devis »), `DeliveryForm` envoie un e-mail au partenaire et une copie interne a Drive Matic Legrand (`hook_mail()` + Mailer Policy, meme gabarit HTML que les e-mails webform existants — 1ere utilisation de ce mecanisme pour un module custom). Jetons dedies (`[quote:reference]`, `[quote:raison-sociale]`, etc.) : coordonnees de facturation gelees sur le devis, civilite/nom/e-mail/telephone lus sur le compte partenaire (pas d'equivalent gele). **2 pieges non triviaux trouves en verifiant** (voir CLAUDE.md, section « E-mails via hook_mail() + Mailer Policy ») : `BodyEmailAdjuster` de mailer_policy detourne une variable Twig si `hook_mail()` pose un corps HTML — texte de repli deplace sur `$message['plain']` ; `t()` plante (`TypeError`) sur un placeholder `NULL` (champ optionnel vide) — chaque valeur castee en `(string)`. Verifie via Mailpit sur un devis reel, y compris avec un champ optionnel vide. **Hors perimetre** : PDF du devis en piece jointe. **A rejouer** : S16, parcours navigateur reel jusqu'a reception effective des e-mails | S16 |
