@@ -93,3 +93,30 @@ parcours (Configuration → Devis → Livraison → Commander) non rejoué —
 jugé à faible risque au vu de la simplicité du câblage ajouté
 (`orderSubmit()` : 2 lignes) sur un mécanisme d'envoi déjà vérifié de bout
 en bout avec les mêmes paramètres exacts.
+
+## Addendum : copie interne (même session, même jour)
+
+Périmètre étendu à la demande de l'utilisatrice, juste après la livraison
+ci-dessus : copie interne à Drive Matic Legrand (`quote_ordered_internal`),
+même gabarit que les notifications internes existantes (« Demandeur » +
+bloc identité), validée dans un artifact avant implémentation (même
+méthode que l'e-mail partenaire). 6 jetons `quote` supplémentaires
+(`raison-sociale`, `adresse`, `complement`, `code-postal`, `ville` — gelés
+sur le devis ; `civilite`, `prenom`, `nom`, `email`, `telephone` — comptes
+partenaire courant). `DeliveryForm::sendInternalOrderNotification()`,
+appelée depuis `orderSubmit()` juste après l'e-mail partenaire, avec son
+propre `try/catch` indépendant.
+
+**Bug trouvé en testant avec un compte réel** (pas les données de test du
+premier tour) : `t()` lève un `TypeError` sur un placeholder `NULL`
+(`field_phone`/`billing_complement` vides) — corrigé en castant chaque
+valeur en `(string)`, dans `hook_mail()` et `hook_tokens()`. Détail complet
+dans [[mailer-policy-legacy-body-collision]] (mémoire auto) et
+ADR-036. Vérifié via Mailpit sur le même devis réel (`W20260901-001`),
+identité du compte de test correctement affichée y compris avec le
+complément d'adresse vide.
+
+Destinataire temporaire `audrey@passerelle.com`, comme toutes les autres
+notifications internes du site — à restaurer sur
+`info@drivematiclegrand.com` avant la mise en prod (hors périmètre de
+cette session).

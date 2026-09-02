@@ -434,7 +434,7 @@
 **Resultats attendus** :
 - Message « Felicitations, votre commande a bien ete enregistree... ».
 - Statut passe a « Commande le jj/mm/aaaa » ; le montant HT s'affiche.
-- E-mail de confirmation **avec PDF du devis** (au partenaire + `info@`).
+- E-mail de confirmation au partenaire + copie interne (`info@`) [x] — **avec PDF du devis** `[ ]` non implemente.
 
 **Mise en oeuvre partielle (a rejouer) — livre le 2026-09-01** (ADR-033) :
 sur `/configurer/livraison`, les boutons **« Enregistrer le devis »**
@@ -460,6 +460,22 @@ enregistre n'etait consultable **nulle part** (pas meme en back-office) :
 ajout d'un listing admin `/admin/content/devis` (Vue Drupal `quotes`, tri
 par colonne, filtre expose Statut, recherche par reference — permission
 `view drivematic configurator quotes`). Voir S26.
+
+**E-mails de confirmation implementes — le 2026-09-02** (ADR-036) : au
+clic « Commander », deux e-mails sont desormais envoyes — au partenaire et
+une copie interne a Drive Matic Legrand (`hook_mail()` + Mailer Policy,
+gabarit identique aux e-mails webform existants). Verifie via Mailpit sur
+un devis reel (`W20260901-001`) : sujet, corps HTML et texte brut corrects
+pour les deux e-mails, jeton `[quote:reference]` et bloc identite
+« Demandeur » (raison sociale/nom/adresse/e-mail/telephone) resolus
+correctement, y compris avec un champ optionnel vide (complement
+d'adresse). « Enregistrer le devis » ne declenche aucun envoi (verifie par
+lecture du code — aucun appel sur ce chemin). **Hors perimetre, confirme
+avec l'utilisatrice** : le PDF du devis en piece jointe. **A rejouer** :
+parcours navigateur reel complet jusqu'a reception effective des deux
+e-mails (le test de cette session a appele `MailManagerInterface::mail()`
+directement avec les memes parametres que `DeliveryForm`, pas via un clic
+navigateur).
 
 ---
 
@@ -692,6 +708,7 @@ par colonne, filtre expose Statut, recherche par reference — permission
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-02 | **F15 — e-mails de confirmation de commande** ([ADR-036](../.claude/decisions/036-email-confirmation-commande.md)) : au clic « Commander » (jamais « Enregistrer le devis »), `DeliveryForm` envoie un e-mail au partenaire et une copie interne a Drive Matic Legrand (`hook_mail()` + Mailer Policy, meme gabarit HTML que les e-mails webform existants — 1ere utilisation de ce mecanisme pour un module custom). Jetons dedies (`[quote:reference]`, `[quote:raison-sociale]`, etc.) : coordonnees de facturation gelees sur le devis, civilite/nom/e-mail/telephone lus sur le compte partenaire (pas d'equivalent gele). **2 pieges non triviaux trouves en verifiant** (voir CLAUDE.md, section « E-mails via hook_mail() + Mailer Policy ») : `BodyEmailAdjuster` de mailer_policy detourne une variable Twig si `hook_mail()` pose un corps HTML — texte de repli deplace sur `$message['plain']` ; `t()` plante (`TypeError`) sur un placeholder `NULL` (champ optionnel vide) — chaque valeur castee en `(string)`. Verifie via Mailpit sur un devis reel, y compris avec un champ optionnel vide. **Hors perimetre** : PDF du devis en piece jointe. **A rejouer** : S16, parcours navigateur reel jusqu'a reception effective des e-mails | S16 |
 | 2026-09-01 | **F14/F15 — suite ecran 3 « Livraison » : persistance verifiee, modales realignees au pixel pres, listing admin des devis, recap admin des adresses** ([ADR-033](../.claude/decisions/033-entites-devis-livraison.md) addendum, [ADR-034](../.claude/decisions/034-modale-drupal-core.md) addendum, [ADR-035](../.claude/decisions/035-recap-adresses-livraison-admin.md)) : parcours complet (Configuration → Devis → Livraison → « Commander ») rejoue en navigateur reel, entites/reference/totaux confirmes corrects en base. Suppression d'une configuration (ecran Devis) dotee d'une modale de confirmation (`QuoteConfigurationDeleteForm`), remplace l'ancienne suppression immediate sans confirmation. Un devis n'etant consultable nulle part cote back-office, ajout d'un listing `/admin/content/devis` (Vue Drupal, tri/filtre Statut/recherche par reference) et d'un recap en lecture seule des adresses de livraison sur `/user/{uid}/edit` admin. 3 modales d'adresse realignees au pixel pres sur 521:17375 (bordure fantome, titre a largeur figee, croix surdimensionnee, boutons « Oui »/« Non » mal alignes — CSS brut jQuery UI plus specifique que le notre, regle generalisee dans CLAUDE.md). **Piege generalisable** : une entite content custom n'expose rien a Views sans `handlers: ['views_data' => EntityViewsData::class]` explicite. **A rejouer** : S15, S16, S26 | S15, S16, S26 |
 | 2026-09-01 | **F14 — configurateur de devis, ecran 3 « Livraison » livre** ([ADR-033](../.claude/decisions/033-entites-devis-livraison.md), [ADR-034](../.claude/decisions/034-modale-drupal-core.md), maquettes 508:13965/671:21277/521:17375/671:22383) : route `/configurer/livraison`, 4 nouvelles entites custom (`quote`, `quote_configuration`, `quote_equipment_line`, `delivery_address` — premiere entite multi-instance par partenaire du projet, controle d'acces par proprietaire). Liste d'adresses de livraison toujours affichee (radios + Modifier/Supprimer par ligne), amorcee automatiquement depuis le compte a la 1re visite ; le bloc « Mon adresse de livraison » + bouton isole de la maquette est un residu retire (retour utilisatrice). Ajout/edition d'adresse en modale Drupal core (`use-ajax`, premiere utilisation de ce pattern, zero JS custom). « Enregistrer le devis »/« Commander » materialisent le brouillon `PrivateTempStore` en entites (prix geles, numerotation `WAAAAMMJJ-001`) et purgent le brouillon. Archivage automatique a J+30 (`hook_cron`). **Bug corrige en verifiant** : `$form_state->setRedirect()` dans `buildForm()` n'a aucun effet sur une requete GET (uniquement pris en compte apres soumission) — l'etat vide (brouillon absent) doit etre rendu inline, pas redirige, meme pattern que `QuoteForm`. **Hors perimetre, confirme avec l'utilisatrice** : F13 (Tableau de bord), reste de F15 (page « Mes devis », Dupliquer, PDF, e-mail de confirmation, archivage manuel). **A rejouer** : S15, S16 (mobile et desktop, IDOR avec 2 comptes partenaire) | S15, S16 |
 | 2026-08-31 | **F2 — fil d'Ariane masque en mobile** (addendum [ADR-023](../.claude/decisions/023-fil-ariane-style.md), demande explicite) : `.breadcrumb ol` passe a `display: none` sous 992px, `.breadcrumb` conserve son `padding-block` (l'ecart vers le titre de page/premier paragraphe hero n'est pas affecte). **A rejouer** : S1, en mobile (< 992px) sur une page avec et sans bloc titre | S1 |
