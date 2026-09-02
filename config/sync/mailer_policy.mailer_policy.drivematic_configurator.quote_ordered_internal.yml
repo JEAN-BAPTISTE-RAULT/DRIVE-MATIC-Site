@@ -1,0 +1,20 @@
+uuid: 468a837c-2dfb-4e1e-bc62-92686dca0b9a
+langcode: fr
+status: true
+dependencies:
+  module:
+    - drivematic_configurator
+id: drivematic_configurator.quote_ordered_internal
+configuration:
+  email_subject:
+    value: 'Drive Matic Legrand : Confirmation de commande'
+  email_body:
+    content:
+      value: |-
+        <div style="text-align:left;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:14px;line-height:22px;"><p style="margin:0 0 16px;"><img src="https://www.drivematiclegrand.com/themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png" alt="Drive Matic Legrand" width="211" height="24" style="display:block;border:0;"></p><p style="margin:0 0 16px;">Bonjour,</p><p style="margin:0 0 16px;">Nous venons de recevoir cette commande sur le site Internet.<br>
+        Bon de commande n° [quote:reference] :</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Demandeur</h3><p style="margin:0 0 16px;"><strong>Raison sociale :</strong> [quote:raison-sociale]<br>
+        <strong>Nom :</strong> [quote:civilite] [quote:prenom] [quote:nom]<br>
+        <strong>Adresse :</strong> [quote:adresse] [quote:complement] - [quote:code-postal] [quote:ville]<br>
+        <strong>E-mail :</strong> [quote:email]<br>
+        <strong>Tél :</strong> [quote:telephone]</p><p style="margin:0 0 16px;">À bientôt<br><strong style="color:#aa0000;">www.drivematiclegrand.com</strong></p><p style="color:#666666;font-size:12px;line-height:18px;margin:0;">Cet e-mail vous a été envoyé par un système automatique d’émission de messages. L’adresse d’émission n’est pas une adresse de courriel classique. Si vous écrivez à cette adresse, votre message ne sera pas pris en compte.</p></div>
+      format: email_html

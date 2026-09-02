@@ -8,6 +8,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\TempStore\PrivateTempStore;
@@ -48,6 +49,7 @@ final class DeliveryForm extends FormBase {
     protected PrivateTempStoreFactory $tempStoreFactory,
     protected AccountProxyInterface $currentUser,
     protected QuotePersister $quotePersister,
+    protected MailManagerInterface $mailManager,
   ) {}
 
   /**
@@ -59,6 +61,7 @@ final class DeliveryForm extends FormBase {
       $container->get('tempstore.private'),
       $container->get('current_user'),
       $container->get('drivematic_configurator.quote_persister'),
+      $container->get('plugin.manager.mail'),
     );
   }
 
@@ -514,7 +517,9 @@ final class DeliveryForm extends FormBase {
    * Callback #submit de « Commander ».
    */
   public function orderSubmit(array &$form, FormStateInterface $form_state): void {
-    $this->persistQuote($form_state, Quote::STATUS_EN_COURS);
+    $quote = $this->persistQuote($form_state, Quote::STATUS_EN_COURS);
+    $this->sendOrderConfirmationEmail($quote);
+    $this->sendInternalOrderNotification($quote);
   }
 
   /**
@@ -525,7 +530,7 @@ final class DeliveryForm extends FormBase {
    * l'utilisatrice), seuls la persistance et les messages sont implementes
    * ici.
    */
-  private function persistQuote(FormStateInterface $form_state, string $status): void {
+  private function persistQuote(FormStateInterface $form_state, string $status): Quote {
     $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
     $address = $form_state->get('selected_delivery_address');
     if (!$draft || !$address) {
@@ -534,11 +539,72 @@ final class DeliveryForm extends FormBase {
 
     /** @var \Drupal\user\UserInterface $account */
     $account = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
-    $this->quotePersister->persist($draft, $status, $account, $address);
+    $quote = $this->quotePersister->persist($draft, $status, $account, $address);
     $this->tempStore()->delete(self::TEMPSTORE_KEY);
 
     $this->messenger()->addStatus($this->buildConfirmationMessage($status));
     $form_state->setRedirect('drivematic_configurator.configuration');
+
+    return $quote;
+  }
+
+  /**
+   * Envoie l'e-mail de confirmation (clic « Commander » uniquement).
+   *
+   * Un probleme d'envoi (SMTP, etc.) ne doit jamais faire echouer la
+   * confirmation d'une commande deja enregistree en base — l'erreur est
+   * seulement journalisee.
+   */
+  private function sendOrderConfirmationEmail(Quote $quote): void {
+    /** @var \Drupal\user\UserInterface $account */
+    $account = $this->entityTypeManager->getStorage('user')->load($quote->getOwnerId());
+
+    try {
+      $this->mailManager->mail(
+        'drivematic_configurator',
+        'quote_ordered',
+        $account->getEmail(),
+        $account->getPreferredLangcode(),
+        ['quote' => $quote],
+      );
+    }
+    catch (\Throwable $e) {
+      $this->getLogger('drivematic_configurator')->error('Échec de l’envoi de l’e-mail de confirmation de commande pour le devis @reference : @message', [
+        '@reference' => $quote->get('reference')->value,
+        '@message' => $e->getMessage(),
+      ]);
+    }
+  }
+
+  /**
+   * Notifie Drive Matic Legrand de la commande (clic « Commander » uniquement).
+   *
+   * Adresse temporaire (comme toutes les autres notifications internes du
+   * site, cf. mémoire mail-interne-audrey-temporaire) — à restaurer sur
+   * info@drivematiclegrand.com avant la mise en prod. Independant de
+   * sendOrderConfirmationEmail() : un echec ici ne doit ni empecher l'envoi
+   * au partenaire ni faire echouer la confirmation d'une commande deja
+   * enregistree en base.
+   */
+  private function sendInternalOrderNotification(Quote $quote): void {
+    /** @var \Drupal\user\UserInterface $account */
+    $account = $this->entityTypeManager->getStorage('user')->load($quote->getOwnerId());
+
+    try {
+      $this->mailManager->mail(
+        'drivematic_configurator',
+        'quote_ordered_internal',
+        'audrey@passerelle.com',
+        $account->getPreferredLangcode(),
+        ['quote' => $quote],
+      );
+    }
+    catch (\Throwable $e) {
+      $this->getLogger('drivematic_configurator')->error('Échec de l’envoi de la notification interne de commande pour le devis @reference : @message', [
+        '@reference' => $quote->get('reference')->value,
+        '@message' => $e->getMessage(),
+      ]);
+    }
   }
 
   /**

@@ -5,6 +5,7 @@
  * Configurateur de devis DRIVE-MATIC (F14).
  */
 
+use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\drivematic_configurator\Entity\Quote;
 
 /**
@@ -36,4 +37,185 @@ function drivematic_configurator_cron(): void {
     $quote->set('date_archivage', $now);
     $quote->save();
   }
+}
+
+/**
+ * Implements hook_mail().
+ *
+ * Le sujet/corps par defaut n'alimente QUE `$message['plain']` (alternative
+ * texte du MIME, jamais lue par les EmailAdjuster de mailer_policy), pas
+ * `$message['body']`. mailer_policy remplace integralement le corps HTML
+ * par le gabarit valide avec l'utilisatrice (voir
+ * config/sync/mailer_policy.mailer_policy.drivematic_configurator.quote_ordered.yml)
+ * — mais `BodyEmailAdjuster` (mailer_policy) sauvegarde tout corps HTML
+ * DEJA present sur l'e-mail dans une variable Twig nommee "body", relue par
+ * le gabarit d'habillage par defaut (`email-wrap.html.twig`) : y poser un
+ * corps HTML ici l'ecraserait silencieusement avec ce texte de repli au lieu
+ * du gabarit configure. `token_data` alimente la resolution de
+ * `[quote:reference]` dans ce gabarit (hook_tokens() ci-dessous).
+ */
+function drivematic_configurator_mail(string $key, array &$message, array $params): void {
+  if (!in_array($key, ['quote_ordered', 'quote_ordered_internal'], TRUE)) {
+    return;
+  }
+
+  /** @var \Drupal\drivematic_configurator\Entity\Quote $quote */
+  $quote = $params['quote'];
+
+  if ($key === 'quote_ordered') {
+    $message['subject'] = t('Drive Matic Legrand : Confirmation de votre commande');
+    $message['plain'] = (string) t("Bonjour,\n\nNous vous confirmons la bonne prise en compte de votre commande n°@reference !\nVotre commande a bien été enregistrée et sera traitée par notre équipe dans les meilleurs délais.\nNous vous remercions pour votre confiance et restons à votre disposition pour toute question concernant votre commande.\n\nÀ bientôt\nwww.drivematiclegrand.com", [
+      '@reference' => $quote->get('reference')->value,
+    ]);
+  }
+  else {
+    /** @var \Drupal\user\UserInterface $account */
+    $account = \Drupal::entityTypeManager()->getStorage('user')->load($quote->getOwnerId());
+    $message['subject'] = t('Drive Matic Legrand : Confirmation de commande');
+    $message['plain'] = (string) t("Bonjour,\n\nNous venons de recevoir cette commande sur le site Internet.\nBon de commande n° @reference :\n\nDemandeur\nRaison sociale : @raison_sociale\nNom : @civilite @prenom @nom\nAdresse : @adresse @complement - @code_postal @ville\nE-mail : @email\nTél : @telephone\n\nÀ bientôt\nwww.drivematiclegrand.com", [
+      '@reference' => (string) $quote->get('reference')->value,
+      '@raison_sociale' => (string) $quote->get('billing_raison_sociale')->value,
+      '@civilite' => (string) $account->get('field_civility')->value,
+      '@prenom' => (string) $account->get('field_first_name')->value,
+      '@nom' => (string) $account->get('field_last_name')->value,
+      '@adresse' => (string) $quote->get('billing_adresse')->value,
+      '@complement' => (string) $quote->get('billing_complement')->value,
+      '@code_postal' => (string) $quote->get('billing_code_postal')->value,
+      '@ville' => (string) $quote->get('billing_ville')->value,
+      '@email' => (string) $account->getEmail(),
+      '@telephone' => (string) $account->get('field_phone')->value,
+    ]);
+  }
+
+  $message['params']['token_data']['quote'] = $quote;
+}
+
+/**
+ * Implements hook_token_info().
+ *
+ * Jetons dedies aux e-mails de confirmation de commande (quote_ordered,
+ * quote_ordered_internal) : ces valeurs ne sont connues qu'au moment de
+ * l'envoi, jamais a l'avance dans le gabarit mailer_policy.
+ */
+function drivematic_configurator_token_info(): array {
+  return [
+    'types' => [
+      'quote' => [
+        'name' => t('Devis'),
+        'description' => t('Jetons associés à un devis du configurateur.'),
+      ],
+    ],
+    'tokens' => [
+      'quote' => [
+        'reference' => [
+          'name' => t('N° de devis'),
+          'description' => t('La référence du devis (ex. WA20260901-001).'),
+        ],
+        'raison-sociale' => [
+          'name' => t('Raison sociale'),
+          'description' => t('Raison sociale de facturation gelée sur le devis.'),
+        ],
+        'adresse' => [
+          'name' => t('Adresse'),
+          'description' => t('Adresse de facturation gelée sur le devis.'),
+        ],
+        'complement' => [
+          'name' => t("Complément d'adresse"),
+          'description' => t("Complément d'adresse de facturation gelé sur le devis."),
+        ],
+        'code-postal' => [
+          'name' => t('Code postal'),
+          'description' => t('Code postal de facturation gelé sur le devis.'),
+        ],
+        'ville' => [
+          'name' => t('Ville'),
+          'description' => t('Ville de facturation gelée sur le devis.'),
+        ],
+        'civilite' => [
+          'name' => t('Civilité'),
+          'description' => t('Civilité du partenaire (compte courant).'),
+        ],
+        'prenom' => [
+          'name' => t('Prénom'),
+          'description' => t('Prénom du partenaire (compte courant).'),
+        ],
+        'nom' => [
+          'name' => t('Nom'),
+          'description' => t('Nom du partenaire (compte courant).'),
+        ],
+        'email' => [
+          'name' => t('E-mail'),
+          'description' => t('E-mail du partenaire (compte courant).'),
+        ],
+        'telephone' => [
+          'name' => t('Téléphone'),
+          'description' => t('Téléphone du partenaire (compte courant).'),
+        ],
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_tokens().
+ *
+ * Raison sociale/adresse viennent des coordonnees gelees sur le devis ;
+ * civilite/prenom/nom/e-mail/telephone n'ont pas d'equivalent gele sur
+ * `quote` (voir Entity/Quote.php) et viennent donc du compte partenaire
+ * courant.
+ */
+function drivematic_configurator_tokens(string $type, array $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata): array {
+  $replacements = [];
+  if ($type !== 'quote' || empty($data['quote'])) {
+    return $replacements;
+  }
+
+  /** @var \Drupal\drivematic_configurator\Entity\Quote $quote */
+  $quote = $data['quote'];
+  $account = NULL;
+
+  foreach ($tokens as $name => $original) {
+    switch ($name) {
+      case 'reference':
+        $replacements[$original] = (string) $quote->get('reference')->value;
+        break;
+
+      case 'raison-sociale':
+        $replacements[$original] = (string) $quote->get('billing_raison_sociale')->value;
+        break;
+
+      case 'adresse':
+        $replacements[$original] = (string) $quote->get('billing_adresse')->value;
+        break;
+
+      case 'complement':
+        $replacements[$original] = (string) $quote->get('billing_complement')->value;
+        break;
+
+      case 'code-postal':
+        $replacements[$original] = (string) $quote->get('billing_code_postal')->value;
+        break;
+
+      case 'ville':
+        $replacements[$original] = (string) $quote->get('billing_ville')->value;
+        break;
+
+      case 'civilite':
+      case 'prenom':
+      case 'nom':
+      case 'email':
+      case 'telephone':
+        $account ??= \Drupal::entityTypeManager()->getStorage('user')->load($quote->getOwnerId());
+        $replacements[$original] = (string) match ($name) {
+          'civilite' => $account->get('field_civility')->value,
+          'prenom' => $account->get('field_first_name')->value,
+          'nom' => $account->get('field_last_name')->value,
+          'email' => $account->getEmail(),
+          'telephone' => $account->get('field_phone')->value,
+        };
+        break;
+    }
+  }
+
+  return $replacements;
 }
