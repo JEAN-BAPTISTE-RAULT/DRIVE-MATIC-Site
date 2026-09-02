@@ -130,16 +130,22 @@ echo "=== Etapes distantes ==="
 echo "-- composer install --no-dev --"
 run_remote "cd '$PREPROD_PATH' && composer install --no-dev --optimize-autoloader"
 
+# Sur cet hebergement, composer ne pose pas systematiquement le bit
+# executable sur les binaires vendor/bin/ (vu en pratique sur vendor/bin/drush
+# et sa cible reelle vendor/drush/drush/drush, tous deux restes en 644).
+# Remettre le bit +x explicitement est sans effet si tout est deja correct.
+run_remote "cd '$PREPROD_PATH' && chmod +x vendor/bin/* vendor/drush/drush/drush 2>/dev/null || true"
+
 if [ "$NO_BACKUP" -eq 0 ]; then
   echo "-- backup de la base preprod --"
-  run_remote "cd '$PREPROD_PATH' && mkdir -p backups && php vendor/bin/drush sql:dump --gzip --result-file=backups/preprod-\$(date +%Y%m%d-%H%M%S).sql"
+  run_remote "cd '$PREPROD_PATH' && mkdir -p backups && vendor/bin/drush sql:dump --gzip --result-file=backups/preprod-\$(date +%Y%m%d-%H%M%S).sql"
 fi
 
 echo "-- drush deploy (updb + config:import + cache-rebuild) --"
-run_remote "cd '$PREPROD_PATH' && php vendor/bin/drush deploy -y"
+run_remote "cd '$PREPROD_PATH' && vendor/bin/drush deploy -y"
 
 echo "-- statut --"
-run_remote "cd '$PREPROD_PATH' && php vendor/bin/drush status"
+run_remote "cd '$PREPROD_PATH' && vendor/bin/drush status"
 
 echo ""
 echo "=== Deploiement termine ==="
