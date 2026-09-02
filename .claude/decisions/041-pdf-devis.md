@@ -121,6 +121,26 @@ logique dans le gabarit, même convention que les e-mails webform). Police de
 substitution DejaVu Sans (native Dompdf) à la place d'« Inter » (maquette) — aucune
 police web embarquée, mise en page/couleurs/bordures reproduites à l'identique.
 
+### Addendum (2026-09-02) : logo — PNG remplacé par un SVG dédié
+Le PNG des e-mails (`logo-drive-matic-legrand-email.png`, 633×73, utilisé en 1ère
+version) laissait apparaître, une fois rendu par Dompdf en qualité print (300 DPI),
+un résidu de trait parasite sous l'icône — signalé par l'utilisatrice (« le logo est
+crado »). Confirmé par comparaison directe : le défaut existe déjà, très
+discrètement, dans les pixels du fichier source lui-même (visible à fort
+grossissement, invisible à la taille d'affichage e-mail habituelle) et devient
+manifeste une fois ce raster basse résolution agrandi pour un rendu print — un
+ré-encodage en 8 bits (GD) atténue l'artefact sans l'éliminer, la cause réelle étant
+la résolution native insuffisante du PNG pour ce contexte, pas seulement sa
+profondeur de couleur.
+
+**Fix retenu** : nouvel asset `web/themes/custom/drive_matic/images/
+logo-drive-matic-legrand-pdf.svg`, export du calque logo de la maquette Figma
+elle-même (node 714:9297, `get_design_context`) — vectoriel, aucune limite de
+résolution quelle que soit la taille de sortie. Testé isolément dans Dompdf (rendu
+propre, confirmé à 300 DPI) avant intégration. Fichier source des e-mails
+(`logo-drive-matic-legrand-email.png`) non modifié — aucun rapport avec ce PDF, pas
+de risque de régression sur ADR-022.
+
 ## Consequences
 - Nouveau champ `QuoteEquipmentLine::reference`, 6e `hook_update_N` — `drush updb`
   à rejouer sur tout environnement avant déploiement.

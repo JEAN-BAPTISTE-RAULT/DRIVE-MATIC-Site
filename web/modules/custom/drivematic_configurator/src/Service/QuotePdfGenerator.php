@@ -102,10 +102,16 @@ final class QuotePdfGenerator {
 
   /**
    * Encode le logo en data URI (Dompdf ne charge aucune ressource distante).
+   *
+   * SVG (export Figma du logo, node 714:9297) plutot que le PNG des
+   * e-mails (`logo-drive-matic-legrand-email.png`, 633x73) : ce dernier,
+   * rasterise a basse resolution, laisse apparaitre un residu de trait
+   * parasite sous l'icone une fois agrandi au rendu print (300 DPI) — un
+   * vectoriel n'a pas cette limite, quelle que soit la taille de sortie.
    */
   private function buildLogoDataUri(): string {
-    $path = $this->themeExtensionList->getPath('drive_matic') . '/images/logo-drive-matic-legrand-email.png';
-    return 'data:image/png;base64,' . base64_encode(file_get_contents($path));
+    $path = $this->themeExtensionList->getPath('drive_matic') . '/images/logo-drive-matic-legrand-pdf.svg';
+    return 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($path));
   }
 
   /**
