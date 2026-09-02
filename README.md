@@ -46,6 +46,36 @@ npm run format        # applique le formatage Prettier
 
 Scripts granulaires : `lint:js`, `lint:css`, `lint:php`. Config : `eslint.config.mjs`, `.stylelintrc.json`, `.prettierrc.json`, `phpcs.xml.dist`.
 
+## Deploiement (preprod)
+
+`scripts/deploy-preprod.sh` deploie le code + la configuration Drupal vers la preprod, par rsync et SSH. **Il ne touche jamais a la base de donnees preprod** (hors dump de securite optionnel) : le contenu y evolue independamment du local depuis que la base y a ete copiee une fois manuellement. Voir [ADR-039](.claude/decisions/039-deploiement-preprod-rsync.md).
+
+**Prerequis (une seule fois)**
+
+1. Copier `.env.deploy.example` vers `.env.deploy` et renseigner host/user/port/chemin (fichier gitignore, jamais committe).
+2. Autoriser ta cle SSH sur le serveur preprod :
+
+```bash
+ssh-copy-id -p <PORT> <USER>@<HOST>
+```
+
+Si `ssh-copy-id` n'est pas disponible :
+
+```bash
+cat ~/.ssh/id_rsa.pub | ssh -p <PORT> <USER>@<HOST> "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+```
+
+Verifier ensuite que la connexion ne demande plus de mot de passe : `ssh -p <PORT> <USER>@<HOST>`.
+
+**Utilisation**
+
+```bash
+scripts/deploy-preprod.sh --dry-run   # previsualiser les fichiers transferes, sans rien toucher
+scripts/deploy-preprod.sh             # deploiement reel (garde-fous + confirmation avant tout envoi)
+```
+
+Le script refuse de partir si : la branche courante n'est pas `main`, le working tree n'est pas propre, ou `npm run lint` / `npm run format:check` echouent (`--skip-checks` pour ignorer ce dernier point en urgence). Cote serveur : `composer install --no-dev`, dump de securite de la base preprod (`--no-backup` pour le sauter), puis `drush deploy` (mises a jour de base + `config:import` + rebuild du cache). Seuls les fichiers suivis par `git` sont transferes (`--prune` pour aussi supprimer, sur le serveur, ceux qui ont disparu du local).
+
 ## Architecture
 
 Projet **Drupal 11** (`drupal/recommended-project`), docroot **`web/`**.

@@ -40,6 +40,7 @@ node_modules/
 /web/sites/*/translations/
 /private/
 .env
+.env.deploy
 
 # === Tests / temporaires ===
 tmp/

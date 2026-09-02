@@ -43,6 +43,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-036](036-email-confirmation-commande.md) | E-mail de confirmation de commande via hook_mail() + mailer_policy, jeton `quote` custom | Accepte | 2026-09-01 |
 | [ADR-037](037-page-detail-devis-admin.md) | Page de detail d'un devis (back-office) : Controller + render array plutot que view_builder/view modes | Accepte | 2026-09-02 |
 | [ADR-038](038-cycle-de-vie-devis-4-statuts.md) | Cycle de vie du devis a 4 statuts (renommage en_cours->a_commander, statut Commande, remise DM par ligne calculee a la lecture) | Accepte | 2026-09-02 |
+| [ADR-039](039-deploiement-preprod-rsync.md) | Deploiement local -> preprod par rsync (git ls-files), sans plus jamais synchroniser la base de donnees | Accepte | 2026-09-02 |
 
 ## Quand creer un ADR
 
