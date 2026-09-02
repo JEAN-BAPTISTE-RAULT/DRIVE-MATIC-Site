@@ -273,10 +273,14 @@ display:
                 operator: '='
                 value: a_finaliser
               2:
-                title: 'En cours'
+                title: 'À commander'
                 operator: '='
-                value: en_cours
+                value: a_commander
               3:
+                title: Commandé
+                operator: '='
+                value: commande
+              4:
                 title: Archivé
                 operator: '='
                 value: archive

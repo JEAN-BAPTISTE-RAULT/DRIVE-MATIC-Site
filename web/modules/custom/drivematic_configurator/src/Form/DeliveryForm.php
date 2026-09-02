@@ -31,7 +31,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * finales qui font passer le brouillon `PrivateTempStore` (ADR-031) a une
  * persistance reelle (entites Quote/QuoteConfiguration/QuoteEquipmentLine,
  * QuotePersister) : « Enregistrer le devis » (Quote::STATUS_A_FINALISER) ou
- * « Commander » (Quote::STATUS_EN_COURS).
+ * « Commander » (Quote::STATUS_A_COMMANDER).
  *
  * Hors perimetre (confirme avec l'utilisatrice, voir
  * docs/plans/configurateur-etape-3-livraison.md §6) : la page « Tableau de
@@ -517,7 +517,7 @@ final class DeliveryForm extends FormBase {
    * Callback #submit de « Commander ».
    */
   public function orderSubmit(array &$form, FormStateInterface $form_state): void {
-    $quote = $this->persistQuote($form_state, Quote::STATUS_EN_COURS);
+    $quote = $this->persistQuote($form_state, Quote::STATUS_A_COMMANDER);
     $this->sendOrderConfirmationEmail($quote);
     $this->sendInternalOrderNotification($quote);
   }
@@ -611,7 +611,7 @@ final class DeliveryForm extends FormBase {
    * Construit le message de confirmation (texte fourni par l'utilisatrice).
    */
   private function buildConfirmationMessage(string $status): Markup {
-    if ($status !== Quote::STATUS_EN_COURS) {
+    if ($status !== Quote::STATUS_A_COMMANDER) {
       return Markup::create((string) $this->t("Votre devis a bien été enregistré mais n'est pas finalisé. Vous pouvez le retrouver dès à présent dans votre tableau de bord afin de le reprendre."));
     }
 

@@ -6,14 +6,16 @@ namespace Drupal\drivematic_configurator\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\drivematic_configurator\Entity\Quote;
 use Drupal\drivematic_configurator\Entity\QuoteConfiguration;
+use Drupal\drivematic_configurator\Form\QuoteDiscountForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Page de detail en lecture seule d'un devis (back-office).
+ * Page de detail d'un devis (back-office).
  *
  * Seul moyen de consulter le contenu complet d'un devis (configurations
  * vehicule, lignes d'equipement, adresses gelees) depuis
@@ -28,6 +30,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * `QuoteConfiguration`/`QuoteEquipmentLine` n'ont pas de controle d'acces
  * propre : chargees uniquement ici, en interne, apres que l'acces au
  * `Quote` parent a deja ete verifie par la route.
+ *
+ * N'est plus strictement en lecture seule : les actions de statut (marquer
+ * commande, archiver) et le formulaire de remise par ligne
+ * (QuoteDiscountForm, embarque via `formBuilder()`) sont affiches sur
+ * cette meme page quand le visiteur a la permission distincte `edit
+ * drivematic configurator quotes` — jamais accordee au seul fait de voir
+ * la page (permission de lecture separee, moindre privilege).
  */
 final class QuoteDetailController extends ControllerBase {
 
@@ -53,57 +62,109 @@ final class QuoteDetailController extends ControllerBase {
    * Construit la page de detail.
    */
   public function view(Quote $quote): array {
-    return [
+    $build = [
       'back' => [
         '#type' => 'link',
         '#title' => $this->t('← Retour à la liste des devis'),
         '#url' => Url::fromRoute('view.quotes.page_1'),
       ],
-      'summary' => [
+    ];
+
+    $can_edit = $this->currentUser()->hasPermission('edit drivematic configurator quotes');
+    if ($can_edit && $quote->get('status')->value === Quote::STATUS_A_COMMANDER) {
+      $build['actions'] = $this->buildActions($quote);
+    }
+
+    $build['summary'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Résumé'),
+      '#open' => TRUE,
+      'table' => $this->buildSummaryTable($quote),
+    ];
+    $build['history'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Historique'),
+      '#open' => TRUE,
+      'table' => $this->buildHistoryTable($quote),
+    ];
+    $build['billing'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Facturation'),
+      '#open' => TRUE,
+      'table' => $this->buildAddressTable($quote, 'billing', TRUE),
+    ];
+    $build['delivery'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Livraison'),
+      '#open' => TRUE,
+      'table' => $this->buildAddressTable($quote, 'delivery', FALSE),
+    ];
+    $build['configurations'] = $this->buildConfigurations($quote);
+
+    if ($can_edit && $quote->get('status')->value === Quote::STATUS_A_COMMANDER) {
+      $build['discount'] = [
         '#type' => 'details',
-        '#title' => $this->t('Résumé'),
+        '#title' => $this->t('Remise exceptionnelle par équipement'),
         '#open' => TRUE,
-        'table' => $this->buildSummaryTable($quote),
+        'form' => $this->formBuilder()->getForm(QuoteDiscountForm::class, $quote),
+      ];
+    }
+
+    return $build;
+  }
+
+  /**
+   * Liens d'action (marquer commandé, archiver), statut « À commander » seul.
+   */
+  private function buildActions(Quote $quote): array {
+    return [
+      '#type' => 'container',
+      '#attributes' => ['class' => ['quote-detail__actions']],
+      'mark_ordered' => [
+        '#type' => 'link',
+        '#title' => $this->t('Marquer comme commandé'),
+        '#url' => Url::fromRoute('drivematic_configurator.quote_mark_ordered', ['quote' => $quote->id()]),
+        '#attributes' => ['class' => ['button']],
       ],
-      'billing' => [
-        '#type' => 'details',
-        '#title' => $this->t('Facturation'),
-        '#open' => TRUE,
-        'table' => $this->buildAddressTable($quote, 'billing', TRUE),
+      'archive' => [
+        '#type' => 'link',
+        '#title' => $this->t('Archiver'),
+        '#url' => Url::fromRoute('drivematic_configurator.quote_archive', ['quote' => $quote->id()]),
+        '#attributes' => ['class' => ['button']],
       ],
-      'delivery' => [
-        '#type' => 'details',
-        '#title' => $this->t('Livraison'),
-        '#open' => TRUE,
-        'table' => $this->buildAddressTable($quote, 'delivery', FALSE),
-      ],
-      'configurations' => $this->buildConfigurations($quote),
     ];
   }
 
   /**
-   * Tableau « Résumé » : partenaire, statut, dates, totaux.
+   * Tableau « Résumé » : partenaire, remise, statut, totaux.
    */
   private function buildSummaryTable(Quote $quote): array {
-    $statuses = [
-      Quote::STATUS_A_FINALISER => $this->t('À finaliser'),
-      Quote::STATUS_EN_COURS => $this->t('En cours'),
-      Quote::STATUS_ARCHIVE => $this->t('Archivé'),
-    ];
-    $status_value = (string) $quote->get('status')->value;
     $account = $quote->getOwner();
-    $partner = $account
-      ? $account->getDisplayName() . ' (' . $account->getEmail() . ')'
-      : (string) $this->t('Compte supprimé');
+    if ($account) {
+      // Une cellule dont la valeur est un render array doit etre enveloppee
+      // dans `['data' => ...]` : un tableau nu sans cle `data` est traite
+      // par `template_preprocess_table()` comme des attributs HTML bruts
+      // pour la cellule, pas comme du contenu a rendre.
+      $partner = [
+        'data' => Link::createFromRoute(
+        $account->getDisplayName() . ' (' . $account->getEmail() . ')',
+        'entity.user.edit_form',
+        ['user' => $account->id()],
+        )->toRenderable(),
+      ];
+      $discount_rate = $this->formatRate($account->get('field_discount_rate')->value);
+    }
+    else {
+      $partner = (string) $this->t('Compte supprimé');
+      $discount_rate = $this->t('—');
+    }
 
     return [
       '#type' => 'table',
       '#rows' => [
         [$this->t('Partenaire'), $partner],
-        [$this->t('Statut'), $statuses[$status_value] ?? $status_value],
-        [$this->t('Date de création'), $this->formatDate($quote->get('created')->value)],
-        [$this->t('Date de commande'), $this->formatDate($quote->get('date_commande')->value)],
-        [$this->t("Date d'archivage"), $this->formatDate($quote->get('date_archivage')->value)],
+        [$this->t('Remise partenaire'), $discount_rate],
+        [$this->t('Statut'), $this->formatStatus($quote)],
         [$this->t('Total HT'), $this->formatPrice($quote->get('total_ht')->value)],
         [$this->t('Remise HT'), $this->formatPrice($quote->get('total_discount')->value)],
         [$this->t('Total remisé HT'), $this->formatPrice($quote->get('total_discounted_ht')->value)],
@@ -111,6 +172,78 @@ final class QuoteDetailController extends ControllerBase {
         [$this->t('Total TTC'), $this->formatPrice($quote->get('total_ttc')->value)],
       ],
     ];
+  }
+
+  /**
+   * Tableau « Historique » : statuts du plus ancien au plus récent.
+   *
+   * @see \Drupal\drivematic_configurator\Entity\QuoteStatusChange
+   */
+  private function buildHistoryTable(Quote $quote): array {
+    $storage = $this->entityTypeManager()->getStorage('quote_status_change');
+    $ids = $storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('quote_id', $quote->id())
+      ->sort('created', 'ASC')
+      ->execute();
+
+    $rows = [];
+    /** @var \Drupal\drivematic_configurator\Entity\QuoteStatusChange $change */
+    foreach ($storage->loadMultiple($ids) as $change) {
+      $author = $change->get('uid')->entity;
+      $rows[] = [
+        $this->formatDate($change->get('created')->value),
+        $this->resolveStatusLabel((string) $change->get('status')->value, $quote),
+        $author ? $author->getDisplayName() : (string) $this->t('Automatique'),
+      ];
+    }
+
+    return [
+      '#type' => 'table',
+      '#header' => [$this->t('Date'), $this->t('Statut'), $this->t('Effectué par')],
+      '#rows' => $rows,
+    ];
+  }
+
+  /**
+   * Libellé du statut courant du devis (« Commandé » inclut la date).
+   *
+   * Le libellé riche avec date n'est composé qu'ici : le listing (Vue
+   * `quotes`) reste sur le libellé statique de `allowed_values` — l'affichage
+   * détaillé avec date relève surtout du futur dashboard partenaire.
+   */
+  private function formatStatus(Quote $quote): string|TranslatableMarkup {
+    if ($quote->get('status')->value === Quote::STATUS_COMMANDE) {
+      return $this->t('Commandé le @date', [
+        '@date' => $this->formatDate($quote->get('date_confirmation')->value),
+      ]);
+    }
+
+    return $this->resolveStatusLabel((string) $quote->get('status')->value, $quote);
+  }
+
+  /**
+   * Résout un libellé de statut depuis `allowed_values` (jamais en dur).
+   *
+   * Utilisé pour le statut courant (formatStatus()) ET pour chaque entrée
+   * de l'historique (buildHistoryTable(), un statut PASSÉ, distinct du
+   * statut courant du devis) — jamais de date embarquée ici, contrairement
+   * à formatStatus() : dans l'historique, la date a déjà sa propre colonne.
+   */
+  private function resolveStatusLabel(string $status_value, Quote $quote): string {
+    $allowed_values = $quote->getFieldDefinition('status')->getSetting('allowed_values');
+
+    return $allowed_values[$status_value] ?? $status_value;
+  }
+
+  /**
+   * Formate un taux (%), ou un tiret si absent.
+   */
+  private function formatRate(mixed $rate): string|TranslatableMarkup {
+    if ($rate === NULL || $rate === '') {
+      return $this->t('—');
+    }
+    return number_format((float) $rate, 2, ',', ' ') . ' %';
   }
 
   /**
@@ -196,6 +329,7 @@ final class QuoteDetailController extends ControllerBase {
       ->execute();
 
     $rows = [];
+    /** @var \Drupal\drivematic_configurator\Entity\QuoteEquipmentLine $line */
     foreach ($line_storage->loadMultiple($ids) as $line) {
       if ($line->get('unavailable')->value) {
         $rows[] = [
@@ -208,11 +342,11 @@ final class QuoteDetailController extends ControllerBase {
       $rows[] = [
         (string) $line->get('label')->value,
         $this->formatPrice($line->get('unit_price')->value),
-        $this->formatPrice($line->get('discounted_unit_price')->value),
+        $this->formatPrice($line->getEffectiveDiscountedUnitPrice()),
         (string) $line->get('quantity_per_vehicle')->value,
         (string) $line->get('quantity_total')->value,
         $this->formatPrice($line->get('ht')->value),
-        $this->formatPrice($line->get('discounted_ht')->value),
+        $this->formatPrice($line->getEffectiveDiscountedHt()),
       ];
     }
 

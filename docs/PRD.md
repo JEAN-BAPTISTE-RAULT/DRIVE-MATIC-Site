@@ -353,16 +353,16 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Criteres d'acceptation** :
 - [x] Numerotation devis : `WAAAAMMJJ-001` (compteur journalier, `QuoteReferenceGenerator`, ADR-033).
 - [ ] **Onglet « A finaliser »** : devis non commandes ; dernier en tete ; colonnes date / marque / modele / type / equipements / statut ; pagination 10 ; fonctions **Modifier, Dupliquer, Supprimer** (avec confirmation). `[ ]` page « Mes devis » elle-meme non implementee (hors perimetre F14 3/3, cf. ADR-033).
-- [ ] **Onglet « En cours »** : devis finalises non commandes **et** commandes ; ajoute colonnes n° devis + montant HT ; statuts « A commander » ou « Commande le jj/mm/aaaa ». `[INFERE]` Le statut implemente a ce stade (F14 3/3) est simplifie a 2 valeurs (« À finaliser »/« En cours »), sur demande explicite de l'utilisatrice — la distinction « A commander »/« Commande le jj/mm/aaaa » decrite ici reste a affiner quand ce cycle de vie complet sera implemente.
+- [ ] **Onglet « En cours »** : devis finalises non commandes **et** commandes ; ajoute colonnes n° devis + montant HT ; statuts « A commander » ou « Commande le jj/mm/aaaa ». **Mise a jour du 2026-09-02** [x] : le statut a 4 valeurs decrit ici est desormais implemente (`Quote::STATUS_A_FINALISER`/`STATUS_A_COMMANDER`/`STATUS_COMMANDE`/`STATUS_ARCHIVE`, ADR-038) — reste hors perimetre uniquement la page « Mes devis »/onglets elle-meme (F13), qui affichera ces statuts au partenaire.
   - Devis non commande : **Commander** (renvoi a l'etape Devis du configurateur), Modifier, Dupliquer, Supprimer.
   - Devis commande : Dupliquer, Archiver (confirmation).
 - [ ] **Commander** : enregistre la date de commande [x] (`Quote::date_commande`), affiche « Felicitations, votre commande a bien ete enregistree... » [x] (DeliveryForm), envoie l'e-mail de confirmation au partenaire et une copie interne (`info@drivematiclegrand.com`, adresse temporaire `audrey@passerelle.com` en attendant la mise en prod) [x] (ADR-036, `hook_mail()` + Mailer Policy) — **le PDF du devis en piece jointe** `[ ]` non implemente.
-- [ ] **Onglet « Archives »** : devis archives (manuellement ou **auto a 30 jours** pour les commandes [x], `hook_cron`, ADR-033) ; dernier en tete ; **Telecharger le devis (PDF)** ; un devis archive **ne peut plus etre duplique**. `[ ]` page « Mes devis »/PDF non implementes.
-- [ ] Un devis peut etre archive manuellement qu'il soit commande ou non.
+- [ ] **Onglet « Archives »** : devis archives (manuellement [x] ou **auto a 30 jours** pour les commandes [x], `hook_cron`, ADR-033/038) ; dernier en tete ; **Telecharger le devis (PDF)** ; un devis archive **ne peut plus etre duplique**. `[ ]` page « Mes devis »/PDF non implementes.
+- [x] Un devis peut etre archive manuellement **uniquement depuis le statut « A commander »**, jamais depuis « Commande » (ADR-038, decision utilisatrice du 2026-09-02 — corrige la version precedente de cette ligne, qui disait « qu'il soit commande ou non », ecrite avant que la distinction « A commander »/« Commande » n'existe).
 
 **Cas limites** :
-- Remise supplementaire : le partenaire appelle Drive Matic ; DM saisit une remise temporaire par ligne en back-office tant que le devis n'a **pas** ete commande (statut « a commander ») ; le taux de remise par defaut du client reste inchange.
-- [x] Devis commande depuis > 30 jours → archivage automatique (`drivematic_configurator_cron()`, verifie J+29 vs J+31).
+- [x] Remise supplementaire : le partenaire appelle Drive Matic ; DM saisit une remise temporaire par ligne en back-office (`QuoteDiscountForm`, ADR-038) tant que le devis n'a **pas** ete commande (statut « a commander ») ; le taux de remise par defaut du client reste inchange. S'applique en cascade sur le prix deja remise par la remise globale du partenaire (jamais recalcule sur le catalogue brut) ; enregistrer une remise remet aussi le compteur des 30 jours a zero.
+- [x] Devis commande depuis > 30 jours → archivage automatique (`drivematic_configurator_cron()`, verifie J+29 vs J+31 ; ne s'applique jamais a un devis au statut « Commande »).
 
 ---
 
@@ -376,7 +376,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 **Criteres d'acceptation** :
 - [ ] Creation / modification / suspension / suppression des comptes partenaires.
-- [x] Gestion des conditions commerciales : **taux de remise par defaut** par partenaire (`field_discount_rate`, decimal %, champ 12 de l'entite `user`, ADR-026 — modifiable uniquement en back-office, jamais expose au partenaire) + **remise exceptionnelle temporaire par ligne** sur un devis donne `[ ]` (l'entite `quote_equipment_line` existe depuis le 2026-09-01, ADR-033, mais aucune interface d'edition de cette remise n'est implementee, F15).
+- [x] Gestion des conditions commerciales : **taux de remise par defaut** par partenaire (`field_discount_rate`, decimal %, champ 12 de l'entite `user`, ADR-026 — modifiable uniquement en back-office, jamais expose au partenaire) + **remise exceptionnelle temporaire par ligne** sur un devis donne [x] (`QuoteEquipmentLine::dm_discount_rate` + `QuoteDiscountForm`, ADR-038, 2026-09-02 — disponible tant que le devis est au statut « A commander »).
 - [ ] Donnees partenaire structurees selon le fichier « partenaires » (structure a integrer). `[A PRECISER]` : champs exacts du fichier. **Identite/coordonnees deja couvertes** par les 11 champs ajoutes a l'entite `user` pour F12 (ADR-026), **taux de remise par defaut desormais couvert** (12e champ) ; reste `[A PRECISER]` : tout champ specifique au fichier source non repris par le webform `account_request`.
 
 ---

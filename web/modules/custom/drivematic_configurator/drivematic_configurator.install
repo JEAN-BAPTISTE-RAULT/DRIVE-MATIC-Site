@@ -1,0 +1,114 @@
+<?php
+
+/**
+ * @file
+ * Fonctions de mise a jour du module DRIVE-MATIC Configurateur.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
+/**
+ * Renomme le statut de devis 'en_cours' en 'a_commander'.
+ *
+ * Le statut « En cours » devient « À commander » (cf. Entity/Quote.php,
+ * `STATUS_A_COMMANDER`) : un 4e statut, « Commandé », est introduit a cote,
+ * distinct de « À commander ». Renomme la valeur technique en base plutot
+ * que de garder 'en_cours' avec un libelle change, pour eviter toute
+ * confusion future entre le nom du champ et son sens reel.
+ *
+ * Idempotent : si aucune ligne ne porte encore 'en_cours', ne fait rien.
+ */
+function drivematic_configurator_update_11001(): string {
+  $updated = \Drupal::database()->update('quote')
+    ->fields(['status' => 'a_commander'])
+    ->condition('status', 'en_cours')
+    ->execute();
+
+  return $updated
+    ? sprintf('%d devis migre(s) de "en_cours" vers "a_commander".', $updated)
+    : 'Aucun devis au statut "en_cours" : mise a jour ignoree (deja appliquee ou base vide).';
+}
+
+/**
+ * Installe le champ `date_confirmation` sur l'entite `quote`.
+ *
+ * Date a laquelle Drive Matic confirme manuellement, en back-office, une
+ * commande conclue par telephone avec le partenaire (statut
+ * Quote::STATUS_COMMANDE) — distincte de `date_commande`, deja existante,
+ * qui reste la date a laquelle le partenaire a clique « Commander » sur le
+ * site (statut Quote::STATUS_A_COMMANDER).
+ *
+ * Idempotent : `installFieldStorageDefinition()` ne fait rien si le champ
+ * existe deja.
+ */
+function drivematic_configurator_update_11002(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getFieldStorageDefinition('date_confirmation', 'quote')) {
+    return 'Champ "date_confirmation" deja installe sur "quote" : mise a jour ignoree.';
+  }
+
+  $storage_definition = BaseFieldDefinition::create('timestamp')
+    ->setLabel(new TranslatableMarkup('Date de confirmation (téléphone)'))
+    ->setName('date_confirmation')
+    ->setTargetEntityTypeId('quote');
+
+  $update_manager->installFieldStorageDefinition('date_confirmation', 'quote', 'drivematic_configurator', $storage_definition);
+
+  return 'Champ "date_confirmation" installe sur l\'entite "quote".';
+}
+
+/**
+ * Installe le champ `dm_discount_rate` sur l'entite `quote_equipment_line`.
+ *
+ * Remise exceptionnelle par ligne accordee par Drive Matic (PRD F15/F16,
+ * « cas limites »), en plus de la remise globale du partenaire deja
+ * appliquee dans `discounted_unit_price`/`discounted_ht`.
+ *
+ * Idempotent : `installFieldStorageDefinition()` ne fait rien si le champ
+ * existe deja.
+ */
+function drivematic_configurator_update_11003(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getFieldStorageDefinition('dm_discount_rate', 'quote_equipment_line')) {
+    return 'Champ "dm_discount_rate" deja installe sur "quote_equipment_line" : mise a jour ignoree.';
+  }
+
+  $storage_definition = BaseFieldDefinition::create('decimal')
+    ->setLabel(new TranslatableMarkup('Remise Drive Matic (%)'))
+    ->setSetting('precision', 5)
+    ->setSetting('scale', 2)
+    ->setDefaultValue(0)
+    ->setName('dm_discount_rate')
+    ->setTargetEntityTypeId('quote_equipment_line');
+
+  $update_manager->installFieldStorageDefinition('dm_discount_rate', 'quote_equipment_line', 'drivematic_configurator', $storage_definition);
+
+  return 'Champ "dm_discount_rate" installe sur l\'entite "quote_equipment_line".';
+}
+
+/**
+ * Installe la nouvelle entite `quote_status_change` (historique des devis).
+ *
+ * Une entree par transition de statut (creation, marquage manuel, ou
+ * archivage automatique), voir Entity/QuoteStatusChange.php.
+ *
+ * Idempotent : ne fait rien si l'entite est deja installee.
+ */
+function drivematic_configurator_update_11004(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getEntityType('quote_status_change')) {
+    return 'Entite "quote_status_change" deja installee : mise a jour ignoree.';
+  }
+
+  \Drupal::entityTypeManager()->clearCachedDefinitions();
+  $entity_type = \Drupal::entityTypeManager()->getDefinition('quote_status_change');
+  $update_manager->installEntityType($entity_type);
+
+  return 'Entite "quote_status_change" installee.';
+}

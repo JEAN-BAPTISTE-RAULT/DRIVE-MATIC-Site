@@ -33,7 +33,7 @@ final class QuotePersister {
    *   Brouillon `PrivateTempStore` (memes valeurs que soumises par
    *   ConfigurationForm).
    * @param string $status
-   *   Quote::STATUS_A_FINALISER ou Quote::STATUS_EN_COURS.
+   *   Quote::STATUS_A_FINALISER ou Quote::STATUS_A_COMMANDER.
    * @param \Drupal\user\UserInterface $account
    *   Le partenaire proprietaire du devis.
    * @param \Drupal\drivematic_configurator\Entity\DeliveryAddress $deliveryAddress
@@ -55,7 +55,7 @@ final class QuotePersister {
       'uid' => $account->id(),
       'reference' => $this->referenceGenerator->generate(),
       'status' => $status,
-      'date_commande' => $status === Quote::STATUS_EN_COURS ? $now : NULL,
+      'date_commande' => $status === Quote::STATUS_A_COMMANDER ? $now : NULL,
       'billing_raison_sociale' => $account->get('field_company_name')->value,
       'billing_adresse' => $account->get('field_company_address')->value,
       'billing_complement' => $account->get('field_address_complement')->value,
@@ -76,8 +76,20 @@ final class QuotePersister {
     $quote->save();
 
     $this->persistConfigurations($draft, $result['configurations'], (int) $quote->id());
+    $this->logStatusChange($quote, (int) $account->id());
 
     return $quote;
+  }
+
+  /**
+   * Enregistre une entree d'historique (ADR-038, Entity/QuoteStatusChange.php).
+   */
+  private function logStatusChange(Quote $quote, ?int $uid): void {
+    $this->entityTypeManager->getStorage('quote_status_change')->create([
+      'quote_id' => $quote->id(),
+      'status' => $quote->get('status')->value,
+      'uid' => $uid,
+    ])->save();
   }
 
   /**

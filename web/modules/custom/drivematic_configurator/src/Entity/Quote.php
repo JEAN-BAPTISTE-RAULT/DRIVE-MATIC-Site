@@ -25,9 +25,14 @@ use Drupal\views\EntityViewsData;
  * prix catalogue par QuoteCalculator, ADR-031).
  *
  * Cycle de vie implemente ici (sous-ensemble de F15 — onglets « Mes devis »,
- * Dupliquer, PDF, archivage manuel : hors perimetre) :
- * STATUS_A_FINALISER -> STATUS_EN_COURS -> STATUS_ARCHIVE (auto a J+30 apres
- * `date_commande`, drivematic_configurator_cron()).
+ * Dupliquer, PDF : hors perimetre) :
+ * STATUS_A_FINALISER -> STATUS_A_COMMANDER -> STATUS_COMMANDE (manuel, DM
+ * confirme une commande passee par telephone) ou STATUS_ARCHIVE (auto a J+30
+ * apres `date_commande` depuis STATUS_A_COMMANDER uniquement,
+ * drivematic_configurator_cron(), ou manuel — jamais depuis STATUS_COMMANDE).
+ * `date_commande` sert aussi de point de depart au delai des 30 jours : une
+ * remise DM par ligne (QuoteEquipmentLine::dm_discount_rate) le remet a
+ * l'heure actuelle, ce qui redemarre ce delai (cf. PRD F15, « cas limites »).
  */
 #[ContentEntityType(
   id: 'quote',
@@ -53,7 +58,8 @@ final class Quote extends ContentEntityBase implements EntityOwnerInterface {
   use EntityOwnerTrait;
 
   public const STATUS_A_FINALISER = 'a_finaliser';
-  public const STATUS_EN_COURS = 'en_cours';
+  public const STATUS_A_COMMANDER = 'a_commander';
+  public const STATUS_COMMANDE = 'commande';
   public const STATUS_ARCHIVE = 'archive';
 
   /**
@@ -74,7 +80,8 @@ final class Quote extends ContentEntityBase implements EntityOwnerInterface {
       ->setRequired(TRUE)
       ->setSetting('allowed_values', [
         self::STATUS_A_FINALISER => 'À finaliser',
-        self::STATUS_EN_COURS => 'En cours',
+        self::STATUS_A_COMMANDER => 'À commander',
+        self::STATUS_COMMANDE => 'Commandé',
         self::STATUS_ARCHIVE => 'Archivé',
       ]);
 
@@ -83,6 +90,9 @@ final class Quote extends ContentEntityBase implements EntityOwnerInterface {
 
     $fields['date_commande'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(new TranslatableMarkup('Date de commande'));
+
+    $fields['date_confirmation'] = BaseFieldDefinition::create('timestamp')
+      ->setLabel(new TranslatableMarkup('Date de confirmation (téléphone)'));
 
     $fields['date_archivage'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(new TranslatableMarkup("Date d'archivage"));
