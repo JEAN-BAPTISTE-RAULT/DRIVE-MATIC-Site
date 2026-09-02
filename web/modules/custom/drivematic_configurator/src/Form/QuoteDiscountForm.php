@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\drivematic_configurator\Entity\Quote;
+use Drupal\drivematic_configurator\Entity\QuoteEquipmentLine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -28,6 +29,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Enregistrer une remise remet aussi `date_commande` à l'heure actuelle —
  * ce qui redémarre le délai de 30 jours avant archivage automatique
  * (PRD F15, « cas limites »).
+ *
+ * Chaque ligne dont le taux change réellement génère une entrée
+ * `QuoteDiscountChange` (auteur + ancien/nouveau taux) — une resoumission
+ * sans changement n'en crée aucune. Voir `logDiscountChange()`.
  */
 final class QuoteDiscountForm extends FormBase {
 
@@ -154,7 +159,15 @@ final class QuoteDiscountForm extends FormBase {
       foreach ($configuration_values['lines'] as $line_id => $values) {
         /** @var \Drupal\drivematic_configurator\Entity\QuoteEquipmentLine|null $line */
         $line = $line_storage->load($line_id);
-        $line?->set('dm_discount_rate', (float) $values['rate'])->save();
+        if (!$line) {
+          continue;
+        }
+
+        $old_rate = round((float) ($line->get('dm_discount_rate')->value ?? 0), 2);
+        $new_rate = round((float) $values['rate'], 2);
+
+        $line->set('dm_discount_rate', $new_rate)->save();
+        $this->logDiscountChange($quote, $line, $old_rate, $new_rate);
       }
     }
 
@@ -165,6 +178,25 @@ final class QuoteDiscountForm extends FormBase {
     $quote->save();
 
     $this->messenger()->addStatus($this->t('Remises enregistrées.'));
+  }
+
+  /**
+   * Enregistre une entrée d'historique si le taux a réellement changé.
+   *
+   * @see \Drupal\drivematic_configurator\Entity\QuoteDiscountChange
+   */
+  private function logDiscountChange(Quote $quote, QuoteEquipmentLine $line, float $old_rate, float $new_rate): void {
+    if ($old_rate === $new_rate) {
+      return;
+    }
+
+    $this->entityTypeManager->getStorage('quote_discount_change')->create([
+      'quote_id' => $quote->id(),
+      'line_id' => $line->id(),
+      'old_rate' => $old_rate,
+      'new_rate' => $new_rate,
+      'uid' => $this->currentUser()->id(),
+    ])->save();
   }
 
   /**

@@ -112,3 +112,25 @@ function drivematic_configurator_update_11004(): string {
 
   return 'Entite "quote_status_change" installee.';
 }
+
+/**
+ * Installe la nouvelle entite `quote_discount_change` (historique des remises).
+ *
+ * Une entree par ligne d'equipement dont la remise Drive Matic a change,
+ * voir Entity/QuoteDiscountChange.php.
+ *
+ * Idempotent : ne fait rien si l'entite est deja installee.
+ */
+function drivematic_configurator_update_11005(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getEntityType('quote_discount_change')) {
+    return 'Entite "quote_discount_change" deja installee : mise a jour ignoree.';
+  }
+
+  \Drupal::entityTypeManager()->clearCachedDefinitions();
+  $entity_type = \Drupal::entityTypeManager()->getDefinition('quote_discount_change');
+  $update_manager->installEntityType($entity_type);
+
+  return 'Entite "quote_discount_change" installee.';
+}

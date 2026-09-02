@@ -175,11 +175,38 @@ final class QuoteDetailController extends ControllerBase {
   }
 
   /**
-   * Tableau « Historique » : statuts du plus ancien au plus récent.
+   * Tableau « Historique » : statuts + remises DM, triés par date.
    *
    * @see \Drupal\drivematic_configurator\Entity\QuoteStatusChange
+   * @see \Drupal\drivematic_configurator\Entity\QuoteDiscountChange
    */
   private function buildHistoryTable(Quote $quote): array {
+    $entries = [
+      ...$this->buildStatusHistoryEntries($quote),
+      ...$this->buildDiscountHistoryEntries($quote),
+    ];
+    usort($entries, static fn (array $a, array $b): int => $a['timestamp'] <=> $b['timestamp']);
+
+    $rows = array_map(
+      fn (array $entry): array => [$this->formatDate($entry['timestamp']), $entry['event'], $entry['author']],
+      $entries,
+    );
+
+    return [
+      '#type' => 'table',
+      '#header' => [$this->t('Date'), $this->t('Événement'), $this->t('Effectué par')],
+      '#rows' => $rows,
+    ];
+  }
+
+  /**
+   * Entrées d'historique de statut, normalisées pour la fusion chronologique.
+   *
+   * @return array[]
+   *   Chaque entrée : ['timestamp' => int, 'event' => string,
+   *   'author' => string].
+   */
+  private function buildStatusHistoryEntries(Quote $quote): array {
     $storage = $this->entityTypeManager()->getStorage('quote_status_change');
     $ids = $storage->getQuery()
       ->accessCheck(FALSE)
@@ -188,37 +215,70 @@ final class QuoteDetailController extends ControllerBase {
       ->execute();
     $changes = $storage->loadMultiple($ids);
 
-    $rows = [];
-
-    // Garantit toujours une 1ere ligne « creation », meme pour un devis
+    // Garantit toujours une 1ere entree « creation », meme pour un devis
     // cree avant l'introduction de cet historique (ADR-038 addendum) — ces
     // devis n'ont alors aucune entree `quote_status_change` du tout.
     // Jamais de doublon : QuotePersister::persist() enregistre deja cette
     // meme entree pour tout devis cree depuis, `$changes` n'est alors
     // jamais vide.
     if (!$changes) {
-      $rows[] = $this->buildCreationRow($quote);
+      return [$this->buildCreationEntry($quote)];
     }
 
+    $entries = [];
     /** @var \Drupal\drivematic_configurator\Entity\QuoteStatusChange $change */
     foreach ($changes as $change) {
       $author = $change->get('uid')->entity;
-      $rows[] = [
-        $this->formatDate($change->get('created')->value),
-        $this->resolveStatusLabel((string) $change->get('status')->value, $quote),
-        $author ? $author->getDisplayName() : (string) $this->t('Automatique'),
+      $entries[] = [
+        'timestamp' => (int) $change->get('created')->value,
+        'event' => $this->resolveStatusLabel((string) $change->get('status')->value, $quote),
+        'author' => $author ? $author->getDisplayName() : (string) $this->t('Automatique'),
       ];
     }
 
-    return [
-      '#type' => 'table',
-      '#header' => [$this->t('Date'), $this->t('Statut'), $this->t('Effectué par')],
-      '#rows' => $rows,
-    ];
+    return $entries;
   }
 
   /**
-   * Ligne « création » de repli pour un devis antérieur à l'historique.
+   * Entrées d'historique de remise Drive Matic, normalisées pour la fusion.
+   *
+   * Une entrée par ligne d'équipement dont le taux a réellement changé
+   * (QuoteDiscountForm::logDiscountChange()) — jamais de cas "automatique"
+   * ici, `uid` est toujours l'administrateur ayant soumis le formulaire.
+   *
+   * @return array[]
+   *   Chaque entrée : ['timestamp' => int, 'event' => string,
+   *   'author' => string].
+   */
+  private function buildDiscountHistoryEntries(Quote $quote): array {
+    $storage = $this->entityTypeManager()->getStorage('quote_discount_change');
+    $ids = $storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('quote_id', $quote->id())
+      ->sort('created', 'ASC')
+      ->execute();
+
+    $entries = [];
+    /** @var \Drupal\drivematic_configurator\Entity\QuoteDiscountChange $change */
+    foreach ($storage->loadMultiple($ids) as $change) {
+      $author = $change->get('uid')->entity;
+      $line = $change->get('line_id')->entity;
+      $entries[] = [
+        'timestamp' => (int) $change->get('created')->value,
+        'event' => $this->t('Remise Drive Matic : « @label » @old % → @new %', [
+          '@label' => $line ? $line->label() : (string) $this->t('Équipement supprimé'),
+          '@old' => number_format((float) $change->get('old_rate')->value, 2, ',', ' '),
+          '@new' => number_format((float) $change->get('new_rate')->value, 2, ',', ' '),
+        ]),
+        'author' => $author ? $author->getDisplayName() : (string) $this->t('Compte supprimé'),
+      ];
+    }
+
+    return $entries;
+  }
+
+  /**
+   * Entrée « création » de repli pour un devis antérieur à l'historique.
    *
    * `date_commande` n'est jamais posée que par `QuotePersister::persist()`
    * (au clic « Commander ») ni remise à NULL ensuite (seulement remise à
@@ -226,16 +286,16 @@ final class QuoteDetailController extends ControllerBase {
    * suffit donc à déduire fiablement le statut initial du devis, même s'il
    * a changé depuis.
    */
-  private function buildCreationRow(Quote $quote): array {
+  private function buildCreationEntry(Quote $quote): array {
     $initial_status = $quote->get('date_commande')->value
       ? Quote::STATUS_A_COMMANDER
       : Quote::STATUS_A_FINALISER;
     $account = $quote->getOwner();
 
     return [
-      $this->formatDate($quote->get('created')->value),
-      $this->resolveStatusLabel($initial_status, $quote),
-      $account ? $account->getDisplayName() : (string) $this->t('Compte supprimé'),
+      'timestamp' => (int) $quote->get('created')->value,
+      'event' => $this->resolveStatusLabel($initial_status, $quote),
+      'author' => $account ? $account->getDisplayName() : (string) $this->t('Compte supprimé'),
     ];
   }
 
