@@ -9,6 +9,28 @@ use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\drivematic_configurator\Entity\Quote;
 
 /**
+ * Implements hook_theme().
+ *
+ * Gabarit du PDF de devis (QuotePdfGenerator, maquette 714:9296) — HTML
+ * autonome rendu hors contexte de page, jamais affiche a l'ecran.
+ */
+function drivematic_configurator_theme(): array {
+  return [
+    'quote_pdf' => [
+      'variables' => [
+        'logo_data_uri' => NULL,
+        'generated_date' => NULL,
+        'quote_number' => NULL,
+        'billing' => [],
+        'delivery' => [],
+        'configurations' => [],
+        'grand_totals' => [],
+      ],
+    ],
+  ];
+}
+
+/**
  * Implements hook_cron().
  *
  * Archive automatiquement tout devis « À commander » dont la date de

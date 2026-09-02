@@ -53,6 +53,14 @@ final class QuoteEquipmentLine extends ContentEntityBase {
       ->setRequired(TRUE)
       ->setSetting('max_length', 255);
 
+    // Copie gelee de `equipment_price.reference` (F17), au meme titre que
+    // `unit_price` : jamais relue depuis le catalogue ensuite. Utilisee
+    // uniquement par le PDF du devis pour l'instant (pas affichee dans
+    // QuoteDetailController) — absente sur les lignes creees avant ce champ.
+    $fields['reference'] = BaseFieldDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Référence catalogue'))
+      ->setSetting('max_length', 64);
+
     $fields['unavailable'] = BaseFieldDefinition::create('boolean')
       ->setLabel(new TranslatableMarkup('Tarif indisponible au moment du devis'))
       ->setDefaultValue(FALSE);

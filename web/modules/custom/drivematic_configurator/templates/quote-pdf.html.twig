@@ -1,0 +1,287 @@
+{#
+/**
+ * @file
+ * PDF d'un devis (maquette Figma 714:9296).
+ *
+ * HTML autonome, CSS inline — Dompdf ne consomme pas l'agregation Drupal
+ * (meme convention que les e-mails webform, cf. CLAUDE.md "E-mails webform").
+ * Toutes les valeurs sont deja formatees par QuotePdfGenerator : ce gabarit
+ * ne fait qu'assembler des chaines, aucune logique metier ici.
+ *
+ * Variables :
+ * - logo_data_uri : logo encode en data URI.
+ * - generated_date : date du jour de generation (jj/mm/aaaa).
+ * - quote_number : reference du devis.
+ * - billing / delivery : tableaux de lignes d'adresse pretes a afficher.
+ * - configurations : liste de { vehicle_label, vehicle_count, lines,
+ *   totals, totals_per_vehicle }.
+ * - grand_totals : { ht, discount, discounted_ht, vat, ttc } (deja geles
+ *   sur le devis, tenus a jour a chaque remise Drive Matic).
+ */
+#}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+  @page {
+    size: a4 portrait;
+    margin: 15mm 12mm 24mm 12mm;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'DejaVu Sans', sans-serif;
+    font-size: 10px;
+    color: #1a1a1a;
+  }
+  p {
+    margin: 0 0 2px;
+  }
+  .pdf__header {
+    display: table;
+    width: 100%;
+    margin-bottom: 18px;
+  }
+  .pdf__header-left,
+  .pdf__header-right {
+    display: table-cell;
+    vertical-align: top;
+    width: 50%;
+  }
+  .pdf__logo {
+    height: 32px;
+    margin-bottom: 14px;
+  }
+  .pdf__company-contact {
+    margin-top: 10px;
+  }
+  .pdf__website {
+    color: #aa0000;
+  }
+  .pdf__header-right {
+    text-align: left;
+  }
+  .pdf__address-block {
+    font-size: 11px;
+    margin-bottom: 14px;
+  }
+  .pdf__address-title {
+    font-weight: bold;
+    margin-bottom: 3px;
+  }
+  .pdf__meta {
+    display: table;
+    width: 100%;
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+  .pdf__meta span {
+    display: table-cell;
+  }
+  .pdf__meta span:last-child {
+    text-align: right;
+  }
+  .pdf__configuration {
+    margin-bottom: 20px;
+  }
+  .pdf__vehicle-label {
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+  .pdf__equipment-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+  }
+  .pdf__equipment-table th,
+  .pdf__equipment-table td {
+    border: 1px solid #1a1a1a;
+    padding: 5px 6px;
+    text-align: left;
+  }
+  .pdf__equipment-table thead th {
+    background: #f5f5f5;
+    font-weight: normal;
+  }
+  .pdf__equipment-table tbody tr.pdf__equipment-row--unavailable td {
+    color: #666;
+    font-style: italic;
+  }
+  .pdf__totals-row td {
+    background: #e8e8e8;
+    color: #2f3a45;
+  }
+  .pdf__totals-row .pdf__totals-line {
+    display: table;
+    width: 100%;
+  }
+  .pdf__totals-row .pdf__totals-line span {
+    display: table-cell;
+    padding-right: 16px;
+    white-space: nowrap;
+  }
+  .pdf__totals-label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .pdf__totals-ttc {
+    font-weight: bold;
+    text-align: right;
+    padding-right: 0 !important;
+  }
+  .pdf__grand-totals {
+    background: #2f3a45;
+    color: #fff;
+    padding: 10px 12px;
+    margin-top: 10px;
+  }
+  .pdf__grand-totals .pdf__totals-line {
+    display: table;
+    width: 100%;
+  }
+  .pdf__grand-totals .pdf__totals-line span {
+    display: table-cell;
+    text-align: right;
+    padding-left: 16px;
+    white-space: nowrap;
+  }
+  .pdf__footer {
+    position: fixed;
+    bottom: -16mm;
+    left: 0;
+    right: 0;
+    font-size: 8px;
+    color: #666;
+    line-height: 14px;
+  }
+  .pdf__footer-legal {
+    display: table;
+    width: 100%;
+  }
+  .pdf__footer-legal span {
+    display: table-cell;
+  }
+  .pdf__footer-legal span:last-child {
+    text-align: right;
+    font-weight: bold;
+    color: #1a1a1a;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+  <div class="pdf__header">
+    <div class="pdf__header-left">
+      <img class="pdf__logo" src="{{ logo_data_uri }}" alt="Drive Matic Legrand">
+      <p>18 rue  WOLFENBRUTTEL</p>
+      <p>92310 SEVRES</p>
+      <p>FRANCE</p>
+      <div class="pdf__company-contact">
+        <p>Tél : 01 45 34 28 37</p>
+        <p>info@drivematiclegrand.com</p>
+        <p class="pdf__website">www.drivematiclegrand.com</p>
+      </div>
+    </div>
+    <div class="pdf__header-right">
+      <div class="pdf__address-block">
+        <p class="pdf__address-title">Adresse de facturation :</p>
+        {% for line in billing %}<p>{{ line }}</p>{% endfor %}
+      </div>
+      <div class="pdf__address-block">
+        <p class="pdf__address-title">Adresse de livraison :</p>
+        {% for line in delivery %}<p>{{ line }}</p>{% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="pdf__meta">
+    <span>N° devis : {{ quote_number }}</span>
+    <span>Date : {{ generated_date }}</span>
+  </div>
+
+  {% for configuration in configurations %}
+    <div class="pdf__configuration">
+      <p class="pdf__vehicle-label">{{ configuration.vehicle_label }} - Nombre de véhicule(s) : {{ configuration.vehicle_count }}</p>
+      <table class="pdf__equipment-table">
+        <thead>
+          <tr>
+            <th>Référence</th>
+            <th>Equipement(s)</th>
+            <th>Tarif catalogue unitaire € HT</th>
+            <th>Tarif unitaire remisé € HT</th>
+            <th>Qté par véhicule</th>
+            <th>Qté totale</th>
+            <th>Total remisé € HT</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for line in configuration.lines %}
+            {% if line.unavailable %}
+              <tr class="pdf__equipment-row--unavailable">
+                <td>{{ line.reference }}</td>
+                <td colspan="5">{{ line.label }}</td>
+                <td>Indisponible</td>
+              </tr>
+            {% else %}
+              <tr>
+                <td>{{ line.reference }}</td>
+                <td>{{ line.label }}</td>
+                <td>{{ line.unit_price }}</td>
+                <td>{{ line.discounted_unit_price }}</td>
+                <td>{{ line.quantity_per_vehicle }}</td>
+                <td>{{ line.quantity_total }}</td>
+                <td>{{ line.discounted_ht }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+          <tr class="pdf__totals-row">
+            <td colspan="7">
+              <span class="pdf__totals-label">Tarif par véhicule</span>
+              <div class="pdf__totals-line">
+                <span>Total HT : {{ configuration.totals_per_vehicle.ht }}</span>
+                <span>Remise HT : {{ configuration.totals_per_vehicle.discount }}</span>
+                <span>Total remisé HT : {{ configuration.totals_per_vehicle.discounted_ht }}</span>
+                <span>TVA 20 % : {{ configuration.totals_per_vehicle.vat }}</span>
+                <span class="pdf__totals-ttc">Total TTC : {{ configuration.totals_per_vehicle.ttc }}</span>
+              </div>
+            </td>
+          </tr>
+          <tr class="pdf__totals-row">
+            <td colspan="7">
+              <span class="pdf__totals-label">Tarif total véhicules :</span>
+              <div class="pdf__totals-line">
+                <span>Total HT : {{ configuration.totals.ht }}</span>
+                <span>Remise HT : {{ configuration.totals.discount }}</span>
+                <span>Total remisé HT : {{ configuration.totals.discounted_ht }}</span>
+                <span>TVA 20 % : {{ configuration.totals.vat }}</span>
+                <span class="pdf__totals-ttc">Total TTC : {{ configuration.totals.ttc }}</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  {% endfor %}
+
+  <div class="pdf__grand-totals">
+    <div class="pdf__totals-line">
+      <span>Total HT : {{ grand_totals.ht }}</span>
+      <span>Remise HT : {{ grand_totals.discount }}</span>
+      <span>Total remisé HT : {{ grand_totals.discounted_ht }}</span>
+      <span>TVA 20 % : {{ grand_totals.vat }}</span>
+      <span class="pdf__totals-ttc">Total TTC : {{ grand_totals.ttc }}</span>
+    </div>
+  </div>
+
+  <div class="pdf__footer">
+    <div class="pdf__footer-legal">
+      <span>RCS Nanterre : B 383 608 528 - N°Siret : 38360852800014 - N.A.F. : 4532Z - N° intracommunautaire : FR 39 383 808 528 - S.A.R.L au Capital de 52.5000 Euros - Banque BNP Paribas Sevres - IBAN : FR76 3000 4009 4800 0101 1975 582 - BIC : BNP AFRPPXXX</span>
+      <span>Page 1/1</span>
+    </div>
+  </div>
+</body>
+</html>

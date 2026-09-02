@@ -16,3 +16,12 @@ services:
       - '@drivematic_configurator.quote_calculator'
       - '@drivematic_configurator.quote_reference_generator'
       - '@datetime.time'
+  drivematic_configurator.quote_pdf_generator:
+    class: Drupal\drivematic_configurator\Service\QuotePdfGenerator
+    arguments:
+      - '@entity_type.manager'
+      - '@renderer'
+      - '@file_system'
+      - '@extension.list.theme'
+      - '@datetime.time'
+      - '@date.formatter'

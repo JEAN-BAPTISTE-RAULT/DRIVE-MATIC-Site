@@ -6,13 +6,18 @@ namespace Drupal\drivematic_configurator\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\drivematic_configurator\Entity\Quote;
 use Drupal\drivematic_configurator\Entity\QuoteConfiguration;
 use Drupal\drivematic_configurator\Form\QuoteDiscountForm;
+use Drupal\drivematic_configurator\Service\QuotePdfGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Page de detail d'un devis (back-office).
@@ -42,13 +47,19 @@ final class QuoteDetailController extends ControllerBase {
 
   public function __construct(
     protected DateFormatterInterface $dateFormatter,
+    protected QuotePdfGenerator $pdfGenerator,
+    protected FileSystemInterface $fileSystem,
   ) {}
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container): static {
-    return new static($container->get('date.formatter'));
+    return new static(
+      $container->get('date.formatter'),
+      $container->get('drivematic_configurator.quote_pdf_generator'),
+      $container->get('file_system'),
+    );
   }
 
   /**
@@ -56,6 +67,28 @@ final class QuoteDetailController extends ControllerBase {
    */
   public function title(Quote $quote): TranslatableMarkup {
     return $this->t('Devis @reference', ['@reference' => (string) $quote->label()]);
+  }
+
+  /**
+   * Sert le PDF du devis (genere au clic « Commander », voir DeliveryForm).
+   *
+   * Affichage inline (pas de telechargement force) pour s'ouvrir dans
+   * l'onglet/la fenetre depuis lequel le lien a ete ouvert. Meme controle
+   * d'acces que la page de detail (_entity_access: quote.view) — pas de
+   * `hook_file_download()` : le fichier est servi par cette route dediee,
+   * jamais via `system.private_file_download`.
+   */
+  public function pdf(Quote $quote): BinaryFileResponse {
+    $uri = $this->pdfGenerator->getUri($quote);
+    if (!file_exists($uri)) {
+      throw new NotFoundHttpException();
+    }
+
+    $response = new BinaryFileResponse($this->fileSystem->realpath($uri));
+    $response->headers->set('Content-Type', 'application/pdf');
+    $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $quote->get('reference')->value . '.pdf');
+
+    return $response;
   }
 
   /**
@@ -73,6 +106,15 @@ final class QuoteDetailController extends ControllerBase {
     $can_edit = $this->currentUser()->hasPermission('edit drivematic configurator quotes');
     if ($can_edit && $quote->get('status')->value === Quote::STATUS_A_COMMANDER) {
       $build['actions'] = $this->buildActions($quote);
+    }
+
+    if (file_exists($this->pdfGenerator->getUri($quote))) {
+      $build['pdf'] = [
+        '#type' => 'link',
+        '#title' => $this->t('Voir le PDF du devis'),
+        '#url' => Url::fromRoute('drivematic_configurator.quote_pdf', ['quote' => $quote->id()]),
+        '#attributes' => ['class' => ['button'], 'target' => '_blank'],
+      ];
     }
 
     $build['summary'] = [

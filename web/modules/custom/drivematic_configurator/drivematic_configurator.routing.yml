@@ -11,6 +11,18 @@ entity.quote.canonical:
       quote:
         type: entity:quote
 
+drivematic_configurator.quote_pdf:
+  path: '/admin/content/devis/{quote}/pdf'
+  defaults:
+    _controller: '\Drupal\drivematic_configurator\Controller\QuoteDetailController::pdf'
+  requirements:
+    _entity_access: 'quote.view'
+  options:
+    _admin_route: true
+    parameters:
+      quote:
+        type: entity:quote
+
 drivematic_configurator.quote_mark_ordered:
   path: '/admin/content/devis/{quote}/marquer-commande'
   defaults:

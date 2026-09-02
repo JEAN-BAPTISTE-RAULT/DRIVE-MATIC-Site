@@ -10,6 +10,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\drivematic_configurator\Entity\Quote;
 use Drupal\drivematic_configurator\Entity\QuoteEquipmentLine;
+use Drupal\drivematic_configurator\Service\QuotePdfGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -39,6 +40,7 @@ final class QuoteDiscountForm extends FormBase {
   public function __construct(
     protected EntityTypeManagerInterface $entityTypeManager,
     protected TimeInterface $time,
+    protected QuotePdfGenerator $pdfGenerator,
   ) {}
 
   /**
@@ -48,6 +50,7 @@ final class QuoteDiscountForm extends FormBase {
     return new static(
       $container->get('entity_type.manager'),
       $container->get('datetime.time'),
+      $container->get('drivematic_configurator.quote_pdf_generator'),
     );
   }
 
@@ -177,7 +180,29 @@ final class QuoteDiscountForm extends FormBase {
     $quote->set('date_commande', $this->time->getRequestTime());
     $quote->save();
 
+    $this->regenerateQuotePdf($quote);
+
     $this->messenger()->addStatus($this->t('Remises enregistrées.'));
+  }
+
+  /**
+   * Régénère le PDF du devis (écrase le fichier d'origine), prix à jour.
+   *
+   * La remise DM est le seul événement, après la commande initiale, qui
+   * change les prix d'un devis — voir QuotePdfGenerator. Un échec ne doit
+   * pas faire échouer l'enregistrement de la remise, déjà effectué.
+   */
+  private function regenerateQuotePdf(Quote $quote): void {
+    try {
+      $this->pdfGenerator->generate($quote);
+    }
+    catch (\Throwable $e) {
+      $this->messenger()->addWarning($this->t('Les remises ont été enregistrées, mais le PDF du devis n’a pas pu être régénéré.'));
+      $this->getLogger('drivematic_configurator')->error('Échec de la régénération du PDF pour le devis @reference : @message', [
+        '@reference' => $quote->get('reference')->value,
+        '@message' => $e->getMessage(),
+      ]);
+    }
   }
 
   /**

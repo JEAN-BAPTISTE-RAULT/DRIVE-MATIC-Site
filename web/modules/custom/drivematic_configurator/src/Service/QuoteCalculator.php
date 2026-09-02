@@ -132,6 +132,7 @@ final class QuoteCalculator {
       $lines[] = [
         'label' => $label,
         'unavailable' => FALSE,
+        'reference' => (string) $price->get('reference')->value,
         'unit_price' => $unit_price,
         'discounted_unit_price' => $discounted_unit_price,
         'quantity_per_vehicle' => $quantity_per_vehicle,

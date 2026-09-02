@@ -133,6 +133,7 @@ final class QuotePersister {
           'configuration_id' => $quote_configuration->id(),
           'label' => $line['label'],
           'unavailable' => $line['unavailable'],
+          'reference' => $line['reference'] ?? NULL,
           'unit_price' => $line['unit_price'] ?? NULL,
           'discounted_unit_price' => $line['discounted_unit_price'] ?? NULL,
           'quantity_per_vehicle' => $line['quantity_per_vehicle'],

@@ -45,6 +45,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-038](038-cycle-de-vie-devis-4-statuts.md) | Cycle de vie du devis a 4 statuts (renommage en_cours->a_commander, statut Commande, remise DM par ligne calculee a la lecture) | Accepte | 2026-09-02 |
 | [ADR-039](039-deploiement-preprod-rsync.md) | Deploiement local -> preprod par rsync (git ls-files), sans plus jamais synchroniser la base de donnees | Accepte | 2026-09-02 |
 | [ADR-040](040-tracabilite-remise-exceptionnelle.md) | Tracabilite des remises exceptionnelles Drive Matic (entite `quote_discount_change`, historique fusionne avec les statuts) | Accepte | 2026-09-02 |
+| [ADR-041](041-pdf-devis.md) | PDF du devis (dompdf, champ Reference gele, generation au clic Commander + regeneration sur remise DM) | Accepte | 2026-09-02 |
 
 ## Quand creer un ADR
 

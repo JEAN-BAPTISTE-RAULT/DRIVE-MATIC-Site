@@ -6,6 +6,7 @@ namespace Drupal\drivematic_configurator\Form;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Mail\MailManagerInterface;
@@ -16,6 +17,7 @@ use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\Core\Url;
 use Drupal\drivematic_configurator\Entity\DeliveryAddress;
 use Drupal\drivematic_configurator\Entity\Quote;
+use Drupal\drivematic_configurator\Service\QuotePdfGenerator;
 use Drupal\drivematic_configurator\Service\QuotePersister;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -50,6 +52,8 @@ final class DeliveryForm extends FormBase {
     protected AccountProxyInterface $currentUser,
     protected QuotePersister $quotePersister,
     protected MailManagerInterface $mailManager,
+    protected QuotePdfGenerator $pdfGenerator,
+    protected FileSystemInterface $fileSystem,
   ) {}
 
   /**
@@ -62,6 +66,8 @@ final class DeliveryForm extends FormBase {
       $container->get('current_user'),
       $container->get('drivematic_configurator.quote_persister'),
       $container->get('plugin.manager.mail'),
+      $container->get('drivematic_configurator.quote_pdf_generator'),
+      $container->get('file_system'),
     );
   }
 
@@ -518,8 +524,42 @@ final class DeliveryForm extends FormBase {
    */
   public function orderSubmit(array &$form, FormStateInterface $form_state): void {
     $quote = $this->persistQuote($form_state, Quote::STATUS_A_COMMANDER);
-    $this->sendOrderConfirmationEmail($quote);
-    $this->sendInternalOrderNotification($quote);
+    $attachments = $this->generateQuotePdfAttachment($quote);
+    $this->sendOrderConfirmationEmail($quote, $attachments);
+    $this->sendInternalOrderNotification($quote, $attachments);
+  }
+
+  /**
+   * Génère le PDF du devis et construit la pièce jointe pour hook_mail().
+   *
+   * Un échec de génération ne doit jamais empêcher l'envoi des e-mails de
+   * confirmation ni faire échouer une commande déjà enregistrée en base —
+   * seuls les e-mails partent alors sans pièce jointe.
+   *
+   * @return array[]
+   *   Tableau `$message['params']['attachments']` (format attendu par
+   *   symfony_mailer/LegacyMailerHelper::emailFromArray()), vide en cas
+   *   d'échec.
+   */
+  private function generateQuotePdfAttachment(Quote $quote): array {
+    try {
+      $uri = $this->pdfGenerator->generate($quote);
+    }
+    catch (\Throwable $e) {
+      $this->getLogger('drivematic_configurator')->error('Échec de la génération du PDF pour le devis @reference : @message', [
+        '@reference' => $quote->get('reference')->value,
+        '@message' => $e->getMessage(),
+      ]);
+      return [];
+    }
+
+    $attachment = [
+      'filepath' => $this->fileSystem->realpath($uri),
+      'filename' => $quote->get('reference')->value . '.pdf',
+      'filemime' => 'application/pdf',
+    ];
+
+    return [$attachment];
   }
 
   /**
@@ -555,7 +595,7 @@ final class DeliveryForm extends FormBase {
    * confirmation d'une commande deja enregistree en base — l'erreur est
    * seulement journalisee.
    */
-  private function sendOrderConfirmationEmail(Quote $quote): void {
+  private function sendOrderConfirmationEmail(Quote $quote, array $attachments): void {
     /** @var \Drupal\user\UserInterface $account */
     $account = $this->entityTypeManager->getStorage('user')->load($quote->getOwnerId());
 
@@ -565,7 +605,7 @@ final class DeliveryForm extends FormBase {
         'quote_ordered',
         $account->getEmail(),
         $account->getPreferredLangcode(),
-        ['quote' => $quote],
+        ['quote' => $quote, 'attachments' => $attachments],
       );
     }
     catch (\Throwable $e) {
@@ -586,7 +626,7 @@ final class DeliveryForm extends FormBase {
    * au partenaire ni faire echouer la confirmation d'une commande deja
    * enregistree en base.
    */
-  private function sendInternalOrderNotification(Quote $quote): void {
+  private function sendInternalOrderNotification(Quote $quote, array $attachments): void {
     /** @var \Drupal\user\UserInterface $account */
     $account = $this->entityTypeManager->getStorage('user')->load($quote->getOwnerId());
 
@@ -596,7 +636,7 @@ final class DeliveryForm extends FormBase {
         'quote_ordered_internal',
         'audrey@passerelle.com',
         $account->getPreferredLangcode(),
-        ['quote' => $quote],
+        ['quote' => $quote, 'attachments' => $attachments],
       );
     }
     catch (\Throwable $e) {

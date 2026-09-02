@@ -134,3 +134,33 @@ function drivematic_configurator_update_11005(): string {
 
   return 'Entite "quote_discount_change" installee.';
 }
+
+/**
+ * Installe le champ `reference` sur l'entite `quote_equipment_line`.
+ *
+ * Copie gelee de `equipment_price.reference` (F17), au meme titre que
+ * `unit_price` — necessaire au PDF du devis (maquette 714:9296, colonne
+ * "Reference"). Les lignes deja persistees avant ce champ restent vides
+ * (meme limite que `quote_discount_change`, ADR-040) : pas de backfill
+ * retroactif possible, le catalogue ayant pu changer depuis.
+ *
+ * Idempotent : `installFieldStorageDefinition()` ne fait rien si le champ
+ * existe deja.
+ */
+function drivematic_configurator_update_11006(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getFieldStorageDefinition('reference', 'quote_equipment_line')) {
+    return 'Champ "reference" deja installe sur "quote_equipment_line" : mise a jour ignoree.';
+  }
+
+  $storage_definition = BaseFieldDefinition::create('string')
+    ->setLabel(new TranslatableMarkup('Référence catalogue'))
+    ->setSetting('max_length', 64)
+    ->setName('reference')
+    ->setTargetEntityTypeId('quote_equipment_line');
+
+  $update_manager->installFieldStorageDefinition('reference', 'quote_equipment_line', 'drivematic_configurator', $storage_definition);
+
+  return 'Champ "reference" installe sur l\'entite "quote_equipment_line".';
+}
