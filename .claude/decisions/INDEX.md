@@ -41,6 +41,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-034](034-modale-drupal-core.md) | Modales d'adresse de livraison : dialogue Drupal core (`use-ajax`) plutot que `help-modal` | Accepte | 2026-09-01 |
 | [ADR-035](035-recap-adresses-livraison-admin.md) | Recapitulatif en lecture seule des adresses de livraison sur `/user/{uid}/edit` (consolidation back-office, entite conservee) | Accepte | 2026-09-01 |
 | [ADR-036](036-email-confirmation-commande.md) | E-mail de confirmation de commande via hook_mail() + mailer_policy, jeton `quote` custom | Accepte | 2026-09-01 |
+| [ADR-037](037-page-detail-devis-admin.md) | Page de detail d'un devis (back-office) : Controller + render array plutot que view_builder/view modes | Accepte | 2026-09-02 |
 
 ## Quand creer un ADR
 

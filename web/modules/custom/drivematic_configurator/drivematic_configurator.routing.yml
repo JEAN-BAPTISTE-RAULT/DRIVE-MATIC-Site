@@ -1,3 +1,16 @@
+entity.quote.canonical:
+  path: '/admin/content/devis/{quote}'
+  defaults:
+    _controller: '\Drupal\drivematic_configurator\Controller\QuoteDetailController::view'
+    _title_callback: '\Drupal\drivematic_configurator\Controller\QuoteDetailController::title'
+  requirements:
+    _entity_access: 'quote.view'
+  options:
+    _admin_route: true
+    parameters:
+      quote:
+        type: entity:quote
+
 drivematic_configurator.configuration:
   path: '/configurer'
   defaults:

@@ -42,6 +42,9 @@ use Drupal\views\EntityViewsData;
   handlers: [
     'views_data' => EntityViewsData::class,
   ],
+  links: [
+    'canonical' => '/admin/content/devis/{quote}',
+  ],
   admin_permission: 'view drivematic configurator quotes',
   base_table: 'quote',
 )]
