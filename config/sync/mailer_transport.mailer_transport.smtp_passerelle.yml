@@ -1,0 +1,15 @@
+uuid: 1ed1cc3d-a381-41ef-b19e-1dd26c20823e
+langcode: fr
+status: true
+dependencies: {  }
+id: smtp_passerelle
+label: 'SMTP Passerelle (préprod)'
+plugin: smtp
+configuration:
+  user: no-reply@passerelle.com
+  pass: ''
+  host: mails.passerelle.com
+  port: 465
+  query:
+    verify_peer: true
+    local_domain: ''
