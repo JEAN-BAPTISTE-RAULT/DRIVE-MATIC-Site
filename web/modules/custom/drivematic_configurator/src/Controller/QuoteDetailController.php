@@ -186,10 +186,22 @@ final class QuoteDetailController extends ControllerBase {
       ->condition('quote_id', $quote->id())
       ->sort('created', 'ASC')
       ->execute();
+    $changes = $storage->loadMultiple($ids);
 
     $rows = [];
+
+    // Garantit toujours une 1ere ligne « creation », meme pour un devis
+    // cree avant l'introduction de cet historique (ADR-038 addendum) — ces
+    // devis n'ont alors aucune entree `quote_status_change` du tout.
+    // Jamais de doublon : QuotePersister::persist() enregistre deja cette
+    // meme entree pour tout devis cree depuis, `$changes` n'est alors
+    // jamais vide.
+    if (!$changes) {
+      $rows[] = $this->buildCreationRow($quote);
+    }
+
     /** @var \Drupal\drivematic_configurator\Entity\QuoteStatusChange $change */
-    foreach ($storage->loadMultiple($ids) as $change) {
+    foreach ($changes as $change) {
       $author = $change->get('uid')->entity;
       $rows[] = [
         $this->formatDate($change->get('created')->value),
@@ -202,6 +214,28 @@ final class QuoteDetailController extends ControllerBase {
       '#type' => 'table',
       '#header' => [$this->t('Date'), $this->t('Statut'), $this->t('Effectué par')],
       '#rows' => $rows,
+    ];
+  }
+
+  /**
+   * Ligne « création » de repli pour un devis antérieur à l'historique.
+   *
+   * `date_commande` n'est jamais posée que par `QuotePersister::persist()`
+   * (au clic « Commander ») ni remise à NULL ensuite (seulement remise à
+   * l'heure actuelle par une remise DM, cf. ADR-038) : sa seule présence
+   * suffit donc à déduire fiablement le statut initial du devis, même s'il
+   * a changé depuis.
+   */
+  private function buildCreationRow(Quote $quote): array {
+    $initial_status = $quote->get('date_commande')->value
+      ? Quote::STATUS_A_COMMANDER
+      : Quote::STATUS_A_FINALISER;
+    $account = $quote->getOwner();
+
+    return [
+      $this->formatDate($quote->get('created')->value),
+      $this->resolveStatusLabel($initial_status, $quote),
+      $account ? $account->getDisplayName() : (string) $this->t('Compte supprimé'),
     ];
   }
 

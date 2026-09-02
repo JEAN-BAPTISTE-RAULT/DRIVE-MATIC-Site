@@ -66,7 +66,7 @@ final class QuoteMarkOrderedForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getDescription(): TranslatableMarkup {
-    return $this->t("La date du jour sera enregistrée comme date de confirmation de la commande. À utiliser uniquement lorsque le partenaire a conclu l'accord par téléphone directement avec Drive Matic.");
+    return $this->t('La date du jour sera enregistrée comme date de confirmation de la commande.');
   }
 
   /**

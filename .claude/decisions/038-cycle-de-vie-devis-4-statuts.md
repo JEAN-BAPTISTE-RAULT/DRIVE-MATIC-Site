@@ -139,3 +139,18 @@ ce wrapper, `template_preprocess_table()` traite le tableau nu comme des
 attributs HTML bruts, provoquant un 500 (`RuntimeException: Unexpected
 type for $value (Url)`) invisible tant qu'on ne teste pas le rendu HTML
 complet (le render array seul, inspecte en PHP, semblait correct).
+
+⚠️ **Retour utilisatrice, meme jour** : l'Historique d'un devis CREE AVANT
+l'ajout de `QuotePersister::logStatusChange()` (tous les devis de test de
+la session, cree avant cet addendum) n'affichait AUCUNE ligne, pas meme la
+creation — aucune entree `quote_status_change` n'existait pour eux.
+`QuoteDetailController::buildCreationRow()` synthetise desormais
+systematiquement cette 1ere ligne quand le journal est vide (`created` +
+`uid` du devis lui-meme, statut initial deduit de la presence de
+`date_commande` — jamais NULL apres coup, donc fiable). Jamais de doublon
+pour un devis cree DEPUIS cet addendum (`QuotePersister` y a deja consigne
+la meme entree, `$changes` n'est alors jamais vide) — verifie sur un vrai
+devis passe par `QuotePersister::persist()`. **Limite assumee** : les
+transitions LEGACY posterieures a la creation (ex. un devis deja marque
+« Commande » avant l'addendum) restent absentes de l'historique — on ne
+fabrique pas un auteur qu'on ne connait pas reellement.
