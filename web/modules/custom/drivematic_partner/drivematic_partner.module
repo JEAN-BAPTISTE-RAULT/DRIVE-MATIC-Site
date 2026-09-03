@@ -273,11 +273,11 @@ function drivematic_partner_form_user_logout_confirm_alter(array &$form, FormSta
 }
 
 /**
- * Noms des 15 champs du profil partenaire portes par l'entite User.
+ * Noms des 16 champs du profil partenaire portes par l'entite User.
  *
  * Les 4 remises par equipement (field_discount_retrovision_ext/
  * retrovision_int/telecommande_vor/pedalier, ADR-043) ne sont ni affichees
- * ni modifiables par le partenaire nulle part, contrairement aux 11 autres
+ * ni modifiables par le partenaire nulle part, contrairement aux 12 autres
  * (visibles en lecture seule sur PersonalInformationForm pour le bloc
  * entreprise) : ce sont des donnees commerciales internes, jamais exposees
  * en front. Les masquer ici sur `/user/{uid}/edit` suffit puisqu'elles
@@ -295,6 +295,7 @@ function _drivematic_partner_profile_field_names(): array {
     'field_job_title',
     'field_phone',
     'field_siret',
+    'field_vat',
     'field_company_name',
     'field_company_address',
     'field_address_complement',

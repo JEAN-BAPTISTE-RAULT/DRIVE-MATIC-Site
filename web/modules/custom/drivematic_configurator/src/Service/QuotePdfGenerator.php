@@ -131,7 +131,10 @@ final class QuotePdfGenerator {
     ], static fn (string $line): bool => $line !== '');
 
     if ($withSiret && $quote->get('billing_siret')->value) {
-      $lines[] = 'Siret ' . $quote->get('billing_siret')->value;
+      $lines[] = 'SIRET : ' . $quote->get('billing_siret')->value;
+    }
+    if ($withSiret && $quote->get('billing_vat')->value) {
+      $lines[] = 'TVA : ' . $quote->get('billing_vat')->value;
     }
 
     return array_values($lines);

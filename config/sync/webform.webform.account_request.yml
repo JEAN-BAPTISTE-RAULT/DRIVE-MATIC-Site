@@ -59,6 +59,12 @@ elements: |-
       '#required': true
       '#pattern': '\d{14}'
       '#maxlength': 14
+    tva:
+      '#type': textfield
+      '#title': 'Numéro de TVA intracommunautaire (13 caractères)'
+      '#required': true
+      '#pattern': 'FR[0-9A-Za-z]{2}\d{9}'
+      '#maxlength': 13
     raison_sociale:
       '#type': textfield
       '#title': 'Raison sociale'
@@ -75,6 +81,9 @@ elements: |-
       '#title': 'Code postal'
       '#required': true
       '#pattern': '\d{5}'
+      '#wrapper_attributes':
+        class:
+          - dm-form-row-start
     ville:
       '#type': textfield
       '#title': Ville
@@ -302,6 +311,7 @@ handlers:
         <strong>E-mail :</strong> [webform_submission:values:email]<br>
         <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Votre entreprise</h3><p style="margin:0 0 16px;"><strong>Raison sociale :</strong> [webform_submission:values:raison_sociale]<br>
         <strong>Siret :</strong> [webform_submission:values:siret]<br>
+        <strong>TVA :</strong> [webform_submission:values:tva]<br>
         <strong>Adresse :</strong> [webform_submission:values:adresse] [webform_submission:values:complement] - [webform_submission:values:code_postal] [webform_submission:values:ville]</p><p style="margin:0 0 16px;">À bientôt<br><strong style="color:#aa0000;">www.drivematiclegrand.com</strong></p><p style="color:#666666;font-size:12px;line-height:18px;margin:0;">Cet e-mail vous a été envoyé par un système automatique d’émission de messages. L’adresse d’émission n’est pas une adresse de courriel classique. Si vous écrivez à cette adresse, votre message ne sera pas pris en compte.</p></div>
       excluded_elements: {  }
       ignore_access: false
@@ -346,6 +356,7 @@ handlers:
         <strong>E-mail :</strong> [webform_submission:values:email]<br>
         <strong>Tél :</strong> [webform_submission:values:telephone]</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Votre entreprise</h3><p style="margin:0 0 16px;"><strong>Raison sociale :</strong> [webform_submission:values:raison_sociale]<br>
         <strong>Siret :</strong> [webform_submission:values:siret]<br>
+        <strong>TVA :</strong> [webform_submission:values:tva]<br>
         <strong>Adresse :</strong> [webform_submission:values:adresse] [webform_submission:values:complement] - [webform_submission:values:code_postal] [webform_submission:values:ville]</p><p style="margin:0 0 16px;">À bientôt<br><strong style="color:#aa0000;">www.drivematiclegrand.com</strong></p><p style="color:#666666;font-size:12px;line-height:18px;margin:0;">Cet e-mail vous a été envoyé par un système automatique d’émission de messages. L’adresse d’émission n’est pas une adresse de courriel classique. Si vous écrivez à cette adresse, votre message ne sera pas pris en compte.</p></div>
       excluded_elements: {  }
       ignore_access: false

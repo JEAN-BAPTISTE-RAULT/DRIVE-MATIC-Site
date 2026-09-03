@@ -422,6 +422,7 @@ final class QuoteDetailController extends ControllerBase {
 
     if ($withSiret) {
       $rows[] = [$this->t('Siret'), $quote->get('billing_siret')->value];
+      $rows[] = [$this->t('TVA'), $quote->get('billing_vat')->value];
     }
 
     return [

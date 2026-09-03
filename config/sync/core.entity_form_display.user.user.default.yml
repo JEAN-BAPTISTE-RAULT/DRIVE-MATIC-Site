@@ -18,6 +18,7 @@ dependencies:
     - field.field.user.user.field_phone
     - field.field.user.user.field_postal_code
     - field.field.user.user.field_siret
+    - field.field.user.user.field_vat
     - field.field.user.user.user_picture
     - image.style.thumbnail
   module:
@@ -36,7 +37,7 @@ content:
     region: content
   field_address_complement:
     type: string_textfield
-    weight: 15
+    weight: 16
     region: content
     settings:
       size: 60
@@ -44,7 +45,7 @@ content:
     third_party_settings: {  }
   field_city:
     type: string_textfield
-    weight: 17
+    weight: 18
     region: content
     settings:
       size: 60
@@ -58,7 +59,7 @@ content:
     third_party_settings: {  }
   field_company_address:
     type: string_textfield
-    weight: 14
+    weight: 15
     region: content
     settings:
       size: 60
@@ -66,7 +67,7 @@ content:
     third_party_settings: {  }
   field_company_name:
     type: string_textfield
-    weight: 13
+    weight: 14
     region: content
     settings:
       size: 60
@@ -74,28 +75,28 @@ content:
     third_party_settings: {  }
   field_discount_pedalier:
     type: number
-    weight: 21
+    weight: 22
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_discount_retrovision_ext:
     type: number
-    weight: 18
+    weight: 19
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_discount_retrovision_int:
     type: number
-    weight: 19
+    weight: 20
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_discount_telecommande_vor:
     type: number
-    weight: 20
+    weight: 21
     region: content
     settings:
       placeholder: ''
@@ -134,7 +135,7 @@ content:
     third_party_settings: {  }
   field_postal_code:
     type: string_textfield
-    weight: 16
+    weight: 17
     region: content
     settings:
       size: 60
@@ -143,6 +144,14 @@ content:
   field_siret:
     type: string_textfield
     weight: 12
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_vat:
+    type: string_textfield
+    weight: 13
     region: content
     settings:
       size: 60

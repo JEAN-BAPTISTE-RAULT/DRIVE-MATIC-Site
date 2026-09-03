@@ -152,6 +152,12 @@ final class PersonalInformationForm extends FormBase {
       '#default_value' => $account->get('field_siret')->value,
       '#attributes' => ['readonly' => 'readonly'],
     ];
+    $form['company']['field_vat'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Numéro de TVA intracommunautaire (13 caractères)'),
+      '#default_value' => $account->get('field_vat')->value,
+      '#attributes' => ['readonly' => 'readonly'],
+    ];
     $form['company']['field_company_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Raison sociale'),

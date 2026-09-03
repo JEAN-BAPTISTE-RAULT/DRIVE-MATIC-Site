@@ -414,7 +414,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 | Entite | Champs cles | Relations |
 |--------|-------------|-----------|
-| **Partenaire** (compte utilisateur + profil) | Civilite, prenom, nom, fonction, telephone (modifiables par le partenaire, F12) ; e-mail, SIRET, raison sociale, adresse d'entreprise, complement, code postal, ville (lecture seule en front, pilotes par le back-office) ; 4 taux de remise par equipement (ADR-043), statut (actif/suspendu) `[A PRECISER]` (F16, hors perimetre F12) | 1 → N adresses de livraison ; 1 → N devis ; 1 → N changements de remise (historique, ADR-044) |
+| **Partenaire** (compte utilisateur + profil) | Civilite, prenom, nom, fonction, telephone (modifiables par le partenaire, F12) ; e-mail, SIRET, TVA intracommunautaire, raison sociale, adresse d'entreprise, complement, code postal, ville (lecture seule en front, pilotes par le back-office) ; 4 taux de remise par equipement (ADR-043), statut (actif/suspendu) `[A PRECISER]` (F16, hors perimetre F12) | 1 → N adresses de livraison ; 1 → N devis ; 1 → N changements de remise (historique, ADR-044) |
 | **Adresse de livraison** | Libelle, adresse, CP, ville | N → 1 partenaire (gerees back-office + ajout/maj front) |
 | **Devis** | N° `WAAAAMMJJ-001`, statut (`a finaliser` / `a commander` / `commande le jj/mm/aaaa`), date de creation, date de commande, archive (bool) + date, totaux (HT, remise HT, TVA 20 %, TTC) | N → 1 partenaire ; 1 → 1..10 configurations ; N → 1 adresse de livraison |
 | **Configuration** (groupe vehicule d'un devis) | Vehicule (marque/modele/type/motorisation), nombre de vehicules identiques | N → 1 devis ; 1 → N lignes d'equipement |

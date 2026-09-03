@@ -105,8 +105,10 @@ function drivematic_configurator_mail(string $key, array &$message, array $param
     /** @var \Drupal\user\UserInterface $account */
     $account = \Drupal::entityTypeManager()->getStorage('user')->load($quote->getOwnerId());
     $message['subject'] = t('Drive Matic Legrand : Confirmation de commande');
-    $message['plain'] = (string) t("Bonjour,\n\nNous venons de recevoir cette commande sur le site Internet.\nBon de commande n° @reference :\n\nDemandeur\nRaison sociale : @raison_sociale\nNom : @civilite @prenom @nom\nAdresse : @adresse @complement - @code_postal @ville\nE-mail : @email\nTél : @telephone\n\nÀ bientôt\nwww.drivematiclegrand.com", [
+    $message['plain'] = (string) t("Bonjour,\n\nNous venons de recevoir cette commande sur le site Internet.\nBon de commande n° @reference :\n\nDemandeur\nSIRET : @siret\nTVA : @tva\nRaison sociale : @raison_sociale\nNom : @civilite @prenom @nom\nAdresse : @adresse @complement - @code_postal @ville\nE-mail : @email\nTél : @telephone\n\nÀ bientôt\nwww.drivematiclegrand.com", [
       '@reference' => (string) $quote->get('reference')->value,
+      '@siret' => (string) $quote->get('billing_siret')->value,
+      '@tva' => (string) $quote->get('billing_vat')->value,
       '@raison_sociale' => (string) $quote->get('billing_raison_sociale')->value,
       '@civilite' => (string) $account->get('field_civility')->value,
       '@prenom' => (string) $account->get('field_first_name')->value,
@@ -143,6 +145,14 @@ function drivematic_configurator_token_info(): array {
         'reference' => [
           'name' => t('N° de devis'),
           'description' => t('La référence du devis (ex. WA20260901-001).'),
+        ],
+        'siret' => [
+          'name' => t('SIRET'),
+          'description' => t('SIRET de facturation gelé sur le devis.'),
+        ],
+        'tva' => [
+          'name' => t('TVA intracommunautaire'),
+          'description' => t('Numéro de TVA intracommunautaire de facturation gelé sur le devis.'),
         ],
         'raison-sociale' => [
           'name' => t('Raison sociale'),
@@ -192,9 +202,9 @@ function drivematic_configurator_token_info(): array {
 /**
  * Implements hook_tokens().
  *
- * Raison sociale/adresse viennent des coordonnees gelees sur le devis ;
- * civilite/prenom/nom/e-mail/telephone n'ont pas d'equivalent gele sur
- * `quote` (voir Entity/Quote.php) et viennent donc du compte partenaire
+ * SIRET/TVA/raison sociale/adresse viennent des coordonnees gelees sur le
+ * devis ; civilite/prenom/nom/e-mail/telephone n'ont pas d'equivalent gele
+ * sur `quote` (voir Entity/Quote.php) et viennent donc du compte partenaire
  * courant.
  */
 function drivematic_configurator_tokens(string $type, array $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata): array {
@@ -211,6 +221,14 @@ function drivematic_configurator_tokens(string $type, array $tokens, array $data
     switch ($name) {
       case 'reference':
         $replacements[$original] = (string) $quote->get('reference')->value;
+        break;
+
+      case 'siret':
+        $replacements[$original] = (string) $quote->get('billing_siret')->value;
+        break;
+
+      case 'tva':
+        $replacements[$original] = (string) $quote->get('billing_vat')->value;
         break;
 
       case 'raison-sociale':

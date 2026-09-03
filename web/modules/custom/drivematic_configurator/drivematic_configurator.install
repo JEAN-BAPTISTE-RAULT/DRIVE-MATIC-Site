@@ -420,3 +420,31 @@ function drivematic_configurator_update_11011(): string {
 
   return 'Entite "partner_discount_change" installee.';
 }
+
+/**
+ * Installe le champ `billing_vat` sur l'entite `quote`.
+ *
+ * Instantane gele de `field_vat` (numero de TVA intracommunautaire du
+ * compte partenaire) au moment de la creation du devis, au meme titre que
+ * `billing_siret` — jamais relu depuis le compte ensuite (ADR-043).
+ *
+ * Idempotent : `installFieldStorageDefinition()` ne fait rien si le champ
+ * existe deja.
+ */
+function drivematic_configurator_update_11012(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getFieldStorageDefinition('billing_vat', 'quote')) {
+    return 'Champ "billing_vat" deja installe sur "quote" : mise a jour ignoree.';
+  }
+
+  $storage_definition = BaseFieldDefinition::create('string')
+    ->setLabel(new TranslatableMarkup('Facturation — TVA intracommunautaire'))
+    ->setSetting('max_length', 32)
+    ->setName('billing_vat')
+    ->setTargetEntityTypeId('quote');
+
+  $update_manager->installFieldStorageDefinition('billing_vat', 'quote', 'drivematic_configurator', $storage_definition);
+
+  return 'Champ "billing_vat" installe sur l\'entite "quote".';
+}

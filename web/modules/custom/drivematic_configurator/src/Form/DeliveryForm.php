@@ -233,6 +233,11 @@ final class DeliveryForm extends FormBase {
       '#tag' => 'p',
       '#value' => $this->t('SIRET : @siret', ['@siret' => $account->get('field_siret')->value]),
     ];
+    $element['address']['vat'] = [
+      '#type' => 'html_tag',
+      '#tag' => 'p',
+      '#value' => $this->t('TVA : @vat', ['@vat' => $account->get('field_vat')->value]),
+    ];
 
     $contact_url = $this->loadContactUrl();
     if ($contact_url) {

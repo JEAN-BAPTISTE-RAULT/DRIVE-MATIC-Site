@@ -61,6 +61,7 @@ final class QuotePersister {
       'billing_code_postal' => $account->get('field_postal_code')->value,
       'billing_ville' => $account->get('field_city')->value,
       'billing_siret' => $account->get('field_siret')->value,
+      'billing_vat' => $account->get('field_vat')->value,
       'delivery_raison_sociale' => $deliveryAddress->get('raison_sociale')->value,
       'delivery_adresse' => $deliveryAddress->get('adresse')->value,
       'delivery_complement' => $deliveryAddress->get('complement')->value,

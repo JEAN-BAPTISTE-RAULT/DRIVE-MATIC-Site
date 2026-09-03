@@ -116,6 +116,9 @@ final class Quote extends ContentEntityBase implements EntityOwnerInterface {
     $fields['billing_siret'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup('Facturation — Siret'))
       ->setSetting('max_length', 32);
+    $fields['billing_vat'] = BaseFieldDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Facturation — TVA intracommunautaire'))
+      ->setSetting('max_length', 32);
 
     $total_labels = [
       'total_ht' => 'Total HT',

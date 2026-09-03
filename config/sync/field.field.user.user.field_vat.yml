@@ -1,0 +1,18 @@
+uuid: 32b7ebc8-c0ca-4a5a-962a-fd23d24fe8dd
+langcode: fr
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_vat
+id: user.user.field_vat
+field_name: field_vat
+entity_type: user
+bundle: user
+label: 'Numéro de TVA intracommunautaire (13 caractères)'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
