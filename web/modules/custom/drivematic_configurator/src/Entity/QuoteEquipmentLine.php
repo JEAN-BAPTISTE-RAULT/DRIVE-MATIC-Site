@@ -16,14 +16,19 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  * `unit_price`/`discounted_unit_price`/`ht`/`discounted_ht` sont geles a la
  * creation (copies depuis QuoteCalculator, lui-meme deja fige sur le
  * catalogue au moment du calcul, ADR-030/031) : jamais recalcules ni relus
- * depuis `equipment_price` ensuite, et jamais mutes non plus par
- * `dm_discount_rate` — ils restent la base « catalogue + remise partenaire »
- * de reference. Seul `dm_discount_rate` (remise exceptionnelle Drive Matic,
- * PRD F15/F16) est modifiable apres coup (QuoteDiscountForm) : le prix EFFECTIF
- * (partenaire + DM, en cascade) se calcule a la lecture via
- * getEffectiveDiscountedUnitPrice()/getEffectiveDiscountedHt(), jamais stocke
- * — pour eviter qu'une remise appliquee deux fois ne se cumule sur
- * elle-meme.
+ * depuis `equipment_price` ensuite.
+ *
+ * `dm_discount_rate` (remise Drive Matic, PRD F15/F16) est lui aussi gele a
+ * la creation — snapshot du taux partenaire de cet equipement A CET INSTANT
+ * (ADR-043 addendum 2, QuoteCalculator/QuotePersister) : un devis ne change
+ * plus jamais de prix parce que le compte partenaire a ete modifie depuis.
+ * Seule une action explicite sur CE devis precis, via QuoteDiscountForm,
+ * peut ensuite le faire evoluer — remplacement, jamais de cumul avec
+ * `discounted_unit_price` (simple instantane de creation, plus utilise par
+ * le calcul du prix effectif). `dm_discount_rate` ne devrait plus jamais
+ * etre NULL passee la creation ; les methodes ci-dessous traitent NULL comme
+ * 0% par securite (lignes anterieures a cette regle, cf. hook_update
+ * 11010/11011).
  */
 #[ContentEntityType(
   id: 'quote_equipment_line',
@@ -52,6 +57,14 @@ final class QuoteEquipmentLine extends ContentEntityBase {
       ->setLabel(new TranslatableMarkup('Équipement'))
       ->setRequired(TRUE)
       ->setSetting('max_length', 255);
+
+    // Cle machine du type d'equipement catalogue (ADR-043), distincte de
+    // `label` (chaine traduite, pas une cle stable) : sert a resoudre la
+    // remise partenaire de cet equipement via PartnerDiscountResolver
+    // (`field_discount_<equipment_type>` sur le compte proprietaire).
+    $fields['equipment_type'] = BaseFieldDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Type équipement catalogue'))
+      ->setSetting('max_length', 32);
 
     // Copie gelee de `equipment_price.reference` (F17), au meme titre que
     // `unit_price` : jamais relue depuis le catalogue ensuite. Utilisee
@@ -91,16 +104,15 @@ final class QuoteEquipmentLine extends ContentEntityBase {
       ->setSetting('precision', 10)
       ->setSetting('scale', 2);
 
-    // Remise exceptionnelle accordee par Drive Matic sur cette ligne
-    // (PRD F15/F16, « cas limites »), tant que le devis parent est au statut
-    // Quote::STATUS_A_COMMANDER. S'applique en cascade sur le prix DEJA
-    // remise par la remise globale du partenaire (discounted_unit_price),
-    // jamais sur le tarif catalogue brut (unit_price).
+    // Snapshot du taux partenaire de cet equipement, gele a la creation du
+    // devis (ADR-043 addendum 2) — jamais NULL passee la creation. Editable
+    // ensuite uniquement via QuoteDiscountForm, tant que le devis parent est
+    // au statut Quote::STATUS_A_COMMANDER : remplace alors la valeur pour
+    // TOUTES les lignes de cet equipement sur CE devis, jamais un cumul.
     $fields['dm_discount_rate'] = BaseFieldDefinition::create('decimal')
       ->setLabel(new TranslatableMarkup('Remise Drive Matic (%)'))
       ->setSetting('precision', 5)
-      ->setSetting('scale', 2)
-      ->setDefaultValue(0);
+      ->setSetting('scale', 2);
 
     $fields['weight'] = BaseFieldDefinition::create('integer')
       ->setLabel(new TranslatableMarkup('Poids'))
@@ -117,27 +129,36 @@ final class QuoteEquipmentLine extends ContentEntityBase {
   }
 
   /**
-   * Prix unitaire remisé effectif (remise partenaire PUIS remise Drive Matic).
+   * Prix unitaire remisé effectif (`dm_discount_rate`, gelé, ADR-043).
+   *
+   * Toujours calculé depuis le tarif catalogue brut (`unit_price`), jamais
+   * depuis `discounted_unit_price` (simple instantané de création,
+   * inutilisé par ce calcul) : pas de cumul possible avec quoi que ce soit
+   * d'autre. `dm_discount_rate` étant gelé dès la création (snapshot du
+   * taux partenaire à cet instant, QuoteCalculator/QuotePersister), ce
+   * prix ne varie plus tant que personne n'agit explicitement sur CE devis
+   * via QuoteDiscountForm.
    *
    * @return float|null
-   *   NULL si la ligne est indisponible (`unavailable`, aucun prix a geler).
+   *   NULL si la ligne est indisponible (`unavailable`, aucun prix à geler).
    */
   public function getEffectiveDiscountedUnitPrice(): ?float {
     if ($this->get('unavailable')->value) {
       return NULL;
     }
 
-    $base = (float) $this->get('discounted_unit_price')->value;
-    $dm_rate = (float) ($this->get('dm_discount_rate')->value ?? 0);
+    $dm_rate = $this->get('dm_discount_rate')->value;
+    $rate = $dm_rate !== NULL ? (float) $dm_rate : 0.0;
+    $unit_price = (float) $this->get('unit_price')->value;
 
-    return $base * (1 - $dm_rate / 100);
+    return $unit_price * (1 - $rate / 100);
   }
 
   /**
-   * Total HT remisé effectif (remise partenaire PUIS remise Drive Matic).
+   * Total HT remisé effectif (`dm_discount_rate`, gelé, ADR-043).
    *
    * @return float|null
-   *   NULL si la ligne est indisponible (`unavailable`, aucun prix a geler).
+   *   NULL si la ligne est indisponible (`unavailable`, aucun prix à geler).
    */
   public function getEffectiveDiscountedHt(): ?float {
     $unit_price = $this->getEffectiveDiscountedUnitPrice();

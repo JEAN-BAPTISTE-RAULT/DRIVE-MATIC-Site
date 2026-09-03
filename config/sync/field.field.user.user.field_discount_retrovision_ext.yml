@@ -1,0 +1,22 @@
+uuid: bb0cfb19-38a4-4f91-94b3-8e9546d4da79
+langcode: fr
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_discount_retrovision_ext
+id: user.user.field_discount_retrovision_ext
+field_name: field_discount_retrovision_ext
+entity_type: user
+bundle: user
+label: 'Remise rétrovision extérieure (%)'
+description: 'Remise commerciale négociée avec ce partenaire pour cet équipement (F14). Une remise exceptionnelle peut être saisie ligne par ligne sur un devis donné, elle remplace alors ce taux pour cette ligne (PRD F15/F16).'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0.0
+  max: 100.0
+  prefix: ''
+  suffix: ''
+field_type: decimal

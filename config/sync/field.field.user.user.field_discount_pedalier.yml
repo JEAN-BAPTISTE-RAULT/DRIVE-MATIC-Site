@@ -1,0 +1,22 @@
+uuid: febe8610-0da9-4624-8db0-ef320adf67c5
+langcode: fr
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_discount_pedalier
+id: user.user.field_discount_pedalier
+field_name: field_discount_pedalier
+entity_type: user
+bundle: user
+label: 'Remise double pédalier auto-école (%)'
+description: 'Remise commerciale négociée avec ce partenaire pour cet équipement (F14). Une remise exceptionnelle peut être saisie ligne par ligne sur un devis donné, elle remplace alors ce taux pour cette ligne (PRD F15/F16).'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0.0
+  max: 100.0
+  prefix: ''
+  suffix: ''
+field_type: decimal

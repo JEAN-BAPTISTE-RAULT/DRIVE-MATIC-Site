@@ -1,0 +1,20 @@
+uuid: f22a0d11-3fe3-4347-b090-7bb83c556b13
+langcode: fr
+status: true
+dependencies:
+  module:
+    - user
+id: user.field_discount_pedalier
+field_name: field_discount_pedalier
+entity_type: user
+type: decimal
+settings:
+  precision: 5
+  scale: 2
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

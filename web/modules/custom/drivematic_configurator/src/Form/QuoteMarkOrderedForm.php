@@ -12,6 +12,7 @@ use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\drivematic_configurator\Entity\Quote;
+use Drupal\drivematic_configurator\Service\PartnerDiscountResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -23,6 +24,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * (PRD F15/F16). Ne s'applique qu'aux devis « À commander » : re-vérifié
  * côté serveur (pas seulement en cachant le bouton), un devis dans un autre
  * état est refusé.
+ *
+ * Gèle aussi `dm_discount_rate` (ADR-043) sur toute ligne encore NULL (Drive
+ * Matic n'a jamais ouvert le formulaire de remise pour ce devis) : sans ce
+ * gel, le prix d'une commande déjà confirmée continuerait de suivre les
+ * remises partenaire modifiées après coup — contraire au principe déjà
+ * appliqué au reste du devis (adresses, prix catalogue, tous gelés).
  */
 final class QuoteMarkOrderedForm extends ConfirmFormBase {
 
@@ -35,6 +42,7 @@ final class QuoteMarkOrderedForm extends ConfirmFormBase {
     protected TimeInterface $time,
     protected EntityTypeManagerInterface $entityTypeManager,
     protected AccountProxyInterface $currentUser,
+    protected PartnerDiscountResolver $discountResolver,
   ) {}
 
   /**
@@ -45,6 +53,7 @@ final class QuoteMarkOrderedForm extends ConfirmFormBase {
       $container->get('datetime.time'),
       $container->get('entity_type.manager'),
       $container->get('current_user'),
+      $container->get('drivematic_configurator.partner_discount_resolver'),
     );
   }
 
@@ -124,6 +133,8 @@ final class QuoteMarkOrderedForm extends ConfirmFormBase {
       return;
     }
 
+    $this->freezeDiscountRates($this->quote);
+
     $this->quote->set('status', Quote::STATUS_COMMANDE);
     $this->quote->set('date_confirmation', $this->time->getRequestTime());
     $this->quote->save();
@@ -138,6 +149,39 @@ final class QuoteMarkOrderedForm extends ConfirmFormBase {
       '@reference' => (string) $this->quote->label(),
     ]));
     $form_state->setRedirectUrl($this->getCancelUrl());
+  }
+
+  /**
+   * Fige `dm_discount_rate` (ADR-043) sur toute ligne encore NULL du devis.
+   *
+   * Ecrit le taux partenaire courant de l'equipement (ou 0 si aucun) : une
+   * fois « Commandé », le prix ne doit plus jamais bouger, y compris si le
+   * compte partenaire est modifie ensuite.
+   */
+  private function freezeDiscountRates(Quote $quote): void {
+    $account = $quote->getOwner();
+    $configuration_storage = $this->entityTypeManager->getStorage('quote_configuration');
+    $line_storage = $this->entityTypeManager->getStorage('quote_equipment_line');
+
+    $configuration_ids = $configuration_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('quote_id', $quote->id())
+      ->execute();
+    if (!$configuration_ids) {
+      return;
+    }
+
+    $line_ids = $line_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('configuration_id', $configuration_ids, 'IN')
+      ->condition('dm_discount_rate', NULL, 'IS NULL')
+      ->execute();
+
+    /** @var \Drupal\drivematic_configurator\Entity\QuoteEquipmentLine $line */
+    foreach ($line_storage->loadMultiple($line_ids) as $line) {
+      $rate = $this->discountResolver->resolve($account, $line->get('equipment_type')->value) ?? 0.0;
+      $line->set('dm_discount_rate', $rate)->save();
+    }
   }
 
 }

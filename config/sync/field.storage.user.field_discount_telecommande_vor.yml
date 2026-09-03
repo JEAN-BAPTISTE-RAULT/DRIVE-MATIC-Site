@@ -1,11 +1,11 @@
-uuid: 1d0df3da-e309-4d34-ae82-0779745cfbea
+uuid: f9a3713b-8b77-44bc-8f4a-4a4edd8ffd50
 langcode: fr
 status: true
 dependencies:
   module:
     - user
-id: user.field_discount_rate
-field_name: field_discount_rate
+id: user.field_discount_telecommande_vor
+field_name: field_discount_telecommande_vor
 entity_type: user
 type: decimal
 settings:

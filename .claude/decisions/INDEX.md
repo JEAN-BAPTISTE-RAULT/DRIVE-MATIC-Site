@@ -47,6 +47,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-040](040-tracabilite-remise-exceptionnelle.md) | Tracabilite des remises exceptionnelles Drive Matic (entite `quote_discount_change`, historique fusionne avec les statuts) | Accepte | 2026-09-02 |
 | [ADR-041](041-pdf-devis.md) | PDF du devis (dompdf, champ Reference gele, generation au clic Commander + regeneration sur remise DM) | Accepte | 2026-09-02 |
 | [ADR-042](042-smtp-preprod.md) | Transport SMTP preprod (mails.passerelle.com, secret hors config versionnee) | Accepte | 2026-09-02 |
+| [ADR-043](043-remises-partenaire-par-equipement.md) | Remises partenaire par equipement (4 champs), remise DM en remplacement (plus de cumul), formulaire regroupe par type, snapshot fige a la creation (pas de suivi live) | Accepte | 2026-09-03 |
 
 ## Quand creer un ADR
 

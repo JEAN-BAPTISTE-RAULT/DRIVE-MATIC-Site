@@ -1,0 +1,22 @@
+uuid: aa982454-b62a-4304-935a-0138f21aeb4a
+langcode: fr
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_discount_telecommande_vor
+id: user.user.field_discount_telecommande_vor
+field_name: field_discount_telecommande_vor
+entity_type: user
+bundle: user
+label: 'Remise télécommande VOR (%)'
+description: 'Remise commerciale négociée avec ce partenaire pour cet équipement (F14). Une remise exceptionnelle peut être saisie ligne par ligne sur un devis donné, elle remplace alors ce taux pour cette ligne (PRD F15/F16).'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0.0
+  max: 100.0
+  prefix: ''
+  suffix: ''
+field_type: decimal

@@ -1,8 +1,11 @@
 services:
+  drivematic_configurator.partner_discount_resolver:
+    class: Drupal\drivematic_configurator\Service\PartnerDiscountResolver
   drivematic_configurator.quote_calculator:
     class: Drupal\drivematic_configurator\Service\QuoteCalculator
     arguments:
       - '@entity_type.manager'
+      - '@drivematic_configurator.partner_discount_resolver'
   drivematic_configurator.quote_reference_generator:
     class: Drupal\drivematic_configurator\Service\QuoteReferenceGenerator
     arguments:

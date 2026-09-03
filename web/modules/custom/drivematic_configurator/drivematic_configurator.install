@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\drivematic_configurator\Entity\Quote;
+use Drupal\field\Entity\FieldStorageConfig;
 
 /**
  * Renomme le statut de devis 'en_cours' en 'a_commander'.
@@ -163,4 +165,331 @@ function drivematic_configurator_update_11006(): string {
   $update_manager->installFieldStorageDefinition('reference', 'quote_equipment_line', 'drivematic_configurator', $storage_definition);
 
   return 'Champ "reference" installe sur l\'entite "quote_equipment_line".';
+}
+
+/**
+ * Supprime l'ancien champ de remise partenaire globale `field_discount_rate`.
+ *
+ * Remplace par 4 remises independantes par equipement
+ * (field_discount_retrovision_ext/retrovision_int/telecommande_vor/pedalier,
+ * voir config/sync), decision utilisatrice : aucune migration de valeur, les
+ * 2 partenaires existants seront ressaisis a la main sur les 4 nouveaux
+ * champs.
+ *
+ * Supprime la config ET force la purge immediate des donnees (sans quoi
+ * Drupal se contente de marquer le champ "supprime", la table restant en
+ * base jusqu'a la prochaine purge cron/drush) : le champ ne doit plus rien
+ * laisser derriere lui.
+ *
+ * Idempotent : ne fait rien si le champ est deja supprime.
+ */
+function drivematic_configurator_update_11007(): string {
+  $field_storage = FieldStorageConfig::loadByName('user', 'field_discount_rate');
+  if (!$field_storage) {
+    return 'Champ "field_discount_rate" deja supprime : mise a jour ignoree.';
+  }
+
+  $field_storage->delete();
+
+  \Drupal::moduleHandler()->loadInclude('field', 'inc', 'field.purge');
+  field_purge_batch(1000);
+
+  return 'Champ "field_discount_rate" supprime (config + donnees purgees) sur l\'entite "user".';
+}
+
+/**
+ * Installe le champ `equipment_type` sur l'entite `quote_equipment_line`.
+ *
+ * Cle machine du type d'equipement catalogue (`retrovision_ext`/
+ * `retrovision_int`/`telecommande_vor`/`pedalier`, memes valeurs que
+ * EquipmentPrice::type_equipement) : necessaire pour rattacher une ligne a
+ * l'une des 4 remises partenaire par equipement (PartnerDiscountResolver).
+ * `label` (chaine traduite) ne suffisait pas a cet usage, pas une cle stable.
+ *
+ * Les lignes deja persistees avant ce champ restent vides a l'issue de cette
+ * seule mise a jour — voir cependant `drivematic_configurator_update_11009()`,
+ * qui les retro-complete a partir de leur `label` (mapping fiable, ADR-043
+ * addendum : contrairement a un prix, un libelle d'equipement est une valeur
+ * fixe parmi 4, sans ambiguite possible).
+ *
+ * Idempotent : `installFieldStorageDefinition()` ne fait rien si le champ
+ * existe deja.
+ */
+function drivematic_configurator_update_11008(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getFieldStorageDefinition('equipment_type', 'quote_equipment_line')) {
+    return 'Champ "equipment_type" deja installe sur "quote_equipment_line" : mise a jour ignoree.';
+  }
+
+  $storage_definition = BaseFieldDefinition::create('string')
+    ->setLabel(new TranslatableMarkup('Type équipement catalogue'))
+    ->setSetting('max_length', 32)
+    ->setName('equipment_type')
+    ->setTargetEntityTypeId('quote_equipment_line');
+
+  $update_manager->installFieldStorageDefinition('equipment_type', 'quote_equipment_line', 'drivematic_configurator', $storage_definition);
+
+  return 'Champ "equipment_type" installe sur l\'entite "quote_equipment_line".';
+}
+
+/**
+ * Retro-complete `equipment_type` sur les lignes anterieures a ce champ.
+ *
+ * Necessaire pour la refonte de QuoteDiscountForm (ADR-043 addendum) : le
+ * formulaire regroupe desormais la remise Drive Matic par TYPE d'equipement
+ * (4 lignes fixes) plutot que par ligne/configuration — une ligne dont
+ * `equipment_type` reste vide devient invisible/inaccessible depuis ce
+ * nouveau formulaire, alors qu'elle reste bien reelle sur le devis.
+ *
+ * Deduit le type depuis `label` (chaine figee parmi 4 valeurs connues,
+ * memes libelles que QuoteCalculator::EQUIPMENT_CATALOG_TYPES) : fiable, a
+ * la difference d'un prix qui aurait pu changer depuis.
+ *
+ * Idempotent : ignore toute ligne dont `equipment_type` est deja renseigne.
+ */
+function drivematic_configurator_update_11009(): string {
+  $label_to_type = [
+    'Télécommande VOR' => 'telecommande_vor',
+    'Rétrovision extérieure' => 'retrovision_ext',
+    'Rétrovision intérieure' => 'retrovision_int',
+    'Double pédalier auto-école' => 'pedalier',
+  ];
+
+  $line_storage = \Drupal::entityTypeManager()->getStorage('quote_equipment_line');
+  $ids = $line_storage->getQuery()->accessCheck(FALSE)->execute();
+
+  $updated = 0;
+  /** @var \Drupal\drivematic_configurator\Entity\QuoteEquipmentLine $line */
+  foreach ($line_storage->loadMultiple($ids) as $line) {
+    if (!empty($line->get('equipment_type')->value)) {
+      continue;
+    }
+
+    $type = $label_to_type[$line->get('label')->value] ?? NULL;
+    if ($type === NULL) {
+      continue;
+    }
+
+    $line->set('equipment_type', $type)->save();
+    $updated++;
+  }
+
+  return $updated
+    ? sprintf('%d ligne(s) retro-completee(s) avec leur equipment_type.', $updated)
+    : 'Aucune ligne a completer : mise a jour ignoree (deja a jour ou base vide).';
+}
+
+/**
+ * Reinitialise `dm_discount_rate` a NULL sur les lignes jamais retouchees.
+ *
+ * Avant ADR-043, `dm_discount_rate` avait une valeur par defaut de 0 (au
+ * lieu de NULL) : toute ligne de devis creee avant cette refonte porte donc
+ * un 0 explicite en base, meme si Drive Matic n'a jamais ouvert le
+ * formulaire de remise pour ce devis. Ce 0 « fantome » est indiscernable
+ * d'un 0 volontairement enregistre — et masque desormais, a tort, la
+ * remise partenaire courante dans la section « Remises par équipement »
+ * (qui ne resout la remise partenaire que si `dm_discount_rate` est NULL).
+ *
+ * Distingue les deux cas via `quote_discount_change` (ADR-040) : une ligne
+ * qui y figure a ete reellement modifiee au moins une fois par un
+ * administrateur — sa valeur actuelle est une decision explicite, jamais
+ * reinitialisee ici, quelle qu'elle soit (y compris 0). Une ligne absente
+ * de cet historique n'a jamais ete touchee : son 0 est le defaut fantome,
+ * remis a NULL pour qu'elle suive de nouveau la remise partenaire.
+ *
+ * Portee volontairement limitee aux devis encore au statut
+ * Quote::STATUS_A_COMMANDER : au-dela (Commandé/Archivé), le prix doit
+ * rester fige (meme principe que le gel pose par QuoteMarkOrderedForm,
+ * ADR-043) — na jamais reouvrir un calcul deja foumi au partenaire.
+ *
+ * Recalcule aussi les totaux geles du devis (Quote::total_*) pour chaque
+ * devis dont au moins une ligne a ete reinitialisee, avec la meme formule
+ * que QuoteDiscountForm::recalculateTotals() : sans ca, le tableau
+ * « Résumé » resterait incoherent avec les pourcentages desormais
+ * correctement preremplis dans le formulaire de remise. Ne regenere pas le
+ * PDF deja existant (limite acceptee, symetrique a celle du reste du
+ * module : seul un enregistrement explicite de remise le regenere).
+ *
+ * Idempotent : une ligne deja a NULL, ou deja presente dans l'historique,
+ * n'est jamais retouchee.
+ *
+ * ⚠️ Etape intermediaire, corrigee par `drivematic_configurator_update_11011()`
+ * — doit rester en l'etat (deja potentiellement rejouee) : le NULL laisse ici
+ * n'etait cense se resoudre qu'en LECTURE (suivi live du compte partenaire).
+ * L'utilisatrice a ensuite precise que le taux doit au contraire etre FIGE a
+ * la creation du devis, sans plus jamais suivre le compte — voir
+ * `drivematic_configurator_update_11011()`, qui transforme ce NULL en
+ * snapshot definitif juste apres.
+ */
+function drivematic_configurator_update_11010(): string {
+  $quote_storage = \Drupal::entityTypeManager()->getStorage('quote');
+  $configuration_storage = \Drupal::entityTypeManager()->getStorage('quote_configuration');
+  $line_storage = \Drupal::entityTypeManager()->getStorage('quote_equipment_line');
+  $change_storage = \Drupal::entityTypeManager()->getStorage('quote_discount_change');
+  $resolver = \Drupal::service('drivematic_configurator.partner_discount_resolver');
+
+  $touched_line_ids = [];
+  $change_ids = $change_storage->getQuery()->accessCheck(FALSE)->execute();
+  foreach ($change_storage->loadMultiple($change_ids) as $change) {
+    $touched_line_ids[(int) $change->get('line_id')->target_id] = TRUE;
+  }
+
+  $quote_ids = $quote_storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('status', Quote::STATUS_A_COMMANDER)
+    ->execute();
+
+  $reset_lines = 0;
+  $updated_quotes = 0;
+
+  /** @var \Drupal\drivematic_configurator\Entity\Quote $quote */
+  foreach ($quote_storage->loadMultiple($quote_ids) as $quote) {
+    $configuration_ids = $configuration_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('quote_id', $quote->id())
+      ->execute();
+    if (!$configuration_ids) {
+      continue;
+    }
+
+    $line_ids = $line_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('configuration_id', $configuration_ids, 'IN')
+      ->condition('unavailable', FALSE)
+      ->execute();
+    if (!$line_ids) {
+      continue;
+    }
+
+    $quote_changed = FALSE;
+    /** @var \Drupal\drivematic_configurator\Entity\QuoteEquipmentLine $line */
+    foreach ($line_storage->loadMultiple($line_ids) as $line) {
+      if ($line->get('dm_discount_rate')->value === NULL || isset($touched_line_ids[(int) $line->id()])) {
+        continue;
+      }
+      $line->set('dm_discount_rate', NULL)->save();
+      $reset_lines++;
+      $quote_changed = TRUE;
+    }
+
+    if (!$quote_changed) {
+      continue;
+    }
+
+    $account = $quote->getOwner();
+    $total_ht = 0.0;
+    $total_discounted_ht = 0.0;
+    foreach ($line_storage->loadMultiple($line_ids) as $line) {
+      $fallback = $resolver->resolve($account, $line->get('equipment_type')->value);
+      $total_ht += (float) $line->get('ht')->value;
+      $total_discounted_ht += $line->getEffectiveDiscountedHt($fallback) ?? 0.0;
+    }
+    $vat = $total_discounted_ht * 0.20;
+
+    $quote->set('total_ht', $total_ht);
+    $quote->set('total_discount', $total_ht - $total_discounted_ht);
+    $quote->set('total_discounted_ht', $total_discounted_ht);
+    $quote->set('total_vat', $vat);
+    $quote->set('total_ttc', $total_discounted_ht + $vat);
+    $quote->save();
+    $updated_quotes++;
+  }
+
+  return $reset_lines
+    ? sprintf('%d ligne(s) reinitialisee(s) sur %d devis "à commander" ; totaux recalcules.', $reset_lines, $updated_quotes)
+    : 'Aucune ligne a reinitialiser : mise a jour ignoree.';
+}
+
+/**
+ * Fige `dm_discount_rate` a un snapshot definitif (annule le suivi live).
+ *
+ * Correction de `drivematic_configurator_update_11010()` : celle-ci avait
+ * remis a NULL les lignes jamais retouchees pour qu'elles suivent EN DIRECT
+ * la remise partenaire courante — l'utilisatrice a precise ensuite qu'un
+ * devis doit au contraire prendre les taux du compte partenaire UNE FOIS,
+ * a sa creation, et ne plus jamais en bouger ensuite (ADR-043 addendum 2).
+ *
+ * Ecrit donc, pour chaque ligne encore a NULL, le taux partenaire resolu A
+ * CET INSTANT (0.0 si absent — jamais NULL desormais, pour qu'aucune
+ * resolution live ne s'applique plus jamais a cette ligne). Portee aux
+ * memes devis que 11010 (statut Quote::STATUS_A_COMMANDER) ; les totaux ne
+ * changent pas numeriquement (meme valeur, simplement stockee au lieu de
+ * resolue a la lecture) mais sont recalcules par securite.
+ *
+ * Idempotent : une ligne deja non-NULL (snapshot deja pose, ou remise
+ * explicitement enregistree par un administrateur) n'est jamais retouchee.
+ */
+function drivematic_configurator_update_11011(): string {
+  $quote_storage = \Drupal::entityTypeManager()->getStorage('quote');
+  $configuration_storage = \Drupal::entityTypeManager()->getStorage('quote_configuration');
+  $line_storage = \Drupal::entityTypeManager()->getStorage('quote_equipment_line');
+  $resolver = \Drupal::service('drivematic_configurator.partner_discount_resolver');
+
+  $quote_ids = $quote_storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('status', Quote::STATUS_A_COMMANDER)
+    ->execute();
+
+  $snapshotted = 0;
+  $updated_quotes = 0;
+
+  /** @var \Drupal\drivematic_configurator\Entity\Quote $quote */
+  foreach ($quote_storage->loadMultiple($quote_ids) as $quote) {
+    $configuration_ids = $configuration_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('quote_id', $quote->id())
+      ->execute();
+    if (!$configuration_ids) {
+      continue;
+    }
+
+    $line_ids = $line_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('configuration_id', $configuration_ids, 'IN')
+      ->condition('unavailable', FALSE)
+      ->execute();
+    if (!$line_ids) {
+      continue;
+    }
+
+    $account = $quote->getOwner();
+    $quote_changed = FALSE;
+
+    /** @var \Drupal\drivematic_configurator\Entity\QuoteEquipmentLine $line */
+    foreach ($line_storage->loadMultiple($line_ids) as $line) {
+      if ($line->get('dm_discount_rate')->value !== NULL) {
+        continue;
+      }
+
+      $rate = $resolver->resolve($account, $line->get('equipment_type')->value) ?? 0.0;
+      $line->set('dm_discount_rate', $rate)->save();
+      $snapshotted++;
+      $quote_changed = TRUE;
+    }
+
+    if (!$quote_changed) {
+      continue;
+    }
+
+    $total_ht = 0.0;
+    $total_discounted_ht = 0.0;
+    foreach ($line_storage->loadMultiple($line_ids) as $line) {
+      $total_ht += (float) $line->get('ht')->value;
+      $total_discounted_ht += $line->getEffectiveDiscountedHt() ?? 0.0;
+    }
+    $vat = $total_discounted_ht * 0.20;
+
+    $quote->set('total_ht', $total_ht);
+    $quote->set('total_discount', $total_ht - $total_discounted_ht);
+    $quote->set('total_discounted_ht', $total_discounted_ht);
+    $quote->set('total_vat', $vat);
+    $quote->set('total_ttc', $total_discounted_ht + $vat);
+    $quote->save();
+    $updated_quotes++;
+  }
+
+  return $snapshotted
+    ? sprintf('%d ligne(s) figee(s) definitivement sur %d devis "à commander" (fin du suivi live).', $snapshotted, $updated_quotes)
+    : 'Aucune ligne a figer : mise a jour ignoree.';
 }

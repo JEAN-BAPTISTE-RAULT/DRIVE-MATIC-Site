@@ -13,6 +13,7 @@ use Drupal\Core\Url;
 use Drupal\drivematic_configurator\Entity\Quote;
 use Drupal\drivematic_configurator\Entity\QuoteConfiguration;
 use Drupal\drivematic_configurator\Form\QuoteDiscountForm;
+use Drupal\drivematic_configurator\Service\PartnerDiscountResolver;
 use Drupal\drivematic_configurator\Service\QuotePdfGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -37,7 +38,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * `Quote` parent a deja ete verifie par la route.
  *
  * N'est plus strictement en lecture seule : les actions de statut (marquer
- * commande, archiver) et le formulaire de remise par ligne
+ * commande, archiver) et le formulaire de remises par equipement
  * (QuoteDiscountForm, embarque via `formBuilder()`) sont affiches sur
  * cette meme page quand le visiteur a la permission distincte `edit
  * drivematic configurator quotes` — jamais accordee au seul fait de voir
@@ -49,6 +50,7 @@ final class QuoteDetailController extends ControllerBase {
     protected DateFormatterInterface $dateFormatter,
     protected QuotePdfGenerator $pdfGenerator,
     protected FileSystemInterface $fileSystem,
+    protected PartnerDiscountResolver $discountResolver,
   ) {}
 
   /**
@@ -59,6 +61,7 @@ final class QuoteDetailController extends ControllerBase {
       $container->get('date.formatter'),
       $container->get('drivematic_configurator.quote_pdf_generator'),
       $container->get('file_system'),
+      $container->get('drivematic_configurator.partner_discount_resolver'),
     );
   }
 
@@ -146,7 +149,7 @@ final class QuoteDetailController extends ControllerBase {
     if ($can_edit && $quote->get('status')->value === Quote::STATUS_A_COMMANDER) {
       $build['discount'] = [
         '#type' => 'details',
-        '#title' => $this->t('Remise exceptionnelle par équipement'),
+        '#title' => $this->t('Remises par équipement'),
         '#open' => TRUE,
         'form' => $this->formBuilder()->getForm(QuoteDiscountForm::class, $quote),
       ];
@@ -178,7 +181,7 @@ final class QuoteDetailController extends ControllerBase {
   }
 
   /**
-   * Tableau « Résumé » : partenaire, remise, statut, totaux.
+   * Tableau « Résumé » : partenaire, remises par équipement, statut, totaux.
    */
   private function buildSummaryTable(Quote $quote): array {
     $account = $quote->getOwner();
@@ -194,25 +197,38 @@ final class QuoteDetailController extends ControllerBase {
         ['user' => $account->id()],
         )->toRenderable(),
       ];
-      $discount_rate = $this->formatRate($account->get('field_discount_rate')->value);
     }
     else {
       $partner = (string) $this->t('Compte supprimé');
-      $discount_rate = $this->t('—');
     }
+
+    // Memes cles que QuoteCalculator::EQUIPMENT_CATALOG_TYPES/
+    // EquipmentPrice::type_equipement (ADR-043) — dette deja documentee
+    // (ADR-028) : ce mapping des 4 equipements est duplique une 4e fois
+    // faute de source canonique unique dans le projet.
+    $discount_rows = [
+      ['retrovision_ext', $this->t('Remise rétrovision extérieure')],
+      ['retrovision_int', $this->t('Remise rétrovision intérieure')],
+      ['telecommande_vor', $this->t('Remise télécommande VOR')],
+      ['pedalier', $this->t('Remise double pédalier auto-école')],
+    ];
+
+    $rows = [
+      [$this->t('Partenaire'), $partner],
+    ];
+    foreach ($discount_rows as [$catalog_type, $label]) {
+      $rows[] = [$label, $this->formatRate($this->discountResolver->resolve($account, $catalog_type))];
+    }
+    $rows[] = [$this->t('Statut'), $this->formatStatus($quote)];
+    $rows[] = [$this->t('Total HT'), $this->formatPrice($quote->get('total_ht')->value)];
+    $rows[] = [$this->t('Remise HT'), $this->formatPrice($quote->get('total_discount')->value)];
+    $rows[] = [$this->t('Total remisé HT'), $this->formatPrice($quote->get('total_discounted_ht')->value)];
+    $rows[] = [$this->t('TVA'), $this->formatPrice($quote->get('total_vat')->value)];
+    $rows[] = [$this->t('Total TTC'), $this->formatPrice($quote->get('total_ttc')->value)];
 
     return [
       '#type' => 'table',
-      '#rows' => [
-        [$this->t('Partenaire'), $partner],
-        [$this->t('Remise partenaire'), $discount_rate],
-        [$this->t('Statut'), $this->formatStatus($quote)],
-        [$this->t('Total HT'), $this->formatPrice($quote->get('total_ht')->value)],
-        [$this->t('Remise HT'), $this->formatPrice($quote->get('total_discount')->value)],
-        [$this->t('Total remisé HT'), $this->formatPrice($quote->get('total_discounted_ht')->value)],
-        [$this->t('TVA'), $this->formatPrice($quote->get('total_vat')->value)],
-        [$this->t('Total TTC'), $this->formatPrice($quote->get('total_ttc')->value)],
-      ],
+      '#rows' => $rows,
     ];
   }
 

@@ -44,8 +44,7 @@ final class QuotePersister {
    *   Le devis cree.
    */
   public function persist(array $draft, string $status, UserInterface $account, DeliveryAddress $deliveryAddress): Quote {
-    $discount_rate = $account->get('field_discount_rate')->value;
-    $result = $this->quoteCalculator->calculate($draft, $discount_rate);
+    $result = $this->quoteCalculator->calculate($draft, $account);
     $now = $this->time->getCurrentTime();
 
     $quote_storage = $this->entityTypeManager->getStorage('quote');
@@ -133,6 +132,7 @@ final class QuotePersister {
           'configuration_id' => $quote_configuration->id(),
           'label' => $line['label'],
           'unavailable' => $line['unavailable'],
+          'equipment_type' => $line['equipment_type'] ?? NULL,
           'reference' => $line['reference'] ?? NULL,
           'unit_price' => $line['unit_price'] ?? NULL,
           'discounted_unit_price' => $line['discounted_unit_price'] ?? NULL,
@@ -140,6 +140,7 @@ final class QuotePersister {
           'quantity_total' => $line['quantity_total'],
           'ht' => $line['ht'] ?? NULL,
           'discounted_ht' => $line['discounted_ht'] ?? NULL,
+          'dm_discount_rate' => $line['dm_discount_rate'] ?? NULL,
           'weight' => $line_weight++,
         ])->save();
       }

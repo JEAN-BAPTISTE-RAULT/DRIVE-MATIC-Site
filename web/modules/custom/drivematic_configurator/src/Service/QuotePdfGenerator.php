@@ -20,14 +20,16 @@ use Drupal\drivematic_configurator\Entity\QuoteConfiguration;
  * Genere le PDF d'un devis (maquette Figma 714:9296).
  *
  * N'affiche que des valeurs gelees (Quote/QuoteConfiguration/
- * QuoteEquipmentLine) : jamais de relecture du catalogue `equipment_price`.
- * Les totaux generaux (Quote::total_*) sont deja tenus a jour par
+ * QuoteEquipmentLine) : jamais de relecture du catalogue `equipment_price`,
+ * jamais du compte partenaire non plus (`dm_discount_rate` est lui-meme un
+ * snapshot gele a la creation du devis, ADR-043 addendum 2). Les totaux
+ * generaux (Quote::total_*) sont deja tenus a jour par
  * QuoteDiscountForm::recalculateTotals() a chaque remise DM ; les bandeaux
  * par configuration/par vehicule n'existent nulle part en stock et sont
  * recalcules ici a partir du prix effectif de chaque ligne
  * (QuoteEquipmentLine::getEffectiveDiscountedUnitPrice()/
- * getEffectiveDiscountedHt(), remise partenaire PUIS remise Drive Matic) —
- * de l'arithmetique sur des valeurs deja gelees, jamais une relecture live.
+ * getEffectiveDiscountedHt()) — de l'arithmetique pure sur des valeurs deja
+ * gelees.
  *
  * Toutes les valeurs sont pre-formatees ici (jamais dans le gabarit Twig,
  * qui reste un simple assemblage de chaines — meme convention que les

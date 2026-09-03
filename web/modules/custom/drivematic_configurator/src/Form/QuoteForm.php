@@ -114,8 +114,7 @@ final class QuoteForm extends FormBase {
     }
 
     $account = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
-    $discount_rate = $account->get('field_discount_rate')->value;
-    $result = $this->quoteCalculator->calculate($draft, $discount_rate);
+    $result = $this->quoteCalculator->calculate($draft, $account);
 
     $brand_labels = $this->loadTermLabels('vehicle_brand');
     $model_labels = $this->loadTermLabels('vehicle_model');
