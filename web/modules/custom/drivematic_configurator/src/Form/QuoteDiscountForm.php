@@ -46,7 +46,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * — jamais recalculé depuis le compte partenaire ensuite, même si celui-ci
  * change. `PartnerDiscountResolver` n'intervient ici qu'en repli défensif
  * (`resolveDefaultRate()`), pour les lignes antérieures à cette règle dont
- * `dm_discount_rate` serait encore NULL (cf. hook_update 11010/11011).
+ * `dm_discount_rate` serait encore NULL (cf. hook_update 11010).
  *
  * Chaque LIGNE d'équipement (pas chaque type) dont le taux change réellement
  * génère sa propre entrée `QuoteDiscountChange` (auteur + ancien/nouveau
@@ -155,7 +155,7 @@ final class QuoteDiscountForm extends FormBase {
    * partenaire À CET INSTANT — ne suit plus le compte ensuite). Le repli sur
    * la remise partenaire COURANTE ne joue qu'en défense, pour une ligne
    * antérieure à cette règle dont `dm_discount_rate` serait encore NULL
-   * (hook_update 11010/11011) — jamais pour une ligne normale.
+   * (hook_update 11010) — jamais pour une ligne normale.
    *
    * @param \Drupal\drivematic_configurator\Entity\QuoteEquipmentLine[] $lines
    *   Les lignes de ce type sur ce devis (peut être vide).
@@ -222,7 +222,7 @@ final class QuoteDiscountForm extends FormBase {
         // `dm_discount_rate` est gele des la creation (ADR-043 addendum 2) :
         // ce repli sur la remise partenaire ne joue qu'en defense, pour une
         // ligne anterieure a cette regle encore a NULL (hook_update
-        // 11010/11011) — sans quoi resoumettre la suggestion affichee sans
+        // 11010) — sans quoi resoumettre la suggestion affichee sans
         // la changer journaliserait un faux changement.
         $old_rate = $stored_rate !== NULL
           ? round((float) $stored_rate, 2)
