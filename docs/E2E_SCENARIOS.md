@@ -342,7 +342,7 @@
 3. Etape Devis : verifier le tableau (tarif catalogue, tarif remise, quantites, totaux HT/remise/TVA 20 %/TTC).
 
 **Resultats attendus** :
-- Le **tarif remise** applique correspond au taux par defaut du partenaire.
+- Le **tarif remise** applique correspond au taux du partenaire **pour l'equipement concerne** (4 taux independants depuis ADR-043, un par equipement — plus un seul taux global) — fige a la creation de ce devis, ne suit plus les changements ulterieurs du compte.
 - Les totaux par vehicule, par configuration et general sont exacts (TVA 20 %).
 - Les frais de livraison **ne figurent pas** dans le devis.
 - Le devis recoit un numero `WAAAAMMJJ-001` et le statut « a finaliser ».
@@ -496,20 +496,40 @@ rendu print 300 DPI).
 
 ---
 
-## S17 — Remise exceptionnelle
+## S17 — Remise par equipement sur un devis
 
-**Objectif** : Verifier l'application d'une remise exceptionnelle sans alterer le taux par defaut.
+**Objectif** : Verifier que Drive Matic peut ajuster une remise par equipement sur UN devis precis, sans jamais alterer le compte partenaire ni cumuler avec le taux deja fige.
 
 **Etapes** :
-1. Partenaire : disposer d'un devis au statut « a commander » (non commande).
-2. Admin (back-office) : attribuer une remise temporaire par ligne sur ce devis.
-3. Partenaire : rouvrir le devis.
-4. Admin : rouvrir la page de detail du devis, verifier la section « Historique ».
+1. Partenaire : disposer d'un devis au statut « a commander » (non commande), avec au moins 2 configurations partageant un meme equipement (ex. 2x « Retrovision exterieure »).
+2. Admin (back-office, page de detail du devis) : ouvrir la section « Remises par équipement ».
+3. Verifier les 4 lignes affichees (une par equipement, jamais une par ligne/configuration) et leur valeur preremplie.
+4. Modifier le taux d'un des 4 equipements et enregistrer, sans rien changer aux 3 autres.
+5. Admin : rouvrir la page de detail, verifier la section « Historique ».
+6. Ouvrir la page de detail d'un devis **deja Commande** (ou Archive).
 
 **Resultats attendus** :
-- Le devis reflete la nouvelle remise ; le **taux de remise par defaut du client reste inchange**.
-- La remise n'est possible que **tant que le devis n'a pas ete commande**.
-- Etape 4 : une ligne apparait dans « Historique » (date, « Remise Drive Matic : « <equipement> » <ancien>% → <nouveau>% », l'admin ayant agi) ; une resoumission du formulaire sans changement de taux ne cree AUCUNE nouvelle ligne.
+- Etape 3 : exactement 4 lignes (Retrovision ext./int., Telecommande VOR, Double pedalier auto-ecole) — jamais une par configuration. Chaque valeur preremplie correspond au taux fige sur ce devis a sa creation (pas necessairement le taux courant du compte partenaire, s'il a change depuis).
+- Etape 4 : le nouveau taux s'applique a **toutes** les lignes de cet equipement sur **ce devis uniquement**, meme si elles appartiennent a des configurations differentes (totaux recalcules en consequence) ; les 3 autres equipements et tout autre devis du meme partenaire restent inchanges ; le **compte partenaire n'est jamais modifie** par cette action — **remplacement**, jamais de cumul avec le taux precedent (verifie : un equipement a 10% fige, remplace par 20%, donne un prix a -20% du tarif catalogue brut, jamais -28%).
+- La remise n'est modifiable que **tant que le devis n'a pas ete commande** — en lecture seule sur tout autre statut (etape 6 : les 4 lignes s'affichent sans aucun champ ni bouton).
+- Etape 5 : une ligne apparait dans « Historique » PAR LIGNE d'equipement dont le taux a reellement change (date, « Remise Drive Matic : « <equipement> » <ancien>% → <nouveau>% », l'admin ayant agi) — 2 lignes distinctes si l'equipement modifie existe dans 2 configurations ; une resoumission sans changement de taux ne cree AUCUNE nouvelle ligne.
+
+---
+
+## S17bis — Historique des remises du compte partenaire
+
+**Objectif** : Verifier qu'un admin peut retracer QUAND un taux de remise partenaire a change, pour justifier un ecart avec un devis fige avant ce changement.
+
+**Etapes** :
+1. Admin : ouvrir `/user/{uid}/edit` d'un compte partenaire (pas le sien).
+2. Modifier une ou plusieurs des 4 remises (dont au moins un passage vers/depuis une valeur vide) et enregistrer.
+3. Recharger la page.
+4. Ouvrir `/user/{uid}/edit` de **son propre** compte (partenaire ou admin en auto-edition).
+
+**Resultats attendus** :
+- Etape 3 : une section « Historique des remises » liste chaque changement reel (date, equipement, ancien taux → nouveau taux, administrateur) — une ligne par champ modifie si plusieurs remises ont change dans la meme sauvegarde ; un passage vers/depuis une valeur vide s'affiche explicitement « — (vide) », jamais confondu avec 0%.
+- Une sauvegarde du compte qui ne touche aucune des 4 remises ne cree AUCUNE ligne.
+- Etape 4 : la section **n'apparait jamais** en auto-edition, quel que soit le compte (donnee commerciale interne).
 
 ---
 
@@ -604,13 +624,15 @@ fois cette page construite.
 **Objectif** : Verifier la creation de compte en back-office et l'envoi de l'e-mail d'activation.
 
 **Etapes** :
-1. Admin (Gin) : creer un compte partenaire, renseigner conditions commerciales (taux de remise par defaut), adresse de facturation.
+1. Admin (Gin) : creer un compte partenaire, renseigner conditions commerciales (4 remises par equipement — ADR-043, plus un seul taux par defaut), adresse de facturation.
 2. Verifier l'envoi automatique de l'e-mail d'activation.
-3. Modifier puis suspendre le compte.
+3. Modifier une remise, verifier l'entree d'historique (S17bis).
+4. Modifier puis suspendre le compte.
 
 **Resultats attendus** :
 - L'e-mail d'activation (lien 72 h) part automatiquement a la creation.
-- Les conditions commerciales sont prises en compte par le configurateur (cf. S14).
+- Les 4 remises par equipement, laissees vides ou renseignees independamment, sont prises en compte par le configurateur (cf. S14) — jamais un seul taux global.
+- Etape 3 : chaque modification de remise cree une entree dans « Historique des remises » (cf. S17bis).
 - La toolbar d'administration Gin est horizontale, en haut de l'ecran (decision #9).
 
 ---
@@ -674,8 +696,9 @@ fois cette page construite.
 5bis. Si le devis a deja ete commande : verifier le lien « Voir le PDF du
 devis » (ouvre `/admin/content/devis/{id}/pdf` dans un nouvel onglet, PDF
 valide) ; sur un devis jamais commande, ce lien n'apparait pas.
-6. Sur cette page : verifier « Resume » (partenaire cliquable, remise partenaire, statut, totaux — sans les dates individuelles), « Historique » (colonne « Evenement » : une ligne par changement de statut ET par remise DM accordee, fusionnees et triees du plus ancien au plus recent, chacune avec date + auteur), facturation/livraison, puis les configurations et leurs lignes d'equipement (sans colonne « dont remise DM »).
-7. Dans « Remise exceptionnelle par equipement » (devis a au moins 2 configurations partageant un equipement homonyme, ex. 2x « Retrovision exterieure ») : verifier que chaque configuration a sa propre sous-section, saisir des remises DIFFERENTES sur les 2 lignes homonymes et enregistrer.
+6. Sur cette page : verifier « Resume » (partenaire cliquable, 4 lignes de remise par equipement — reflet LIVE du compte partenaire, pas du devis —, statut, totaux — sans les dates individuelles), « Historique » (colonne « Evenement » : une ligne par changement de statut ET par remise DM accordee, fusionnees et triees du plus ancien au plus recent, chacune avec date + auteur), facturation/livraison, puis les configurations et leurs lignes d'equipement (colonne « Reference » entre Equipement et Prix unitaire — tiret si absente du catalogue a la source, cf. F17).
+7. Dans « Remises par équipement » (devis a au moins 2 configurations partageant un equipement homonyme, ex. 2x « Retrovision exterieure ») : verifier les 4 lignes fixes (jamais une sous-section par configuration), modifier le taux d'UN equipement homonyme.
+7bis. Ouvrir un devis « Commande » ou « Archive » : verifier que « Remises par équipement » reste visible mais en lecture seule (aucun champ, aucun bouton).
 8. Cliquer « Marquer comme commande », confirmer.
 9. Sur un **autre** devis « A commander », cliquer « Archiver », confirmer.
 10. Tenter d'acceder directement a l'URL d'archivage d'un devis « Commande » (pas « A commander »).
@@ -692,14 +715,15 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 - Etape 5bis : le lien n'apparait que si le fichier PDF existe reellement sur
   le disque (genere au clic « Commander », S16) — jamais base sur le seul
   statut du devis.
-- Etape 6 : chaque section s'affiche correctement, notamment le lien partenaire (vers `/user/{uid}/edit`) et le taux de remise partenaire courant.
-- Etape 7 : chaque ligne homonyme recoit sa propre remise INDEPENDANTE (verifiable aux totaux recalcules par configuration) ; `date de commande` remise a l'heure actuelle (redemarre le delai des 30 jours) ; une ligne d'« Evenement » apparait dans « Historique » PAR ligne dont le taux a reellement change (jamais pour une ligne resoumise a l'identique), avec l'ancien/nouveau taux et l'admin courant.
+- Etape 6 : chaque section s'affiche correctement, notamment le lien partenaire (vers `/user/{uid}/edit`) et les 4 lignes de remise partenaire (tiret si absente pour un equipement) ; la colonne « Reference » affiche la valeur gelee du devis, jamais relue depuis le catalogue courant.
+- Etape 7 : le taux modifie s'applique a **toutes** les lignes de cet equipement sur ce devis (verifiable aux totaux recalcules), y compris les 2 lignes homonymes de configurations differentes — jamais une remise par sous-section/configuration ; `date de commande` remise a l'heure actuelle (redemarre le delai des 30 jours) ; une ligne d'« Evenement » apparait dans « Historique » PAR ligne dont le taux a reellement change (jamais pour une ligne resoumise a l'identique), avec l'ancien/nouveau taux et l'admin courant.
+- Etape 7bis : les 4 taux affiches sont ceux reellement figes sur ce devis, pas les taux courants du compte partenaire s'ils ont change depuis.
 - Etape 8 : statut devient « Commande le [date du jour] », les boutons d'action et le formulaire de remise disparaissent de la page ; une nouvelle ligne apparait dans « Historique » (date + « Commande » + le compte admin courant).
 - Etape 9 : statut devient « Archive », date d'archivage posee, nouvelle ligne d'historique correspondante.
 - Etape 10 : refuse cote serveur (« Ce devis n'est pas (ou plus) au statut « A commander » : action impossible. »), pas seulement en cachant le bouton.
 - Etape 11 : « Historique » affiche au moins une ligne (date de creation du devis + statut initial deduit + partenaire), jamais une section vide.
-- Etape 12 : un bloc « Adresses de livraison » en lecture seule (aucun lien Modifier/Supprimer) liste les adresses du partenaire, ou l'etat vide « Aucune adresse de livraison enregistree. ».
-- Etape 13 : le bloc « Adresses de livraison » **n'apparait pas** (jamais sur son propre compte, meme admin).
+- Etape 12 : un bloc « Adresses de livraison » en lecture seule (aucun lien Modifier/Supprimer) liste les adresses du partenaire, ou l'etat vide « Aucune adresse de livraison enregistree. » ; un bloc « Historique des remises » liste chaque changement reel d'une des 4 remises (date, equipement, ancien → nouveau taux, auteur), ou l'etat vide « Aucune modification enregistree. » (cf. S17bis).
+- Etape 13 : ni le bloc « Adresses de livraison » ni « Historique des remises » **n'apparaissent** (jamais sur son propre compte, meme admin).
 - Un compte sans la permission `view drivematic configurator quotes` (role `partenaire`) recoit un 403 sur `/admin/content/devis`, sur `/admin/content/devis/{id}` et sur `/admin/content/devis/{id}/pdf`.
 - Un compte avec `view` mais sans `edit drivematic configurator quotes` voit la page de detail mais aucun bouton d'action ni formulaire de remise.
 
@@ -733,6 +757,8 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 
 **Correctif du 2026-09-02 (suite)** : les devis crees avant l'ajout de cet historique n'affichaient aucune ligne, pas meme la date de creation — `buildCreationRow()` synthetise desormais systematiquement cette 1ere ligne quand le journal est vide (statut initial deduit de la presence de `date_commande`, jamais de doublon pour un devis cree depuis). Verifie sur les devis existants ET sur un devis passe par le vrai `QuotePersister::persist()` (une seule ligne, pas de doublon).
 
+**Mise en oeuvre (a rejouer) — remises par equipement + historique du 2026-09-03** ([ADR-043](../.claude/decisions/043-remises-partenaire-par-equipement.md), [ADR-044](../.claude/decisions/044-historique-remises-partenaire.md)) : `QuoteDiscountForm` (« Remises par équipement ») regroupe desormais par TYPE d'equipement (4 lignes fixes) au lieu d'une section par configuration, et reste affichee (lecture seule, table simple sans formulaire) meme hors statut « A commander » ou sans droit d'edition. `dm_discount_rate` est fige une seule fois, a la creation du devis (`QuoteCalculator`/`QuotePersister`), et ne suit plus jamais le compte partenaire ensuite — remplace (jamais cumule) le taux fige, calcule depuis le tarif catalogue brut. Nouvelle colonne « Reference » dans le tableau des lignes (valeur gelee `QuoteEquipmentLine::reference`, deja existante pour le PDF mais pas affichee ici jusque-la). Nouvelle entite `partner_discount_change` (historique des remises du compte, detecte par `hook_ENTITY_TYPE_update()` generique — capte un changement via ce formulaire, `drush`, ou tout autre canal), affichee sur `/user/{uid}/edit` a cote du recapitulatif des adresses de livraison (S17bis). **Verifie de bout en bout via un parcours navigateur reel** (pas seulement en base) : preremplissage live tant qu'un devis n'a jamais ete retouche, remplacement sans cumul (100€ remise 20% → 80€, jamais 70€), 2 lignes homonymes recevant chacune leur propre entree d'historique, compte modifie a 99% sans effet sur un devis deja fige, section « Historique des remises » absente en auto-edition.
+
 ---
 
 ## Matrice de couverture (scenario → feature)
@@ -752,7 +778,7 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 | S13 | F13 |
 | S14, S15 | F14, F17 |
 | S16, S17, S18 | F15 |
-| S17, S22 | F16 |
+| S17, S17bis, S22 | F16 |
 | S20, S21 | F12, decision #5 (cloisonnement) |
 | S23 | F18 |
 | S24 | F9 (volet FAQ) |
@@ -764,6 +790,8 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-03 | **F16 — historique des remises du compte partenaire** ([ADR-044](../.claude/decisions/044-historique-remises-partenaire.md)) : nouvelle entite `partner_discount_change`, detectee par `drivematic_configurator_user_update()` (`hook_ENTITY_TYPE_update()` generique pour `user` — capte un changement via `/user/{uid}/edit`, `drush`, ou tout autre canal, pas seulement une soumission de formulaire). Affichee en lecture seule sur `/user/{uid}/edit` (admin editant un AUTRE compte, jamais en auto-edition), a cote du recapitulatif des adresses de livraison : date, equipement, ancien → nouveau taux (« — (vide) » si absent, jamais confondu avec 0%), auteur. But : justifier un ecart entre le taux affiche aujourd'hui sur le compte et celui reellement fige sur un devis cree avant ce changement. Verifie via impersonation d'une session admin reelle (`\Drupal::currentUser()->setAccount()`, pour eviter tout risque sur le vrai compte partenaire via un POST HTML reconstruit a la main) : auteur correctement capture, aucune entree pour un champ non modifie, 2 champs changes dans la meme sauvegarde produisant 2 entrees, passage vide↔valeur affiche correctement, section absente en auto-edition. **A rejouer** : S17bis, S22, S26 | S17bis, S22, S26 |
+| 2026-09-03 | **F14/F15/F16 — remises partenaire par equipement, remplacement (plus de cumul), snapshot fige a la creation** ([ADR-043](../.claude/decisions/043-remises-partenaire-par-equipement.md)) : `field_discount_rate` (taux unique) supprime (config + donnees purgees, pas de migration) et remplace par 4 champs independants (`field_discount_retrovision_ext`/`retrovision_int`/`telecommande_vor`/`pedalier`), nouveau service `PartnerDiscountResolver`. `QuoteDiscountForm` (« Remises par équipement », renommee) regroupe desormais par TYPE d'equipement — **exactement 4 lignes**, jamais une par ligne/configuration — un taux saisi s'applique a toutes les lignes de ce type sur CE devis uniquement (jamais au compte partenaire), tout en generant une entree `quote_discount_change` par LIGNE reellement modifiee (granularite ADR-040 inchangee). Section desormais **toujours visible** : lecture seule des que le devis n'est plus « A commander » ou sans droit d'edition. Le taux partenaire par equipement est resolu et **fige une seule fois, a la creation du devis** (`QuoteCalculator`/`QuotePersister`) — un devis ne suit plus jamais les changements ulterieurs du compte, y compris tant qu'il reste « A commander » (correction d'un 1er jet en resolution live, jugee trop surprenante par l'utilisatrice en cours de session). `dm_discount_rate` remplace desormais integralement le taux applique a `unit_price` brut, plus de cascade avec la remise partenaire. `hook_update_11009` retro-complete `QuoteEquipmentLine::equipment_type` (deduit du libelle, mapping fiable) sur les lignes anterieures ; `hook_update_11010` fige au taux partenaire courant les lignes de devis existantes jamais reellement retouchees par un administrateur. Nouvelle colonne « Reference » dans le detail de devis admin (valeur deja existante pour le PDF, ADR-041, non affichee ailleurs jusque-la) — **constat en verifiant** : le catalogue n'a jamais eu de reference pour retrovision ext./int. et telecommande VOR (139 lignes sur 414, faute de donnee source, anticipe des la conception) contrairement au pedalier (274/274) — pas un bug d'import. Verifie de bout en bout via un parcours navigateur reel : preremplissage live tant qu'un devis n'a jamais ete retouche, remplacement sans cumul (100€ remise 20% → 80€, jamais 70€ via cascade), 2 lignes homonymes de 2 configurations recevant chacune leur propre entree d'historique lors d'une modification groupee par type, compte partenaire modifie a 99% sans le moindre effet sur un devis deja fige. **A rejouer** : S14, S17, S22, S26 | S14, S17, S22, S26 |
 | 2026-09-02 | **Deploiement — transport SMTP preprod** ([ADR-042](../.claude/decisions/042-smtp-preprod.md)) : nouvelle entite versionnee `mailer_transport.mailer_transport.smtp_passerelle` (`mails.passerelle.com`, port 465/TLS implicite) **sans mot de passe** (jamais commite) — le secret et la selection du transport par defaut vivent uniquement dans le `settings.php` de la preprod (meme mecanisme deja en place pour la cle secrete reCAPTCHA), pour survivre a chaque `config:import` du script de deploiement. Local (Mailpit) inchange. **Aucune modification necessaire du script `scripts/deploy-preprod.sh`** : `rsync` ne touche jamais `settings.php` (non suivi par git, ADR-039), et une surcharge `$config[...]` runtime n'est jamais effacee par `config:import`. Verifie localement : import propre (seule cette entite creee), lecture de l'entite conforme, surcharge simulee confirmee lue en priorite sur le stockage | Hors matrice (deploiement) |
 | 2026-09-02 | **F15 — PDF du devis** ([ADR-041](../.claude/decisions/041-pdf-devis.md)) : conforme a la maquette Figma 714:9296, `dompdf/dompdf` (aucune lib PDF vendorisee jusque-la), nouveau service `QuotePdfGenerator`. Genere **uniquement** au clic « Commander » (jamais « Enregistrer le devis »), **regenere** (fichier ecrase) a chaque remise Drive Matic accordee sur un devis existant — seul autre evenement qui change les prix apres coup. Stocke sur `private://devis-pdf/{reference}.pdf`, telechargeable depuis la page de detail admin (route dediee, meme controle d'acces, `Content-Disposition: inline`) et joint aux 2 e-mails de commande (`$message['params']['attachments']`). Nouveau champ gele `QuoteEquipmentLine::reference` (copie du catalogue a la persistance, `hook_update_N`) pour la colonne « Reference » de la maquette — vide sur les devis anterieurs a ce champ. **Corrige le meme jour** : le logo (PNG des e-mails, 633x73) laissait apparaitre un residu visuel une fois rendu par Dompdf en qualite print (300 DPI) — remplace par l'export SVG du logo de la maquette Figma, sans limite de resolution ; fichier des e-mails non touche. Verifie de bout en bout sur un devis reel (`W20260902-001`) : generation, telechargement authentifie (200) et anonyme (403), regeneration sur remise DM (montants/bandeau de totaux mis a jour). **A rejouer** : S16, S18, S26 | S16, S18, S26 |
 | 2026-09-02 | **F15/F16 — tracabilite des remises Drive Matic dans l'historique du devis** ([ADR-040](../.claude/decisions/040-tracabilite-remise-exceptionnelle.md)) : nouvelle entite `quote_discount_change` (meme pattern que `quote_status_change` — une entite dediee plutot qu'un champ JSON serialise, aucun handler d'acces propre), une entree par LIGNE d'equipement dont `dm_discount_rate` a reellement change (jamais par soumission — une resoumission identique ne cree aucune entree). « Historique » fusionne desormais statuts et remises, tries chronologiquement (en-tete « Statut » → « Evenement »). Verifie reellement via soumission curl sur une session admin authentifiee (le clic Browser MCP sur ce bouton echouait silencieusement, sans requete POST) : entree creee avec les bonnes valeurs ancien/nouveau taux + auteur, resoumission identique confirmee sans doublon, devis restaure a son etat d'origine apres test. **A rejouer** : S17, S26 | S17, S26 |

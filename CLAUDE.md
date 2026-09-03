@@ -238,6 +238,8 @@ Detail et raisons dans `docs/content-model.md`.
 Les interfaces publiques sont declarees dans la configuration du linter (globals/exports).
 Les decisions architecturales posterieures au PRD sont dans `.claude/decisions/`.
 
+**Un devis est un instantane fige a sa creation, jamais un lien vivant vers le catalogue ou le compte partenaire** (regle posee par l'utilisatrice, ADR-043). Reference produit, tarif catalogue unitaire et taux de remise partenaire sont copies une seule fois, au moment de la creation du devis (`QuoteCalculator`/`QuotePersister`), puis ne doivent plus jamais etre relus depuis leur source : un reimport du catalogue ou un changement ulterieur des remises du compte partenaire ne doit **jamais** modifier un devis deja cree, meme tant qu'il reste au statut « A commander ». Seule une action explicite sur CE devis precis (formulaire de remise dedie) peut faire evoluer son prix — en remplacement, jamais en cumul avec la valeur deja figee. S'applique a tout nouveau champ « gele » qu'on ajouterait a `quote_equipment_line`/`quote` : jamais de fallback qui recalculerait silencieusement depuis une source vivante.
+
 ### Ce que Claude ne doit JAMAIS faire
 
 - Remettre en question les decisions d'architecture verrouillees (voir docs/PRD.md)
