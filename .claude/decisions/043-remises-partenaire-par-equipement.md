@@ -139,13 +139,14 @@ compte, confirme explicitement par l'utilisatrice — distinct du prix reellemen
 au devis). `QuotePdfGenerator` perd sa dependance a `PartnerDiscountResolver`, devenue
 inutile.
 
-**Rattrapage des devis existants** : `drivematic_configurator_update_11010()`
-(remise a NULL des lignes jamais retouchees, pour permettre la resolution live) est
-immediatement suivie de `drivematic_configurator_update_11011()`, qui transforme ce NULL en
-snapshot definitif (taux partenaire resolu a cet instant, ou 0 si absent — plus jamais
-NULL). Les deux mises a jour restent dans l'historique (jamais reecrites a posteriori,
-convention du projet) : 11010 documente honnêtement l'intention initiale, immediatement
-corrigee par 11011.
+**Rattrapage des devis existants** : `drivematic_configurator_update_11010()` fige
+`dm_discount_rate` sur toute ligne jamais reellement retouchee par un administrateur
+(absente de `quote_discount_change`, ADR-040) au taux partenaire resolu A CET INSTANT (0
+si absent). Une premiere version en 2 etapes (reset a NULL puis snapshot, pour permettre
+une resolution live entre-temps) a existe brievement pendant la session mais n'a jamais
+quitte la machine locale (rien de pousse ni deploye) : consolidee en une seule mise a jour
+des que le comportement definitif (fige, jamais live) a ete confirme — pas de trace a
+garder d'une etape intermediaire qui n'a jamais ete un etat public du depot.
 
 **Verifie en conditions reelles** : modifier `field_discount_retrovision_ext` du compte
 partenaire de 10% a 99% ne change ni `dm_discount_rate` (reste a 10.00) ni le prix effectif
