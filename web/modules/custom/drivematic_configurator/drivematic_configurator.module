@@ -7,6 +7,7 @@
 
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\drivematic_configurator\Entity\Quote;
+use Drupal\user\UserInterface;
 
 /**
  * Implements hook_theme().
@@ -250,4 +251,49 @@ function drivematic_configurator_tokens(string $type, array $tokens, array $data
   }
 
   return $replacements;
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update() for user.
+ *
+ * Journalise (ADR-044) tout changement reel de l'un des 4 champs
+ * `field_discount_<type>` (ADR-043) sur un compte : declenche par
+ * n'importe quel enregistrement d'un compte `user` existant — formulaire
+ * admin (`/user/{uid}/edit`), `drush`, script — jamais uniquement un submit
+ * handler de formulaire, pour capter tous les canaux d'ecriture possibles.
+ *
+ * NULL et 0 restent distincts (« pas de remise negociee » n'est pas « 0% de
+ * remise ») : compare les valeurs brutes, jamais castees a 0 par defaut.
+ * Une sauvegarde qui ne touche aucune des 4 remises ne cree aucune entree.
+ */
+function drivematic_configurator_user_update(UserInterface $account): void {
+  if (!isset($account->original)) {
+    return;
+  }
+
+  $storage = \Drupal::entityTypeManager()->getStorage('partner_discount_change');
+
+  foreach (['retrovision_ext', 'retrovision_int', 'telecommande_vor', 'pedalier'] as $type) {
+    $field_name = 'field_discount_' . $type;
+    if (!$account->hasField($field_name)) {
+      continue;
+    }
+
+    $old_value = $account->original->get($field_name)->value;
+    $new_value = $account->get($field_name)->value;
+    $old_rate = $old_value !== NULL && $old_value !== '' ? (float) $old_value : NULL;
+    $new_rate = $new_value !== NULL && $new_value !== '' ? (float) $new_value : NULL;
+
+    if ($old_rate === $new_rate) {
+      continue;
+    }
+
+    $storage->create([
+      'partner_id' => $account->id(),
+      'equipment_type' => $type,
+      'old_rate' => $old_rate,
+      'new_rate' => $new_rate,
+      'uid' => \Drupal::currentUser()->id() ?: NULL,
+    ])->save();
+  }
 }

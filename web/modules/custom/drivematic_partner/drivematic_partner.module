@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\user\UserInterface;
 
 /**
@@ -35,8 +36,9 @@ use Drupal\user\UserInterface;
  * permission `administer users` (seul `administrator`, bypass `is_admin`,
  * aujourd'hui) edite le compte de quelqu'un d'autre — ce cas ajoute en plus
  * un recapitulatif en lecture seule des adresses de livraison du partenaire
- * (_drivematic_partner_add_delivery_addresses_summary()), consolidation
- * demandee cote back-office.
+ * (_drivematic_partner_add_delivery_addresses_summary()) et l'historique des
+ * changements de remise (_drivematic_partner_add_discount_history_summary(),
+ * ADR-044) : consolidations demandees cote back-office.
  */
 function drivematic_partner_form_user_form_alter(array &$form, FormStateInterface $form_state): void {
   $account = $form_state->getFormObject()->getEntity();
@@ -45,6 +47,7 @@ function drivematic_partner_form_user_form_alter(array &$form, FormStateInterfac
 
   if (!$editing_own_account && $is_admin) {
     _drivematic_partner_add_delivery_addresses_summary($form, $account);
+    _drivematic_partner_add_discount_history_summary($form, $account);
   }
 
   if (!$editing_own_account || $is_admin) {
@@ -124,6 +127,88 @@ function _drivematic_partner_add_delivery_addresses_summary(array &$form, UserIn
       '#empty' => t('Aucune adresse de livraison enregistrée.'),
     ],
   ];
+}
+
+/**
+ * Ajoute un historique en lecture seule des changements de remise.
+ *
+ * Consolide sur `/user/{uid}/edit` chaque changement reel de l'un des 4
+ * champs `field_discount_<type>` (ADR-043), quel que soit le canal qui l'a
+ * ecrit (ce formulaire, `drush`, script) — voir
+ * `drivematic_configurator_user_update()` (module drivematic_configurator,
+ * qui possede deja la logique metier des remises) pour la detection et
+ * l'ecriture de l'historique.
+ *
+ * But (ADR-044) : permettre a Drive Matic de verifier QUAND un taux a
+ * reellement change, pour justifier un devis fige avant ce changement
+ * (ADR-043 addendum 2 : un devis ne suit plus jamais le compte partenaire
+ * apres sa creation).
+ *
+ * Meme garde d'acces que `_drivematic_partner_add_delivery_addresses_summary()`
+ * (voir drivematic_partner_form_user_form_alter()) : jamais visible en
+ * auto-edition, cette information restant une donnee commerciale interne.
+ */
+function _drivematic_partner_add_discount_history_summary(array &$form, UserInterface $account): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('partner_discount_change');
+  $ids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('partner_id', $account->id())
+    ->sort('created', 'ASC')
+    ->execute();
+
+  $rows = [];
+  /** @var \Drupal\drivematic_configurator\Entity\PartnerDiscountChange $change */
+  foreach ($storage->loadMultiple($ids) as $change) {
+    $author = $change->get('uid')->entity;
+    $rows[] = [
+      \Drupal::service('date.formatter')->format((int) $change->get('created')->value, 'short'),
+      _drivematic_partner_discount_equipment_label((string) $change->get('equipment_type')->value),
+      _drivematic_partner_format_discount_rate($change->get('old_rate')->value) . ' → ' . _drivematic_partner_format_discount_rate($change->get('new_rate')->value),
+      $author ? $author->getDisplayName() : t('Compte supprimé'),
+    ];
+  }
+
+  $form['discount_history'] = [
+    '#type' => 'details',
+    '#title' => t('Historique des remises'),
+    '#open' => TRUE,
+    '#weight' => 6,
+    'table' => [
+      '#type' => 'table',
+      '#header' => [t('Date'), t('Équipement'), t('Modification'), t('Modifié par')],
+      '#rows' => $rows,
+      '#empty' => t('Aucune modification enregistrée.'),
+    ],
+  ];
+}
+
+/**
+ * Libellé d'un type d'équipement catalogue (jamais un `t()` sur variable).
+ *
+ * Mêmes clés que PartnerDiscountResolver/QuoteDiscountForm (ADR-028 :
+ * mapping dupliqué faute de source canonique unique dans le projet).
+ */
+function _drivematic_partner_discount_equipment_label(string $type): TranslatableMarkup {
+  return match ($type) {
+    'retrovision_ext' => t('Rétrovision extérieure'),
+    'retrovision_int' => t('Rétrovision intérieure'),
+    'telecommande_vor' => t('Télécommande VOR'),
+    'pedalier' => t('Double pédalier auto-école'),
+    default => t('Équipement inconnu'),
+  };
+}
+
+/**
+ * Formate un taux de remise (%), ou « — (vide) » si absent.
+ *
+ * Ne jamais confondre l'absence de remise négociée (NULL) avec une remise
+ * explicite de 0% (ADR-044).
+ */
+function _drivematic_partner_format_discount_rate(mixed $rate): string {
+  if ($rate === NULL || $rate === '') {
+    return (string) t('— (vide)');
+  }
+  return number_format((float) $rate, 2, ',', ' ') . ' %';
 }
 
 /**

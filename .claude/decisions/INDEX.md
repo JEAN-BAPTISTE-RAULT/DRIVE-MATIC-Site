@@ -48,6 +48,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-041](041-pdf-devis.md) | PDF du devis (dompdf, champ Reference gele, generation au clic Commander + regeneration sur remise DM) | Accepte | 2026-09-02 |
 | [ADR-042](042-smtp-preprod.md) | Transport SMTP preprod (mails.passerelle.com, secret hors config versionnee) | Accepte | 2026-09-02 |
 | [ADR-043](043-remises-partenaire-par-equipement.md) | Remises partenaire par equipement (4 champs), remise DM en remplacement (plus de cumul), formulaire regroupe par type, snapshot fige a la creation (pas de suivi live) | Accepte | 2026-09-03 |
+| [ADR-044](044-historique-remises-partenaire.md) | Historique des changements de remise partenaire (entite dediee, hook_user_update generique, affiche sur /user/{uid}/edit) | Accepte | 2026-09-03 |
 
 ## Quand creer un ADR
 

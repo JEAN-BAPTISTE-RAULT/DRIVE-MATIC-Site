@@ -396,3 +396,27 @@ function drivematic_configurator_update_11010(): string {
     ? sprintf('%d ligne(s) figee(s) sur %d devis "à commander" ; totaux recalcules.', $frozen_lines, $updated_quotes)
     : 'Aucune ligne a figer : mise a jour ignoree.';
 }
+
+/**
+ * Installe la nouvelle entite `partner_discount_change` (historique compte).
+ *
+ * Une entree par changement reel de l'un des 4 champs
+ * `field_discount_<type>` sur un compte partenaire (ADR-044), ecrite par
+ * `drivematic_configurator_user_update()`. Voir
+ * Entity/PartnerDiscountChange.php.
+ *
+ * Idempotent : ne fait rien si l'entite est deja installee.
+ */
+function drivematic_configurator_update_11011(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getEntityType('partner_discount_change')) {
+    return 'Entite "partner_discount_change" deja installee : mise a jour ignoree.';
+  }
+
+  \Drupal::entityTypeManager()->clearCachedDefinitions();
+  $entity_type = \Drupal::entityTypeManager()->getDefinition('partner_discount_change');
+  $update_manager->installEntityType($entity_type);
+
+  return 'Entite "partner_discount_change" installee.';
+}
