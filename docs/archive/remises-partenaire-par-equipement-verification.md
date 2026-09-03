@@ -1,5 +1,17 @@
 # Verification — Remises partenaire par equipement (ADR-043)
 
+> **Addendum** : ce document couvre uniquement le 1er des 3 rounds livres le
+> 2026-09-03 dans la meme session — a l'epoque de sa redaction, la resolution
+> partenaire etait encore EN DIRECT (cf. section « Self-review » ci-dessous,
+> decision qualifiee ici de « retenue »). L'utilisatrice a ensuite precise
+> qu'un devis doit au contraire figer ses taux a la creation et ne plus
+> jamais suivre le compte partenaire (ADR-043 addendum 2) : ce document
+> reste une trace fidele de l'etat au moment de sa redaction (regle du
+> depot, `docs/archive/`), pas de l'etat courant. Voir
+> [ADR-043](../../.claude/decisions/043-remises-partenaire-par-equipement.md)
+> (les 2 addenda) et [ADR-044](../../.claude/decisions/044-historique-remises-partenaire.md)
+> pour le raisonnement complet et l'etat final.
+
 ## Commandes executees
 
 | Commande | Resultat | Notes |
