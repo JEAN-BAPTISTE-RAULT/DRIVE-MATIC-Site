@@ -146,13 +146,16 @@ final class QuoteDetailController extends ControllerBase {
     ];
     $build['configurations'] = $this->buildConfigurations($quote);
 
+    $build['discount'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Remises par équipement'),
+      '#open' => TRUE,
+    ];
     if ($can_edit && $quote->get('status')->value === Quote::STATUS_A_COMMANDER) {
-      $build['discount'] = [
-        '#type' => 'details',
-        '#title' => $this->t('Remises par équipement'),
-        '#open' => TRUE,
-        'form' => $this->formBuilder()->getForm(QuoteDiscountForm::class, $quote),
-      ];
+      $build['discount']['form'] = $this->formBuilder()->getForm(QuoteDiscountForm::class, $quote);
+    }
+    else {
+      $build['discount']['table'] = $this->buildAppliedDiscountsTable($quote);
     }
 
     return $build;
@@ -520,6 +523,66 @@ final class QuoteDetailController extends ControllerBase {
         $this->t('HT'),
         $this->t('HT remisé'),
       ],
+      '#rows' => $rows,
+    ];
+  }
+
+  /**
+   * Tableau en lecture seule des remises par équipement réellement appliquées.
+   *
+   * Affiche `dm_discount_rate` (gelé sur les lignes du devis, ADR-043) pour
+   * les 4 types d'équipement — remplace le formulaire éditable
+   * (QuoteDiscountForm) dès que le devis n'est plus au statut
+   * `Quote::STATUS_A_COMMANDER`, ou que le visiteur n'a pas la permission
+   * d'édition : le prix reste alors définitivement figé, mais la remise
+   * réellement appliquée doit rester consultable. Aucune sensibilité
+   * supplémentaire par rapport à ce qui est déjà visible sans restriction
+   * dans le tableau des lignes (« Prix unitaire remisé »/« HT remisé »,
+   * déjà calculés à partir de ce même taux).
+   */
+  private function buildAppliedDiscountsTable(Quote $quote): array {
+    $configuration_storage = $this->entityTypeManager()->getStorage('quote_configuration');
+    $line_storage = $this->entityTypeManager()->getStorage('quote_equipment_line');
+
+    $configuration_ids = $configuration_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('quote_id', $quote->id())
+      ->execute();
+
+    $rates_by_type = [];
+    if ($configuration_ids) {
+      $line_ids = $line_storage->getQuery()
+        ->accessCheck(FALSE)
+        ->condition('configuration_id', $configuration_ids, 'IN')
+        ->condition('unavailable', FALSE)
+        ->execute();
+
+      /** @var \Drupal\drivematic_configurator\Entity\QuoteEquipmentLine $line */
+      foreach ($line_storage->loadMultiple($line_ids) as $line) {
+        $type = (string) $line->get('equipment_type')->value;
+        $rate = $line->get('dm_discount_rate')->value;
+        if ($type !== '' && $rate !== NULL && !isset($rates_by_type[$type])) {
+          $rates_by_type[$type] = (float) $rate;
+        }
+      }
+    }
+
+    // Memes cles/libelles que le tableau « Résumé » et QuoteDiscountForm
+    // (ADR-028 : mapping duplique faute de source canonique unique).
+    $discount_rows = [
+      ['retrovision_ext', $this->t('Rétrovision extérieure')],
+      ['retrovision_int', $this->t('Rétrovision intérieure')],
+      ['telecommande_vor', $this->t('Télécommande VOR')],
+      ['pedalier', $this->t('Double pédalier auto-école')],
+    ];
+
+    $rows = [];
+    foreach ($discount_rows as [$type, $label]) {
+      $rows[] = [$label, $this->formatRate($rates_by_type[$type] ?? NULL)];
+    }
+
+    return [
+      '#type' => 'table',
       '#rows' => $rows,
     ];
   }
