@@ -486,13 +486,19 @@ final class QuoteDetailController extends ControllerBase {
       if ($line->get('unavailable')->value) {
         $rows[] = [
           (string) $line->get('label')->value,
-          ['data' => $this->t('Indisponible'), 'colspan' => 6],
+          ['data' => $this->t('Indisponible'), 'colspan' => 7],
         ];
         continue;
       }
 
+      // Absente sur les lignes creees avant son ajout (ADR-041) : jamais
+      // reconstituee retroactivement (contrairement a `equipment_type`, un
+      // libelle ne suffit pas a retrouver la reference catalogue exacte).
+      $reference = (string) $line->get('reference')->value;
+
       $rows[] = [
         (string) $line->get('label')->value,
+        $reference !== '' ? $reference : '—',
         $this->formatPrice($line->get('unit_price')->value),
         $this->formatPrice($line->getEffectiveDiscountedUnitPrice()),
         (string) $line->get('quantity_per_vehicle')->value,
@@ -506,6 +512,7 @@ final class QuoteDetailController extends ControllerBase {
       '#type' => 'table',
       '#header' => [
         $this->t('Équipement'),
+        $this->t('Référence'),
         $this->t('Prix unitaire'),
         $this->t('Prix unitaire remisé'),
         $this->t('Qté/véhicule'),
