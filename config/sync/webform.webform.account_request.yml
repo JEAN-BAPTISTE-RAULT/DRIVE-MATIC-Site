@@ -65,6 +65,9 @@ elements: |-
       '#required': true
       '#pattern': 'FR[0-9A-Za-z]{2}\d{9}'
       '#maxlength': 13
+      '#wrapper_attributes':
+        class:
+          - dm-form-span-2
     raison_sociale:
       '#type': textfield
       '#title': 'Raison sociale'
