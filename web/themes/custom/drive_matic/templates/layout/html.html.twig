@@ -19,6 +19,7 @@
  * - db_offline: A flag indicating if the database is offline.
  * - placeholder_token: The token for generating head, css, js and js-bottom
  *   placeholders.
+ * - favicon_path: Base URL of the favicon.io icon set (drive_matic.theme).
  *
  * @see \Drupal\Core\Theme\ThemePreprocess::preprocessHtml()
  */
@@ -42,6 +43,11 @@
   <head>
     <head-placeholder token="{{ placeholder_token }}">
     <title>{{ head_title|safe_join(' | ') }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ favicon_path }}/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ favicon_path }}/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ favicon_path }}/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ favicon_path }}/apple-touch-icon.png">
+    <link rel="manifest" href="{{ favicon_path }}/site.webmanifest">
     <css-placeholder token="{{ placeholder_token }}">
     <js-placeholder token="{{ placeholder_token }}">
   </head>

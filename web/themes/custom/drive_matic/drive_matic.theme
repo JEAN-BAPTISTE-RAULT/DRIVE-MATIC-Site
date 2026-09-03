@@ -513,6 +513,10 @@ function _drive_matic_simple_form_node_url(string $title): string {
  * Matic Legrand »), pas seulement le titre de la page — l'ecraser
  * completement aurait aussi perdu le nom du site. On y remplace donc
  * seulement le libelle, pas toute la valeur.
+ *
+ * Expose aussi `favicon_path` (jeu d'icones favicon.io, `images/favicon/`) :
+ * `toggle.favicon` du theme est desactive (`system.theme.global`), ce jeu
+ * remplacant entierement le mecanisme a une seule icone du cœur.
  */
 function drive_matic_preprocess_html(array &$variables): void {
   if (\Drupal::routeMatch()->getRouteName() === 'user.login' && !empty($variables['head_title']['title'])) {
@@ -522,6 +526,9 @@ function drive_matic_preprocess_html(array &$variables): void {
       (string) $variables['head_title']['title']
     );
   }
+
+  $theme_path = \Drupal::service('extension.list.theme')->getPath('drive_matic');
+  $variables['favicon_path'] = base_path() . $theme_path . '/images/favicon';
 }
 
 /**

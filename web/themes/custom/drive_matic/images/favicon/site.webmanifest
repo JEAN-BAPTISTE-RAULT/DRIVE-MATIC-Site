@@ -1,0 +1,19 @@
+{
+  "name": "Drive Matic Legrand",
+  "short_name": "Drive Matic",
+  "icons": [
+    {
+      "src": "/themes/custom/drive_matic/images/favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/themes/custom/drive_matic/images/favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#aa0000",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}
