@@ -11,7 +11,7 @@ configuration:
   email_body:
     content:
       value: |-
-        <div style="text-align:left;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:14px;line-height:22px;"><p style="margin:0 0 16px;"><img src="https://www.drivematiclegrand.com/themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png" alt="Drive Matic Legrand" width="211" height="24" style="display:block;border:0;"></p><p style="margin:0 0 16px;">Bonjour,</p><p style="margin:0 0 16px;">Nous venons de recevoir cette commande sur le site Internet.<br>
+        <div style="text-align:left;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:14px;line-height:22px;"><p style="margin:0 0 16px;"><img src="[site:url]themes/custom/drive_matic/images/logo-drive-matic-legrand-email.png" alt="Drive Matic Legrand" width="211" height="24" style="display:block;border:0;"></p><p style="margin:0 0 16px;">Bonjour,</p><p style="margin:0 0 16px;">Nous venons de recevoir cette commande sur le site Internet.<br>
         Bon de commande n° [quote:reference] :</p><h3 style="color:#2f3a45;font-size:14px;margin:0 0 8px;text-transform:uppercase;">Demandeur</h3><p style="margin:0 0 16px;"><strong>SIRET :</strong> [quote:siret]<br>
         <strong>TVA :</strong> [quote:tva]<br>
         <strong>Raison sociale :</strong> [quote:raison-sociale]<br>
