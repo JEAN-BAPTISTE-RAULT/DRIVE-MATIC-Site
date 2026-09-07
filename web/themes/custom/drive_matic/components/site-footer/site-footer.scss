@@ -58,6 +58,14 @@
     line-height: 1.25rem; // 20px
   }
 
+  // Cliquable comme le numero du header (site-header.scss, &__phone) : meme
+  // traitement, couleur heritee (blanc ici, anthracite au header) plutot que
+  // redeclaree.
+  &__phone-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
   // Rangee de liens legaux (bas de page) — declaree avant `&__columns`
   // ci-dessous : selecteurs `.menu`/`a` moins specifiques, Stylelint
   // (no-descending-specificity) exige cet ordre.
