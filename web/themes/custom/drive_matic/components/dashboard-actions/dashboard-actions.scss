@@ -7,6 +7,12 @@
   margin-inline: auto;
   padding-inline: var(--dm-gutter);
 
+  // Rythme de gabarit (ADR-013) : écart titre -> ce bloc (`--dm-space-page`,
+  // porté par ce bloc et non par `.page-title`, qui n'en pose aucun) ; écart
+  // vers le bloc suivant (`dashboard-quote-cta`) via `--dm-space-block`,
+  // séparés du double comme deux blocs voisins.
+  padding-block: var(--dm-space-page) var(--dm-space-block);
+
   &__items {
     display: flex;
     flex-direction: column;

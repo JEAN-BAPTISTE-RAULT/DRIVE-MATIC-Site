@@ -9,6 +9,12 @@
   margin-inline: auto;
   padding-inline: var(--dm-gutter);
 
+  // Rythme de gabarit (ADR-013) : écart depuis `dashboard-actions` via
+  // `--dm-space-block` (voir son propre `padding-block-end`, séparés du
+  // double comme deux blocs voisins) ; écart avant le footer via
+  // `--dm-space-page`, même rôle que `.pager`/`news-list`.
+  padding-block: var(--dm-space-block) var(--dm-space-page);
+
   &__image {
     display: block;
     width: 100%;

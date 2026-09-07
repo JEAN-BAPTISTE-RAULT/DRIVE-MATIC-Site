@@ -2,6 +2,7 @@
   max-width: calc(var(--dm-content-column) + 2 * var(--dm-gutter));
   margin-inline: auto;
   padding-inline: var(--dm-gutter);
+  padding-block: var(--dm-space-block) var(--dm-space-page);
 }
 .dashboard-quote-cta__image {
   display: block;

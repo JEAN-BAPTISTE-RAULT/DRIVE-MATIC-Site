@@ -2,6 +2,7 @@
   max-width: 1440px;
   margin-inline: auto;
   padding-inline: var(--dm-gutter);
+  padding-block: var(--dm-space-page) var(--dm-space-block);
 }
 .dashboard-actions__items {
   display: flex;
