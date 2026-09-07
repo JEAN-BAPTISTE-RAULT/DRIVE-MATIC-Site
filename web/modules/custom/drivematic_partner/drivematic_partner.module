@@ -50,7 +50,14 @@ function drivematic_partner_form_user_form_alter(array &$form, FormStateInterfac
   // n'a de sens pour un compte inexistant (recapitulatifs d'un historique
   // qui ne peut pas encore exister) — et `id() === NULL` faisait planter la
   // requete du recapitulatif des adresses de livraison ('uid IN ()' vide).
+  //
+  // Le champ « Alias d'URL » (base field `path`, expose par le module core
+  // `path` sur l'affichage de formulaire par defaut) n'a pas de sens a la
+  // creation d'un compte partenaire : aucun alias d'URL n'est utilise pour
+  // les comptes utilisateur sur ce site, et l'admin qui cree le compte n'a
+  // aucune raison d'y toucher.
   if ($account->isNew()) {
+    unset($form['path']);
     return;
   }
 
