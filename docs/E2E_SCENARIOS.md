@@ -492,11 +492,18 @@ pour les deux e-mails, jeton `[quote:reference]` et bloc identite
 « Demandeur » (raison sociale/nom/adresse/e-mail/telephone) resolus
 correctement, y compris avec un champ optionnel vide (complement
 d'adresse). « Enregistrer le devis » ne declenche aucun envoi (verifie par
-lecture du code — aucun appel sur ce chemin). **A rejouer** :
-parcours navigateur reel complet jusqu'a reception effective des deux
-e-mails (le test de cette session a appele `MailManagerInterface::mail()`
-directement avec les memes parametres que `DeliveryForm`, pas via un clic
-navigateur).
+lecture du code — aucun appel sur ce chemin).
+
+**Rejoue en conditions reelles sur preprod — le 2026-09-07** (devis
+`W20260907-002`) : l'e-mail interne (`audrey@passerelle.com`) est bien
+recu, mais **pas** celui adresse au partenaire (compte de test sur un
+domaine externe). Aucune erreur cote Drupal/`symfony_mailer` au moment de
+l'envoi (les deux e-mails sont remis avec succes au relais SMTP) : cause
+identifiee comme un **SPF mal aligne sur le domaine `drivematiclegrand.com`**
+(autorise seulement Microsoft 365, alors que l'envoi reel passe par
+`mails.passerelle.com`) — voir README.md, section E-mails, pour le detail
+technique. Correction hors perimetre code (zone DNS a corriger avant mise
+en production) ; **a revalider une fois le SPF corrige**.
 
 **PDF du devis implemente — le 2026-09-02** ([ADR-041](../.claude/decisions/041-pdf-devis.md)) :
 conforme a la maquette Figma 714:9296, genere via `dompdf/dompdf` (nouveau
@@ -695,6 +702,8 @@ pas seulement a l'oeil.
 
 **⚠️ Regression corrigee le 2026-09-07** : l'etape 1 (`/admin/people/create`) plantait systematiquement (`InvalidQueryException`, `hook_form_user_form_alter` execute aussi sur `RegisterForm` avec un compte pas encore enregistre — voir CLAUDE.md section PHP/Drupal). Verifie de nouveau fonctionnel (200, formulaire complet) en local et en preprod, avec une vraie session admin.
 
+**Correctif du 2026-09-07** : le champ « Alias d'URL » (base field core `path`, sans usage sur un compte utilisateur) ne doit plus apparaitre sur ce formulaire de creation — masque, verifie absent sur `/admin/people/create` et toujours present sur `/user/{uid}/edit` (non-regression).
+
 ---
 
 ## S23 — Consentement cookies & analytics
@@ -867,6 +876,11 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-07 | **robots.txt bloquant tout crawl pose sur la preprod** : `web/robots.txt` n'est pas suivi par git (scaffold Drupal jamais ajoute au depot) — pose directement par SSH (`User-agent: *` / `Disallow: /`), donc jamais ecrase par un futur deploiement. Verifie servi en 200. **Ne pas reproduire en production** (doit rester indexable) | Hors matrice (infrastructure) |
+| 2026-09-07 | **⚠️ E-mail de confirmation de commande jamais recu par un partenaire externe** (devis `W20260907-002`) : aucune erreur cote Drupal, cause identifiee comme un SPF de `drivematiclegrand.com` non aligne avec le relais SMTP reel (`mails.passerelle.com`) — voir S16 et README.md section E-mails. Correction hors perimetre code (zone DNS) | S16 |
+| 2026-09-07 | **Titre du panneau mobile « Partenaires » recentre** : ce panneau (ouvert directement depuis « Espace partenaire », sans bouton retour) tombait dans la regle par defaut `justify-content: flex-end` faute de bouton retour pour activer la mise en page a 3 zones des autres panneaux — corrige par un espaceur invisible reprenant la meme boite 24×24, sans nouvelle regle CSS. Verifie sans regression sur les autres panneaux (« Auto-ecole ») | Transverse |
+| 2026-09-07 | **Qualite du logo des e-mails corrigee** : le PNG source etait encode en 16-bit/couleur (meme defaut que celui deja rencontre sur le logo du PDF, ADR-041), produisant un flou et un lisere de couleur visible meme hors Dompdf. Regenere en 8-bit depuis le vecteur du logo PDF (export 3x, memes proportions 211×24), poids divise par 12 | Transverse |
+| 2026-09-07 | **Champ « Alias d'URL » masque a la creation d'un compte** (`/admin/people/create`) : base field core `path`, sans usage sur un compte utilisateur de ce site — masque via la meme garde `isNew()` que le correctif du plantage de cette route (ci-dessous). Verifie absent a la creation, toujours present sur `/user/{uid}/edit` (non-regression). **A rejouer** : S22 | S22 |
 | 2026-09-07 | **F13 — tableau de bord partenaire livre** ([ADR-046](../.claude/decisions/046-tableau-de-bord-partenaire.md), maquettes Figma 491-13703/604-34427) : route `/user/tableau-de-bord`, 3 compteurs scopes au partenaire connecte (« À finaliser » seul, « Commande en cours » seul, « Commande »+« Archive » reunis), cache par utilisateur verifie avec un 2e compte temporaire. Les 3 compteurs pointent vers `/user/mes-devis?onglet=...` (page a construire, F15, hors perimetre). Lien de menu « Tableau de bord » rendu fonctionnel. **A rejouer** : S13 | S13 |
 | 2026-09-07 | **F15 — statut renomme + regle d'archivage revue, archivage manuel BO supprime** ([ADR-045](../.claude/decisions/045-archivage-devis-depuis-commande.md)) : `a_commander` renomme « Commande en cours ». `QuoteArchiveForm` et sa route supprimes (Drive Matic n'archive plus jamais manuellement depuis le back-office). L'archivage automatique part desormais de `STATUS_COMMANDE` (`date_confirmation`, 30 jours fixes, sans mecanisme de report) au lieu de `STATUS_A_COMMANDER` — consequence connue et acceptee : un devis qui reste indefiniment « Commande en cours » sans confirmation telephonique n'a plus de nettoyage automatique. **A rejouer** : S18, S26 | S18, S26 |
 | 2026-09-07 | **Bloc titre de page corrige hors contexte de node** ([ADR-047](../.claude/decisions/047-titre-page-hors-node.md)) : nouveau module `drivematic_page_title`, condition `drivematic_node_bundle` remplace `entity_bundle:node` (qui refusait toujours l'acces sur une route sans node, quel que soit `negate` — bug core documente, affectait deja `/user/mes-informations-personnelles`). Condition `request_path` niee ajoutee pour preserver `/user/login`, `/user/logout/confirm`, `/user/password` (ADR-024/027, aucun titre attendu). Verifie : home et `/faq` toujours exactement 1 `<h1>`, les 3 routes protegees toujours a 0. **A rejouer** : S13, S19, S25 | S13, S19, S25 |
