@@ -117,3 +117,43 @@ site-wide).
 - Fichiers créés : `drivematic_page_title.info.yml`, `src/Plugin/Condition/
   NodeBundleCondition.php`. Fichier modifié : `config/sync/block.block.
   drive_matic_page_title.yml`, `config/sync/core.extension.yml`.
+
+## Addendum (même jour) : régression double titre sur `/configurer/*`
+
+Signalé par l'utilisatrice après déploiement : `/configurer` (et par
+extension tout le configurateur) affichait désormais **deux** `<h1>`. Cause
+directement liée à ce correctif, pas anticipée à l'écriture initiale : 6
+`FormBase` du module `drivematic_configurator` (`ConfigurationForm`,
+`QuoteForm`, `DeliveryForm`, `QuoteConfigurationDeleteForm`,
+`DeliveryAddressForm`, `DeliveryAddressDeleteForm`) portent chacun un
+`<h1 class="page-title">` posé **manuellement** dans leur `buildForm()`
+(`$form['#prefix']`) — un contournement de l'ANCIEN bug (bloc de titre
+absent sur toute route hors node), écrit avant ce correctif. Le bloc
+partagé fonctionnant désormais aussi sur ces routes, les deux titres
+coexistent.
+
+**Pourquoi ne pas simplement supprimer ces `<h1>` manuels** : 4 des 6
+(`QuoteForm`, `DeliveryForm`, `QuoteConfigurationDeleteForm`,
+`DeliveryAddressDeleteForm`) affichent un texte **délibérément différent**
+du `_title` de leur route — ex. les 3 écrans du configurateur partagent
+tous le même titre « Configurez votre véhicule et obtenez votre tarif »
+par décision utilisatrice, alors que leurs routes ont chacune un `_title`
+technique distinct (« Votre devis », « Livraison »...), utilisé pour
+l'onglet du navigateur et le fil d'Ariane. Supprimer le `<h1>` manuel et
+laisser le bloc partagé prendre le relais aurait donc changé le texte
+affiché — une régression silencieuse, pas une simplification neutre.
+
+**Solution retenue** : ajouter `/configurer` et `/configurer/*` à la même
+condition `request_path` niée que `/user/login`/`/user/password`/
+`/user/logout/confirm` — tous les `_form` de ce module vivent sous ce
+préfixe, aucune route du module n'est hors de ce périmètre (vérifié :
+`entity.quote.canonical`, `quote_pdf` et `quote_mark_ordered` sont sous
+`/admin/content/devis/*`, non concernées). Un seul couple de lignes couvre
+les 7 routes concernées, plutôt que de les lister une par une.
+
+**Réflexe pour toute future route custom** : avant d'ajouter une nouvelle
+route de contrôleur/formulaire, vérifier si un `<h1 class="page-title">`
+(ou équivalent) est déjà posé manuellement dans son `buildForm()`/render
+array — signe d'un contournement de l'ancien bug, à traiter par exclusion
+`request_path` plutôt que par suppression si le texte affiché diverge du
+`_title` de la route.

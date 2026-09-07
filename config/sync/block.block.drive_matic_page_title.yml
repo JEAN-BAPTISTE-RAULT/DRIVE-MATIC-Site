@@ -37,3 +37,5 @@ visibility:
       /user/login
       /user/logout/confirm
       /user/password
+      /configurer
+      /configurer/*
