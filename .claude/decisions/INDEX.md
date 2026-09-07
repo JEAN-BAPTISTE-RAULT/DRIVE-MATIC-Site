@@ -49,6 +49,10 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-042](042-smtp-preprod.md) | Transport SMTP preprod (mails.passerelle.com, secret hors config versionnee) | Accepte | 2026-09-02 |
 | [ADR-043](043-remises-partenaire-par-equipement.md) | Remises partenaire par equipement (4 champs), remise DM en remplacement (plus de cumul), formulaire regroupe par type, snapshot fige a la creation (pas de suivi live) | Accepte | 2026-09-03 |
 | [ADR-044](044-historique-remises-partenaire.md) | Historique des changements de remise partenaire (entite dediee, hook_user_update generique, affiche sur /user/{uid}/edit) | Accepte | 2026-09-03 |
+| [ADR-045](045-archivage-devis-depuis-commande.md) | Archivage automatique du devis depuis le statut Commande (cron), suppression de l'archivage manuel back-office | Accepte | 2026-09-07 |
+| [ADR-046](046-tableau-de-bord-partenaire.md) | Tableau de bord partenaire (F13, etape 1/2) : 3 compteurs par statut, liens vers la future page de listing poses en dur | Accepte | 2026-09-07 |
+| [ADR-047](047-titre-page-hors-node.md) | Bloc titre de page tolerant aux routes hors node (plugin Condition custom resolu par route, pas par contexte de plugin) | Accepte | 2026-09-07 |
+| [ADR-048](048-logo-email-url-dynamique.md) | URL du logo e-mail rendue dynamique (`[site:url]`) sur les 13 occurrences mailer_policy/webform | Accepte | 2026-09-07 |
 
 ## Quand creer un ADR
 
