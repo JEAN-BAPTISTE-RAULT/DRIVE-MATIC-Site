@@ -47,7 +47,7 @@ création de compte", devenir partenaire, demander un devis, mot de passe oubli�
 - `images/icons/eye-off.svg` (maquette) et `eye.svg` (état ouvert, à localiser/exporter séparément).
 
 **Documentation**
-- `docs/active/maquette-integration/progress.md:762-763` — retirer `partner` de la liste "alias en dur à faire".
+- `docs/archive/maquette-integration-progress.md:762-763` — retirer `partner` de la liste "alias en dur à faire".
 - `docs/E2E_SCENARIOS.md` — nouveau scénario.
 - `.claude/decisions/024-mutualisation-formulaire-simple.md` (nouvel ADR) + addendum à `.claude/decisions/015-habillage-des-formulaires.md`.
 - `docs/content-model.md` — mise à jour du bundle #12, via `/sync` en fin de session.
@@ -70,7 +70,7 @@ création de compte", devenir partenaire, demander un devis, mot de passe oubli�
 
 - Renommage de machine name impossible tel que formulé : approche retenue = créer `simple_form`,
   migrer le node existant via `hook_update_N`, supprimer `partner` une fois vide.
-- `docs/active/maquette-integration/progress.md` classait `partner` parmi les types à alias en dur : classement caduc dès que le bundle devient multi-instance (Pathauto doit rester actif) — à corriger dans le même mouvement.
+- `docs/archive/maquette-integration-progress.md` classait `partner` parmi les types à alias en dur : classement caduc dès que le bundle devient multi-instance (Pathauto doit rester actif) — à corriger dans le même mouvement.
 - Effet de bord `.block-local-tasks-block` : les blocs de tâches locales n'ont aucune condition de visibilité et s'appliqueraient sur `/user/login` (onglets core "Log in"/"Reset your password") — à vérifier au navigateur avant l'intégration visuelle, corrigé par condition de bloc.
 - Titre de page en double : `drive_matic_page_title` n'est masqué que pour 3 bundles de node ; sur une route système sans contexte node il reste visible par défaut → même correctif de condition de bloc.
 - Formulaire core hors du périmètre de `_forms.scss` (ADR-015, scopé à `.webform-submission-form`/`.field--type-webform`) : nouvelle fondation dédiée plutôt qu'élargissement silencieux du sélecteur existant, documentée en addendum, réutilisant les tokens `--dm-form-*`.

@@ -12,7 +12,7 @@ Accepte
 
 Le fil d'Ariane (bloc `system_breadcrumb_block`, markup Easy Breadcrumb) etait
 rendu sans aucun style depuis le debut du projet — c'etait un ecart assume,
-documente dans `docs/active/maquette-integration/progress.md` (aucune maquette
+documente dans `docs/archive/maquette-integration-progress.md` (aucune maquette
 Figma ne le montre, contrairement au header, au footer ou au titre de page).
 Demande : le styliser en respectant la gouttiere gauche des pages, en ajoutant
 un espace entre le menu du header et le fil, et en reprenant la typographie et

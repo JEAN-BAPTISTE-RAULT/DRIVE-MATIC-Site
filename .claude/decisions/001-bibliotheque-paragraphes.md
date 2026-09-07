@@ -9,7 +9,7 @@ Accepte
 ## Contexte
 Les specs (Passerelle v1.2) decrivent une serie de modeles de paragraphes et de blocs de templates (home, solutions, produit, docs, marques, actualites), mais de facon heterogene, redondante et avec des contraintes techniques non fiables (principe projet : les specs = besoins fonctionnels, pas une reference technique). Il fallait etablir la bibliotheque de paragraphes **reellement necessaire et optimale**, en recoupant avec les maquettes validees, avant de produire les SDC (decision #10) et de definir le pipeline images (decision #11).
 
-Ce travail est le prealable technique #3 du PRD (§7). Analyse : `docs/active/paragraphs/recoupement.md`.
+Ce travail est le prealable technique #3 du PRD (§7). Analyse : `docs/archive/paragraphs-recoupement.md`.
 
 ## Options considerees
 

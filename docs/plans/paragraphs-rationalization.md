@@ -8,7 +8,7 @@ Etablir la bibliotheque de paragraphes **reellement necessaire et optimale**, en
 ## 2. Fichiers impactes
 Aucun code de prod — que de la doc :
 - `docs/plans/paragraphs-rationalization.md` — ce plan
-- `docs/active/paragraphs/recoupement.md` — tableau de recoupement specs ↔ maquettes
+- `docs/archive/paragraphs-recoupement.md` — tableau de recoupement specs ↔ maquettes
 - `.claude/decisions/NNNN-bibliotheque-paragraphes.md` — ADR actant la liste finale + les mutualisations
 - Mise a jour de **F1** dans `docs/PRD.md` une fois l'etude actee
 
@@ -52,7 +52,7 @@ Aligne avec **F1**, decisions **#10 (SDC)** et **#11 (media)** ; prealable **#3*
 
 ## Statut
 - [x] Plan valide
-- [x] Etape 1 — Inventaire specs (docs/active/paragraphs/recoupement.md)
+- [x] Etape 1 — Inventaire specs (docs/archive/paragraphs-recoupement.md)
 - [x] Etape 2/3 — Recoupement (inventaire specs + proposition ; maquettes tranchees directement par l'utilisatrice)
 - [x] Etape 4 — Arbitrage (bibliotheque validee par l'utilisatrice)
 - [x] Etape 5 — Bibliotheque finale (docs/active/paragraphs/library.md — 27 paragraphes + ratios de crop)

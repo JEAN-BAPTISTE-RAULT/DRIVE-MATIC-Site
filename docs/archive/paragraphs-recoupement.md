@@ -1,6 +1,6 @@
 # Rationalisation des Paragraphes — recoupement specs ↔ maquettes
 
-> ✅ **Arbitrage tranche** — la bibliotheque validee est dans `library.md` (27 paragraphes) et actee dans [ADR-001](../../../.claude/decisions/001-bibliotheque-paragraphes.md). Ce document reste la **trace de l'analyse** specs↔maquettes ; la proposition de mutualisation ci-dessous a ete remplacee par les choix de l'utilisatrice.
+> ✅ **Arbitrage tranche** — la bibliotheque validee est dans `library.md` (27 paragraphes) et actee dans [ADR-001](../../.claude/decisions/001-bibliotheque-paragraphes.md). Ce document reste la **trace de l'analyse** specs↔maquettes ; la proposition de mutualisation ci-dessous a ete remplacee par les choix de l'utilisatrice.
 >
 > Livrable de travail (etape 3 du plan). Statut d'origine : inventaire specs complet ; colonne maquettes partielle.
 

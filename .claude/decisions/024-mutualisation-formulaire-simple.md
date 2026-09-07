@@ -56,7 +56,7 @@ node existant vers le nouveau bundle avant de supprimer l'ancien.
    Idempotent : si `partner` n'existe plus, la mise a jour ne fait rien.
 3. **Le bundle devient multi-instance** : consequence directe, son motif
    Pathauto **doit rester actif** (`/[node:title]`, un alias different par
-   node). `docs/active/maquette-integration/progress.md` classait `partner`
+   node). `docs/archive/maquette-integration-progress.md` classait `partner`
    parmi les types "a exemplaire unique" candidats a un alias en dur — ce
    classement devient faux et a ete corrige dans le meme mouvement.
 4. Les 3 cartes d'action de la page login ("Créer un compte" / "Devenir

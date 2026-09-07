@@ -74,7 +74,7 @@ Aucune nouvelle interface JS publique → config linter inchangée.
 - [x] Étape 1 — storages + éléments (config clean)
 - [x] Étape 2 — blocs + hôte (27 types au total, config clean)
 - [x] Étape 3 — templates + SDC (lint + format verts)
-- [x] Étape 4 — vérif navigateur (node/29 + node/30 ; cf. `docs/active/paragraphs/verification-v5-produit.md`)
+- [x] Étape 4 — vérif navigateur (node/29 + node/30 ; cf. `docs/archive/paragraphs-verification-v5-produit.md`)
 - [x] Étape 5 — doc + statut
 
 **Vague terminée — bibliothèque ADR-001 complète (27 paragraphes).**

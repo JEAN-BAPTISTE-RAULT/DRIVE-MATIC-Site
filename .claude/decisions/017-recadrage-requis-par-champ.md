@@ -124,7 +124,7 @@ s'applique donc identiquement, que le media soit neuf ou deja present en base.
   sinon aucune erreur ne previent (le champ se comporte juste comme un champ
   « sans crop »). A verifier a chaque nouveau paragraphe portant une image.
 - Les medias 53 et 54 (photos reelles importees le 19/08, cf.
-  `docs/active/maquette-integration/progress.md`) restent non recadres : cette
+  `docs/archive/maquette-integration-progress.md`) restent non recadres : cette
   validation les bloquera desormais tant qu'un editeur n'aura pas pose leur crop 1:1
   en back-office — c'est le comportement voulu, pas une regression.
 

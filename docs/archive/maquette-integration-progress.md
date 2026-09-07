@@ -23,7 +23,7 @@ Où s'affiche le `<h1>` :
 Corrigé au passage : le bloc titre était en région `sidebar_first`, rendue **après** le contenu
 par `page.html.twig` → d'où un `<h1>` en bas de page. Déplacé en région `content`, poids -10.
 
-**LIVRÉ le 2026-08-18** — acté dans [ADR-014](../../../.claude/decisions/014-titre-unique-porte-par-le-title.md),
+**LIVRÉ le 2026-08-18** — acté dans [ADR-014](../../.claude/decisions/014-titre-unique-porte-par-le-title.md),
 CLAUDE.md, README, PRD (écarts #2 et #3 passés en résolus). 91 fichiers de config,
 `npm run lint` et `format:check` à 0, `config:status` en phase.
 Vérifié : **exactement un `<h1>`** sur les 10 types rendus, alias tous préservés,
@@ -124,7 +124,7 @@ sans visuel ni corps → aucune enveloppe vide. Non-régression vérifiée sur `
 et le node 33 (colonne toujours 900), `/actualites` et la home (toujours `dm_16_9`).
 
 **Écarts assumés, écrits.** Le **fil d'Ariane** est rendu alors que la maquette n'en montre
-aucun (élément de shell de page). **Tranché le 2026-08-21** ([ADR-023](../../../.claude/decisions/023-fil-ariane-style.md)) : stylisé sans maquette de référence (registre typographique de `pager`, alignement sur la boîte du header).
+aucun (élément de shell de page). **Tranché le 2026-08-21** ([ADR-023](../../.claude/decisions/023-fil-ariane-style.md)) : stylisé sans maquette de référence (registre typographique de `pager`, alignement sur la boîte du header).
 Les écarts internes sont à 24 au lieu de 16 et 35 (décision 3). `dm_free` est dimensionné
 pour la pleine fenêtre : servi dans une colonne de 960 ses dérivés sont surdimensionnés
 (dette `sizes`, ADR-004). `links` reste visible dans le view display `default` (poids 100)
@@ -191,8 +191,8 @@ poser un crop 1:1 manuel sur ces deux médias avant publication définitive.
   2026-08-20** : c'était un vrai bug de calcul (`calc(50% - 50vw)` posé sur un enfant du
   conteneur au lieu du conteneur lui-même, résolvant son `%` contre la mauvaise base — 20px
   de constante, indépendante de la largeur de fenêtre). Présent aussi sur `jumbo_home`,
-  `news_home`, `product_features`. Corrigé, cf. [ADR-008](../../../.claude/decisions/008-slideshow-swiper.md)
-  addendum du 20/08 et [CLAUDE.md](../../../CLAUDE.md) section SCSS/SDC.
+  `news_home`, `product_features`. Corrigé, cf. [ADR-008](../../.claude/decisions/008-slideshow-swiper.md)
+  addendum du 20/08 et [CLAUDE.md](../../CLAUDE.md) section SCSS/SDC.
 - Node 79 : les deux `<p>` du bloc UTAC (héritage d'une saisie en 2 paragraphes alors que
   la maquette est un texte continu) ont été fusionnés en un seul, pour ne pas introduire
   un écart vertical absent de la maquette.
@@ -222,7 +222,7 @@ avant d'utiliser son absence comme preuve d'absence de problème.**
 **2. Le recadrage n'était pas proposé du tout en ajoutant une image en contexte**
 (depuis le widget media library d'un paragraphe — le chemin qu'utilise réellement un
 éditeur). Cause détaillée dans l'addendum du 2026-08-19 à
-[ADR-004](../../../.claude/decisions/004-pipeline-images.md) : le mode de formulaire
+[ADR-004](../../.claude/decisions/004-pipeline-images.md) : le mode de formulaire
 `media_library` du bundle `image` portait le widget `image_image` (sans crop) et non
 `image_widget_crop`, contrairement au mode `default` (utilisé seulement par la page
 d'admin autonome, jamais par un éditeur en pratique). Corrigé par config
@@ -235,7 +235,7 @@ ce correctif.
 
 **Suite (même jour)** : ce correctif restait insuffisant selon l'utilisatrice — il
 exigeait les 3 ratios sur tout import, sans lien avec le champ de destination, et ne
-couvrait pas la réutilisation d'un media déjà en base. Voir [ADR-017](../../../.claude/decisions/017-recadrage-requis-par-champ.md) :
+couvrait pas la réutilisation d'un media déjà en base. Voir [ADR-017](../../.claude/decisions/017-recadrage-requis-par-champ.md) :
 une validation dédiée par champ (`drivematic_forms`) bloque désormais la sauvegarde du
 node tant que le media sélectionné — neuf ou repris de la médiathèque — n'a pas le
 recadrage exigé par CE champ précis. Vérifié : sauvegarder le node 77 avec le média 54
@@ -251,7 +251,7 @@ médiathèque), pas seulement un blocage à l'enregistrement. Ajout des modules
 (redondant). Un widget custom `DrivematicContextualMediaLibraryWidget` fournit le ratio
 exigé (déjà connu via `_drivematic_forms_image_crop_map()`) là où le module ne peut pas
 le déduire seul. Détail complet, limite assumée (fichier tout juste déversé, avant
-sélection) et vérification dans l'addendum du 19/08 à [ADR-017](../../../.claude/decisions/017-recadrage-requis-par-champ.md).
+sélection) et vérification dans l'addendum du 19/08 à [ADR-017](../../.claude/decisions/017-recadrage-requis-par-champ.md).
 Vérifié en navigateur : sélectionner le média 53 (non recadré) sur le bloc « 65 ans »
 du node 54 affiche un lien « edit / crop » qui ouvre une modale limitée au seul onglet
 « Carré (1:1) ».
@@ -262,7 +262,7 @@ masqués restaient exigés par le widget lui-même (`crop_types_required`, posé
 toujours » lors du 1er correctif de ce fil). Vidé sur les deux modes de formulaire du
 média ; l'obligation retombe entièrement sur la validation par champ (déjà en place).
 Vérifié : l'enregistrement du média 53 depuis le lien scopé réussit sans erreur.
-Détail dans l'addendum 2 de [ADR-017](../../../.claude/decisions/017-recadrage-requis-par-champ.md).
+Détail dans l'addendum 2 de [ADR-017](../../.claude/decisions/017-recadrage-requis-par-champ.md).
 
 **Rebondissement final (même jour, 4e passe)** : tout ce qui précède répondait à la
 mauvaise question. Le vrai problème : le recadrage Drupal est rattaché au **fichier**,
@@ -273,7 +273,7 @@ vignettes carrées indistinguables) ; `media_contextual_crop` (stocke le recadra
 référence) exige un **patch sur Drupal core** touchant le contrôleur qui sert toutes
 les images du site — écarté après l'avoir concrètement testé.
 
-**Solution retenue** ([ADR-018](../../../.claude/decisions/018-images-locales-par-paragraphe.md)) :
+**Solution retenue** ([ADR-018](../../.claude/decisions/018-images-locales-par-paragraphe.md)) :
 les 9 paragraphes à ratio imposé + `node.news` (champ renommé `field_photo`, son
 ancien storage étant partagé avec `node.brand`/`node.contact`, non concernés) passent
 en **champ image local** — upload direct dans le paragraphe, sans médiathèque, exactement
@@ -309,7 +309,7 @@ storage a été recréée en `entity_reference`/media et les valeurs restaurées
 recherche inverse fichier → media (unique, vérifiée). Vérifié de bout en bout après
 coup : `entity.form_builder` sur chaque bundle des deux groupes, rendu front (200,
 alt correct), `drush cst` propre sur tous les objets de config concernés. Détail dans
-l'addendum du 19/08 à l'[ADR-018](../../../.claude/decisions/018-images-locales-par-paragraphe.md)
+l'addendum du 19/08 à l'[ADR-018](../../.claude/decisions/018-images-locales-par-paragraphe.md)
 et [[shared-storage-check-all-bundles]] (mémoire).
 
 ## « 4bis » — FAQ, intégration réelle (mesuré le 2026-08-19)
@@ -464,7 +464,7 @@ voit un visiteur** dès qu'un réglage `php.ini` est en jeu. Le CLI a quand mêm
 à 5M (sauvegarde `php.ini.bak-20260818`) pour que les deux chemins concordent.
 
 **Formulaire stylé et modales faites le 2026-08-18** — acté dans
-[ADR-015](../../../.claude/decisions/015-habillage-des-formulaires.md).
+[ADR-015](../../.claude/decisions/015-habillage-des-formulaires.md).
 
 - Fondation `src/scss/_forms.scss` : carte `#F5F5F5` radius 24 padding 40/60, grille
   3 colonnes gouttière 30, libellés Inter 16/28 acier, champs blancs bordure
@@ -621,7 +621,7 @@ sources à largeur impaire, pas un défaut de cadrage.
 **Conformité au PRD (§7, décision #11)** : ratios 1:1 / 16:9 / 12:5 + sans-crop ✅ ;
 44 styles dimensionnés convertissant en WebP ✅ ; 4 responsive styles mappés sur les
 **6 breakpoints × 2 multiplicateurs** ✅. Les 4 styles `*_fallback` restent au format
-d'origine — c'est **voulu et documenté** ([ADR-004](../../../.claude/decisions/004-pipeline-images.md)) :
+d'origine — c'est **voulu et documenté** ([ADR-004](../../.claude/decisions/004-pipeline-images.md)) :
 le rendu produit un `<picture>` dont les `<source>` sont en WebP et l'`<img src>` sert de
 repli aux navigateurs qui ne le gèrent pas.
 
@@ -653,7 +653,7 @@ depuis Figma, les miens compris.
   1:1 à y=783), l'habitacle transform, et les deux cartes de renvoi (mesurées centrées).
   **Ces cadrages méritent une relecture en back-office.**
 
-Consigné dans [ADR-004](../../../.claude/decisions/004-pipeline-images.md) et dans les
+Consigné dans [ADR-004](../../.claude/decisions/004-pipeline-images.md) et dans les
 conventions (CLAUDE.md) : ne plus fabriquer de recadrage par script, signaler pour un
 passage éditorial.
 
