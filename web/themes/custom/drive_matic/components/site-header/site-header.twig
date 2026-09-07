@@ -179,6 +179,12 @@
     {% if logged_in %}
       <div class="site-header__drawer-panel" data-drawer-panel="account">
         <div class="site-header__drawer-head">
+          {# Pas de veritable retour (ce panneau s'ouvre directement depuis le
+             declencheur "Espace partenaire", jamais depuis la liste racine) :
+             cet espaceur reprend juste la boite 24x24 de &__drawer-back pour
+             que le titre reste centre entre 2 zones de largeur egale, comme
+             sur les autres panneaux (regle `:has(&__drawer-back)`). #}
+          <span class="site-header__drawer-back" aria-hidden="true"></span>
           <p class="site-header__drawer-title">{{ 'Partenaires'|t }}</p>
           <button type="button" class="site-header__drawer-close" data-drawer-close>
             <span class="visually-hidden">{{ 'Fermer'|t }}</span>
