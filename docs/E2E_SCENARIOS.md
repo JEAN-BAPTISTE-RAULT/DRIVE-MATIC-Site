@@ -324,11 +324,18 @@
 **Objectif** : Verifier l'affichage automatique du tableau de bord.
 
 **Etapes** :
-1. Se connecter en tant que partenaire.
+1. Se connecter en tant que partenaire ayant des devis dans plusieurs statuts.
+2. Naviguer vers `/user/tableau-de-bord` (ou cliquer « Tableau de bord » depuis le dropdown « Espace partenaire »).
+3. Se connecter avec un **second** compte partenaire n'ayant aucun devis.
+4. En anonyme, acceder directement a `/user/tableau-de-bord`.
 
 **Resultats attendus** :
-- Affichage : bouton « Creer un nouveau devis », **nombre de devis a finaliser**, **nombre de devis/commandes en cours**, visuel configurateur.
-- Les compteurs refletent l'etat reel des devis du partenaire.
+- Etape 2 : bouton « Creer un nouveau devis » (→ `/configurer`), 3 compteurs — « Mes devis à finaliser », « Mes devis / commandes en cours », « Mes devis / commandes archivés » — puis image + titre + description + bouton « Créer un devis » (→ `/configurer`).
+- Les 3 compteurs refletent l'etat reel des devis **de ce partenaire uniquement** : « À finaliser » seul, « Commande en cours » seul, « Commande »+« Archive » reunis.
+- Etape 3 : le second compte voit 0/0/0 — jamais les chiffres du premier compte (verifie le cloisonnement du cache, `#cache.contexts: ['user']`).
+- Etape 4 : redirection vers `/user/login?destination=/user/tableau-de-bord` (pas un 403 brut).
+
+**Mise en oeuvre — le 2026-09-07** ([ADR-046](../.claude/decisions/046-tableau-de-bord-partenaire.md), maquettes Figma 491-13703/604-34427) : route `/user/tableau-de-bord` (module `drivematic_partner`, `DashboardController`). Les 3 compteurs pointent vers `/user/mes-devis?onglet=a-finaliser|en-cours|archives` — page non implementee (F15, a rejouer une fois construite), lien pose en dur en attendant. Lien de menu « Tableau de bord » (id 42, jusque-la `<nolink>`) rendu fonctionnel.
 
 ---
 
@@ -429,7 +436,7 @@
 **Objectif** : Verifier le passage a la commande (statut, message, e-mail + PDF).
 
 **Etapes** :
-1. Depuis « Mes devis / commandes en cours », ouvrir un devis « a commander » et cliquer « Commander ».
+1. Depuis « Mes devis / commandes en cours », ouvrir un devis « Commande en cours » et cliquer « Commander ».
 
 **Resultats attendus** :
 - Message « Felicitations, votre commande a bien ete enregistree... ».
@@ -516,7 +523,7 @@ devis de test, donnees nettoyees ensuite.
 **Objectif** : Verifier que Drive Matic peut ajuster une remise par equipement sur UN devis precis, sans jamais alterer le compte partenaire ni cumuler avec le taux deja fige.
 
 **Etapes** :
-1. Partenaire : disposer d'un devis au statut « a commander » (non commande), avec au moins 2 configurations partageant un meme equipement (ex. 2x « Retrovision exterieure »).
+1. Partenaire : disposer d'un devis au statut « Commande en cours » (non commande), avec au moins 2 configurations partageant un meme equipement (ex. 2x « Retrovision exterieure »).
 2. Admin (back-office, page de detail du devis) : ouvrir la section « Remises par équipement ».
 3. Verifier les 4 lignes affichees (une par equipement, jamais une par ligne/configuration) et leur valeur preremplie.
 4. Modifier le taux d'un des 4 equipements et enregistrer, sans rien changer aux 3 autres.
@@ -554,18 +561,22 @@ devis de test, donnees nettoyees ensuite.
 
 **Etapes** :
 1. Onglet « A finaliser » : modifier, dupliquer, puis supprimer un devis (avec confirmation).
-2. Onglet « En cours » : archiver un devis commande.
-3. Onglet « Archives » : telecharger le PDF d'un devis archive.
+2. Onglet « Commande en cours » : verifier qu'aucun devis « Commande » n'y figure (regroupe desormais avec les archives, voir onglet suivant).
+3. Onglet « Archives » (devis « Commande » + « Archive » reunis) : sur un devis « Commande », depuis un menu deroulant par ligne, declencher l'archivage manuel ; telecharger le PDF d'un devis deja archive.
 
 **Resultats attendus** :
 - Suppression demande confirmation ; duplication cree un nouveau devis « a finaliser ».
-- Un devis commande est **auto-archive a 30 jours** ; un devis archive **n'est plus duplicable** mais son **PDF reste telechargeable**.
+- Un devis commande est **auto-archive a 30 jours** (depuis `date_confirmation`, delai fixe, ADR-045) ; un devis archive **n'est plus duplicable** mais son **PDF reste telechargeable**.
+- L'archivage manuel n'est possible **que par le partenaire, depuis cette page** — Drive Matic n'a plus cette possibilite depuis le back-office (ADR-045).
 
-**Etat au 2026-09-02** : le PDF existe et se telecharge desormais reellement
+**Etat au 2026-09-07** : le PDF existe et se telecharge deja reellement
 (ADR-041), mais uniquement depuis le back-office (`/admin/content/devis/{id}`,
-S26) — l'onglet « Archives » lui-meme (page « Mes devis » partenaire, F13)
-n'est pas implemente ; l'etape 3 telle que decrite reste **a rejouer** une
-fois cette page construite.
+S26) — la page « Mes devis » elle-meme (F13/F15, incluant l'archivage manuel
+partenaire) n'est **toujours pas** implementee ; ce scenario reste **a
+rejouer** une fois cette page construite. La repartition des onglets
+ci-dessus (« Commande » desormais dans « Archives », pas « Commande en
+cours ») reflete la decision actee avec le tableau de bord (ADR-046),
+a construire pareillement ici.
 
 ---
 
@@ -729,9 +740,9 @@ TVA sous le Siret. Verifie au navigateur (desktop et mobile).
 **Etapes** :
 1. En tant qu'admin, ouvrir `/admin/content/devis`.
 2. Trier sur chaque colonne (N° de devis, Partenaire, Statut, Total TTC, Date de creation).
-3. Filtrer par Statut (« Archive ») ; verifier qu'un devis « A commander » disparait de la liste.
+3. Filtrer par Statut (« Archive ») ; verifier qu'un devis « Commande en cours » disparait de la liste.
 4. Rechercher un devis par une portion de sa reference (« N° de devis »).
-5. Cliquer la reference d'un devis « A commander » pour ouvrir sa page de detail.
+5. Cliquer la reference d'un devis « Commande en cours » pour ouvrir sa page de detail.
 5bis. Si le devis a deja ete commande : verifier le lien « Voir le PDF du
 devis » (ouvre `/admin/content/devis/{id}/pdf` dans un nouvel onglet, PDF
 valide) ; sur un devis jamais commande, ce lien n'apparait pas.
@@ -739,8 +750,8 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 7. Dans « Remises par équipement » (devis a au moins 2 configurations partageant un equipement homonyme, ex. 2x « Retrovision exterieure ») : verifier les 4 lignes fixes (jamais une sous-section par configuration), modifier le taux d'UN equipement homonyme.
 7bis. Ouvrir un devis « Commande » ou « Archive » : verifier que « Remises par équipement » reste visible mais en lecture seule (aucun champ, aucun bouton).
 8. Cliquer « Marquer comme commande », confirmer.
-9. Sur un **autre** devis « A commander », cliquer « Archiver », confirmer.
-10. Tenter d'acceder directement a l'URL d'archivage d'un devis « Commande » (pas « A commander »).
+9. **Retire le 2026-09-07** (ADR-045) : aucun bouton « Archiver » n'existe plus sur cette page, quel que soit le statut du devis — Drive Matic n'a plus la possibilite d'archiver un devis depuis le back-office. Verifier son absence visuelle sur un devis « Commande en cours » ET sur un devis « Commande ».
+10. Tenter d'acceder directement a l'URL `/admin/content/devis/{id}/archiver` (ancienne route, sur un devis de n'importe quel statut).
 11. Ouvrir la page de detail d'un devis cree **avant** l'ajout de l'historique (aucune entree `quote_status_change`).
 12. Ouvrir `/user/{uid}/edit` d'**un autre** compte partenaire (pas le sien).
 13. Ouvrir `/user/{uid}/edit` de **son propre** compte admin.
@@ -758,8 +769,8 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 - Etape 7 : le taux modifie s'applique a **toutes** les lignes de cet equipement sur ce devis (verifiable aux totaux recalcules), y compris les 2 lignes homonymes de configurations differentes — jamais une remise par sous-section/configuration ; `date de commande` remise a l'heure actuelle (redemarre le delai des 30 jours) ; une ligne d'« Evenement » apparait dans « Historique » PAR ligne dont le taux a reellement change (jamais pour une ligne resoumise a l'identique), avec l'ancien/nouveau taux et l'admin courant.
 - Etape 7bis : les 4 taux affiches sont ceux reellement figes sur ce devis, pas les taux courants du compte partenaire s'ils ont change depuis.
 - Etape 8 : statut devient « Commande le [date du jour] », les boutons d'action et le formulaire de remise disparaissent de la page ; une nouvelle ligne apparait dans « Historique » (date + « Commande » + le compte admin courant).
-- Etape 9 : statut devient « Archive », date d'archivage posee, nouvelle ligne d'historique correspondante.
-- Etape 10 : refuse cote serveur (« Ce devis n'est pas (ou plus) au statut « A commander » : action impossible. »), pas seulement en cachant le bouton.
+- Etape 9 : aucun lien/bouton « Archiver » nulle part sur la page de detail (verifie en lisant le HTML rendu, pas seulement a l'oeil), quel que soit le statut.
+- Etape 10 : 404 (route retiree du routing — `drivematic_configurator.quote_archive` n'existe plus), pas un refus applicatif comme auparavant.
 - Etape 11 : « Historique » affiche au moins une ligne (date de creation du devis + statut initial deduit + partenaire), jamais une section vide.
 - Etape 12 : un bloc « Adresses de livraison » en lecture seule (aucun lien Modifier/Supprimer) liste les adresses du partenaire, ou l'etat vide « Aucune adresse de livraison enregistree. » ; un bloc « Historique des remises » liste chaque changement reel d'une des 4 remises (date, equipement, ancien → nouveau taux, auteur), ou l'etat vide « Aucune modification enregistree. » (cf. S17bis).
 - Etape 13 : ni le bloc « Adresses de livraison » ni « Historique des remises » **n'apparaissent** (jamais sur son propre compte, meme admin).
@@ -798,6 +809,8 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 
 **Mise en oeuvre (a rejouer) — remises par equipement + historique du 2026-09-03** ([ADR-043](../.claude/decisions/043-remises-partenaire-par-equipement.md), [ADR-044](../.claude/decisions/044-historique-remises-partenaire.md)) : `QuoteDiscountForm` (« Remises par équipement ») regroupe desormais par TYPE d'equipement (4 lignes fixes) au lieu d'une section par configuration, et reste affichee (lecture seule, table simple sans formulaire) meme hors statut « A commander » ou sans droit d'edition. `dm_discount_rate` est fige une seule fois, a la creation du devis (`QuoteCalculator`/`QuotePersister`), et ne suit plus jamais le compte partenaire ensuite — remplace (jamais cumule) le taux fige, calcule depuis le tarif catalogue brut. Nouvelle colonne « Reference » dans le tableau des lignes (valeur gelee `QuoteEquipmentLine::reference`, deja existante pour le PDF mais pas affichee ici jusque-la). Nouvelle entite `partner_discount_change` (historique des remises du compte, detecte par `hook_ENTITY_TYPE_update()` generique — capte un changement via ce formulaire, `drush`, ou tout autre canal), affichee sur `/user/{uid}/edit` a cote du recapitulatif des adresses de livraison (S17bis). **Verifie de bout en bout via un parcours navigateur reel** (pas seulement en base) : preremplissage live tant qu'un devis n'a jamais ete retouche, remplacement sans cumul (100€ remise 20% → 80€, jamais 70€), 2 lignes homonymes recevant chacune leur propre entree d'historique, compte modifie a 99% sans effet sur un devis deja fige, section « Historique des remises » absente en auto-edition.
 
+**Mise en oeuvre (a rejouer) — statut renomme + archivage revu du 2026-09-07** ([ADR-045](../.claude/decisions/045-archivage-devis-depuis-commande.md)) : `a_commander` renomme « Commande en cours » (etait « A commander »). `QuoteArchiveForm` et sa route supprimes — plus aucune archivage manuel possible depuis le back-office, quel que soit le statut (seul un futur archivage partenaire, F13/F15, le pourra). L'archivage automatique (`hook_cron`) part desormais de `STATUS_COMMANDE` (`date_confirmation`, 30 jours fixes) et non plus de `STATUS_A_COMMANDER` (`date_commande`) : verifie avec un devis fictif de 31 jours dans chaque statut (seul le « Commande » s'archive desormais). Une remise DM ne remet plus aucun compteur a zero (`QuoteDiscountForm` ne touche plus `date_commande`, ce mecanisme ne servait que l'ancienne regle).
+
 ---
 
 ## Matrice de couverture (scenario → feature)
@@ -829,6 +842,10 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-07 | **F13 — tableau de bord partenaire livre** ([ADR-046](../.claude/decisions/046-tableau-de-bord-partenaire.md), maquettes Figma 491-13703/604-34427) : route `/user/tableau-de-bord`, 3 compteurs scopes au partenaire connecte (« À finaliser » seul, « Commande en cours » seul, « Commande »+« Archive » reunis), cache par utilisateur verifie avec un 2e compte temporaire. Les 3 compteurs pointent vers `/user/mes-devis?onglet=...` (page a construire, F15, hors perimetre). Lien de menu « Tableau de bord » rendu fonctionnel. **A rejouer** : S13 | S13 |
+| 2026-09-07 | **F15 — statut renomme + regle d'archivage revue, archivage manuel BO supprime** ([ADR-045](../.claude/decisions/045-archivage-devis-depuis-commande.md)) : `a_commander` renomme « Commande en cours ». `QuoteArchiveForm` et sa route supprimes (Drive Matic n'archive plus jamais manuellement depuis le back-office). L'archivage automatique part desormais de `STATUS_COMMANDE` (`date_confirmation`, 30 jours fixes, sans mecanisme de report) au lieu de `STATUS_A_COMMANDER` — consequence connue et acceptee : un devis qui reste indefiniment « Commande en cours » sans confirmation telephonique n'a plus de nettoyage automatique. **A rejouer** : S18, S26 | S18, S26 |
+| 2026-09-07 | **Bloc titre de page corrige hors contexte de node** ([ADR-047](../.claude/decisions/047-titre-page-hors-node.md)) : nouveau module `drivematic_page_title`, condition `drivematic_node_bundle` remplace `entity_bundle:node` (qui refusait toujours l'acces sur une route sans node, quel que soit `negate` — bug core documente, affectait deja `/user/mes-informations-personnelles`). Condition `request_path` niee ajoutee pour preserver `/user/login`, `/user/logout/confirm`, `/user/password` (ADR-024/027, aucun titre attendu). Verifie : home et `/faq` toujours exactement 1 `<h1>`, les 3 routes protegees toujours a 0. **A rejouer** : S13, S19, S25 | S13, S19, S25 |
+| 2026-09-07 | **Logo des e-mails rendu dynamique** ([ADR-048](../.claude/decisions/048-logo-email-url-dynamique.md)) : URL codee en dur vers le domaine de prod (jamais valide avant le bascule DNS) remplacee par le jeton core `[site:url]` dans les 13 gabarits concernes (3 `mailer_policy` + 10 handlers webform) — resout desormais l'environnement reel a l'envoi. Au passage, export d'une derive deja active en base mais jamais commitee : adresse d'expedition (`from_mail`/`system.site.mail`) passee de `no-reply@` a `info@drivematiclegrand.com`, confirmee voulue. **Incident le meme jour** : le champ `configuration.user` de `mailer_transport.mailer_transport.smtp_passerelle` a ete ecrase par le `config:import` du deploiement qui a suivi (seul `pass` est protege par une surcharge `settings.php`, pas `user`) — retabli manuellement en local et en preprod, voir README.md section E-mails | Hors matrice (infrastructure e-mail) |
 | 2026-09-03 | **F16 — historique des remises du compte partenaire** ([ADR-044](../.claude/decisions/044-historique-remises-partenaire.md)) : nouvelle entite `partner_discount_change`, detectee par `drivematic_configurator_user_update()` (`hook_ENTITY_TYPE_update()` generique pour `user` — capte un changement via `/user/{uid}/edit`, `drush`, ou tout autre canal, pas seulement une soumission de formulaire). Affichee en lecture seule sur `/user/{uid}/edit` (admin editant un AUTRE compte, jamais en auto-edition), a cote du recapitulatif des adresses de livraison : date, equipement, ancien → nouveau taux (« — (vide) » si absent, jamais confondu avec 0%), auteur. But : justifier un ecart entre le taux affiche aujourd'hui sur le compte et celui reellement fige sur un devis cree avant ce changement. Verifie via impersonation d'une session admin reelle (`\Drupal::currentUser()->setAccount()`, pour eviter tout risque sur le vrai compte partenaire via un POST HTML reconstruit a la main) : auteur correctement capture, aucune entree pour un champ non modifie, 2 champs changes dans la meme sauvegarde produisant 2 entrees, passage vide↔valeur affiche correctement, section absente en auto-edition. **A rejouer** : S17bis, S22, S26 | S17bis, S22, S26 |
 | 2026-09-03 | **F14/F15/F16 — remises partenaire par equipement, remplacement (plus de cumul), snapshot fige a la creation** ([ADR-043](../.claude/decisions/043-remises-partenaire-par-equipement.md)) : `field_discount_rate` (taux unique) supprime (config + donnees purgees, pas de migration) et remplace par 4 champs independants (`field_discount_retrovision_ext`/`retrovision_int`/`telecommande_vor`/`pedalier`), nouveau service `PartnerDiscountResolver`. `QuoteDiscountForm` (« Remises par équipement », renommee) regroupe desormais par TYPE d'equipement — **exactement 4 lignes**, jamais une par ligne/configuration — un taux saisi s'applique a toutes les lignes de ce type sur CE devis uniquement (jamais au compte partenaire), tout en generant une entree `quote_discount_change` par LIGNE reellement modifiee (granularite ADR-040 inchangee). Section desormais **toujours visible** : lecture seule des que le devis n'est plus « A commander » ou sans droit d'edition. Le taux partenaire par equipement est resolu et **fige une seule fois, a la creation du devis** (`QuoteCalculator`/`QuotePersister`) — un devis ne suit plus jamais les changements ulterieurs du compte, y compris tant qu'il reste « A commander » (correction d'un 1er jet en resolution live, jugee trop surprenante par l'utilisatrice en cours de session). `dm_discount_rate` remplace desormais integralement le taux applique a `unit_price` brut, plus de cascade avec la remise partenaire. `hook_update_11009` retro-complete `QuoteEquipmentLine::equipment_type` (deduit du libelle, mapping fiable) sur les lignes anterieures ; `hook_update_11010` fige au taux partenaire courant les lignes de devis existantes jamais reellement retouchees par un administrateur. Nouvelle colonne « Reference » dans le detail de devis admin (valeur deja existante pour le PDF, ADR-041, non affichee ailleurs jusque-la) — **constat en verifiant** : le catalogue n'a jamais eu de reference pour retrovision ext./int. et telecommande VOR (139 lignes sur 414, faute de donnee source, anticipe des la conception) contrairement au pedalier (274/274) — pas un bug d'import. Verifie de bout en bout via un parcours navigateur reel : preremplissage live tant qu'un devis n'a jamais ete retouche, remplacement sans cumul (100€ remise 20% → 80€, jamais 70€ via cascade), 2 lignes homonymes de 2 configurations recevant chacune leur propre entree d'historique lors d'une modification groupee par type, compte partenaire modifie a 99% sans le moindre effet sur un devis deja fige. **A rejouer** : S14, S17, S22, S26 | S14, S17, S22, S26 |
 | 2026-09-03 | **F12/F15 — numero de TVA intracommunautaire du profil partenaire** (commit `d02345c`) : nouveau champ `field_vat` (13 caracteres, pattern `FR` + 2 caracteres + 9 chiffres) suivant exactement le pattern deja etabli pour `field_siret` — obligatoire sur le webform `account_request` (juste apres Siret, grille desktop Siret+TVA sur une ligne — TVA sur 2 colonnes pour que son libelle tienne, corrige le meme jour apres un 1er jet a 3 champs par ligne trop etroit — Raison sociale/Adresse/Complement sur la suivante), lecture seule sur `/user/{uid}/edit` (BO) et « Mes informations personnelles » (partenaire), gele sur `Quote::billing_vat` a la creation du devis (`QuotePersister`). PDF du devis : libelle SIRET renomme `SIRET : ...` (au lieu de `Siret ...`) et ligne `TVA : ...` ajoutee en dessous. E-mail de confirmation de commande interne (ADR-036) : ajout de SIRET (absent jusqu'ici) puis TVA en tete du bloc « Demandeur », nouveaux jetons `[quote:siret]`/`[quote:tva]`. Etendu par coherence (decision explicite) a l'ecran « Livraison » (bloc facturation) et a la table de detail admin d'un devis, qui affichaient deja le Siret dans le meme contexte. **Corollaire verifie** : tout champ du bloc « Votre entreprise » doit etre ajoute a la fois a `_drivematic_partner_profile_field_names()` (masque en auto-edition) et a `PersonalInformationForm` (sinon le partenaire perd toute visibilite sur sa propre valeur) — voir CLAUDE.md. Verifie de bout en bout sans navigateur multi-etapes : formulaires via curl authentifie, PDF via `pdftotext`, e-mail via Mailpit, fragments prives (`DeliveryForm`/`QuoteDetailController`) via `ReflectionMethod` + `renderInIsolation()`. **Deploye en preprod le meme jour** (`scripts/deploy-preprod.sh --no-backup`, sur demande explicite — pas de dump de securite pour ce deploiement precis). **A rejouer** : S16, S19, S25, S26 | S16, S19, S25, S26 |
