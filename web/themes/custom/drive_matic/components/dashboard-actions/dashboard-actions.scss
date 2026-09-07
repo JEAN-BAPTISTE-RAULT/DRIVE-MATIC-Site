@@ -1,0 +1,20 @@
+// SDC « Bloc :: Raccourcis tableau de bord » — rangée de 4 cartes.
+// Pleine largeur du gabarit (mesuré 40 à 1400 sur un canevas 1440,
+// maquette 491-13703) : plus large que --dm-content-column (900), qui ne
+// s'applique pas ici.
+.dashboard-actions {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--dm-gutter);
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    @media (width >= 992px) {
+      flex-direction: row;
+      gap: 20px;
+    }
+  }
+}

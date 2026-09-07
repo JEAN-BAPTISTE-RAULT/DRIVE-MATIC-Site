@@ -5,3 +5,11 @@ drivematic_partner.personal_information:
     _title: 'Mes informations personnelles'
   requirements:
     _role: 'partenaire'
+
+drivematic_partner.dashboard:
+  path: '/user/tableau-de-bord'
+  defaults:
+    _controller: '\Drupal\drivematic_partner\Controller\DashboardController::build'
+    _title: 'Tableau de bord'
+  requirements:
+    _role: 'partenaire'

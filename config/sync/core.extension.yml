@@ -21,6 +21,7 @@ module:
   drivematic_configurator: 0
   drivematic_forms: 0
   drivematic_home: 0
+  drivematic_page_title: 0
   drivematic_partner: 0
   dynamic_page_cache: 0
   easy_breadcrumb: 0

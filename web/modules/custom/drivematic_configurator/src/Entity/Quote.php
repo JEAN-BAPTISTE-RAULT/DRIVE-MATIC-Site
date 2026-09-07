@@ -27,12 +27,12 @@ use Drupal\views\EntityViewsData;
  * Cycle de vie implemente ici (sous-ensemble de F15 — onglets « Mes devis »,
  * Dupliquer, PDF : hors perimetre) :
  * STATUS_A_FINALISER -> STATUS_A_COMMANDER -> STATUS_COMMANDE (manuel, DM
- * confirme une commande passee par telephone) ou STATUS_ARCHIVE (auto a J+30
- * apres `date_commande` depuis STATUS_A_COMMANDER uniquement,
- * drivematic_configurator_cron(), ou manuel — jamais depuis STATUS_COMMANDE).
- * `date_commande` sert aussi de point de depart au delai des 30 jours : une
- * remise DM par ligne (QuoteEquipmentLine::dm_discount_rate) le remet a
- * l'heure actuelle, ce qui redemarre ce delai (cf. PRD F15, « cas limites »).
+ * confirme une commande passee par telephone) -> STATUS_ARCHIVE, auto a J+30
+ * apres `date_confirmation`, depuis STATUS_COMMANDE uniquement
+ * (drivematic_configurator_cron()), delai fixe sans mecanisme de report ; ou
+ * manuel, uniquement par le partenaire depuis son tableau de bord — Drive
+ * Matic n'a plus la possibilite d'archiver un devis depuis le back-office
+ * (cf. PRD F15, « cas limites »).
  */
 #[ContentEntityType(
   id: 'quote',
@@ -80,7 +80,7 @@ final class Quote extends ContentEntityBase implements EntityOwnerInterface {
       ->setRequired(TRUE)
       ->setSetting('allowed_values', [
         self::STATUS_A_FINALISER => 'À finaliser',
-        self::STATUS_A_COMMANDER => 'À commander',
+        self::STATUS_A_COMMANDER => 'Commande en cours',
         self::STATUS_COMMANDE => 'Commandé',
         self::STATUS_ARCHIVE => 'Archivé',
       ]);

@@ -3,7 +3,8 @@ langcode: en
 status: true
 dependencies:
   module:
-    - node
+    - drivematic_page_title
+    - system
   theme:
     - drive_matic
 _core:
@@ -20,12 +21,19 @@ settings:
   label_display: '0'
   provider: core
 visibility:
-  'entity_bundle:node':
-    id: 'entity_bundle:node'
+  drivematic_node_bundle:
+    id: drivematic_node_bundle
     negate: true
-    context_mapping:
-      node: '@node.node_route_context:node'
     bundles:
       homepage: homepage
       transform: transform
       product: product
+    context_mapping: {  }
+  request_path:
+    id: request_path
+    negate: true
+    context_mapping: {  }
+    pages: |-
+      /user/login
+      /user/logout/confirm
+      /user/password

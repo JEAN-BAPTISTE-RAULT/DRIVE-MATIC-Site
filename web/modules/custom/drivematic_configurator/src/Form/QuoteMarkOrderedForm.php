@@ -18,10 +18,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Confirmation manuelle d'une commande conclue par téléphone (back-office).
  *
- * Fait passer un devis « À commander » au statut « Commandé »
+ * Fait passer un devis « Commande en cours » au statut « Commandé »
  * (Quote::STATUS_COMMANDE), avec la date du jour posée automatiquement sur
  * `date_confirmation` — action Drive Matic, rien ne se passe sur le site
- * (PRD F15/F16). Ne s'applique qu'aux devis « À commander » : re-vérifié
+ * (PRD F15/F16). Ne s'applique qu'aux devis « Commande en cours » : re-vérifié
  * côté serveur (pas seulement en cachant le bouton), un devis dans un autre
  * état est refusé.
  *
@@ -107,7 +107,7 @@ final class QuoteMarkOrderedForm extends ConfirmFormBase {
         'message' => [
           '#type' => 'html_tag',
           '#tag' => 'p',
-          '#value' => $this->t("Ce devis n'est pas (ou plus) au statut « À commander » : action impossible."),
+          '#value' => $this->t("Ce devis n'est pas (ou plus) au statut « Commande en cours » : action impossible."),
         ],
         'back' => [
           '#type' => 'link',
@@ -128,7 +128,7 @@ final class QuoteMarkOrderedForm extends ConfirmFormBase {
     // l'affichage du formulaire, pas la soumission (etat pouvant changer
     // entre l'affichage et la validation).
     if (!$this->quote || $this->quote->get('status')->value !== Quote::STATUS_A_COMMANDER) {
-      $this->messenger()->addError($this->t("Ce devis n'est pas (ou plus) au statut « À commander »."));
+      $this->messenger()->addError($this->t("Ce devis n'est pas (ou plus) au statut « Commande en cours »."));
       $form_state->setRedirectUrl($this->getCancelUrl());
       return;
     }

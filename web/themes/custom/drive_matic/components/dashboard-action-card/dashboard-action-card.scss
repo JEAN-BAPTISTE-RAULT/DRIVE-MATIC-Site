@@ -1,0 +1,100 @@
+// SDC « Élément :: Raccourci tableau de bord ».
+// Mesures maquette : carte 358×79 (mobile) / 325×109 (desktop, 491-13703),
+// boîte icône 47×47 / 61×61 (icône 26×26 / 32×32 centrée), chiffre 45px/58px
+// aux deux paliers (mesuré identique mobile/desktop, pas une erreur).
+.dashboard-action-card {
+  --dashboard-action-card-icon-size: 47px;
+  --dashboard-action-card-icon-inner: 26px;
+  --dashboard-action-card-gap: 16px;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--dashboard-action-card-gap);
+  min-height: 79px;
+  padding-inline: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--dm-color-steel);
+  background: var(--dm-color-white);
+  text-decoration: none;
+
+  @media (width >= 992px) {
+    --dashboard-action-card-icon-size: 61px;
+    --dashboard-action-card-icon-inner: 32px;
+    --dashboard-action-card-gap: 20px;
+
+    flex: 1 1 0;
+    min-height: 109px;
+    padding-inline: 24px;
+    border-radius: 16px;
+  }
+
+  &--action {
+    border-color: transparent;
+    background: var(--dm-color-steel);
+  }
+
+  &__icon {
+    position: relative;
+    flex-shrink: 0;
+    width: var(--dashboard-action-card-icon-size);
+    height: var(--dashboard-action-card-icon-size);
+    border-radius: 8px;
+    background-color: var(--dm-color-grey-light);
+  }
+
+  &--action &__icon {
+    background-color: var(--dm-color-white);
+  }
+
+  &__icon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: var(--dashboard-action-card-icon-inner);
+    height: var(--dashboard-action-card-icon-inner);
+    background-color: var(--dm-color-steel);
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+  }
+
+  &__icon--plus-circle::before {
+    mask-image: url('../../images/icons/plus-circle.svg');
+  }
+
+  &__icon--folder-edit::before {
+    mask-image: url('../../images/icons/folder-edit.svg');
+  }
+
+  &__icon--folder-clock::before {
+    mask-image: url('../../images/icons/folder-clock.svg');
+  }
+
+  &__icon--archive::before {
+    mask-image: url('../../images/icons/archive.svg');
+  }
+
+  &__label {
+    flex: 1;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 700;
+  }
+
+  &--action &__label {
+    color: var(--dm-color-white);
+  }
+
+  &__count {
+    flex-shrink: 0;
+    color: var(--dm-color-red);
+    font-family: var(--dm-font-title);
+    font-size: 2.8125rem;
+    line-height: 3.625rem;
+    font-weight: 800;
+  }
+}

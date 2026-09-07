@@ -37,12 +37,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * propre : chargees uniquement ici, en interne, apres que l'acces au
  * `Quote` parent a deja ete verifie par la route.
  *
- * N'est plus strictement en lecture seule : les actions de statut (marquer
- * commande, archiver) et le formulaire de remises par equipement
- * (QuoteDiscountForm, embarque via `formBuilder()`) sont affiches sur
- * cette meme page quand le visiteur a la permission distincte `edit
- * drivematic configurator quotes` — jamais accordee au seul fait de voir
- * la page (permission de lecture separee, moindre privilege).
+ * N'est plus strictement en lecture seule : l'action de marquage en
+ * « Commandé » et le formulaire de remises par equipement (QuoteDiscountForm,
+ * embarque via `formBuilder()`) sont affiches sur cette meme page quand le
+ * visiteur a la permission distincte `edit drivematic configurator quotes`
+ * — jamais accordee au seul fait de voir la page (permission de lecture
+ * separee, moindre privilege). Aucun archivage manuel ici : Drive Matic n'a
+ * plus cette possibilite depuis le back-office (seul le partenaire peut
+ * archiver un devis « Commandé », depuis son tableau de bord).
  */
 final class QuoteDetailController extends ControllerBase {
 
@@ -162,7 +164,7 @@ final class QuoteDetailController extends ControllerBase {
   }
 
   /**
-   * Liens d'action (marquer commandé, archiver), statut « À commander » seul.
+   * Lien d'action (marquer commandé), statut « Commande en cours » seul.
    */
   private function buildActions(Quote $quote): array {
     return [
@@ -172,12 +174,6 @@ final class QuoteDetailController extends ControllerBase {
         '#type' => 'link',
         '#title' => $this->t('Marquer comme commandé'),
         '#url' => Url::fromRoute('drivematic_configurator.quote_mark_ordered', ['quote' => $quote->id()]),
-        '#attributes' => ['class' => ['button']],
-      ],
-      'archive' => [
-        '#type' => 'link',
-        '#title' => $this->t('Archiver'),
-        '#url' => Url::fromRoute('drivematic_configurator.quote_archive', ['quote' => $quote->id()]),
         '#attributes' => ['class' => ['button']],
       ],
     ];

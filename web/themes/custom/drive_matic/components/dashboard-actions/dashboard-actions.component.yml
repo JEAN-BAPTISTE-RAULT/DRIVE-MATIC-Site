@@ -1,0 +1,6 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Raccourcis tableau de bord'
+status: stable
+slots:
+  items:
+    title: Cartes (1 à N `dashboard-action-card`)

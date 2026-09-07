@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\drivematic_configurator\Form;
 
-use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -21,10 +20,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * Embarqué dans QuoteDetailController::view() via `\Drupal::formBuilder()`
  * (pas de route dédiée : pas de besoin identifié en dehors de la page de
- * détail) — visible uniquement quand le devis est au statut « À commander »
- * ET que le visiteur a la permission `edit drivematic configurator quotes`
- * (double vérification faite par l'appelant ET ici, en défense en
- * profondeur).
+ * détail) — visible uniquement quand le devis est au statut « Commande en
+ * cours » ET que le visiteur a la permission distincte `edit drivematic
+ * configurator quotes` (double vérification faite par l'appelant ET ici,
+ * en défense en profondeur).
  *
  * Exactement 4 lignes (rétrovision ext./int., télécommande VOR, double
  * pédalier auto-école), jamais une par ligne/configuration : un devis à
@@ -37,9 +36,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * (gelés, cf. Entity/QuoteEquipmentLine.php) : seul `dm_discount_rate` est
  * modifié par ligne, puis les totaux du devis sont recalculés à partir du
  * prix effectif (`QuoteEquipmentLine::getEffectiveDiscountedHt()`).
- * Enregistrer une remise remet aussi `date_commande` à l'heure actuelle —
- * ce qui redémarre le délai de 30 jours avant archivage automatique
- * (PRD F15, « cas limites »).
  *
  * Chaque ligne est préremplie avec `dm_discount_rate`, gelé dès la création
  * du devis (snapshot du taux partenaire à cet instant, ADR-043 addendum 2)
@@ -67,7 +63,6 @@ final class QuoteDiscountForm extends FormBase {
 
   public function __construct(
     protected EntityTypeManagerInterface $entityTypeManager,
-    protected TimeInterface $time,
     protected QuotePdfGenerator $pdfGenerator,
     protected PartnerDiscountResolver $discountResolver,
   ) {}
@@ -78,7 +73,6 @@ final class QuoteDiscountForm extends FormBase {
   public static function create(ContainerInterface $container): static {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('datetime.time'),
       $container->get('drivematic_configurator.quote_pdf_generator'),
       $container->get('drivematic_configurator.partner_discount_resolver'),
     );
@@ -204,7 +198,7 @@ final class QuoteDiscountForm extends FormBase {
     // bon statut, mais celui-ci peut avoir change entre l'affichage et la
     // soumission.
     if (!$quote || $quote->get('status')->value !== Quote::STATUS_A_COMMANDER) {
-      $this->messenger()->addError($this->t("Ce devis n'est pas (ou plus) au statut « À commander »."));
+      $this->messenger()->addError($this->t("Ce devis n'est pas (ou plus) au statut « Commande en cours »."));
       return;
     }
 
@@ -234,9 +228,6 @@ final class QuoteDiscountForm extends FormBase {
     }
 
     $this->recalculateTotals($quote);
-    // Enregistrer une remise redemarre le delai des 30 jours avant
-    // archivage automatique (PRD F15, « cas limites »).
-    $quote->set('date_commande', $this->time->getRequestTime());
     $quote->save();
 
     $this->regenerateQuotePdf($quote);

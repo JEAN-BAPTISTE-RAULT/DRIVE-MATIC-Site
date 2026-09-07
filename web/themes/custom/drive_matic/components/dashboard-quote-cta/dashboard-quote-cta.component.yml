@@ -1,0 +1,15 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: CTA configurateur (tableau de bord)'
+status: stable
+props:
+  type: object
+  required:
+    - href
+    - image_url
+  properties:
+    href:
+      type: string
+      title: 'Destination du bouton « Créer un devis »'
+    image_url:
+      type: string
+      title: 'URL de l’image statique (calculée en PHP : le contexte Twig d’un SDC rendu via #type: component n’hérite pas de `base_path`)'

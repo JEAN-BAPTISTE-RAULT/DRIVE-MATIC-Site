@@ -1,0 +1,15 @@
+{#
+  SDC « Bloc :: CTA configurateur (tableau de bord) » — image statique,
+  titre, description et bouton fixes (aucune gestion BO, pas de champ
+  média), maquettes 491-13703 (desktop) / 604-34427 (mobile). Seules la
+  destination du bouton (`href`) et l'URL de l'image (`image_url`, calculée
+  en PHP) sont variables.
+#}
+<div class="dashboard-quote-cta">
+  <img src="{{ image_url }}" alt="" class="dashboard-quote-cta__image">
+  <div class="dashboard-quote-cta__body">
+    <h2 class="dashboard-quote-cta__title">{{ 'Configurez votre véhicule et obtenez votre tarif'|t }}</h2>
+    <p class="dashboard-quote-cta__description">{{ 'Sélectionnez votre véhicule et les équipements souhaités afin de découvrir les solutions compatibles et recevoir une offre.'|t }}</p>
+    <a href="{{ href }}" class="dashboard-quote-cta__button">{{ 'Créer un devis'|t }}</a>
+  </div>
+</div>

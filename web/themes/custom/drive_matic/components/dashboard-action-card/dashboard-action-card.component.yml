@@ -1,0 +1,32 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Élément :: Raccourci tableau de bord'
+status: stable
+props:
+  type: object
+  required:
+    - label
+    - href
+    - icon
+  properties:
+    variant:
+      type: string
+      title: Variante
+      description: '`action` : fond foncé, sans chiffre. `counter` : fond blanc + bordure, chiffre en emphase.'
+      enum:
+        - action
+        - counter
+      default: counter
+    label:
+      type: string
+      title: Libellé
+    count:
+      type:
+        - integer
+        - 'null'
+      title: 'Compteur (absent pour la variante action)'
+    icon:
+      type: string
+      title: 'Icône (nom du fichier SVG dans images/icons/, sans extension)'
+    href:
+      type: string
+      title: Destination du lien

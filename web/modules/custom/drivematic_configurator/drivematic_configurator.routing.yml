@@ -36,19 +36,6 @@ drivematic_configurator.quote_mark_ordered:
       quote:
         type: entity:quote
 
-drivematic_configurator.quote_archive:
-  path: '/admin/content/devis/{quote}/archiver'
-  defaults:
-    _form: '\Drupal\drivematic_configurator\Form\QuoteArchiveForm'
-    _title: 'Archiver le devis'
-  requirements:
-    _permission: 'edit drivematic configurator quotes'
-  options:
-    _admin_route: true
-    parameters:
-      quote:
-        type: entity:quote
-
 drivematic_configurator.configuration:
   path: '/configurer'
   defaults:

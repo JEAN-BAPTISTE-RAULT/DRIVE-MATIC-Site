@@ -52,7 +52,7 @@ final class QuoteStatusChange extends ContentEntityBase {
       ->setRequired(TRUE)
       ->setSetting('allowed_values', [
         Quote::STATUS_A_FINALISER => 'À finaliser',
-        Quote::STATUS_A_COMMANDER => 'À commander',
+        Quote::STATUS_A_COMMANDER => 'Commande en cours',
         Quote::STATUS_COMMANDE => 'Commandé',
         Quote::STATUS_ARCHIVE => 'Archivé',
       ]);

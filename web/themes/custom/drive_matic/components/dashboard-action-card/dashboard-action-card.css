@@ -1,0 +1,91 @@
+.dashboard-action-card {
+  --dashboard-action-card-icon-size: 47px;
+  --dashboard-action-card-icon-inner: 26px;
+  --dashboard-action-card-gap: 16px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--dashboard-action-card-gap);
+  min-height: 79px;
+  padding-inline: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--dm-color-steel);
+  background: var(--dm-color-white);
+  text-decoration: none;
+}
+@media (width >= 992px) {
+  .dashboard-action-card {
+    --dashboard-action-card-icon-size: 61px;
+    --dashboard-action-card-icon-inner: 32px;
+    --dashboard-action-card-gap: 20px;
+    flex: 1 1 0;
+    min-height: 109px;
+    padding-inline: 24px;
+    border-radius: 16px;
+  }
+}
+.dashboard-action-card--action {
+  border-color: transparent;
+  background: var(--dm-color-steel);
+}
+.dashboard-action-card__icon {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--dashboard-action-card-icon-size);
+  height: var(--dashboard-action-card-icon-size);
+  border-radius: 8px;
+  background-color: var(--dm-color-grey-light);
+}
+.dashboard-action-card--action .dashboard-action-card__icon {
+  background-color: var(--dm-color-white);
+}
+.dashboard-action-card__icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: var(--dashboard-action-card-icon-inner);
+  height: var(--dashboard-action-card-icon-inner);
+  background-color: var(--dm-color-steel);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-size: contain;
+          mask-size: contain;
+}
+.dashboard-action-card__icon--plus-circle::before {
+  -webkit-mask-image: url("../../images/icons/plus-circle.svg");
+          mask-image: url("../../images/icons/plus-circle.svg");
+}
+.dashboard-action-card__icon--folder-edit::before {
+  -webkit-mask-image: url("../../images/icons/folder-edit.svg");
+          mask-image: url("../../images/icons/folder-edit.svg");
+}
+.dashboard-action-card__icon--folder-clock::before {
+  -webkit-mask-image: url("../../images/icons/folder-clock.svg");
+          mask-image: url("../../images/icons/folder-clock.svg");
+}
+.dashboard-action-card__icon--archive::before {
+  -webkit-mask-image: url("../../images/icons/archive.svg");
+          mask-image: url("../../images/icons/archive.svg");
+}
+.dashboard-action-card__label {
+  flex: 1;
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-body);
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+}
+.dashboard-action-card--action .dashboard-action-card__label {
+  color: var(--dm-color-white);
+}
+.dashboard-action-card__count {
+  flex-shrink: 0;
+  color: var(--dm-color-red);
+  font-family: var(--dm-font-title);
+  font-size: 2.8125rem;
+  line-height: 3.625rem;
+  font-weight: 800;
+}

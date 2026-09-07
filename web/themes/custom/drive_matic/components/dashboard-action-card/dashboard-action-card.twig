@@ -1,0 +1,12 @@
+{#
+  SDC « Élément :: Raccourci tableau de bord » — carte icône + libellé (+
+  chiffre), maquettes 491-13703 (desktop) / 604-34427 (mobile). Toute la
+  carte est le lien (racine `<a>`) : pas de motif « lien étiré » nécessaire.
+#}
+<a href="{{ href }}" class="dashboard-action-card dashboard-action-card--{{ variant }}">
+  <span class="dashboard-action-card__icon dashboard-action-card__icon--{{ icon }}" aria-hidden="true"></span>
+  <span class="dashboard-action-card__label">{{ label }}</span>
+  {% if count is not null %}
+    <span class="dashboard-action-card__count">{{ count }}</span>
+  {% endif %}
+</a>

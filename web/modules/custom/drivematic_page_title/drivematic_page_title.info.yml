@@ -1,0 +1,7 @@
+name: 'DRIVE-MATIC Titre de page'
+type: module
+description: 'Condition de visibilite du bloc titre de page, tolerante hors contexte de node (routes de controleur/formulaire custom).'
+package: 'DRIVE-MATIC'
+core_version_requirement: ^11
+dependencies:
+  - drupal:node

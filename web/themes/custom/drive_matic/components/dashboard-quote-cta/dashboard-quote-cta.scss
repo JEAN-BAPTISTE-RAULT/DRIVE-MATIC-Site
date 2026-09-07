@@ -1,0 +1,67 @@
+@use 'button-mixins' as btn;
+
+// SDC « Bloc :: CTA configurateur (tableau de bord) ».
+// Colonne de contenu standard (--dm-content-column, 900 desktop), maquettes
+// 491-13703 (desktop) / 604-34427 (mobile). Bouton = mixin partagé
+// `dm-btn-grey` (« Btn » Figma, ADR-029), pas de valeurs redupliquées.
+.dashboard-quote-cta {
+  max-width: calc(var(--dm-content-column) + 2 * var(--dm-gutter));
+  margin-inline: auto;
+  padding-inline: var(--dm-gutter);
+
+  &__image {
+    display: block;
+    width: 100%;
+    height: 200px;
+    margin-block-end: 18px;
+    border-radius: 16px;
+    object-fit: cover;
+
+    @media (width >= 992px) {
+      height: 502px;
+      margin-block-end: 40px;
+    }
+  }
+
+  &__title {
+    margin: 0 0 10px;
+    color: var(--dm-color-steel);
+    font-family: var(--dm-font-title);
+    font-size: var(--dm-h2-size);
+    line-height: var(--dm-h2-line);
+    font-weight: 700;
+  }
+
+  &__description {
+    margin: 0 0 16px;
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+
+    @media (width >= 992px) {
+      margin-block-end: 22px;
+      font-size: 1rem;
+      line-height: 1.75rem;
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 16px;
+    border-radius: 6px;
+    font-family: var(--dm-font-body);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+
+    @include btn.dm-btn-grey;
+    @include btn.dm-btn-height(text);
+
+    @media (width >= 992px) {
+      font-size: 0.9375rem;
+    }
+  }
+}

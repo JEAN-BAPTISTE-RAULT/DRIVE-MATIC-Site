@@ -34,13 +34,14 @@ function drivematic_configurator_theme(): array {
 /**
  * Implements hook_cron().
  *
- * Archive automatiquement tout devis « À commander » dont la date de
- * commande depasse 30 jours (PRD F15, « cas limites » : « Devis commandé
- * depuis > 30 jours → archivage automatique ») — jamais un devis
- * « Commandé » (Quote::STATUS_COMMANDE), qui ne s'archive plus
- * automatiquement une fois la commande confirmee par Drive Matic.
- * `date_commande` est aussi remise a l'heure actuelle par une remise DM
- * par ligne (QuoteDiscountForm), ce qui redemarre ce delai de 30 jours.
+ * Archive automatiquement tout devis « Commandé » (Quote::STATUS_COMMANDE)
+ * dont la date de confirmation depasse 30 jours (PRD F15, « cas limites »)
+ * — delai fixe, rien ne le repousse (aucune action ne modifie plus un devis
+ * une fois « Commandé »). Un devis « Commande en cours »
+ * (Quote::STATUS_A_COMMANDER) ne s'archive plus jamais automatiquement :
+ * seul le partenaire peut desormais le faire manuellement, depuis son
+ * tableau de bord — Drive Matic n'a plus cette possibilite depuis le
+ * back-office.
  */
 function drivematic_configurator_cron(): void {
   $threshold = \Drupal::time()->getRequestTime() - 30 * 24 * 60 * 60;
@@ -48,8 +49,8 @@ function drivematic_configurator_cron(): void {
   $storage = \Drupal::entityTypeManager()->getStorage('quote');
   $ids = $storage->getQuery()
     ->accessCheck(FALSE)
-    ->condition('status', Quote::STATUS_A_COMMANDER)
-    ->condition('date_commande', $threshold, '<=')
+    ->condition('status', Quote::STATUS_COMMANDE)
+    ->condition('date_confirmation', $threshold, '<=')
     ->execute();
 
   if (!$ids) {
