@@ -6,10 +6,13 @@ id: smtp_passerelle
 label: 'SMTP Passerelle (préprod)'
 plugin: smtp
 configuration:
-  user: no-reply@passerelle.com
+  user: info@drivematiclegrand.com
   pass: ''
   host: mails.passerelle.com
   port: 465
   query:
     verify_peer: true
     local_domain: ''
+    restart_threshold: null
+    restart_threshold_sleep: null
+    ping_threshold: null
