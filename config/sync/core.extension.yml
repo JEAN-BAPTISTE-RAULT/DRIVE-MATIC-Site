@@ -40,7 +40,6 @@ module:
   layout_builder: 0
   layout_discovery: 0
   link: 0
-  link_target: 0
   linkit: 0
   locale: 0
   mailer_override: 0

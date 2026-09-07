@@ -26,7 +26,6 @@
     "drupal/gin": "^5.0",
     "drupal/honeypot": "^2.2",
     "drupal/image_widget_crop": "^3.0",
-    "drupal/link_target": "^1.5",
     "drupal/linkit": "^7.0",
     "drupal/menu_link_attributes": "^1.7",
     "drupal/metatag": "^2.2",

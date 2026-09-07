@@ -110,7 +110,9 @@ le fichier Excel et réimporter).
 ## Conventions transverses
 
 ### Champ « lien » (partout en BO)
-Tout champ **lien** = champ **Link** pouvant pointer vers un **node interne** (référence) **ou** une **URL externe**, avec **cible au choix de l'admin** : onglet courant ou nouvel onglet. → composant/champ de lien réutilisable (module *Link attributes* ou équivalent pour la cible `target`). **Ne concerne pas** les fichiers téléchargeables.
+Tout champ **lien** = champ **Link** pouvant pointer vers un **node interne** (référence) **ou** une **URL externe**, avec **cible au choix de l'admin** : onglet courant ou nouvel onglet. **Ne concerne pas** les fichiers téléchargeables.
+
+⚠️ **Non implémenté à ce jour** (constaté le 2026-09-07) : les 14 champs lien du site utilisent tous le widget core `link_default`, sans choix de cible. Le module `drupal/link_target`, candidat pour cette convention, avait été installé mais jamais câblé sur aucun champ — désinstallé lors d'un audit de ménage plutôt que laissé comme dépendance inerte. Si le besoin se confirme, le câblage (widget `link_target_field_widget` sur les 14 form displays) reste à planifier comme une petite feature à part entière.
 
 ### Champ « fichier téléchargeable » (ex-« lien de téléchargement »)
 = champ **fichier** (media/file). En front, si le champ est renseigné, afficher un **lien de téléchargement avec nom + format + poids** (calcul auto par le CMS). Concerne les paragraphes (ADR-001) et l'entité `question`.
