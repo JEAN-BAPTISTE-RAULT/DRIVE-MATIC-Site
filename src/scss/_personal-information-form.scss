@@ -223,6 +223,23 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  // Champs qui ouvrent une nouvelle ligne / s'etendent sur 2 colonnes —
+  // meme mecanisme et memes classes que `forms` (`dm-form-row-start`/
+  // `dm-form-span-2`, poses par `PersonalInformationForm` via
+  // `#wrapper_attributes`), redeclare ici plutot que partage (cf. note de
+  // tete de fichier). Reprend exactement l'agencement du bloc « Votre
+  // entreprise » du webform `account_request` (memes champs, meme ordre) :
+  // Siret+TVA / Raison sociale+Adresse+Complement / Code postal+Ville.
+  .drivematic-partner-personal-information-form .dm-form-row-start {
+    grid-column-start: 1;
+  }
+
+  // `grid-column-end` et non le raccourci `grid-column` : ce dernier
+  // reinitialiserait aussi `grid-column-start`.
+  .drivematic-partner-personal-information-form .dm-form-span-2 {
+    grid-column-end: span 2;
+  }
+
   // Retour a la largeur naturelle : cote a cote sur leur ligne (`.form-actions`
   // est deja `flex; justify-content: flex-end`), plus etires en pleine largeur.
   // stylelint-disable selector-class-pattern -- classe posee par PersonalInformationForm, hors SDC

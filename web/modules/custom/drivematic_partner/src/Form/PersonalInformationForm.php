@@ -157,6 +157,7 @@ final class PersonalInformationForm extends FormBase {
       '#title' => $this->t('Numéro de TVA intracommunautaire (13 caractères)'),
       '#default_value' => $account->get('field_vat')->value,
       '#attributes' => ['readonly' => 'readonly'],
+      '#wrapper_attributes' => ['class' => ['dm-form-span-2']],
     ];
     $form['company']['field_company_name'] = [
       '#type' => 'textfield',
@@ -181,6 +182,7 @@ final class PersonalInformationForm extends FormBase {
       '#title' => $this->t('Code postal'),
       '#default_value' => $account->get('field_postal_code')->value,
       '#attributes' => ['readonly' => 'readonly'],
+      '#wrapper_attributes' => ['class' => ['dm-form-row-start']],
     ];
     $form['company']['field_city'] = [
       '#type' => 'textfield',

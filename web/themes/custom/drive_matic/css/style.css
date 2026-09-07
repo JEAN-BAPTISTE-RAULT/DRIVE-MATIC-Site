@@ -914,6 +914,12 @@ textarea) {
   .drivematic-partner-personal-information-form .fieldset-wrapper {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+  .drivematic-partner-personal-information-form .dm-form-row-start {
+    grid-column-start: 1;
+  }
+  .drivematic-partner-personal-information-form .dm-form-span-2 {
+    grid-column-end: span 2;
+  }
   .drivematic-partner-personal-information-form .personal-information-form__password-link,
   .drivematic-partner-personal-information-form .form-actions .form-submit {
     width: auto;
