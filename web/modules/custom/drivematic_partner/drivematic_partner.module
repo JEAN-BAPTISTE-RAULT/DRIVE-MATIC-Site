@@ -42,6 +42,18 @@ use Drupal\user\UserInterface;
  */
 function drivematic_partner_form_user_form_alter(array &$form, FormStateInterface $form_state): void {
   $account = $form_state->getFormObject()->getEntity();
+
+  // `RegisterForm` (creation de compte, `/admin/people/create` ou
+  // `/user/register`) partage le meme `base_form_id` ('user_form') que
+  // `ProfileForm` ('/user/{uid}/edit') : ce hook s'execute donc aussi la,
+  // avec un compte pas encore enregistre (`id()` NULL). Rien de ce qui suit
+  // n'a de sens pour un compte inexistant (recapitulatifs d'un historique
+  // qui ne peut pas encore exister) — et `id() === NULL` faisait planter la
+  // requete du recapitulatif des adresses de livraison ('uid IN ()' vide).
+  if ($account->isNew()) {
+    return;
+  }
+
   $editing_own_account = (int) $account->id() === (int) \Drupal::currentUser()->id();
   $is_admin = \Drupal::currentUser()->hasPermission('administer users');
 
