@@ -43,5 +43,41 @@
     @media (width >= 992px) {
       grid-template-columns: repeat(3, 1fr);
     }
+
+    // Leger decalage de l'ARRIVEE VERTICALE entre cartes (le `transform`,
+    // via la custom property lue par grid-element.scss) : 1ere, 2e, 3e...
+    // chacune apres la precedente (au-dela de la 8e carte, meme delai que la
+    // 8e — aucune grille du site n'en compte davantage a ce jour). Le fondu
+    // (opacite), lui, reste simultane sur toutes les cartes — seule cette
+    // custom property est surchargee ici, pas `transition-delay` directement.
+    // stylelint-disable selector-class-pattern -- classe du coeur Drupal
+    .field__item:nth-child(2) .grid-element[data-dm-reveal] {
+      --dm-grid-reveal-delay: 250ms;
+    }
+
+    .field__item:nth-child(3) .grid-element[data-dm-reveal] {
+      --dm-grid-reveal-delay: 500ms;
+    }
+
+    .field__item:nth-child(4) .grid-element[data-dm-reveal] {
+      --dm-grid-reveal-delay: 750ms;
+    }
+
+    .field__item:nth-child(5) .grid-element[data-dm-reveal] {
+      --dm-grid-reveal-delay: 1000ms;
+    }
+
+    .field__item:nth-child(6) .grid-element[data-dm-reveal] {
+      --dm-grid-reveal-delay: 1250ms;
+    }
+
+    .field__item:nth-child(7) .grid-element[data-dm-reveal] {
+      --dm-grid-reveal-delay: 1500ms;
+    }
+
+    .field__item:nth-child(n + 8) .grid-element[data-dm-reveal] {
+      --dm-grid-reveal-delay: 1750ms;
+    }
+    // stylelint-enable selector-class-pattern
   }
 }

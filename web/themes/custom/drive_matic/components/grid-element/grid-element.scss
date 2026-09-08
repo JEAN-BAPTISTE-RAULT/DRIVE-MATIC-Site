@@ -1,6 +1,37 @@
 // SDC « Élément :: Grille » — carte (image 16:9 + titre optionnel + liens).
 // Les wrappers de champ Drupal (`field__items`) sont neutralisés via
 // `display: contents` pour que le `gap` s'applique aux liens.
+
+// Fondu discret a l'arrivee au scroll (comportement partage
+// `drive_matic/reveal`, `.is-visible` posee par l'IntersectionObserver). Le
+// fondu (opacite) est simultane sur toutes les cartes ; seule l'arrivee
+// verticale (transform) est decalee, via la custom property ci-dessous que
+// `grid.scss` surcharge selon la position de la carte dans la grille.
+// Amelioration progressive : l'etat masque n'existe que sous `.js`, le
+// contenu reste visible si le JS est absent ou echoue.
+:where(html.js) .grid-element[data-dm-reveal] {
+  --dm-grid-reveal-delay: 0ms;
+
+  opacity: 0;
+  transform: translateY(48px);
+  transition:
+    opacity 1.6s ease-out,
+    transform 1.6s ease-out var(--dm-grid-reveal-delay);
+}
+
+:where(html.js) .grid-element[data-dm-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid-element[data-dm-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 .grid-element {
   display: flex;
   flex-direction: column;

@@ -147,6 +147,15 @@ video-facade:
     - core/drupal
     - core/once
 
+# Fondu discret a l'arrivee au scroll (IntersectionObserver). Partagee par les
+# composants qui l'activent via `libraryOverrides` (image_text_50/100...).
+reveal:
+  js:
+    js/reveal.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
 # Fondations globales DRIVE-MATIC (compilees depuis src/scss/ via `npm run css`)
 global:
   css:

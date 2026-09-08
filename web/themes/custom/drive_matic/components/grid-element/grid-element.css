@@ -1,3 +1,22 @@
+:where(html.js) .grid-element[data-dm-reveal] {
+  --dm-grid-reveal-delay: 0ms;
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 1.6s ease-out, transform 1.6s ease-out var(--dm-grid-reveal-delay);
+}
+
+:where(html.js) .grid-element[data-dm-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid-element[data-dm-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
 .grid-element {
   display: flex;
   flex-direction: column;

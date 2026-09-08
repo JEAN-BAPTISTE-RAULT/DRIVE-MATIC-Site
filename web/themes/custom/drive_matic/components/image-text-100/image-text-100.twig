@@ -2,15 +2,18 @@
   SDC « Bloc :: Image + texte 100% ».
   Props : title, caption. Slots (via embed/block) : image, description, actions, download.
   Image pleine largeur (sans crop) au-dessus du contenu textuel.
+  Fondu discret a l'arrivee au scroll (`data-dm-reveal`, comportement partage
+  `drive_matic/reveal`) : image et texte revelent independamment (chacun son
+  propre IntersectionObserver).
 #}
 <div class="image-text-100">
-  <figure class="image-text-100__media">
+  <figure class="image-text-100__media" data-dm-reveal>
     {{ block('image') }}
     {% if caption %}
       <figcaption class="image-text-100__caption">{{ caption }}</figcaption>
     {% endif %}
   </figure>
-  <div class="image-text-100__content">
+  <div class="image-text-100__content" data-dm-reveal>
     {% if title %}
       <h2 class="image-text-100__title">{{ title }}</h2>
     {% endif %}

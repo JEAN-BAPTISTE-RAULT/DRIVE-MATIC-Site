@@ -12,3 +12,6 @@ slots:
     title: Image (16:9)
   links:
     title: Liens
+libraryOverrides:
+  dependencies:
+    - drive_matic/reveal

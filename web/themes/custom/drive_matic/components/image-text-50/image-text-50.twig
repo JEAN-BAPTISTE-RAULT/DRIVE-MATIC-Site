@@ -3,17 +3,20 @@
   Props : title, caption, text_position (left|right), background (white|grey).
   Slots (via embed/block) : image, description, actions, download.
   Fondations globales (tokens/typo) + CSS scopé BEM.
+  Fondu discret a l'arrivee au scroll (`data-dm-reveal`, comportement partage
+  `drive_matic/reveal`) : image et texte revelent independamment (chacun son
+  propre IntersectionObserver).
 #}
 {% set position = text_position|default('left') %}
 {% set bg = background|default('white') %}
 <div class="image-text-50 image-text-50--text-{{ position }} image-text-50--bg-{{ bg }}">
-  <figure class="image-text-50__media">
+  <figure class="image-text-50__media" data-dm-reveal>
     {{ block('image') }}
     {% if caption %}
       <figcaption class="image-text-50__caption">{{ caption }}</figcaption>
     {% endif %}
   </figure>
-  <div class="image-text-50__content">
+  <div class="image-text-50__content" data-dm-reveal>
     {% if title %}
       <h2 class="image-text-50__title">{{ title }}</h2>
     {% endif %}

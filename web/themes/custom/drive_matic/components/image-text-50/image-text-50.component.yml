@@ -33,3 +33,6 @@ slots:
     title: Actions (lien / CTA)
   download:
     title: Fichier à télécharger
+libraryOverrides:
+  dependencies:
+    - drive_matic/reveal

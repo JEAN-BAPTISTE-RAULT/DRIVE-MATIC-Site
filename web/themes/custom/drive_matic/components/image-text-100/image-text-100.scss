@@ -4,6 +4,33 @@
 
 @use 'button-mixins' as btn;
 
+// Fondu discret a l'arrivee au scroll (comportement partage
+// `drive_matic/reveal`, `.is-visible` posee par l'IntersectionObserver) :
+// media et contenu texte revelent independamment (`[data-dm-reveal]` sur
+// chacun, pas sur la racine).
+// Amelioration progressive : l'etat masque n'existe que sous `.js`, le
+// contenu reste visible si le JS est absent ou echoue.
+:where(html.js) .image-text-100 [data-dm-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 1.6s ease-out,
+    transform 1.6s ease-out;
+}
+
+:where(html.js) .image-text-100 [data-dm-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-text-100 [data-dm-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 .image-text-100 {
   max-width: calc(900px + 2 * var(--dm-gutter));
   margin-inline: auto;

@@ -1,8 +1,10 @@
 {#
   SDC « Élément :: Grille » — une carte (image 16:9 + titre optionnel + liens).
   Prop : title (opt). Slots : image (média 16:9), links (liste de liens).
+  Fondu discret a l'arrivee au scroll (`data-dm-reveal`, comportement partage
+  `drive_matic/reveal`) ; le decalage entre cartes est pose en CSS (grid.scss).
 #}
-<div class="grid-element">
+<div class="grid-element" data-dm-reveal>
   <div class="grid-element__media">{{ block('image') }}</div>
   <div class="grid-element__body">
     {% if title %}
