@@ -374,6 +374,15 @@
   height: 1px;
 }
 
+// Le champ etire sur 2 colonnes (plus bas, `dm-form-span-2`, uniquement
+// >= 992px) sert le libelle, trop long pour une colonne — le champ lui-meme
+// doit rester a sa largeur normale d'une colonne, pas s'allonger avec lui.
+@media (width >= 992px) {
+  .webform-submission-form .form-item-document input[type='file'] {
+    inline-size: calc((100% - var(--dm-form-gap)) / 2);
+  }
+}
+
 .webform-submission-form input[type='file'] {
   inline-size: 100%;
   padding: 10px 20px;
@@ -384,6 +393,28 @@
   font-family: var(--dm-font-body);
   font-size: var(--dm-body-size);
   line-height: var(--dm-body-line);
+}
+
+// Le bouton natif « Choisir un fichier » a sa propre boite (police/padding de
+// l'UA), plus haute que notre `line-height` : sans ce reset, le champ fichier
+// depasse de 6px la hauteur des autres champs (`box-sizing: border-box`
+// n'absorbe que le contenu attendu, pas cette boite native surdimensionnee).
+// `line-height: 20px` (pas `font: inherit`, qui reprendrait les 28px du champ)
+// : avec le padding block de 4px, la boite du bouton reste dans les 28px de
+// hauteur de ligne du champ — sinon meme probleme de hauteur qu'avant.
+.webform-submission-form input[type='file']::file-selector-button,
+.webform-submission-form input[type='file']::-webkit-file-upload-button {
+  margin: 0;
+  margin-inline-end: 10px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 4px;
+  background-color: var(--dm-color-grey-light);
+  color: var(--dm-color-steel);
+  font-family: var(--dm-font-body);
+  font-size: var(--dm-body-size);
+  line-height: 20px;
+  cursor: pointer;
 }
 
 // --- Bouton d'envoi (« Btn rouge » de la maquette). -----------------------
@@ -445,6 +476,25 @@
   // aussi `grid-column-start`, ecrasant le `grid-column-start: 1` que pose
   // `.dm-form-row-start` sur le meme champ (`message` porte les deux classes).
   .webform-submission-form .dm-form-span-2 {
+    grid-column-end: span 2;
+  }
+
+  // ⚠️ `.js-webform-states-hidden` est posee cote PHP au rendu (visibilite
+  // evaluee a partir des valeurs soumises), pas retiree par `states.js` cote
+  // client : ce dernier bascule uniquement un `style="display: ..."` inline
+  // sur CE MEME wrapper, qui l'emporte toujours sur le `display: contents`
+  // pose plus haut, meme une fois le champ revele. Un champ a largeur normale
+  // ne le voit jamais (son `grid-column` reste sur lui-meme, propriete non
+  // touchee par cet inline style) ; seul un span pose sur un champ fichier
+  // conditionnel (le wrapper ne se met jamais a plat) en a besoin. On pose
+  // alors le span directement sur le VRAI item de grille (ce wrapper), via
+  // `:has()`, plutot que de lutter contre l'inline style.
+  // ⚠️ Rester dans ce bloc `>= 992px` : hors de lui, `.dm-form-span-2` existe
+  // a toutes les largeurs (classe statique du formulaire) et forcerait une
+  // colonne implicite meme sur la grille mobile a une seule colonne.
+  .webform-submission-form
+    .fieldset-wrapper
+    > div.js-form-wrapper:has(.dm-form-span-2) {
     grid-column-end: span 2;
   }
 }

@@ -223,6 +223,9 @@ elements: |-
         visible:
           ':input[name="demande_concerne"]':
             value: sav
+      '#wrapper_attributes':
+        class:
+          - dm-form-span-2
     message:
       '#type': textarea
       '#title': 'Votre message'
