@@ -1,7 +1,12 @@
 .grid-element {
   display: flex;
   flex-direction: column;
-  gap: var(--dm-space-element);
+  gap: calc(var(--dm-space-element) / 3);
+}
+@media (width >= 992px) {
+  .grid-element {
+    gap: var(--dm-space-element);
+  }
 }
 .grid-element__media {
   overflow: hidden;
