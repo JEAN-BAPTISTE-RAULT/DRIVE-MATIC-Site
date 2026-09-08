@@ -1,7 +1,16 @@
 .site-header {
-  position: relative;
+  position: -webkit-sticky;
+  position: sticky;
+  top: var(--drupal-displace-offset-top, 0);
+  z-index: 30;
   background-color: var(--dm-color-white);
   border-bottom: 1px solid var(--dm-color-grey-light);
+  transition: transform 0.3s ease;
+}
+.site-header.is-hidden {
+  transform: translateY(-100%);
+}
+.site-header {
   --site-header-gutter: 24px;
   --site-header-nav-gap: 20px;
   --site-header-card-gap-column: 11px;
@@ -524,4 +533,10 @@
 .site-header__drawer-foot > .site-header__cta {
   width: 100%;
   justify-content: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header {
+    transition: none;
+  }
 }

@@ -17,6 +17,9 @@
  * - Amélioration progressive : le markup serveur ne pose ni `aria-expanded`
  *   ni classe d'état ; ce fichier les pose à l'attache. Sans JS, tout reste
  *   visible (cf. site-header.scss).
+ * - Header sticky qui se masque au scroll vers le bas et reapparait vers le
+ *   haut (`.is-hidden`), comportement independant des flyouts/tiroir
+ *   ci-dessus.
  */
 (function (Drupal, once) {
   'use strict';
@@ -175,6 +178,43 @@
           });
         }
       });
+    },
+  };
+
+  /**
+   * Masque le header au scroll vers le bas, le réaffiche au scroll vers le
+   * haut (`.is-hidden`, glissement gere par site-header.scss). Reste visible
+   * tant qu'on n'a pas depasse sa propre hauteur, pour eviter un clignotement
+   * pres du haut de page.
+   */
+  Drupal.behaviors.driveMaticSiteHeaderScroll = {
+    attach(context) {
+      once('dm-site-header-scroll', '.site-header', context).forEach(
+        (header) => {
+          let lastScrollY = window.scrollY;
+          let ticking = false;
+
+          function update() {
+            const currentScrollY = window.scrollY;
+            const scrollingDown = currentScrollY > lastScrollY;
+            const pastHeader = currentScrollY > header.offsetHeight;
+            header.classList.toggle('is-hidden', scrollingDown && pastHeader);
+            lastScrollY = currentScrollY;
+            ticking = false;
+          }
+
+          window.addEventListener(
+            'scroll',
+            () => {
+              if (!ticking) {
+                window.requestAnimationFrame(update);
+                ticking = true;
+              }
+            },
+            { passive: true },
+          );
+        },
+      );
     },
   };
 })(Drupal, once);

@@ -10,10 +10,28 @@
 // et c'est uniquement sous `html.js` qu'ils se replient/positionnent en
 // flyout — meme principe que accordion-element.scss.
 
+// Fixe en haut d'ecran en permanence (`position: sticky`, pas besoin de
+// compensation de hauteur ailleurs : contrairement a `fixed`, l'element garde
+// sa place dans le flux). `.is-hidden` (posee par site-header.js selon le
+// sens du scroll) le fait glisser hors champ. Amelioration progressive : sans
+// JS, le header reste sticky mais ne se masque jamais (`.is-hidden` n'est
+// jamais posee).
+// ⚠️ `top` suit `--drupal-displace-offset-top` (mecanisme officiel
+// core/misc/displace.js) : la barre d'admin Toolbar est elle-meme fixe en
+// haut d'ecran (data-offset-top), sans ce decalage elle chevauche le header
+// pendant le scroll pour un utilisateur authentifie. `0` de secours pour un
+// anonyme (variable jamais posee, Toolbar non charge).
 .site-header {
-  position: relative;
+  position: sticky;
+  top: var(--drupal-displace-offset-top, 0);
+  z-index: 30;
   background-color: var(--dm-color-white);
   border-bottom: 1px solid var(--dm-color-grey-light);
+  transition: transform 0.3s ease;
+
+  &.is-hidden {
+    transform: translateY(-100%);
+  }
 
   // Mesures de maquette sans role dans les 3 tokens d'espacement globaux
   // (ADR-013) : nommees ici plutot que semees en dur.
@@ -721,5 +739,11 @@
   &__drawer-foot > &__cta {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header {
+    transition: none;
   }
 }
