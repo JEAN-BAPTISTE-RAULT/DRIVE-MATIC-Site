@@ -53,6 +53,8 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-046](046-tableau-de-bord-partenaire.md) | Tableau de bord partenaire (F13, etape 1/2) : 3 compteurs par statut, liens vers la future page de listing poses en dur | Accepte | 2026-09-07 |
 | [ADR-047](047-titre-page-hors-node.md) | Bloc titre de page tolerant aux routes hors node (plugin Condition custom resolu par route, pas par contexte de plugin) | Accepte | 2026-09-07 |
 | [ADR-048](048-logo-email-url-dynamique.md) | URL du logo e-mail rendue dynamique (`[site:url]`) sur les 13 occurrences mailer_policy/webform | Accepte | 2026-09-07 |
+| [ADR-049](049-fondu-arrivee-scroll.md) | Fondu discret a l'arrivee au scroll (comportement partage `drive_matic/reveal`, image_text_50/100 + grid) | Accepte | 2026-09-09 |
+| [ADR-050](050-header-sticky-masquage-scroll.md) | Header sticky qui se masque au scroll vers le bas, calage sous la Toolbar admin | Accepte | 2026-09-09 |
 
 ## Quand creer un ADR
 

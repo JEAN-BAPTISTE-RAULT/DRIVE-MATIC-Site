@@ -69,6 +69,8 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 **Cas limites** :
 - Champs optionnels laisses vides → le bloc s'affiche sans l'element concerne (pas d'espace vide casse).
 
+- **Mise en oeuvre — fondu a l'arrivee au scroll le 2026-09-09** ([ADR-049](../.claude/decisions/049-fondu-arrivee-scroll.md)) : `image_text_50`, `image_text_100` et `grid`/`grid_element` revelent leur contenu au scroll (opacite + leger deplacement vertical, comportement partage `drive_matic/reveal`), effet rejoue a chaque passage dans le viewport. Sur `grid`, un leger decalage d'arrivee verticale s'ajoute entre les cartes (opacite simultanee, transform decale par position). Amelioration progressive stricte, desactive sous `prefers-reduced-motion`.
+
 ---
 
 ### F2 : Navigation (menu, fil d'Ariane, footer)
@@ -96,6 +98,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - **Mise a jour du 2026-09-07** (F13, ADR-046) : le lien « Tableau de bord » (`menu_link_content` id 42) pointe desormais vers `/user/tableau-de-bord`, fonctionnel. Seul « Mes devis » (id 43) reste en `<nolink>` (F15, page a construire).
 - **Mise en oeuvre — fil d'Ariane stylise le 2026-08-21** ([ADR-023](../.claude/decisions/023-fil-ariane-style.md)) : aucune maquette ne le montrait (ecart assume, cf. `docs/archive/maquette-integration-progress.md`) — typographie et couleurs reprises du registre `pager`, ecart egal au-dessus et au-dessous (`--dm-space-element`, 24px, porte par le fil d'Ariane lui-meme pour couvrir aussi les pages sans bloc titre comme `product`), et alignement horizontal cale sur le bandeau du header (logo compris), pas sur la colonne de contenu — les deux divergent au-dela de ~980px de large.
 - **Corrige le 2026-08-31** (addendum [ADR-023](../.claude/decisions/023-fil-ariane-style.md)) : le fil d'Ariane est desormais masque sous 992px (demande explicite). Seul son contenu disparait visuellement — le bloc conserve son `padding-block`, donc l'ecart vertical vers le titre de page (ou le premier paragraphe sur les gabarits hero) n'est pas affecte.
+- **Mise en oeuvre — header sticky qui se masque au scroll le 2026-09-09** ([ADR-050](../.claude/decisions/050-header-sticky-masquage-scroll.md)) : le header, jusque-la en flux normal, est desormais fixe en haut d'ecran en permanence et se retracte au scroll vers le bas (reapparait vers le haut), au-dela de sa propre hauteur pour eviter un clignotement pres du haut de page. Calage sous la barre d'admin Toolbar (`--drupal-displace-offset-top`) pour un utilisateur authentifie. Desactive sous `prefers-reduced-motion` ; sans JS, reste sticky mais ne se masque jamais.
 
 ---
 
