@@ -115,7 +115,6 @@ user:
 # Détection JS : bascule `no-js` -> `js` sur <html>, chargée en <head> pour
 # éviter tout flash sur les composants à amélioration progressive (accordéon…).
 js-detect:
-  version: VERSION
   header: true
   js:
     js/js-detect.js: { weight: -100 }
@@ -132,7 +131,6 @@ swiper:
 
 # Comportement d'initialisation des slideshows (wrapper Swiper accessible).
 slideshow:
-  version: VERSION
   js:
     js/slideshow.js: {}
   dependencies:
@@ -143,7 +141,6 @@ slideshow:
 # Facade video generique (injection de l'iframe au clic) — RGPD/perf.
 # Partagee par les composants video (video_centered, history_element, ...).
 video-facade:
-  version: VERSION
   js:
     js/video-facade.js: {}
   dependencies:
@@ -152,7 +149,6 @@ video-facade:
 
 # Fondations globales DRIVE-MATIC (compilees depuis src/scss/ via `npm run css`)
 global:
-  version: VERSION
   css:
     theme:
       css/style.css: {}
