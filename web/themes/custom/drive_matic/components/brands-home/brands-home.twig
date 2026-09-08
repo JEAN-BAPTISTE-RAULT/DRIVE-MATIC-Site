@@ -5,8 +5,9 @@
   Swiper exige `.swiper-wrapper` en enfant DIRECT : c'est le SDC qui la fournit.
   Slideshow si > 1 diapositive. Les flèches encadrent la rangée (maquette), hors
   de la piste : le behavior les résout dans le conteneur du composant.
-  Défilement automatique (3s) en plus du défilement manuel (flèches, glisser) ;
-  desactivé sous `prefers-reduced-motion`.
+  Défilement automatique (glissements rapides et rapprochés) en plus du
+  défilement manuel (flèches, glisser) ; desactivé sous
+  `prefers-reduced-motion`.
 #}
 <section class="brands-home">
   <h2 class="brands-home__title">{{ title }}</h2>
@@ -22,7 +23,7 @@
       data-dm-slideshow
       data-dm-slideshow-per-view="auto"
       data-dm-slideshow-space="16"
-      data-dm-slideshow-autoplay="3000"
+      data-dm-slideshow-autoplay="800"
     >
       <div class="swiper-wrapper">
         {{ block('slides') }}

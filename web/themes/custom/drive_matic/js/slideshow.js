@@ -12,9 +12,16 @@
  * Options par data-attribut (sur l'element `[data-dm-slideshow]`) :
  *   - data-dm-slideshow-per-view : nombre ou "auto" (defaut 1)
  *   - data-dm-slideshow-space    : espace entre diapositives en px (defaut 24)
- *   - data-dm-slideshow-autoplay : delai en ms (absent = pas de defilement
- *     automatique). Le defilement manuel (fleches, glisser) reste actif ;
- *     desactive sous `prefers-reduced-motion`.
+ *   - data-dm-slideshow-autoplay : delai en ms entre deux glissements
+ *     automatiques (absent = pas de defilement automatique). Glissement
+ *     rapide et fluide (pas de saut brusque), rewind en douceur en fin de
+ *     piste. Le defilement manuel (fleches, glisser) reste actif ; desactive
+ *     sous `prefers-reduced-motion`.
+ *
+ * ⚠️ Ne pas combiner l'autoplay avec `freeMode`/`loop` pour un rendu
+ * "continu" : ca laisse Swiper en etat `animating` permanent, ce qui lui
+ * fait ignorer les clics sur les fleches (garde interne anti-double-clic).
+ * Deja tente et corrige (defilement marques partenaires, 09/09/2026).
  */
 (function (Drupal, once) {
   Drupal.behaviors.driveMaticSlideshow = {
@@ -33,12 +40,13 @@
           '[data-dm-slideshow-pagination]',
         );
         const autoplayDelay = el.dataset.dmSlideshowAutoplay;
+        const autoplaying = !!autoplayDelay && !reduce;
 
         new Swiper(el, {
-          speed: reduce ? 0 : 400,
+          speed: reduce ? 0 : 500,
           slidesPerView: perView === 'auto' ? 'auto' : Number(perView),
           spaceBetween: Number(el.dataset.dmSlideshowSpace || 24),
-          rewind: !!autoplayDelay && !reduce,
+          rewind: autoplaying,
           navigation: {
             prevEl: scope.querySelector('[data-dm-slideshow-prev]'),
             nextEl: scope.querySelector('[data-dm-slideshow-next]'),
@@ -46,14 +54,13 @@
           pagination: paginationEl
             ? { el: paginationEl, clickable: true }
             : false,
-          autoplay:
-            autoplayDelay && !reduce
-              ? {
-                  delay: Number(autoplayDelay),
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true,
-                }
-              : false,
+          autoplay: autoplaying
+            ? {
+                delay: Number(autoplayDelay),
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }
+            : false,
           a11y: {
             enabled: true,
           },
