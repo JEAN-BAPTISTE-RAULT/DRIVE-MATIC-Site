@@ -39,6 +39,11 @@
     display: block;
     width: 100%;
     height: auto;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover &__media img {
+    transform: scale(1.05);
   }
 
   // `justify-self: start` : l'item ne s'etire plus a la largeur de sa

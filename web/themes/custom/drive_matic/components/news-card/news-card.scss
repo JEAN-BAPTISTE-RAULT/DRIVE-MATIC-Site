@@ -17,6 +17,11 @@
     display: block;
     width: 100%;
     height: auto;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover &__media img {
+    transform: scale(1.05);
   }
 
   &__body {
