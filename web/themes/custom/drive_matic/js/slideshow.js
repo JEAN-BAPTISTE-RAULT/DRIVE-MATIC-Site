@@ -12,6 +12,9 @@
  * Options par data-attribut (sur l'element `[data-dm-slideshow]`) :
  *   - data-dm-slideshow-per-view : nombre ou "auto" (defaut 1)
  *   - data-dm-slideshow-space    : espace entre diapositives en px (defaut 24)
+ *   - data-dm-slideshow-autoplay : delai en ms (absent = pas de defilement
+ *     automatique). Le defilement manuel (fleches, glisser) reste actif ;
+ *     desactive sous `prefers-reduced-motion`.
  */
 (function (Drupal, once) {
   Drupal.behaviors.driveMaticSlideshow = {
@@ -29,11 +32,13 @@
         const paginationEl = scope.querySelector(
           '[data-dm-slideshow-pagination]',
         );
+        const autoplayDelay = el.dataset.dmSlideshowAutoplay;
 
         new Swiper(el, {
           speed: reduce ? 0 : 400,
           slidesPerView: perView === 'auto' ? 'auto' : Number(perView),
           spaceBetween: Number(el.dataset.dmSlideshowSpace || 24),
+          rewind: !!autoplayDelay && !reduce,
           navigation: {
             prevEl: scope.querySelector('[data-dm-slideshow-prev]'),
             nextEl: scope.querySelector('[data-dm-slideshow-next]'),
@@ -41,6 +46,14 @@
           pagination: paginationEl
             ? { el: paginationEl, clickable: true }
             : false,
+          autoplay:
+            autoplayDelay && !reduce
+              ? {
+                  delay: Number(autoplayDelay),
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true,
+                }
+              : false,
           a11y: {
             enabled: true,
           },
