@@ -55,6 +55,9 @@ final class QuotePersister {
       'reference' => $this->referenceGenerator->generate(),
       'status' => $status,
       'date_commande' => $status === Quote::STATUS_A_COMMANDER ? $now : NULL,
+      // Meme condition que `date_commande` : seul point de code qui fait
+      // passer un devis a STATUS_A_COMMANDER aujourd'hui (ADR-051 addendum).
+      'date_comptable' => $status === Quote::STATUS_A_COMMANDER ? $now : NULL,
       'billing_raison_sociale' => $account->get('field_company_name')->value,
       'billing_adresse' => $account->get('field_company_address')->value,
       'billing_complement' => $account->get('field_address_complement')->value,

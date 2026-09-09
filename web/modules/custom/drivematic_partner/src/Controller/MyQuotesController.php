@@ -58,6 +58,11 @@ final class MyQuotesController extends ControllerBase {
     }
     $show_reference = $active_tab === 'en-cours';
     $show_amount = $active_tab !== 'a-finaliser';
+    // « à finaliser » : date de dernier enregistrement (`changed`, un devis
+    // édité plusieurs fois doit remonter en tête). « en cours »/« archivés » :
+    // date de passage au statut « à commander » (`date_comptable`, jamais
+    // remise à jour ensuite) — voir ADR-051 addendum.
+    $date_field = $active_tab === 'a-finaliser' ? 'changed' : 'date_comptable';
 
     $uid = (int) $this->currentUser()->id();
     $storage = $this->entityTypeManager()->getStorage('quote');
@@ -72,7 +77,7 @@ final class MyQuotesController extends ControllerBase {
       ->accessCheck(FALSE)
       ->condition('uid', $uid)
       ->condition('status', self::TAB_STATUSES[$active_tab], 'IN')
-      ->sort('created', 'DESC');
+      ->sort($date_field, 'DESC');
 
     $total = (int) (clone $query)->count()->execute();
     $pager = $this->pagerManager->createPager($total, self::PAGE_SIZE);
@@ -87,7 +92,7 @@ final class MyQuotesController extends ControllerBase {
         '#type' => 'component',
         '#component' => 'drive_matic:quote-row',
         '#props' => [
-          'date' => $this->formatDate($quote->get('created')->value),
+          'date' => $this->formatDate($quote->get($date_field)->value),
           'vehicles' => $vehicles,
           'equipment' => $equipment,
           'status_lines' => $this->formatStatusLines($quote),

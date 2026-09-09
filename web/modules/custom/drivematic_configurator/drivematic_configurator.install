@@ -448,3 +448,104 @@ function drivematic_configurator_update_11012(): string {
 
   return 'Champ "billing_vat" installe sur l\'entite "quote".';
 }
+
+/**
+ * Installe le champ `changed` sur l'entite `quote` (ADR-051 addendum).
+ *
+ * Mise a jour automatique a chaque enregistrement (ChangedItem::preSave()) :
+ * alimente la colonne Date de l'onglet « à finaliser » de la page « Mes
+ * devis » — un devis edite plusieurs fois doit remonter en tete de liste.
+ *
+ * Idempotent : `installFieldStorageDefinition()` ne fait rien si le champ
+ * existe deja.
+ */
+function drivematic_configurator_update_11013(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getFieldStorageDefinition('changed', 'quote')) {
+    return 'Champ "changed" deja installe sur "quote" : mise a jour ignoree.';
+  }
+
+  $storage_definition = BaseFieldDefinition::create('changed')
+    ->setLabel(new TranslatableMarkup('Modifié le'))
+    ->setName('changed')
+    ->setTargetEntityTypeId('quote');
+
+  $update_manager->installFieldStorageDefinition('changed', 'quote', 'drivematic_configurator', $storage_definition);
+
+  return 'Champ "changed" installe sur l\'entite "quote".';
+}
+
+/**
+ * Installe le champ `date_comptable` sur l'entite `quote` (ADR-051 addendum).
+ *
+ * Date a laquelle le devis passe au statut Quote::STATUS_A_COMMANDER,
+ * distincte de `date_commande` (voir Entity/Quote.php) — alimente la colonne
+ * Date des onglets « en cours »/« archivés » de la page « Mes devis ».
+ *
+ * Idempotent : `installFieldStorageDefinition()` ne fait rien si le champ
+ * existe deja.
+ */
+function drivematic_configurator_update_11014(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getFieldStorageDefinition('date_comptable', 'quote')) {
+    return 'Champ "date_comptable" deja installe sur "quote" : mise a jour ignoree.';
+  }
+
+  $storage_definition = BaseFieldDefinition::create('timestamp')
+    ->setLabel(new TranslatableMarkup('Date comptable'))
+    ->setName('date_comptable')
+    ->setTargetEntityTypeId('quote');
+
+  $update_manager->installFieldStorageDefinition('date_comptable', 'quote', 'drivematic_configurator', $storage_definition);
+
+  return 'Champ "date_comptable" installe sur l\'entite "quote".';
+}
+
+/**
+ * Renseigne `changed`/`date_comptable` sur les devis deja en base.
+ *
+ * `changed` : initialise a `created` sur tous les devis (aucun historique
+ * d'edition anterieur a l'existence de ce champ). `date_comptable` : reprise
+ * depuis la 1re entree `quote_status_change` au statut STATUS_A_COMMANDER de
+ * chaque devis (source la plus fiable de la date reelle de transition,
+ * ADR-038) ; a defaut (devis cree avant l'historique) repli sur `created`.
+ * Seuls les devis ayant deja atteint STATUS_A_COMMANDER recoivent une
+ * `date_comptable` (NULL pour un devis encore « à finaliser », sans objet).
+ */
+function drivematic_configurator_update_11015(): string {
+  $quote_storage = \Drupal::entityTypeManager()->getStorage('quote');
+  $history_storage = \Drupal::entityTypeManager()->getStorage('quote_status_change');
+
+  $ids = $quote_storage->getQuery()->accessCheck(FALSE)->execute();
+  $comptable_count = 0;
+
+  /** @var \Drupal\drivematic_configurator\Entity\Quote $quote */
+  foreach ($quote_storage->loadMultiple($ids) as $quote) {
+    $quote->set('changed', $quote->get('created')->value);
+
+    $status = $quote->get('status')->value;
+    if (in_array($status, [Quote::STATUS_A_COMMANDER, Quote::STATUS_COMMANDE, Quote::STATUS_ARCHIVE], TRUE)) {
+      $history_ids = $history_storage->getQuery()
+        ->accessCheck(FALSE)
+        ->condition('quote_id', $quote->id())
+        ->condition('status', Quote::STATUS_A_COMMANDER)
+        ->sort('created', 'ASC')
+        ->range(0, 1)
+        ->execute();
+      $history = $history_ids ? $history_storage->load(reset($history_ids)) : NULL;
+
+      $quote->set('date_comptable', $history ? $history->get('created')->value : $quote->get('created')->value);
+      $comptable_count++;
+    }
+
+    $quote->save();
+  }
+
+  return sprintf(
+    '%d devis mis a jour ("changed" initialise a "created" sur tous ; "date_comptable" renseigne sur %d devis "a commander"/"commande"/"archive").',
+    count($ids),
+    $comptable_count,
+  );
+}

@@ -6,6 +6,8 @@ namespace Drupal\drivematic_configurator\Entity;
 
 use Drupal\Core\Entity\Attribute\ContentEntityType;
 use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\Core\Entity\EntityChangedInterface;
+use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -53,9 +55,10 @@ use Drupal\views\EntityViewsData;
   admin_permission: 'view drivematic configurator quotes',
   base_table: 'quote',
 )]
-final class Quote extends ContentEntityBase implements EntityOwnerInterface {
+final class Quote extends ContentEntityBase implements EntityOwnerInterface, EntityChangedInterface {
 
   use EntityOwnerTrait;
+  use EntityChangedTrait;
 
   public const STATUS_A_FINALISER = 'a_finaliser';
   public const STATUS_A_COMMANDER = 'a_commander';
@@ -88,8 +91,25 @@ final class Quote extends ContentEntityBase implements EntityOwnerInterface {
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(new TranslatableMarkup('Date de création'));
 
+    // Mise a jour automatique a chaque enregistrement
+    // (ChangedItem::preSave()) : sert de « date de derniere modification » a
+    // la page « Mes devis » (colonne Date de l'onglet « à finaliser »,
+    // ADR-051 addendum).
+    $fields['changed'] = BaseFieldDefinition::create('changed')
+      ->setLabel(new TranslatableMarkup('Modifié le'));
+
     $fields['date_commande'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(new TranslatableMarkup('Date de commande'));
+
+    // Distinct de `date_commande` (qui documente le clic « Commander »
+    // initial) : posee par QuotePersister au meme instant aujourd'hui, mais
+    // conceptuellement la date du passage au statut STATUS_A_COMMANDER —
+    // amenee a diverger si une future action fait passer un devis « à
+    // finaliser » existant a ce statut sans repasser par QuotePersister.
+    // Jamais remise a jour ensuite (ADR-051 addendum) : colonne Date des
+    // onglets « en cours »/« archivés », classement decroissant.
+    $fields['date_comptable'] = BaseFieldDefinition::create('timestamp')
+      ->setLabel(new TranslatableMarkup('Date comptable'));
 
     $fields['date_confirmation'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(new TranslatableMarkup('Date de confirmation (téléphone)'));

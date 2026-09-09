@@ -154,3 +154,94 @@ convention établie pour cette même donnée ailleurs dans le projet
 - Fichiers créés : `drivematic_partner/src/Controller/MyQuotesController.php`,
   SDC `quote-list` et `quote-row`. Fichiers modifiés :
   `drivematic_partner.routing.yml`, `DashboardController.php`.
+
+## Addendum du 2026-09-09 : colonne Date = création, pas dernier enregistrement
+
+**Contexte** : la colonne « Date » lisait `created` (date de création) sur les
+3 onglets. Or un devis « à finaliser » est destiné à être édité plusieurs fois
+avant d'être commandé (édition pas encore construite, cf. « Reste à faire »
+ci-dessus) — un devis remodifié doit remonter en tête de liste, ce que
+`created` ne peut jamais refléter.
+
+### Un seul champ générique vs deux champs à sémantique distincte
+
+- **Un seul champ `changed`, utilisé partout** : écarté — dans « en cours »/
+  « archivés », le devis n'est plus édité (le partenaire ne peut plus le
+  modifier une fois commandé) mais `changed` continuerait de bouger à chaque
+  action Drive Matic dessus (remise exceptionnelle, marquage « Commandé »,
+  archivage) : le tri de ces 2 onglets se déréglerait sans rapport avec une
+  action du partenaire.
+- **`changed` (édition) + `date_comptable` (passage à « à commander »)**
+  (retenue) : chacun des 3 onglets trie sur la date qui correspond à ce que le
+  partenaire y fait réellement — éditer (à finaliser) ou avoir commandé (en
+  cours/archivés, qui partagent la même notion de date puisqu'un devis
+  archivé a nécessairement été « à commander » avant).
+
+### `date_comptable` : nouveau champ vs réutiliser `date_commande`
+
+`date_commande` existe déjà et est posé exactement à la même occasion
+(`QuotePersister::persist()`, `$status === Quote::STATUS_A_COMMANDER`) — les
+deux valent donc rigoureusement la même chose aujourd'hui.
+
+- **Réutiliser `date_commande` pour l'affichage** : écarté — son seul autre
+  rôle actuel (`QuoteDetailController::buildCreationEntry()`, déduire le
+  statut initial d'un devis antérieur à l'historique des statuts) est une
+  logique interne au back-office DM, sans rapport avec l'affichage partenaire ;
+  les coupler aurait rendu un futur changement de l'un risqué pour l'autre.
+- **Nouveau champ `date_comptable`, posé au même instant** (retenue) : les
+  deux valeurs coïncident tant qu'aucun mécanisme ne fait passer un devis
+  « à finaliser » déjà existant au statut « à commander » sans repasser par
+  `QuotePersister` (aucun n'existe aujourd'hui) — mais restent conceptuellement
+  distinctes et pourront diverger le jour où un tel mécanisme sera construit
+  (le « Commander » du menu déroulant, lu sur les maquettes mais non
+  implémenté).
+
+### Population de `date_comptable` : hook générique vs point d'appel explicite
+
+- **`hook_ENTITY_TYPE_presave()` générique sur `quote`** : écarté — aucun
+  autre champ « à la transition de statut » de cette entité (`date_confirmation`,
+  `date_archivage`) n'est posé de cette façon ; ils le sont chacun explicitement
+  au point de code qui déclenche la transition (`QuoteMarkOrderedForm`,
+  `drivematic_configurator_cron()`). Un hook générique aurait introduit un
+  2e mécanisme pour le même genre de besoin, sans qu'aucun autre code de ce
+  module n'en ait besoin aujourd'hui.
+- **Posé explicitement dans `QuotePersister::persist()`, à côté de
+  `date_commande`** (retenue) : cohérent avec le pattern déjà établi ; le futur
+  mécanisme de transition (« Commander » sur un devis « à finaliser » existant)
+  devra explicitement poser `date_comptable` lui aussi, exactement comme il
+  devra explicitement poser une entrée `quote_status_change` — aucune surprise,
+  le principe est déjà celui de toutes les transitions de ce devis.
+
+## Décision (addendum)
+
+- Champ `changed` (type `changed` core, auto-géré par `ChangedItem::preSave()`)
+  et `EntityChangedInterface`/`EntityChangedTrait` sur `Quote` — aucune ligne
+  de code supplémentaire nécessaire pour qu'il se mette à jour à chaque
+  modification du devis (remise DM comprise, mais celle-ci n'a plus d'effet
+  sur le tri de « à finaliser » puisqu'un devis remisé est déjà « à commander »
+  à ce moment).
+- Champ `date_comptable` (`timestamp`), posé dans `QuotePersister::persist()`
+  en même temps que `date_commande`, jamais remis à jour ensuite.
+- `MyQuotesController::build()` : le champ de tri ET la valeur affichée dans
+  la colonne Date dépendent de l'onglet (`changed` pour « à finaliser »,
+  `date_comptable` pour les 2 autres) — un seul point de bascule (`$date_field`),
+  consommé à la fois par `->sort()` et par la construction de chaque ligne.
+- 3 `hook_update_N` (`drivematic_configurator_update_11013/11014/11015`) :
+  installation des 2 champs puis migration des devis déjà en base — `changed`
+  initialisé à `created` (aucun historique d'édition antérieur à ce champ) ;
+  `date_comptable` repris depuis la 1re entrée `quote_status_change` au statut
+  `a_commander` de chaque devis (source la plus fiable de la date réelle de
+  transition, ADR-038), à défaut repli sur `created`.
+
+## Conséquences (addendum)
+
+- Un devis « à finaliser » remodifié (une fois l'édition partenaire
+  construite) remontera automatiquement en tête de cet onglet, sans code
+  supplémentaire à écrire à ce moment-là.
+- Le classement de « en cours »/« archivés » reste stable même si Drive Matic
+  agit sur un devis après coup (remise, marquage commandé, archivage) — seule
+  la date de passage à « à commander » compte, jamais retouchée par ces
+  actions.
+- Fichiers modifiés : `Entity/Quote.php` (champs + interface),
+  `Service/QuotePersister.php`, `drivematic_configurator.install` (3 hooks),
+  `MyQuotesController.php`.
