@@ -90,7 +90,7 @@ final class MyQuotesController extends ControllerBase {
           'date' => $this->formatDate($quote->get('created')->value),
           'vehicles' => $vehicles,
           'equipment' => $equipment,
-          'status_label' => (string) $this->formatStatus($quote),
+          'status_lines' => $this->formatStatusLines($quote),
           'status_modifier' => str_replace('_', '-', (string) $quote->get('status')->value),
           'reference' => $show_reference ? (string) $quote->get('reference')->value : NULL,
           'amount' => $show_amount ? $this->formatAmount($quote->get('total_ht')->value) : NULL,
@@ -160,22 +160,28 @@ final class MyQuotesController extends ControllerBase {
   }
 
   /**
-   * Libellé du statut affiché au partenaire.
+   * Lignes du badge de statut affiché au partenaire.
    *
    * `commande` ET `archive` partagent le même libellé avec date : aucune des
    * maquettes de cette page ne montre de badge « Archivé » distinct, seul le
-   * back-office DM (QuoteDetailController) le fait — voir ADR-051.
+   * back-office DM (QuoteDetailController) le fait — voir ADR-051. Rendu sur
+   * 2 lignes (maquette 493-15278 : « Commandé le » / date) — scission
+   * purement présentationnelle d'un même message, comme les lignes véhicule.
+   *
+   * @return string[]
+   *   1 ligne pour les autres statuts, 2 pour `commande`/`archive`.
    */
-  private function formatStatus(Quote $quote): TranslatableMarkup|string {
+  private function formatStatusLines(Quote $quote): array {
     $status = (string) $quote->get('status')->value;
     if (in_array($status, [Quote::STATUS_COMMANDE, Quote::STATUS_ARCHIVE], TRUE)) {
-      return $this->t('Commandé le @date', [
-        '@date' => $this->formatDate($quote->get('date_confirmation')->value),
-      ]);
+      return [
+        (string) $this->t('Commandé le'),
+        $this->formatDate($quote->get('date_confirmation')->value),
+      ];
     }
 
     $allowed_values = $quote->getFieldDefinition('status')->getSetting('allowed_values');
-    return $allowed_values[$status] ?? $status;
+    return [(string) ($allowed_values[$status] ?? $status)];
   }
 
   /**

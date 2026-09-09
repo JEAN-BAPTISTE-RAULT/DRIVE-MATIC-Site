@@ -104,15 +104,16 @@
 .quote-row__badge {
   justify-self: start;
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-inline: 12px;
+  padding: 6px 12px;
   border-radius: 50px;
   color: var(--dm-color-anthracite);
   font-family: var(--dm-font-body);
   font-size: 0.8125rem;
   font-weight: 600;
-  line-height: 1.75rem;
+  line-height: 1rem;
   white-space: nowrap;
 }
 .quote-row__badge--a-finaliser {
@@ -123,4 +124,7 @@
 }
 .quote-row__badge--commande, .quote-row__badge--archive {
   background-color: var(--dm-status-done);
+}
+.quote-row__badge-line {
+  display: block;
 }

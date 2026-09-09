@@ -7,7 +7,7 @@ props:
     - date
     - vehicles
     - equipment
-    - status_label
+    - status_lines
     - status_modifier
   properties:
     date:
@@ -21,9 +21,11 @@ props:
     equipment:
       type: string
       title: 'Équipement(s), libellés dédupliqués joints par virgule'
-    status_label:
-      type: string
-      title: 'Libellé du statut affiché dans le badge'
+    status_lines:
+      type: array
+      title: 'Lignes du badge de statut (2 lignes pour « Commandé le » / date, 1 sinon)'
+      items:
+        type: string
     status_modifier:
       type: string
       title: 'Suffixe de classe CSS du badge (kebab-case)'

@@ -126,6 +126,11 @@
     }
   }
 
+  // Ligne-height resserree (16px, maquette 493-15278) : le badge « Commande »
+  // affiche « Commandé le » et la date sur 2 lignes (scission volontaire,
+  // pas un depassement de largeur) ; garder 28px de ligne aurait rendu ce
+  // badge inutilement haut. `padding-block: 6px` retrouve les ~28px de
+  // hauteur mesures sur un badge a 1 seule ligne.
   &__badge {
     // `justify-self: start` : sans lui, le badge (item de grille en mobile,
     // colonne valeur en `1fr`) s'etire par defaut a toute la largeur de sa
@@ -133,15 +138,16 @@
     // ignore par Flexbox — sans effet cote desktop). Piege documente CLAUDE.md.
     justify-self: start;
     display: inline-flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-inline: 12px;
+    padding: 6px 12px;
     border-radius: 50px;
     color: var(--dm-color-anthracite);
     font-family: var(--dm-font-body);
     font-size: 0.8125rem;
     font-weight: 600;
-    line-height: 1.75rem;
+    line-height: 1rem;
     white-space: nowrap;
 
     &--a-finaliser {
@@ -156,5 +162,9 @@
     &--archive {
       background-color: var(--dm-status-done);
     }
+  }
+
+  &__badge-line {
+    display: block;
   }
 }

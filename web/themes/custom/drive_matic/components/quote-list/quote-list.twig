@@ -27,11 +27,11 @@
   {% else %}
     <div class="quote-list__header">
       <span class="quote-list__header-cell quote-list__header-cell--date">{{ 'Date'|t }}</span>
-      <span class="quote-list__header-cell quote-list__header-cell--vehicles">{{ 'Marque / Modèle / Type'|t }}</span>
-      <span class="quote-list__header-cell quote-list__header-cell--equipment">{{ 'Equipement(s)'|t }}</span>
       {% if show_reference %}
         <span class="quote-list__header-cell quote-list__header-cell--reference">{{ 'N° devis'|t }}</span>
       {% endif %}
+      <span class="quote-list__header-cell quote-list__header-cell--vehicles">{{ 'Marque / Modèle / Type'|t }}</span>
+      <span class="quote-list__header-cell quote-list__header-cell--equipment">{{ 'Equipement(s)'|t }}</span>
       <span class="quote-list__header-cell quote-list__header-cell--status">{{ 'Statut'|t }}</span>
       {% if show_amount %}
         <span class="quote-list__header-cell quote-list__header-cell--amount">{{ 'Montant €HT'|t }}</span>

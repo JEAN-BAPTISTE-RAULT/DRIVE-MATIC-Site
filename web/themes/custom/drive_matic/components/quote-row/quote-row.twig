@@ -2,14 +2,21 @@
   SDC « Ligne :: Devis » (page Mes devis, ADR-051) — une ligne du tableau
   desktop, devenant une carte étiquette/valeur en CSS sous le breakpoint
   mobile. `reference` et `amount` sont optionnels : colonnes absentes selon
-  l'onglet actif (voir MyQuotesController). Colonne Action (menu 3 points)
-  volontairement absente à cette étape (ADR-051).
+  l'onglet actif (voir MyQuotesController). Ordre des colonnes conforme à la
+  maquette 493-15278 (N° devis en 2e position). Colonne Action (menu 3
+  points) volontairement absente à cette étape (ADR-051).
 #}
 <div class="quote-row">
   <div class="quote-row__cell quote-row__cell--date">
     <span class="quote-row__label">{{ 'Date'|t }}</span>
     <span class="quote-row__value">{{ date }}</span>
   </div>
+  {% if reference is not null %}
+    <div class="quote-row__cell quote-row__cell--reference">
+      <span class="quote-row__label">{{ 'N° devis'|t }}</span>
+      <span class="quote-row__value">{{ reference }}</span>
+    </div>
+  {% endif %}
   <div class="quote-row__cell quote-row__cell--vehicles">
     <span class="quote-row__label">{{ 'Marque / Modèle / Type'|t }}</span>
     <span class="quote-row__value">
@@ -22,15 +29,13 @@
     <span class="quote-row__label">{{ 'Equipement(s)'|t }}</span>
     <span class="quote-row__value">{{ equipment }}</span>
   </div>
-  {% if reference is not null %}
-    <div class="quote-row__cell quote-row__cell--reference">
-      <span class="quote-row__label">{{ 'N° devis'|t }}</span>
-      <span class="quote-row__value">{{ reference }}</span>
-    </div>
-  {% endif %}
   <div class="quote-row__cell quote-row__cell--status">
     <span class="quote-row__label">{{ 'Statut'|t }}</span>
-    <span class="quote-row__badge quote-row__badge--{{ status_modifier }}">{{ status_label }}</span>
+    <span class="quote-row__badge quote-row__badge--{{ status_modifier }}">
+      {% for line in status_lines %}
+        <span class="quote-row__badge-line">{{ line }}</span>
+      {% endfor %}
+    </span>
   </div>
   {% if amount is not null %}
     <div class="quote-row__cell quote-row__cell--amount">
