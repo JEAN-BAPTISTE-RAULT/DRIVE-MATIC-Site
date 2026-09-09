@@ -1,6 +1,6 @@
 .quote-list {
   --quote-col-date: 90px;
-  --quote-col-reference: 90px;
+  --quote-col-reference: 110px;
   --quote-col-status: 120px;
   --quote-col-amount: 100px;
   margin-block: var(--dm-space-page);

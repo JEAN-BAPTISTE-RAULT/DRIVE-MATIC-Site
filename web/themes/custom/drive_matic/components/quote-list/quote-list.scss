@@ -9,7 +9,10 @@
 // quote-row.scss) : ne modifier qu'ici pour les deux composants.
 .quote-list {
   --quote-col-date: 90px;
-  --quote-col-reference: 90px;
+
+  // 110px : largeur reelle de « W20260902-001 » (~105px), mesuree au
+  // navigateur — 90px la faisait passer sur 2 lignes.
+  --quote-col-reference: 110px;
 
   // Mesuree sur les 2 variantes de pastille de la maquette 493-15278
   // (« A commander » et « Commandé le » + date), inset identique aux deux :

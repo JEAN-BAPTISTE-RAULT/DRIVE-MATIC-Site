@@ -92,6 +92,7 @@
   }
   .quote-row__cell--reference .quote-row__value {
     flex: 0 0 var(--quote-col-reference);
+    white-space: nowrap;
   }
   .quote-row__cell--status .quote-row__badge {
     flex: 0 0 var(--quote-col-status);

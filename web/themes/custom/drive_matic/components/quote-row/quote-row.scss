@@ -109,6 +109,7 @@
 
     &__cell--reference &__value {
       flex: 0 0 var(--quote-col-reference);
+      white-space: nowrap;
     }
 
     // Le statut n'a pas de `&__value` (badge directement dans la cellule) :
