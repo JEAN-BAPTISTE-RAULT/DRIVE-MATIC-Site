@@ -57,9 +57,19 @@
     }
   }
 
+  // `overflow-x: auto` force `overflow-y` a `auto` aussi (couplage impose par
+  // la spec des lors qu'un des deux axes n'est pas `visible`) : le soulignage
+  // en `::after`, positionne hors flux sous la ligne (`bottom: -10px`), se
+  // faisait rogner par ce clip vertical involontaire. `padding-block-end`
+  // lui fait de la place DANS la boite (le clip n'agit qu'au-dela du padding)
+  // et `margin-block-end` negatif de meme valeur annule cet ajout pour
+  // `align-items: flex-end` sur `&__toolbar` — la boite de marge (utilisee
+  // pour l'alignement flex) retrouve la hauteur du seul texte.
   &__tabs {
     display: flex;
     gap: 24px;
+    padding-block-end: 10px;
+    margin-block-end: -10px;
     overflow-x: auto;
   }
 

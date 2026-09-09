@@ -43,6 +43,10 @@
 .quote-list__tabs {
   display: flex;
   gap: 24px;
+  -webkit-padding-after: 10px;
+          padding-block-end: 10px;
+  -webkit-margin-after: -10px;
+          margin-block-end: -10px;
   overflow-x: auto;
 }
 .quote-list__tab {
