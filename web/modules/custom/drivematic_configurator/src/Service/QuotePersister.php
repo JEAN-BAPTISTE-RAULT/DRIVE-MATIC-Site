@@ -89,6 +89,95 @@ final class QuotePersister {
   }
 
   /**
+   * Met a jour en place un devis « à finaliser » (Modifier, ADR-052).
+   *
+   * A la difference de `persist()`, ne cree pas de nouveau devis : conserve
+   * `id`/`reference`/`created`, recalcule via `QuoteCalculator` avec les
+   * donnees courantes (compte/adresse/catalogue) et remplace integralement
+   * les anciennes `quote_configuration`/`quote_equipment_line` — un devis
+   * « à finaliser » n'est pas encore fige (ADR-052 precise ADR-043), ses
+   * champs geles billing_ et delivery_ sont donc rafraichis ici, comme au
+   * moment d'une creation.
+   *
+   * @param \Drupal\drivematic_configurator\Entity\Quote $quote
+   *   Le devis a mettre a jour (deja charge, statut `a_finaliser`).
+   * @param array $draft
+   *   Brouillon `PrivateTempStore` reconstruit (memes valeurs que `persist()`).
+   * @param string $status
+   *   Quote::STATUS_A_FINALISER ou Quote::STATUS_A_COMMANDER.
+   * @param \Drupal\user\UserInterface $account
+   *   Le partenaire proprietaire du devis.
+   * @param \Drupal\drivematic_configurator\Entity\DeliveryAddress $deliveryAddress
+   *   L'adresse de livraison retenue.
+   *
+   * @return \Drupal\drivematic_configurator\Entity\Quote
+   *   Le devis mis a jour.
+   */
+  public function update(Quote $quote, array $draft, string $status, UserInterface $account, DeliveryAddress $deliveryAddress): Quote {
+    $result = $this->quoteCalculator->calculate($draft, $account);
+    $now = $this->time->getCurrentTime();
+
+    $quote->set('status', $status);
+    $quote->set('date_commande', $status === Quote::STATUS_A_COMMANDER ? $now : NULL);
+    // Meme condition que `date_commande` : seul point de code qui fait
+    // passer un devis a STATUS_A_COMMANDER aujourd'hui (ADR-051 addendum).
+    $quote->set('date_comptable', $status === Quote::STATUS_A_COMMANDER ? $now : NULL);
+    $quote->set('billing_raison_sociale', $account->get('field_company_name')->value);
+    $quote->set('billing_adresse', $account->get('field_company_address')->value);
+    $quote->set('billing_complement', $account->get('field_address_complement')->value);
+    $quote->set('billing_code_postal', $account->get('field_postal_code')->value);
+    $quote->set('billing_ville', $account->get('field_city')->value);
+    $quote->set('billing_siret', $account->get('field_siret')->value);
+    $quote->set('billing_vat', $account->get('field_vat')->value);
+    $quote->set('delivery_address_id', $deliveryAddress->id());
+    $quote->set('delivery_raison_sociale', $deliveryAddress->get('raison_sociale')->value);
+    $quote->set('delivery_adresse', $deliveryAddress->get('adresse')->value);
+    $quote->set('delivery_complement', $deliveryAddress->get('complement')->value);
+    $quote->set('delivery_code_postal', $deliveryAddress->get('code_postal')->value);
+    $quote->set('delivery_ville', $deliveryAddress->get('ville')->value);
+    $quote->set('total_ht', $result['grand_totals']['ht']);
+    $quote->set('total_discount', $result['grand_totals']['discount']);
+    $quote->set('total_discounted_ht', $result['grand_totals']['discounted_ht']);
+    $quote->set('total_vat', $result['grand_totals']['vat']);
+    $quote->set('total_ttc', $result['grand_totals']['ttc']);
+    $quote->save();
+
+    $this->deleteConfigurations($quote);
+    $this->persistConfigurations($draft, $result['configurations'], (int) $quote->id());
+    $this->logStatusChange($quote, (int) $account->id());
+
+    return $quote;
+  }
+
+  /**
+   * Supprime les `quote_configuration`/`quote_equipment_line` d'un devis.
+   *
+   * Prealable a `update()` : les anciennes configurations sont entierement
+   * remplacees, jamais fusionnees (meme principe que la resauvegarde d'un
+   * brouillon d'etape 1, ConfigurationForm).
+   */
+  private function deleteConfigurations(Quote $quote): void {
+    $configuration_storage = $this->entityTypeManager->getStorage('quote_configuration');
+    $line_storage = $this->entityTypeManager->getStorage('quote_equipment_line');
+
+    $configuration_ids = $configuration_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('quote_id', $quote->id())
+      ->execute();
+
+    if ($configuration_ids) {
+      $line_ids = $line_storage->getQuery()
+        ->accessCheck(FALSE)
+        ->condition('configuration_id', $configuration_ids, 'IN')
+        ->execute();
+      if ($line_ids) {
+        $line_storage->delete($line_storage->loadMultiple($line_ids));
+      }
+      $configuration_storage->delete($configuration_storage->loadMultiple($configuration_ids));
+    }
+  }
+
+  /**
    * Enregistre une entree d'historique (ADR-038, Entity/QuoteStatusChange.php).
    */
   private function logStatusChange(Quote $quote, ?int $uid): void {

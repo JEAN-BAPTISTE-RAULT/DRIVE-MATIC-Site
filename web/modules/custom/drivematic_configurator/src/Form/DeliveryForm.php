@@ -46,6 +46,10 @@ final class DeliveryForm extends FormBase {
   private const TEMPSTORE_COLLECTION = 'drivematic_configurator';
   private const TEMPSTORE_KEY = 'draft';
 
+  // Posee par QuoteModifyController (ADR-052) : identifie un devis « à
+  // finaliser » en cours de resauvegarde, plutot qu'une nouvelle creation.
+  private const TEMPSTORE_EDITING_KEY = 'editing_quote_id';
+
   public function __construct(
     protected EntityTypeManagerInterface $entityTypeManager,
     protected PrivateTempStoreFactory $tempStoreFactory,
@@ -261,7 +265,7 @@ final class DeliveryForm extends FormBase {
    */
   private function buildAddressSelector(UserInterface $account): array {
     $addresses = $this->ensureAtLeastOneAddress($account);
-    $selected_id = (string) reset($addresses)->id();
+    $selected_id = $this->resolveSelectedAddressId($addresses);
 
     $element = [
       '#type' => 'fieldset',
@@ -274,6 +278,35 @@ final class DeliveryForm extends FormBase {
     }
 
     return $element;
+  }
+
+  /**
+   * Determine l'adresse a preselectionner.
+   *
+   * Reprise d'un devis via Modifier (ADR-052, `editing_quote_id`) :
+   * `delivery_address_id` du devis, si elle figure encore parmi les
+   * adresses du partenaire. Sinon (creation normale, devis anterieur a ce
+   * champ, ou adresse supprimee depuis) : repli sur la 1re adresse, meme
+   * comportement qu'avant cette fonctionnalite.
+   *
+   * @param \Drupal\drivematic_configurator\Entity\DeliveryAddress[] $addresses
+   *   Les adresses du partenaire (au moins une).
+   */
+  private function resolveSelectedAddressId(array $addresses): string {
+    $editing_quote_id = $this->tempStore()->get(self::TEMPSTORE_EDITING_KEY);
+    if ($editing_quote_id) {
+      /** @var \Drupal\drivematic_configurator\Entity\Quote|null $editing_quote */
+      $editing_quote = $this->entityTypeManager->getStorage('quote')->load($editing_quote_id);
+      $delivery_address_id = $editing_quote?->get('delivery_address_id')->target_id;
+
+      foreach ($addresses as $address) {
+        if ($delivery_address_id !== NULL && (int) $address->id() === (int) $delivery_address_id) {
+          return (string) $delivery_address_id;
+        }
+      }
+    }
+
+    return (string) reset($addresses)->id();
   }
 
   /**
@@ -584,8 +617,25 @@ final class DeliveryForm extends FormBase {
 
     /** @var \Drupal\user\UserInterface $account */
     $account = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
-    $quote = $this->quotePersister->persist($draft, $status, $account, $address);
+
+    $editing_quote_id = $this->tempStore()->get(self::TEMPSTORE_EDITING_KEY);
+    /** @var \Drupal\drivematic_configurator\Entity\Quote|null $editing_quote */
+    $editing_quote = $editing_quote_id ? $this->entityTypeManager->getStorage('quote')->load($editing_quote_id) : NULL;
+
+    // Le tempstore est deja scope par utilisateur (PrivateTempStore), mais
+    // une re-verification de propriete cote serveur reste de rigueur avant
+    // toute action qui ecrit en base (meme reflexe que QuoteDeleteForm/
+    // QuoteDuplicateController, ADR-052).
+    if ($editing_quote && (int) $editing_quote->getOwnerId() !== (int) $this->currentUser->id()) {
+      throw new AccessDeniedHttpException();
+    }
+
+    $quote = $editing_quote
+      ? $this->quotePersister->update($editing_quote, $draft, $status, $account, $address)
+      : $this->quotePersister->persist($draft, $status, $account, $address);
+
     $this->tempStore()->delete(self::TEMPSTORE_KEY);
+    $this->tempStore()->delete(self::TEMPSTORE_EDITING_KEY);
 
     $this->messenger()->addStatus($this->buildConfirmationMessage($status));
     $form_state->setRedirect('drivematic_configurator.configuration');

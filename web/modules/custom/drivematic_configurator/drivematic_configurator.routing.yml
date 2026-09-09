@@ -133,3 +133,15 @@ drivematic_configurator.quote_duplicate:
     parameters:
       quote:
         type: entity:quote
+
+drivematic_configurator.quote_modify:
+  path: '/user/mes-devis/{quote}/modifier'
+  defaults:
+    _controller: '\Drupal\drivematic_configurator\Controller\QuoteModifyController::modify'
+  requirements:
+    _role: 'partenaire'
+    _entity_access: 'quote.update'
+  options:
+    parameters:
+      quote:
+        type: entity:quote

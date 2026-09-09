@@ -140,9 +140,7 @@ final class MyQuotesController extends ControllerBase {
   /**
    * Construit le menu 3 points d'une ligne, ou NULL si aucune action.
    *
-   * Onglet « à finaliser » uniquement à cette étape (ADR-052) — Modifier
-   * viendra compléter `edit_href` une fois construit, sans changer cette
-   * structure.
+   * Onglet « à finaliser » uniquement à cette étape (ADR-052).
    */
   private function buildActions(Quote $quote, string $active_tab): ?array {
     if ($active_tab !== 'a-finaliser') {
@@ -156,7 +154,7 @@ final class MyQuotesController extends ControllerBase {
         'menu_label' => (string) $this->t('Actions pour le devis du @date', [
           '@date' => $this->formatDate($quote->get('changed')->value),
         ]),
-        'edit_href' => NULL,
+        'edit_href' => Url::fromRoute('drivematic_configurator.quote_modify', ['quote' => $quote->id()])->toString(),
         'duplicate_href' => Url::fromRoute('drivematic_configurator.quote_duplicate', ['quote' => $quote->id()])->toString(),
         'delete_href' => Url::fromRoute('drivematic_configurator.quote_delete', ['quote' => $quote->id()])->toString(),
       ],
