@@ -120,3 +120,16 @@ drivematic_configurator.quote_delete:
     parameters:
       quote:
         type: entity:quote
+
+drivematic_configurator.quote_duplicate:
+  path: '/user/mes-devis/{quote}/dupliquer'
+  defaults:
+    _controller: '\Drupal\drivematic_configurator\Controller\QuoteDuplicateController::duplicate'
+  requirements:
+    _role: 'partenaire'
+    _entity_access: 'quote.view'
+    _csrf_token: 'TRUE'
+  options:
+    parameters:
+      quote:
+        type: entity:quote

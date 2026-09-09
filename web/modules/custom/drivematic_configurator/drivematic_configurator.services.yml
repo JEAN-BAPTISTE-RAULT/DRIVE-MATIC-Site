@@ -28,3 +28,12 @@ services:
       - '@extension.list.theme'
       - '@datetime.time'
       - '@date.formatter'
+  drivematic_configurator.quote_vehicle_term_resolver:
+    class: Drupal\drivematic_configurator\Service\QuoteVehicleTermResolver
+    arguments:
+      - '@entity_type.manager'
+  drivematic_configurator.quote_draft_builder:
+    class: Drupal\drivematic_configurator\Service\QuoteDraftBuilder
+    arguments:
+      - '@entity_type.manager'
+      - '@drivematic_configurator.quote_vehicle_term_resolver'
