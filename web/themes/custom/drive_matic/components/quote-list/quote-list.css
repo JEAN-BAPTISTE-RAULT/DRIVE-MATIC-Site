@@ -16,6 +16,7 @@
   }
 }
 .quote-list__toolbar {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -25,10 +26,18 @@
 @media (width >= 992px) {
   .quote-list__toolbar {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     -webkit-margin-after: 24px;
             margin-block-end: 24px;
+  }
+  .quote-list__toolbar::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: -11px;
+    height: 1px;
+    background-color: var(--dm-color-grey-light);
   }
 }
 .quote-list__tabs {
@@ -37,11 +46,8 @@
   overflow-x: auto;
 }
 .quote-list__tab {
+  position: relative;
   flex-shrink: 0;
-  -webkit-padding-after: 12px;
-          padding-block-end: 12px;
-  -webkit-border-after: 5px solid transparent;
-          border-block-end: 5px solid transparent;
   color: var(--dm-color-anthracite);
   font-family: var(--dm-font-body);
   font-size: 0.875rem;
@@ -50,9 +56,19 @@
   white-space: nowrap;
   text-decoration: none;
 }
+.quote-list__tab::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -10px;
+  height: 5px;
+  background-color: transparent;
+}
 .quote-list__tab.is-active {
-  border-block-end-color: var(--dm-color-red);
   font-weight: 700;
+}
+.quote-list__tab.is-active::after {
+  background-color: var(--dm-color-red);
 }
 .quote-list__create {
   display: flex;
@@ -107,8 +123,6 @@
     padding-inline: 20px;
     -webkit-padding-after: 12px;
             padding-block-end: 12px;
-    -webkit-border-after: 1px solid var(--dm-color-grey-light);
-            border-block-end: 1px solid var(--dm-color-grey-light);
     -webkit-margin-after: 20px;
             margin-block-end: 20px;
   }

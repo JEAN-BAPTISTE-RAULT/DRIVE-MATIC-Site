@@ -31,6 +31,10 @@
   }
 
   &__toolbar {
+    // Position de reference pour le filet gris pleine largeur (`::after`,
+    // sous les onglets, maquette 493-14389 « Rectangle 238 ») : absolu, donc
+    // hors flux, il ne participe pas au calcul de hauteur de la ligne flex.
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -38,9 +42,18 @@
 
     @media (width >= 992px) {
       flex-direction: row;
-      align-items: center;
+      align-items: flex-end;
       justify-content: space-between;
       margin-block-end: 24px;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset-inline: 0;
+        bottom: -11px;
+        height: 1px;
+        background-color: var(--dm-color-grey-light);
+      }
     }
   }
 
@@ -50,10 +63,13 @@
     overflow-x: auto;
   }
 
+  // Le soulignage (5px, actif seulement) vit en `::after` absolu — hors flux,
+  // pour que la hauteur du lien reste celle du seul texte : c'est cette boite
+  // (texte only) qui s'aligne avec le bas du bouton via `align-items:
+  // flex-end` sur `&__toolbar`, jamais le bas du soulignage.
   &__tab {
+    position: relative;
     flex-shrink: 0;
-    padding-block-end: 12px;
-    border-block-end: 5px solid transparent;
     color: var(--dm-color-anthracite);
     font-family: var(--dm-font-body);
     font-size: 0.875rem;
@@ -62,9 +78,24 @@
     white-space: nowrap;
     text-decoration: none;
 
+    &::after {
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+
+      // 5px d'ecart texte -> soulignage, puis 5px de soulignage (maquette :
+      // texte jusqu'a 287, soulignage 292-297) : 10px sous la boite de texte.
+      bottom: -10px;
+      height: 5px;
+      background-color: transparent;
+    }
+
     &.is-active {
-      border-block-end-color: var(--dm-color-red);
       font-weight: 700;
+
+      &::after {
+        background-color: var(--dm-color-red);
+      }
     }
   }
 
@@ -120,7 +151,6 @@
       gap: 16px;
       padding-inline: 20px;
       padding-block-end: 12px;
-      border-block-end: 1px solid var(--dm-color-grey-light);
       margin-block-end: 20px;
     }
   }
