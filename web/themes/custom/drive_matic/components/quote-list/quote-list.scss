@@ -10,7 +10,13 @@
 .quote-list {
   --quote-col-date: 90px;
   --quote-col-reference: 90px;
-  --quote-col-status: 200px;
+
+  // Mesuree sur les 2 variantes de pastille de la maquette 493-15278
+  // (« A commander » et « Commandé le » + date), inset identique aux deux :
+  // 118px de large, arrondi a 120. Le texte y tient sur 2 lignes quand il le
+  // faut (quote-row.scss retire le nowrap pour laisser « Commande en cours »
+  // se scinder naturellement).
+  --quote-col-status: 120px;
   --quote-col-amount: 100px;
 
   // `margin`, pas `padding` : la racine porte une bordure visible a partir
