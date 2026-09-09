@@ -11,9 +11,9 @@
   --dm-color-grey-outline: #bbbbbb;
   --dm-color-grey-stepper: #f1f1f1;
   --dm-color-white: #ffffff;
-  --dm-status-todo: #aa0000;
-  --dm-status-order: #d97706;
-  --dm-status-done: #2e7d32;
+  --dm-status-todo: rgb(248 70 70 / 70%);
+  --dm-status-order: rgb(251 161 17 / 70%);
+  --dm-status-done: rgb(72 209 62 / 70%);
   --dm-font-title:
     'Exo 2', system-ui, -apple-system, 'Segoe UI', roboto, sans-serif;
   --dm-font-body:

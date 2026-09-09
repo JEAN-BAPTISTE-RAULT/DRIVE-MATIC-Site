@@ -13,3 +13,11 @@ drivematic_partner.dashboard:
     _title: 'Tableau de bord'
   requirements:
     _role: 'partenaire'
+
+drivematic_partner.my_quotes:
+  path: '/user/mes-devis'
+  defaults:
+    _controller: '\Drupal\drivematic_partner\Controller\MyQuotesController::build'
+    _title: 'Mes devis'
+  requirements:
+    _role: 'partenaire'

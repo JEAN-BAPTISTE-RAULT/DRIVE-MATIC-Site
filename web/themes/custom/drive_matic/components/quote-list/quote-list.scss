@@ -1,0 +1,163 @@
+@use 'button-mixins' as btn;
+
+// SDC « Bloc :: Mes devis » (ADR-051). Desktop (>= 992px) : carte bordee
+// unique (16px, maquettes 493-14389/493-15278/493-16109, 1130px de large)
+// englobant onglets + bouton + en-tete + lignes. Mobile (605-35196/605-36030) :
+// pas de carte englobante, chaque `quote-row` porte sa propre bordure.
+// Largeurs de colonnes fixes partagees avec `quote-row` par heritage de
+// custom properties (descendant DOM direct, cf. commentaire dans
+// quote-row.scss) : ne modifier qu'ici pour les deux composants.
+.quote-list {
+  --quote-col-date: 90px;
+  --quote-col-reference: 90px;
+  --quote-col-status: 200px;
+  --quote-col-amount: 100px;
+
+  padding-block: var(--dm-space-page) var(--dm-space-block);
+  padding-inline: var(--dm-gutter);
+
+  @media (width >= 992px) {
+    max-width: calc(1130px + 2 * var(--dm-gutter));
+    margin-inline: auto;
+    padding: 20px;
+    border: 1px solid var(--dm-color-grey-light);
+    border-radius: 16px;
+  }
+
+  &__toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-block-end: var(--dm-space-element);
+
+    @media (width >= 992px) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-block-end: 24px;
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+  }
+
+  &__tab {
+    flex-shrink: 0;
+    padding-block-end: 12px;
+    border-block-end: 5px solid transparent;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    line-height: 1.75rem;
+    font-weight: 400;
+    white-space: nowrap;
+    text-decoration: none;
+
+    &.is-active {
+      border-block-end-color: var(--dm-color-red);
+      font-weight: 700;
+    }
+  }
+
+  &__create {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 8px;
+    background-color: var(--dm-color-steel);
+    color: var(--dm-color-white);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+
+    @include btn.dm-btn-height(icon);
+
+    &:hover {
+      background-color: var(--dm-color-red);
+    }
+
+    @media (width >= 992px) {
+      flex-shrink: 0;
+      padding-inline: 18px;
+    }
+  }
+
+  &__create-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    background-color: var(--dm-color-white);
+    mask: url('../../images/icons/plus-circle.svg') no-repeat center;
+    mask-size: contain;
+  }
+
+  &__empty {
+    padding-block: 40px;
+    color: var(--dm-color-grey-text);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    line-height: 1.75rem;
+    text-align: center;
+  }
+
+  &__header {
+    display: none;
+
+    @media (width >= 992px) {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-inline: 20px;
+      padding-block-end: 12px;
+      border-block-end: 1px solid var(--dm-color-grey-light);
+      margin-block-end: 20px;
+    }
+  }
+
+  &__header-cell {
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    line-height: 1.75rem;
+    font-weight: 700;
+
+    &--date {
+      flex: 0 0 var(--quote-col-date);
+    }
+
+    &--vehicles {
+      flex: 2 1 0;
+    }
+
+    &--equipment {
+      flex: 3 1 0;
+    }
+
+    &--reference {
+      flex: 0 0 var(--quote-col-reference);
+    }
+
+    &--status {
+      flex: 0 0 var(--quote-col-status);
+    }
+
+    &--amount {
+      flex: 0 0 var(--quote-col-amount);
+    }
+  }
+
+  &__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @media (width >= 992px) {
+      gap: 12px;
+    }
+  }
+}

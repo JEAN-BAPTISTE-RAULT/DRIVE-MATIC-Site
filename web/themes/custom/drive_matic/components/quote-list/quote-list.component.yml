@@ -1,0 +1,40 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Bloc :: Mes devis'
+status: stable
+props:
+  type: object
+  required:
+    - tabs
+    - create_href
+    - show_reference
+    - show_amount
+  properties:
+    tabs:
+      type: array
+      title: 'Onglets (libellé, lien, actif)'
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+          href:
+            type: string
+          active:
+            type: boolean
+    show_reference:
+      type: boolean
+      title: 'Afficher la colonne N° devis (desktop uniquement, jamais en mobile)'
+    show_amount:
+      type: boolean
+      title: 'Afficher la colonne Montant €HT'
+    create_href:
+      type: string
+      title: 'Lien du bouton « Créer un nouveau devis »'
+    empty_message:
+      type:
+        - string
+        - 'null'
+      title: 'Message si aucun devis dans l’onglet actif (masque l’en-tête et le slot rows)'
+slots:
+  rows:
+    title: 'Lignes (0 à N `quote-row`)'

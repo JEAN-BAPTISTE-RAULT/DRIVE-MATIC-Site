@@ -1,0 +1,44 @@
+{#
+  SDC « Bloc :: Mes devis » (ADR-051) — 3 onglets (navigation par lien,
+  `?onglet=`, pas de JS), en-tete de colonnes (desktop uniquement, la carte
+  `quote-row` porte ses propres etiquettes en mobile), slot `rows` (0 a N
+  `quote-row`), message si l'onglet actif est vide. La pagination (`#type:
+  pager`) est rendue par l'appelant, hors de ce composant.
+#}
+<div class="quote-list">
+  <div class="quote-list__toolbar">
+    <nav class="quote-list__tabs" aria-label="{{ 'Mes devis'|t }}">
+      {% for tab in tabs %}
+        <a
+          href="{{ tab.href }}"
+          class="quote-list__tab{{ tab.active ? ' is-active' : '' }}"
+          aria-current="{{ tab.active ? 'page' : 'false' }}"
+        >{{ tab.label }}</a>
+      {% endfor %}
+    </nav>
+    <a href="{{ create_href }}" class="quote-list__create">
+      <span class="quote-list__create-icon" aria-hidden="true"></span>
+      {{ 'Créer un nouveau devis'|t }}
+    </a>
+  </div>
+
+  {% if empty_message %}
+    <p class="quote-list__empty">{{ empty_message }}</p>
+  {% else %}
+    <div class="quote-list__header">
+      <span class="quote-list__header-cell quote-list__header-cell--date">{{ 'Date'|t }}</span>
+      <span class="quote-list__header-cell quote-list__header-cell--vehicles">{{ 'Marque / Modèle / Type'|t }}</span>
+      <span class="quote-list__header-cell quote-list__header-cell--equipment">{{ 'Equipement(s)'|t }}</span>
+      {% if show_reference %}
+        <span class="quote-list__header-cell quote-list__header-cell--reference">{{ 'N° devis'|t }}</span>
+      {% endif %}
+      <span class="quote-list__header-cell quote-list__header-cell--status">{{ 'Statut'|t }}</span>
+      {% if show_amount %}
+        <span class="quote-list__header-cell quote-list__header-cell--amount">{{ 'Montant €HT'|t }}</span>
+      {% endif %}
+    </div>
+    <div class="quote-list__rows">
+      {{ block('rows') }}
+    </div>
+  {% endif %}
+</div>

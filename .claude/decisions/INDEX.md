@@ -55,6 +55,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-048](048-logo-email-url-dynamique.md) | URL du logo e-mail rendue dynamique (`[site:url]`) sur les 13 occurrences mailer_policy/webform | Accepte | 2026-09-07 |
 | [ADR-049](049-fondu-arrivee-scroll.md) | Fondu discret a l'arrivee au scroll (comportement partage `drive_matic/reveal`, image_text_50/100 + grid) | Accepte | 2026-09-09 |
 | [ADR-050](050-header-sticky-masquage-scroll.md) | Header sticky qui se masque au scroll vers le bas, calage sous la Toolbar admin | Accepte | 2026-09-09 |
+| [ADR-051](051-page-mes-devis-listing.md) | Page « Mes devis » (F13, etape 2/2) : 3 onglets, correctif des compteurs du tableau de bord (ADR-046) | Accepte | 2026-09-09 |
 
 ## Quand creer un ADR
 

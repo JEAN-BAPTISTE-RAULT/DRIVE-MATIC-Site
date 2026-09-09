@@ -15,10 +15,15 @@
   --dm-color-grey-stepper: #f1f1f1; // « gris clair » Figma (fond des boutons -/+ du stepper) — distinct de --dm-color-grey-light (#e8e8e8), meme nom generique cote Figma
   --dm-color-white: #ffffff;
 
-  // Statuts devis (cf. F15)
-  --dm-status-todo: #aa0000; // a finaliser
-  --dm-status-order: #d97706; // a commander
-  --dm-status-done: #2e7d32; // commande
+  // Statuts devis (cf. F15) — premier consommateur : page « Mes devis »
+  // (ADR-051, quote-row). Valeurs mesurees sur les maquettes 493-14389 /
+  // 493-15278 / 493-16109 : jamais consommees avant cette page, corrigees ici
+  // pour correspondre aux vraies couleurs (pastel, 70% d'opacite) plutot
+  // qu'aux valeurs pleines posees par anticipation.
+  --dm-status-todo: rgb(248 70 70 / 70%); // a finaliser
+  --dm-status-order: rgb(251 161 17 / 70%); // a commander
+  // commande + archive : meme badge (ADR-051)
+  --dm-status-done: rgb(72 209 62 / 70%);
 
   // Typographie
   --dm-font-title:

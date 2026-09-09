@@ -1,0 +1,44 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Ligne :: Devis'
+status: stable
+props:
+  type: object
+  required:
+    - date
+    - vehicles
+    - equipment
+    - status_label
+    - status_modifier
+  properties:
+    date:
+      type: string
+      title: Date
+    vehicles:
+      type: array
+      title: 'Marque / Modèle / Type (une ligne par véhicule configuré)'
+      items:
+        type: string
+    equipment:
+      type: string
+      title: 'Équipement(s), libellés dédupliqués joints par virgule'
+    status_label:
+      type: string
+      title: 'Libellé du statut affiché dans le badge'
+    status_modifier:
+      type: string
+      title: 'Suffixe de classe CSS du badge (kebab-case)'
+      enum:
+        - a-finaliser
+        - a-commander
+        - commande
+        - archive
+    reference:
+      type:
+        - string
+        - 'null'
+      title: 'N° de devis (colonne absente hors onglet « en cours »)'
+    amount:
+      type:
+        - string
+        - 'null'
+      title: 'Montant €HT formaté (absent sur l’onglet « à finaliser »)'

@@ -1,0 +1,160 @@
+// SDC « Ligne :: Devis » (page Mes devis, ADR-051).
+// Desktop (>= 992px) : ligne de tableau (flex, mesures maquettes 493-14389 /
+// 493-15278 / 493-16109 — 1090px de large, 55px de haut, sans la colonne
+// Action omise a cette etape, largeurs redistribuees en consequence).
+// Mobile : carte a 2 colonnes (etiquette a gauche sur fond gris, valeur a
+// droite), mesuree sur 605-36030 — 358px de large, etiquette 142px.
+.quote-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 142px 1fr;
+  border: 1px solid var(--dm-color-grey-light);
+  border-radius: 8px;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 142px;
+    background-color: var(--dm-color-grey-lighter);
+  }
+
+  @media (width >= 992px) {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 55px;
+    padding-inline: 20px;
+    border-radius: 12px;
+
+    &::before {
+      content: none;
+    }
+  }
+
+  &__cell {
+    display: contents;
+  }
+
+  // N° devis : jamais affiche en mobile, meme sur l'onglet « en cours » qui
+  // l'affiche en desktop (fidele a la maquette mobile 605-36030, qui l'omet).
+  &__cell--reference {
+    display: none;
+
+    @media (width >= 992px) {
+      display: contents;
+    }
+  }
+
+  &__label {
+    position: relative;
+    padding: 12px 16px;
+    border-block-end: 1px solid var(--dm-color-grey-light);
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 0.875rem;
+    line-height: 1.75rem;
+    font-weight: 700;
+
+    @media (width >= 992px) {
+      display: none;
+    }
+  }
+
+  &__value {
+    position: relative;
+    padding: 12px 16px;
+    border-block-end: 1px solid var(--dm-color-grey-light);
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 0.8125rem;
+    line-height: 1.75rem;
+
+    @media (width >= 992px) {
+      padding: 0;
+      border-block-end: 0;
+    }
+  }
+
+  // Derniere paire etiquette/valeur de la carte mobile : pas de filet.
+  &__cell:last-child &__label,
+  &__cell:last-child &__value {
+    border-block-end: 0;
+  }
+
+  &__vehicle-line {
+    display: block;
+  }
+
+  // Largeurs des colonnes fixes partagees avec l'en-tete (`.quote-list`,
+  // custom properties heritees : `quote-row` est toujours un descendant DOM
+  // de `.quote-list`, contrairement au cas site-header/breadcrumb qui a
+  // impose de dupliquer une valeur — ici l'heritage suffit).
+  @media (width >= 992px) {
+    &__cell--date &__value {
+      flex: 0 0 var(--quote-col-date);
+    }
+
+    &__cell--vehicles &__value {
+      flex: 2 1 0;
+      min-width: 0;
+    }
+
+    &__cell--equipment &__value {
+      flex: 3 1 0;
+      min-width: 0;
+    }
+
+    &__cell--reference &__value {
+      flex: 0 0 var(--quote-col-reference);
+    }
+
+    // Le statut n'a pas de `&__value` (badge directement dans la cellule) :
+    // cibler `&__badge`, pas `&__value` (piege vecu — sans cette bascule, le
+    // badge reste auto-dimensionne et desaligne les colonnes suivantes selon
+    // la longueur de son texte, variable : « A finaliser » vs « Commande en
+    // cours » vs « Commande le jj/mm/aaaa »).
+    &__cell--status &__badge {
+      flex: 0 0 var(--quote-col-status);
+    }
+
+    &__cell--amount &__value {
+      flex: 0 0 var(--quote-col-amount);
+      text-align: right;
+    }
+  }
+
+  &__badge {
+    // `justify-self: start` : sans lui, le badge (item de grille en mobile,
+    // colonne valeur en `1fr`) s'etire par defaut a toute la largeur de sa
+    // colonne (`justify-items: stretch`, comportement par defaut de Grid,
+    // ignore par Flexbox — sans effet cote desktop). Piege documente CLAUDE.md.
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 12px;
+    border-radius: 50px;
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.75rem;
+    white-space: nowrap;
+
+    &--a-finaliser {
+      background-color: var(--dm-status-todo);
+    }
+
+    &--a-commander {
+      background-color: var(--dm-status-order);
+    }
+
+    &--commande,
+    &--archive {
+      background-color: var(--dm-status-done);
+    }
+  }
+}

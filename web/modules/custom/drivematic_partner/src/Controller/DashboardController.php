@@ -17,10 +17,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Page d'accueil de l'espace partenaire : raccourcis vers le configurateur
  * et compteurs de devis par groupe de statut, chacun scopé au partenaire
  * courant (`uid`) — jamais un identifiant transmis par le client. Les 3
- * compteurs pointent vers `/user/mes-devis` (page à venir, onglet
- * sélectionné par `?onglet=`) : lien posé en dur (chaîne littérale), la
- * route n'existant pas encore — à remplacer par `Url::fromRoute()` dès sa
- * création.
+ * compteurs pointent vers `drivematic_partner.my_quotes` (onglet sélectionné
+ * par `?onglet=`), groupés pour correspondre exactement au contenu de
+ * chaque onglet (ADR-051, qui corrige le groupement initial de l'ADR-046).
  */
 final class DashboardController extends ControllerBase {
 
@@ -46,8 +45,8 @@ final class DashboardController extends ControllerBase {
     $storage = $this->entityTypeManager()->getStorage('quote');
 
     $count_a_finaliser = $this->countQuotes($storage, $uid, [Quote::STATUS_A_FINALISER]);
-    $count_en_cours = $this->countQuotes($storage, $uid, [Quote::STATUS_A_COMMANDER]);
-    $count_archives = $this->countQuotes($storage, $uid, [Quote::STATUS_COMMANDE, Quote::STATUS_ARCHIVE]);
+    $count_en_cours = $this->countQuotes($storage, $uid, [Quote::STATUS_A_COMMANDER, Quote::STATUS_COMMANDE]);
+    $count_archives = $this->countQuotes($storage, $uid, [Quote::STATUS_ARCHIVE]);
 
     $configurator_url = Url::fromRoute('drivematic_configurator.configuration')->toString();
     $image_url = base_path() . $this->themeExtensionList->getPath('drive_matic') . '/images/dashboard-vehicle.webp';
@@ -84,7 +83,7 @@ final class DashboardController extends ControllerBase {
                 'label' => (string) $this->t('Mes devis à finaliser'),
                 'count' => $count_a_finaliser,
                 'icon' => 'folder-edit',
-                'href' => '/user/mes-devis?onglet=a-finaliser',
+                'href' => Url::fromRoute('drivematic_partner.my_quotes', [], ['query' => ['onglet' => 'a-finaliser']])->toString(),
               ],
             ],
             [
@@ -95,7 +94,7 @@ final class DashboardController extends ControllerBase {
                 'label' => (string) $this->t('Mes devis / commandes en cours'),
                 'count' => $count_en_cours,
                 'icon' => 'folder-clock',
-                'href' => '/user/mes-devis?onglet=en-cours',
+                'href' => Url::fromRoute('drivematic_partner.my_quotes', [], ['query' => ['onglet' => 'en-cours']])->toString(),
               ],
             ],
             [
@@ -106,7 +105,7 @@ final class DashboardController extends ControllerBase {
                 'label' => (string) $this->t('Mes devis / commandes archivés'),
                 'count' => $count_archives,
                 'icon' => 'archive',
-                'href' => '/user/mes-devis?onglet=archives',
+                'href' => Url::fromRoute('drivematic_partner.my_quotes', [], ['query' => ['onglet' => 'archives']])->toString(),
               ],
             ],
           ],
