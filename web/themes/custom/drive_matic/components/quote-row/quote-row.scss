@@ -10,6 +10,10 @@
   grid-template-columns: 142px 1fr;
   border: 1px solid var(--dm-color-grey-light);
   border-radius: 8px;
+
+  // Uniquement mobile : clippe le `::before` (fond gris de la colonne
+  // etiquette) aux coins arrondis. A retirer au palier desktop, sans quoi ca
+  // rogne aussi le menu d'actions (ADR-052), qui doit deborder de la ligne.
   overflow: hidden;
 
   &::before {
@@ -28,6 +32,7 @@
     min-height: 55px;
     padding-inline: 20px;
     border-radius: 12px;
+    overflow: visible;
 
     &::before {
       content: none;
@@ -124,6 +129,10 @@
     &__cell--amount &__value {
       flex: 0 0 var(--quote-col-amount);
       text-align: right;
+    }
+
+    &__cell--actions &__value {
+      flex: 0 0 auto;
     }
   }
 

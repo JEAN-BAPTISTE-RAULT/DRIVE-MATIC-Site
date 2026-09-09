@@ -549,3 +549,34 @@ function drivematic_configurator_update_11015(): string {
     $comptable_count,
   );
 }
+
+/**
+ * Installe le champ `delivery_address_id` sur l'entite `quote` (ADR-052).
+ *
+ * Reference vers la `DeliveryAddress` utilisee, en plus des champs
+ * `delivery_*` figes deja existants — sert uniquement a preselectionner la
+ * bonne adresse a la reprise (Modifier) ou a la duplication d'un devis,
+ * jamais relue pour l'affichage. Aucune valeur pour les devis deja en base
+ * (aucune correspondance retroactive fiable) : NULL, comportement de repli
+ * documente dans DeliveryForm.
+ *
+ * Idempotent : `installFieldStorageDefinition()` ne fait rien si le champ
+ * existe deja.
+ */
+function drivematic_configurator_update_11016(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getFieldStorageDefinition('delivery_address_id', 'quote')) {
+    return 'Champ "delivery_address_id" deja installe sur "quote" : mise a jour ignoree.';
+  }
+
+  $storage_definition = BaseFieldDefinition::create('entity_reference')
+    ->setLabel(new TranslatableMarkup('Adresse de livraison utilisée'))
+    ->setSetting('target_type', 'delivery_address')
+    ->setName('delivery_address_id')
+    ->setTargetEntityTypeId('quote');
+
+  $update_manager->installFieldStorageDefinition('delivery_address_id', 'quote', 'drivematic_configurator', $storage_definition);
+
+  return 'Champ "delivery_address_id" installe sur l\'entite "quote".';
+}

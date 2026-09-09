@@ -22,6 +22,7 @@
     min-height: 55px;
     padding-inline: 20px;
     border-radius: 12px;
+    overflow: visible;
   }
   .quote-row::before {
     content: none;
@@ -100,6 +101,9 @@
   .quote-row__cell--amount .quote-row__value {
     flex: 0 0 var(--quote-col-amount);
     text-align: right;
+  }
+  .quote-row__cell--actions .quote-row__value {
+    flex: 0 0 auto;
   }
 }
 .quote-row__badge {

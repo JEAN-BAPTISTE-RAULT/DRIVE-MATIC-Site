@@ -11,6 +11,7 @@ use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\drivematic_configurator\QuoteAccessControlHandler;
 use Drupal\user\EntityOwnerInterface;
 use Drupal\user\EntityOwnerTrait;
 use Drupal\views\EntityViewsData;
@@ -48,6 +49,7 @@ use Drupal\views\EntityViewsData;
   ],
   handlers: [
     'views_data' => EntityViewsData::class,
+    'access' => QuoteAccessControlHandler::class,
   ],
   links: [
     'canonical' => '/admin/content/devis/{quote}',
@@ -116,6 +118,17 @@ final class Quote extends ContentEntityBase implements EntityOwnerInterface, Ent
 
     $fields['date_archivage'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(new TranslatableMarkup("Date d'archivage"));
+
+    // Reference a l'entite DeliveryAddress utilisee, en plus des champs
+    // delivery_* figes ci-dessous (ADR-052) : sert UNIQUEMENT a
+    // preselectionner la bonne adresse a la reprise/duplication (Modifier/
+    // Dupliquer) — jamais relue pour l'affichage/PDF/e-mail, qui restent
+    // exclusivement sur les champs geles (ne contredit pas le principe de
+    // gel d'ADR-033). Absente (NULL) pour tout devis cree avant ce champ :
+    // repli sur le comportement existant de DeliveryForm dans ce seul cas.
+    $fields['delivery_address_id'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(new TranslatableMarkup('Adresse de livraison utilisée'))
+      ->setSetting('target_type', 'delivery_address');
 
     // Instantanes geles a la creation (voir note de classe) : jamais relus
     // depuis `user`/`delivery_address` ensuite.

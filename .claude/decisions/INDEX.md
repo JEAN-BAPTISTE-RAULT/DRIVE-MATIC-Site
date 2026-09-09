@@ -56,6 +56,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-049](049-fondu-arrivee-scroll.md) | Fondu discret a l'arrivee au scroll (comportement partage `drive_matic/reveal`, image_text_50/100 + grid) | Accepte | 2026-09-09 |
 | [ADR-050](050-header-sticky-masquage-scroll.md) | Header sticky qui se masque au scroll vers le bas, calage sous la Toolbar admin | Accepte | 2026-09-09 |
 | [ADR-051](051-page-mes-devis-listing.md) | Page « Mes devis » (F13, etape 2/2) : 3 onglets, correctif des compteurs du tableau de bord (ADR-046) | Accepte | 2026-09-09 |
+| [ADR-052](052-menu-actions-devis-a-finaliser.md) | Menu d'actions « Mes devis a finaliser » (Modifier/Dupliquer/Supprimer), precision de la regle de gel des prix (ADR-043) | Accepte | 2026-09-09 |
 
 ## Quand creer un ADR
 

@@ -1,0 +1,46 @@
+{#
+  SDC « Menu :: Actions devis » (page Mes devis, ADR-052) — menu 3 points
+  par ligne. Chaque lien est optionnel : seules les actions disponibles pour
+  le statut du devis sont rendues (onglet « à finaliser » uniquement à cette
+  étape). « Supprimer » ouvre une modale Drupal core (`use-ajax`) — le
+  formulaire/la page qui inclut ce composant doit attacher
+  `core/drupal.dialog.ajax`, sans quoi le lien dégraderait silencieusement
+  en navigation page complète (piège documenté, ADR-034 addendum 2).
+#}
+<div class="quote-row-actions">
+  <button
+    type="button"
+    class="quote-row-actions__toggle"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-label="{{ menu_label }}"
+  >
+    <span class="quote-row-actions__toggle-icon" aria-hidden="true"></span>
+  </button>
+  <ul class="quote-row-actions__menu" hidden>
+    {% if edit_href %}
+      <li>
+        <a href="{{ edit_href }}" class="quote-row-actions__item quote-row-actions__item--edit">
+          <span class="quote-row-actions__item-icon" aria-hidden="true"></span>
+          {{ 'Modifier'|t }}
+        </a>
+      </li>
+    {% endif %}
+    {% if duplicate_href %}
+      <li>
+        <a href="{{ duplicate_href }}" class="quote-row-actions__item quote-row-actions__item--duplicate">
+          <span class="quote-row-actions__item-icon" aria-hidden="true"></span>
+          {{ 'Dupliquer'|t }}
+        </a>
+      </li>
+    {% endif %}
+    {% if delete_href %}
+      <li>
+        <a href="{{ delete_href }}" class="quote-row-actions__item quote-row-actions__item--delete use-ajax" data-dialog-type="modal" data-dialog-options='{"width":400}'>
+          <span class="quote-row-actions__item-icon" aria-hidden="true"></span>
+          {{ 'Supprimer'|t }}
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</div>

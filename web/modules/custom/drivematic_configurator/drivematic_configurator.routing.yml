@@ -107,3 +107,16 @@ drivematic_configurator.delivery_address_delete:
     parameters:
       delivery_address:
         type: entity:delivery_address
+
+drivematic_configurator.quote_delete:
+  path: '/user/mes-devis/{quote}/supprimer'
+  defaults:
+    _form: '\Drupal\drivematic_configurator\Form\QuoteDeleteForm'
+    _title: 'Supprimer un devis'
+  requirements:
+    _role: 'partenaire'
+    _entity_access: 'quote.delete'
+  options:
+    parameters:
+      quote:
+        type: entity:quote

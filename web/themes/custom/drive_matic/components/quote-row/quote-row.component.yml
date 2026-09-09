@@ -44,3 +44,6 @@ props:
         - string
         - 'null'
       title: 'Montant €HT formaté (absent sur l’onglet « à finaliser »)'
+slots:
+  actions:
+    title: 'Menu 3 points (liens Modifier/Dupliquer/Supprimer), absent si aucune action disponible pour cette ligne'

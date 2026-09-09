@@ -3,8 +3,9 @@
   desktop, devenant une carte étiquette/valeur en CSS sous le breakpoint
   mobile. `reference` et `amount` sont optionnels : colonnes absentes selon
   l'onglet actif (voir MyQuotesController). Ordre des colonnes conforme à la
-  maquette 493-15278 (N° devis en 2e position). Colonne Action (menu 3
-  points) volontairement absente à cette étape (ADR-051).
+  maquette 493-15278 (N° devis en 2e position). Slot `actions` (menu 3
+  points) optionnel : absent tant qu'aucune action n'est disponible pour
+  cette ligne (ADR-052, onglets autres que « à finaliser » à ce stade).
 #}
 <div class="quote-row">
   <div class="quote-row__cell quote-row__cell--date">
@@ -41,6 +42,12 @@
     <div class="quote-row__cell quote-row__cell--amount">
       <span class="quote-row__label">{{ 'Montant €HT'|t }}</span>
       <span class="quote-row__value">{{ amount }}</span>
+    </div>
+  {% endif %}
+  {% if block('actions') is defined %}
+    <div class="quote-row__cell quote-row__cell--actions">
+      <span class="quote-row__label">{{ 'Action'|t }}</span>
+      <span class="quote-row__value">{{ block('actions') }}</span>
     </div>
   {% endif %}
 </div>

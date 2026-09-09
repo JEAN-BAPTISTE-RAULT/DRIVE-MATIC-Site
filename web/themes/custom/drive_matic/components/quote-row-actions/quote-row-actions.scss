@@ -1,0 +1,89 @@
+// SDC « Menu :: Actions devis » (page Mes devis, ADR-052).
+// Mesures maquette 493-14389 (composant « Actions », 493:14971) : panneau
+// 127px, rayon 8px, ombre 0 0 10px rgba(0,0,0,.1), icones 16px + libelle,
+// filet #d9d9d9 entre chaque item.
+.quote-row-actions {
+  position: relative;
+  display: inline-flex;
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  &__toggle-icon {
+    width: 24px;
+    height: 24px;
+    background-color: var(--dm-color-anthracite);
+    mask: url('../../images/icons/more-vertical.svg') no-repeat center;
+    mask-size: contain;
+  }
+
+  &__menu {
+    position: absolute;
+    inset-inline-end: 0;
+    top: calc(100% + 4px);
+    z-index: 10;
+    min-width: 127px;
+    margin: 0;
+    padding: 0;
+    border-radius: 8px;
+    background-color: var(--dm-color-white);
+    box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
+    list-style: none;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-block-end: 1px solid var(--dm-color-grey-light);
+    color: var(--dm-color-anthracite);
+    font-family: var(--dm-font-body);
+    font-size: 0.75rem;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: var(--dm-color-grey-lighter);
+    }
+  }
+
+  li:last-child &__item {
+    border-block-end: 0;
+  }
+
+  &__item-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    background-color: var(--dm-color-anthracite);
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+  }
+
+  &__item--edit &__item-icon {
+    mask-image: url('../../images/icons/pen.svg');
+  }
+
+  &__item--duplicate &__item-icon {
+    mask-image: url('../../images/icons/copy.svg');
+  }
+
+  &__item--delete &__item-icon {
+    mask-image: url('../../images/icons/trash.svg');
+  }
+}

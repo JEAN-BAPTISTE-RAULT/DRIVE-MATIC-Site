@@ -1,0 +1,84 @@
+.quote-row-actions {
+  position: relative;
+  display: inline-flex;
+}
+.quote-row-actions__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.quote-row-actions__toggle-icon {
+  width: 24px;
+  height: 24px;
+  background-color: var(--dm-color-anthracite);
+  -webkit-mask: url("../../images/icons/more-vertical.svg") no-repeat center;
+          mask: url("../../images/icons/more-vertical.svg") no-repeat center;
+  -webkit-mask-size: contain;
+          mask-size: contain;
+}
+.quote-row-actions__menu {
+  position: absolute;
+  inset-inline-end: 0;
+  top: calc(100% + 4px);
+  z-index: 10;
+  min-width: 127px;
+  margin: 0;
+  padding: 0;
+  border-radius: 8px;
+  background-color: var(--dm-color-white);
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  list-style: none;
+}
+.quote-row-actions__menu[hidden] {
+  display: none;
+}
+.quote-row-actions__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  -webkit-border-after: 1px solid var(--dm-color-grey-light);
+          border-block-end: 1px solid var(--dm-color-grey-light);
+  color: var(--dm-color-anthracite);
+  font-family: var(--dm-font-body);
+  font-size: 0.75rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.quote-row-actions__item:hover {
+  background-color: var(--dm-color-grey-lighter);
+}
+li:last-child .quote-row-actions__item {
+  -webkit-border-after: 0;
+          border-block-end: 0;
+}
+.quote-row-actions__item-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  background-color: var(--dm-color-anthracite);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-size: contain;
+          mask-size: contain;
+}
+.quote-row-actions__item--edit .quote-row-actions__item-icon {
+  -webkit-mask-image: url("../../images/icons/pen.svg");
+          mask-image: url("../../images/icons/pen.svg");
+}
+.quote-row-actions__item--duplicate .quote-row-actions__item-icon {
+  -webkit-mask-image: url("../../images/icons/copy.svg");
+          mask-image: url("../../images/icons/copy.svg");
+}
+.quote-row-actions__item--delete .quote-row-actions__item-icon {
+  -webkit-mask-image: url("../../images/icons/trash.svg");
+          mask-image: url("../../images/icons/trash.svg");
+}

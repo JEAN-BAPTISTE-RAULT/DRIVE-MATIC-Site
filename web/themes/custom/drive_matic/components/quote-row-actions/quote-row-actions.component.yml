@@ -1,0 +1,26 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+name: 'Menu :: Actions devis'
+status: stable
+props:
+  type: object
+  required:
+    - menu_label
+  properties:
+    menu_label:
+      type: string
+      title: 'Libellé accessible du déclencheur (ex. « Actions pour le devis du 09/09/2026 »)'
+    edit_href:
+      type:
+        - string
+        - 'null'
+      title: 'Lien Modifier (absent si non disponible pour ce devis)'
+    duplicate_href:
+      type:
+        - string
+        - 'null'
+      title: 'Lien Dupliquer (absent si non disponible pour ce devis)'
+    delete_href:
+      type:
+        - string
+        - 'null'
+      title: 'Lien Supprimer, modale de confirmation (absent si non disponible pour ce devis)'

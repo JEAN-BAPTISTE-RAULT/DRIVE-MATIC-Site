@@ -88,7 +88,7 @@ final class MyQuotesController extends ControllerBase {
     foreach ($storage->loadMultiple($ids) as $quote) {
       [$vehicles, $equipment] = $this->buildVehiclesAndEquipment($configuration_storage, $equipment_storage, $quote);
 
-      $rows[] = [
+      $row = [
         '#type' => 'component',
         '#component' => 'drive_matic:quote-row',
         '#props' => [
@@ -101,9 +101,19 @@ final class MyQuotesController extends ControllerBase {
           'amount' => $show_amount ? $this->formatAmount($quote->get('total_ht')->value) : NULL,
         ],
       ];
+
+      $actions = $this->buildActions($quote, $active_tab);
+      if ($actions) {
+        $row['#slots'] = ['actions' => $actions];
+      }
+
+      $rows[] = $row;
     }
 
     return [
+      // Sans quoi le lien « Supprimer » (use-ajax) dégraderait silencieusement
+      // en navigation page complète — piège documenté (ADR-034 addendum 2).
+      '#attached' => ['library' => ['core/drupal.dialog.ajax']],
       '#cache' => [
         'contexts' => ['user', 'url.query_args:onglet', 'url.query_args.pagers:0'],
         'tags' => $this->entityTypeManager()->getDefinition('quote')->getListCacheTags(),
@@ -124,6 +134,32 @@ final class MyQuotesController extends ControllerBase {
         '#slots' => $rows ? ['rows' => $rows] : [],
       ],
       'pager' => $rows ? ['#type' => 'pager'] : [],
+    ];
+  }
+
+  /**
+   * Construit le menu 3 points d'une ligne, ou NULL si aucune action.
+   *
+   * Onglet « à finaliser » uniquement à cette étape (ADR-052) — Modifier/
+   * Dupliquer viendront compléter `edit_href`/`duplicate_href` une fois
+   * construits, sans changer cette structure.
+   */
+  private function buildActions(Quote $quote, string $active_tab): ?array {
+    if ($active_tab !== 'a-finaliser') {
+      return NULL;
+    }
+
+    return [
+      '#type' => 'component',
+      '#component' => 'drive_matic:quote-row-actions',
+      '#props' => [
+        'menu_label' => (string) $this->t('Actions pour le devis du @date', [
+          '@date' => $this->formatDate($quote->get('changed')->value),
+        ]),
+        'edit_href' => NULL,
+        'duplicate_href' => NULL,
+        'delete_href' => Url::fromRoute('drivematic_configurator.quote_delete', ['quote' => $quote->id()])->toString(),
+      ],
     ];
   }
 

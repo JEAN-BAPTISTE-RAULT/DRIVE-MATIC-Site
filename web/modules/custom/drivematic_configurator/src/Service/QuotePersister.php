@@ -65,6 +65,10 @@ final class QuotePersister {
       'billing_ville' => $account->get('field_city')->value,
       'billing_siret' => $account->get('field_siret')->value,
       'billing_vat' => $account->get('field_vat')->value,
+      // ADR-052 : reference conservee en plus des champs delivery_* figes
+      // ci-dessous, pour preselectionner la bonne adresse a une reprise/
+      // duplication ulterieure — jamais relue pour l'affichage.
+      'delivery_address_id' => $deliveryAddress->id(),
       'delivery_raison_sociale' => $deliveryAddress->get('raison_sociale')->value,
       'delivery_adresse' => $deliveryAddress->get('adresse')->value,
       'delivery_complement' => $deliveryAddress->get('complement')->value,
