@@ -3,7 +3,7 @@
   --quote-col-reference: 90px;
   --quote-col-status: 200px;
   --quote-col-amount: 100px;
-  padding-block: var(--dm-space-page) var(--dm-space-block);
+  margin-block: var(--dm-space-page);
   padding-inline: var(--dm-gutter);
 }
 @media (width >= 992px) {

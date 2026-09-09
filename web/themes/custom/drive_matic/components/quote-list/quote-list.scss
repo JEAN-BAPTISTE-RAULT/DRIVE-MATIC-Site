@@ -13,7 +13,13 @@
   --quote-col-status: 200px;
   --quote-col-amount: 100px;
 
-  padding-block: var(--dm-space-page) var(--dm-space-block);
+  // `margin`, pas `padding` : la racine porte une bordure visible a partir
+  // de 992px (carte, cf. bloc @media plus bas) — un `padding-block` reste a
+  // l'INTERIEUR de cette bordure (aucun ecart visible avec le titre
+  // au-dessus), il faut un ecart EXTERIEUR a la boite. Meme token en haut et
+  // en bas (`--dm-space-page`) : « au-dessus du titre » et « en dessous de
+  // la liste de contenus » sont le meme role de gabarit (rythme unique).
+  margin-block: var(--dm-space-page);
   padding-inline: var(--dm-gutter);
 
   @media (width >= 992px) {
