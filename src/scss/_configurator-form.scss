@@ -218,6 +218,21 @@
   &__step-link {
     color: inherit;
     text-decoration: none;
+
+    // Lien etire (meme convention que `news-teaser`, CLAUDE.md) : le lien
+    // ne couvre nativement que son propre texte, la pastille (bordure,
+    // padding, coche, fond) etant portee par le `<li>` parent (deja
+    // `position: relative` ci-dessus) — sans ce `::before`, seul le texte
+    // repond au clic, pas le reste de la pastille (retour utilisatrice,
+    // 2026-09-10). Pas de `position: relative` ICI (sur le lien lui-meme) :
+    // ce `::before` doit se positionner par rapport au `<li>` (le seul
+    // ancetre positionne), pas par rapport au lien (qui se reduirait alors
+    // a son propre texte, annulant l'effet).
+    &::before {
+      position: absolute;
+      inset: 0;
+      content: '';
+    }
   }
 
   // --- En-tete de bloc (« Configuration N » + suppression). ----------------

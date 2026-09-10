@@ -1266,6 +1266,11 @@ textarea) {
   color: inherit;
   text-decoration: none;
 }
+.configurator-form__step-link::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+}
 .configurator-form__card-header {
   display: flex;
   align-items: center;
