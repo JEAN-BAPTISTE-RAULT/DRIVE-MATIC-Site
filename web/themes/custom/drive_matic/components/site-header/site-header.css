@@ -322,6 +322,7 @@
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.25rem;
+  text-decoration: none;
   cursor: pointer;
 }
 @media (width >= 992px) {
