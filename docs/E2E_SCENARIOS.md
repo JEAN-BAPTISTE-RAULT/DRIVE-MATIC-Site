@@ -345,6 +345,14 @@
 
 **Mise en oeuvre — le 2026-09-07** ([ADR-046](../.claude/decisions/046-tableau-de-bord-partenaire.md), maquettes Figma 491-13703/604-34427) : route `/user/tableau-de-bord` (module `drivematic_partner`, `DashboardController`). Les 3 compteurs pointent vers `/user/mes-devis?onglet=a-finaliser|en-cours|archives` — page non implementee (F15, a rejouer une fois construite), lien pose en dur en attendant. Lien de menu « Tableau de bord » (id 42, jusque-la `<nolink>`) rendu fonctionnel.
 
+**Mise en oeuvre (a rejouer) — page cible construite le 2026-09-09**
+([ADR-051](../.claude/decisions/051-page-mes-devis-listing.md)) : les 3
+liens sont desormais des `Url::fromRoute()` reels vers `/user/mes-devis`
+(page S18). Le decoupage des statuts des 3 compteurs ci-dessus, anticipe
+par ADR-046, s'est revele **errone** une fois les vraies maquettes de la
+page consultees — corrige dans `DashboardController` en meme temps que la
+page elle-meme (voir S18).
+
 **Correctifs le meme jour** :
 - Rythme vertical du gabarit absent (aucun ecart titre→cartes, cartes→CTA,
   CTA→footer) : applique `--dm-space-page`/`--dm-space-block` (ADR-013),
@@ -599,14 +607,35 @@ devis de test, donnees nettoyees ensuite.
 - Un devis commande est **auto-archive a 30 jours** (depuis `date_confirmation`, delai fixe, ADR-045) ; un devis archive **n'est plus duplicable** mais son **PDF reste telechargeable**.
 - L'archivage manuel n'est possible **que par le partenaire, depuis cette page** — Drive Matic n'a plus cette possibilite depuis le back-office (ADR-045).
 
-**Etat au 2026-09-07** : le PDF existe et se telecharge deja reellement
-(ADR-041), mais uniquement depuis le back-office (`/admin/content/devis/{id}`,
-S26) — la page « Mes devis » elle-meme (F13/F15, incluant l'archivage manuel
-partenaire) n'est **toujours pas** implementee ; ce scenario reste **a
-rejouer** une fois cette page construite. La repartition des onglets
-ci-dessus (« Commande » desormais dans « Archives », pas « Commande en
-cours ») reflete la decision actee avec le tableau de bord (ADR-046),
-a construire pareillement ici.
+**Mise en oeuvre (a rejouer) — page « Mes devis » livree le 2026-09-09**
+([ADR-051](../.claude/decisions/051-page-mes-devis-listing.md)) :
+- Page `/user/mes-devis` construite (3 onglets, `MyQuotesController`) : la
+  repartition des onglets ci-dessus (« Commande » dans « Archives », pas
+  « Commande en cours ») est bien celle des maquettes reelles
+  (493-14389/493-15278/493-16109), corrigeant au passage l'anticipation
+  fausse d'ADR-046 (le tableau de bord pointait vers un decoupage errone).
+
+**Mise en oeuvre (a rejouer) — etape 1 (« A finaliser ») livree le
+2026-09-09** ([ADR-052](../.claude/decisions/052-menu-actions-devis-a-finaliser.md)) :
+- Modifier/Dupliquer/Supprimer sont operationnels **sur l'onglet « A
+  finaliser » uniquement** — verifie de bout en bout (creation d'un devis
+  test, chaque action, IDOR par un 2e compte, degradation catalogue
+  totale/partielle sur un vehicule renomme/supprime, nettoyage des donnees
+  de test).
+- Suppression : modale de confirmation (meme pattern qu'ADR-034),
+  supprime reellement le devis et ses configurations/lignes.
+- Duplication : nouveau devis « a finaliser » avec le meme contenu de
+  configuration, prix **recalcules** au tarif catalogue et a la remise
+  partenaire du jour (jamais une copie des valeurs du devis source — un
+  devis « a finaliser » n'est pas fige, precision ADR-052 sur ADR-043).
+- Modification : redirige vers l'ecran Livraison du configurateur, devis
+  resauvegarde **en place** (meme id/reference) au clic « Enregistrer le
+  devis »/« Commander », adresse de livraison du devis preselectionnee.
+
+**Etapes 2 et 3 (menu « Commande en cours »/« Archives », archivage manuel
+partenaire) : toujours `[ ]` non implementees**, explicitement hors
+perimetre d'ADR-052 — ce scenario reste **partiellement a rejouer** pour ces
+2 etapes une fois leur menu construit.
 
 ---
 
@@ -884,6 +913,9 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-09 | **Menu d'actions « Mes devis à finaliser » : Modifier/Dupliquer/Supprimer** ([ADR-052](../.claude/decisions/052-menu-actions-devis-a-finaliser.md)) : menu 3 points par ligne, onglet « à finaliser » uniquement. Precise ADR-043 : un devis « à finaliser » n'est pas fige, Modifier/Dupliquer recalculent au tarif catalogue et à la remise partenaire du jour. Nouveau `QuoteAccessControlHandler` (1er controle d'acces par entite sur `quote`), nouveau champ `Quote::delivery_address_id` (preselection d'adresse a la reprise/duplication), `QuotePersister::update()` (resauvegarde en place) | S18 |
+| 2026-09-09 | **Page « Mes devis » livree** ([ADR-051](../.claude/decisions/051-page-mes-devis-listing.md)) : `/user/mes-devis`, 3 onglets, corrige le decoupage des statuts par onglet errone anticipe par ADR-046 (« Commande » regroupe avec « Archive », pas avec « Commande en cours ») | S13, S18 |
+| 2026-09-09 | **Distinction date d'edition / date comptable sur le devis** : nouveau champ `changed` (auto, dernier enregistrement) affiche/trie l'onglet « à finaliser » ; nouveau champ `date_comptable` (fige au passage a « Commande en cours », jamais remis a jour) affiche/trie les onglets « en cours »/« archivés » | S18 |
 | 2026-09-09 | **Header sticky qui se masque au scroll** ([ADR-050](../.claude/decisions/050-header-sticky-masquage-scroll.md)) : le header passe de `position: relative` a `sticky`, se retracte au scroll vers le bas et reapparait vers le haut. Calage sous la barre d'admin Toolbar via `--drupal-displace-offset-top` | S1 |
 | 2026-09-09 | **Fondu discret a l'arrivee au scroll** ([ADR-049](../.claude/decisions/049-fondu-arrivee-scroll.md)) sur `image_text_50`/`image_text_100` (media et texte revelent independamment) et `grid`/`grid_element` (fondu simultane, arrivee verticale decalee entre cartes) — comportement partage `drive_matic/reveal`, rejoue a chaque passage dans le viewport | S2, transverse (tout `image_text_50/100`) |
 | 2026-09-09 | **Defilement automatique du carrousel marques** (`brands_home`, 800ms) en plus des fleches/glisser deja en place. ⚠️ Un premier essai « continu » (`freeMode`+`loop`) bloquait les clics reels sur les fleches (`swiper.animating` permanent) — abandonne, cf. [ADR-008](../.claude/decisions/008-slideshow-swiper.md) addendum | S2 |
