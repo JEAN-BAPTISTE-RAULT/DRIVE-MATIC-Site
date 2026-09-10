@@ -4,26 +4,30 @@
 // gauche sur le conteneur et coupée à droite (aperçu de la diapo suivante).
 // Sans JS : la piste s'empile (tout visible) et les flèches sont masquées.
 .history {
-  max-width: calc(1130px + 2 * var(--dm-gutter));
-  margin-inline: auto;
+  // Bord a bord sur toute la largeur de la fenetre (retour utilisatrice,
+  // 2026-09-10) : meme traitement que jumbo_home/news_home/product_features
+  // ce meme jour (ADR-008) — plus de `max-width`/`margin-inline: auto`, et
+  // la section elle-meme ne pose plus de padding-inline. La gouttiere de
+  // bord de la piste (`&__viewport` plus bas) vient de
+  // `slidesOffsetBefore`/`slidesOffsetAfter` (Swiper, cf.
+  // `drive_matic/slideshow` + history.twig), qui ne se voit qu'aux deux
+  // extremites du defilement — jamais en permanence comme le ferait un
+  // padding CSS fixe. `&__header`, qui ne defile pas, pose desormais son
+  // propre `padding-inline` (ci-dessous).
   padding-block: var(--dm-space-block);
-  padding-left: var(--dm-gutter);
 
   // En-tête : titre à gauche, flèches à droite, filet pointillé en dessous.
-  // Le filet suit la piste jusqu'au bord de la fenêtre : la boîte est élargie à
-  // droite, puis le contenu ramené dans le conteneur par un padding de même
-  // valeur (les deux `calc` se compensent, même base de pourcentage).
-  // ⚠️ Le `%` de ces `calc` se résout contre le bloc de contenu de `.history`
-  // (1130 + gutter, puisque seul `padding-left` est posé plus haut), pas
-  // contre sa largeur totale (1130 + 2*gutter) qu'utilise son centrage — d'où
-  // un écart constant de gutter/2 (20px) sans la correction ci-dessous.
+  // Le filet suit desormais le bord de la fenêtre SANS calc de compensation :
+  // `.history` n'ayant plus aucun padding-inline (ci-dessus), la boîte de
+  // `&__header` (bordure comprise) atteint deja naturellement les deux bords
+  // — seul son CONTENU (titre, flèches) est ramené au gutter par le padding
+  // ci-dessous.
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-right: calc(50% - 50vw + (var(--dm-gutter) / 2));
-    padding-right: calc(50vw - 50% - (var(--dm-gutter) / 2));
+    padding-inline: var(--dm-gutter);
     padding-bottom: 32px;
     border-bottom: 1px dashed var(--dm-color-steel);
   }
@@ -90,15 +94,14 @@
     pointer-events: none;
   }
 
-  // La piste garde le calage gauche du conteneur mais déborde à droite jusqu'au
-  // bord de la fenêtre (la diapo suivante est coupée par le viewport).
-  // La classe `.swiper` est répétée : le bundle pose `margin-right: auto` à la
-  // même spécificité que notre BEM et il est chargé après (sinon la piste
-  // s'arrête au bord du conteneur et l'aperçu disparaît).
+  // Le conteneur n'etant plus centre/plafonne (ci-dessus), le viewport
+  // atteint deja naturellement les deux bords de la fenetre — plus besoin de
+  // la correction `calc(50% - 50vw + gutter/2)` historique. `position:
+  // relative` sans autre role connu ici (aucun enfant absolument positionne
+  // identifie) — laissee par prudence, comme `news-home`.
   &__viewport.swiper {
     position: relative;
     margin-top: var(--dm-space-element);
-    margin-right: calc(50% - 50vw + (var(--dm-gutter) / 2));
   }
 
   // Diapositives à largeur fixe (aperçu du suivant) — slidesPerView: auto.
@@ -113,10 +116,9 @@
 
   // Repli sans JS : neutralise le viewport Swiper (empilement vertical lisible)
   // et son débordement à droite, sinon les diapositives empilées sortent de
-  // l'écran. Même remarque de spécificité que ci-dessus (`.swiper` répété).
+  // l'écran.
   :where(html.no-js) &__viewport.swiper {
     overflow: visible;
-    margin-right: 0;
   }
 
   :where(html.no-js) & .swiper-wrapper {

@@ -6,6 +6,9 @@
   la piste : le behavior les résout dans le conteneur du composant.
   Amélioration progressive : sans JS, la piste s'empile et reste lisible ; les
   flèches n'apparaissent que lorsque Swiper a démarré.
+  `data-dm-slideshow-edge-gutter` : la piste déborde des deux côtés à TOUTE
+  largeur (comme `news-home`/`product-features`), donc pas de `-min-width`
+  associé.
 #}
 <section class="history">
   <div class="history__header">
@@ -30,6 +33,7 @@
     data-dm-slideshow
     data-dm-slideshow-per-view="auto"
     data-dm-slideshow-space="30"
+    data-dm-slideshow-edge-gutter
   >
     <div class="swiper-wrapper">
       {{ block('slides') }}
