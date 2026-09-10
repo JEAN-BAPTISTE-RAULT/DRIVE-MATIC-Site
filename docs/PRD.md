@@ -73,19 +73,19 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 
 ---
 
-### F2 : Navigation (menu, fil d'Ariane, footer)
+### F2 : Navigation (menu, footer)
 
 **Trigger** : Quand un visiteur navigue sur le site.
 
 **Action** :
 1. Il utilise le menu principal multi-niveaux (Auto-ecole, Vehicule PMR, Drive Matic, Actualites, Demander un devis, Espace partenaire).
-2. Il se repere via le fil d'Ariane et accede aux liens du footer.
+2. Il accede aux liens du footer.
 
 **Resultat attendu** : Une navigation coherente sur tout le site.
 
 **Criteres d'acceptation** :
 - [x] Le menu reprend l'arborescence des specs (rubriques niveau 1 et 2).
-- [x] Le fil d'Ariane est present sur toutes les pages **sauf** la home page.
+- Le fil d'Ariane, present du 2026-08-21 au 2026-09-10, a ete **retire du site** (demande explicite, [ADR-054](../.claude/decisions/054-suppression-fil-ariane.md), remplace ADR-023) — ce n'est plus un critere d'acceptation de cette feature.
 - [x] Le footer contient : coordonnees, solutions auto-ecole/PMR, assistance (contact, FAQ), reseaux sociaux (Instagram, TikTok, LinkedIn, YouTube), et les liens legaux (CGV, CGU, mentions legales, donnees personnelles).
 - [x] Drive Matic peut creer des rubriques de **niveau 2** et des pages en autonomie ; la creation de rubriques de **niveau 1** requiert une intervention CSS de Passerelle.
 
@@ -99,6 +99,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 - **Mise en oeuvre — fil d'Ariane stylise le 2026-08-21** ([ADR-023](../.claude/decisions/023-fil-ariane-style.md)) : aucune maquette ne le montrait (ecart assume, cf. `docs/archive/maquette-integration-progress.md`) — typographie et couleurs reprises du registre `pager`, ecart egal au-dessus et au-dessous (`--dm-space-element`, 24px, porte par le fil d'Ariane lui-meme pour couvrir aussi les pages sans bloc titre comme `product`), et alignement horizontal cale sur le bandeau du header (logo compris), pas sur la colonne de contenu — les deux divergent au-dela de ~980px de large.
 - **Corrige le 2026-08-31** (addendum [ADR-023](../.claude/decisions/023-fil-ariane-style.md)) : le fil d'Ariane est desormais masque sous 992px (demande explicite). Seul son contenu disparait visuellement — le bloc conserve son `padding-block`, donc l'ecart vertical vers le titre de page (ou le premier paragraphe sur les gabarits hero) n'est pas affecte.
 - **Mise en oeuvre — header sticky qui se masque au scroll le 2026-09-09** ([ADR-050](../.claude/decisions/050-header-sticky-masquage-scroll.md)) : le header, jusque-la en flux normal, est desormais fixe en haut d'ecran en permanence et se retracte au scroll vers le bas (reapparait vers le haut), au-dela de sa propre hauteur pour eviter un clignotement pres du haut de page. Calage sous la barre d'admin Toolbar (`--drupal-displace-offset-top`) pour un utilisateur authentifie. Desactive sous `prefers-reduced-motion` ; sans JS, reste sticky mais ne se masque jamais.
+- **Retrait du fil d'Ariane le 2026-09-10** ([ADR-054](../.claude/decisions/054-suppression-fil-ariane.md), remplace ADR-023, demande explicite) : bloc `system_breadcrumb_block` supprime de toutes les pages, mobile et desktop. L'ecart qu'il portait vers le titre de page est retabli sur `.block-page-title-block` via `--dm-space-page` (le token de rythme vertical standard du projet, pas une valeur dediee) ; les gabarits hero (`transform`/`product`, dont le premier paragraphe est une banniere plein-cadre) restent a ecart nul, comme avant meme l'existence du fil d'Ariane. Module `easy_breadcrumb` non desinstalle (inerte, hors perimetre).
 
 ---
 
@@ -436,7 +437,7 @@ L'existant ne propose ni presentation structuree de l'offre, ni espace partenair
 | **Soumission de formulaire** (Webform) | Contact (devis / SAV / question), devenir partenaire — **stockees + e-mail** | — |
 
 ### Contenu editorial (public)
-Le modele de contenu editorial (types de contenu, taxonomie, mapping paragraphes) est acte dans [ADR-002](../.claude/decisions/002-types-de-contenu.md) et detaille dans `docs/content-model.md` : **12 nodes publics** (`homepage`, `transform`, `product`, `faq`, `documents`, `corporate`, `brands`, `contact`, `simple_form`, `legals`, `news`, `all_news`), **2 nodes « fragments »** sans page publique (`question`, `brand` — hors sitemap, URL bloquee ; le fragment `document` a ete supprime le 2026-08-18), **1 taxonomie** (`categories`). **Livre en totalite.** Conventions transverses : champ « lien » interne/externe + cible d'onglet ; « fichier telechargeable » avec nom/format/poids ; **titre unique porte par le `title`**, qui alimente l'affichage, l'alias, le fil d'Ariane et la balise title ([ADR-014](../.claude/decisions/014-titre-unique-porte-par-le-title.md), qui remplace l'ADR-011) ; metatags (body→description) ; sitemap = nodes inclus / entites exclues. `simple_form` (ex-`partner`) est **multi-instance** depuis le 2026-08-25 ([ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md)) — porte « Devenir partenaire » et « Demande de création de compte ».
+Le modele de contenu editorial (types de contenu, taxonomie, mapping paragraphes) est acte dans [ADR-002](../.claude/decisions/002-types-de-contenu.md) et detaille dans `docs/content-model.md` : **12 nodes publics** (`homepage`, `transform`, `product`, `faq`, `documents`, `corporate`, `brands`, `contact`, `simple_form`, `legals`, `news`, `all_news`), **2 nodes « fragments »** sans page publique (`question`, `brand` — hors sitemap, URL bloquee ; le fragment `document` a ete supprime le 2026-08-18), **1 taxonomie** (`categories`). **Livre en totalite.** Conventions transverses : champ « lien » interne/externe + cible d'onglet ; « fichier telechargeable » avec nom/format/poids ; **titre unique porte par le `title`**, qui alimente l'affichage, l'alias et la balise title ([ADR-014](../.claude/decisions/014-titre-unique-porte-par-le-title.md), qui remplace l'ADR-011) ; metatags (body→description) ; sitemap = nodes inclus / entites exclues. `simple_form` (ex-`partner`) est **multi-instance** depuis le 2026-08-25 ([ADR-024](../.claude/decisions/024-mutualisation-formulaire-simple.md)) — porte « Devenir partenaire » et « Demande de création de compte ».
 
 ### Referentiel vehicules (partage)
 Trois taxonomies reutilisables (cf. [ADR-003](../.claude/decisions/003-referentiel-vehicules.md)), partagees par le webform contact (F10) et le configurateur (F14/F17) : `vehicle_brand` (29 marques), `vehicle_model` (138 modeles ; champs `field_brand` + `field_motorisations`), `motorisation` (4 : Manuelle, Automatique, Hybride, Électrique). Vocabulaires + champs versionnes ; termes = contenu, desormais importes/mis a jour depuis le combinatoire Excel via `/admin/content/catalogue-tarifs/import` (F17, [ADR-030](../.claude/decisions/030-catalogue-tarifs-import.md)) plutot que par script Drush ponctuel.
@@ -451,7 +452,6 @@ Trois taxonomies reutilisables (cf. [ADR-003](../.claude/decisions/003-referenti
 
 ### Patterns de navigation
 - **Menu principal multi-niveaux** (niveaux 1 et 2), avec sous-menu authentifie pour l'espace partenaire.
-- **Fil d'Ariane** present partout **sauf** en home page ; masque en mobile (sous 992px) depuis le 2026-08-31.
 - **Footer** riche : coordonnees, solutions auto-ecole/PMR, assistance (contact, FAQ), reseaux sociaux, liens legaux.
 - Comportement responsive attendu (audience grand public + exigence RGAA/WCAG AA). `[INFERE]`
 

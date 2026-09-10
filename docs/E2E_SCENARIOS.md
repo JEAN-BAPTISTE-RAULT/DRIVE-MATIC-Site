@@ -14,28 +14,24 @@
 
 ## Contenus publics
 
-## S1 — Navigation principale & fil d'Ariane
+## S1 — Navigation principale & footer
 
-**Objectif** : Verifier la navigation multi-niveaux, le fil d'Ariane et le footer.
+**Objectif** : Verifier la navigation multi-niveaux et le footer.
 
 **Etapes** :
 1. Depuis la home, ouvrir le menu et deployer chaque rubrique niveau 2 (Auto-ecole, Vehicule PMR, Drive Matic, Assistance), desktop puis mobile (tiroir).
 2. Sur Drive Matic (desktop), verifier les 3 colonnes de liens separees par des filets (pas une liste a plat).
 3. Ouvrir successivement 2 dropdowns differents et observer si les AUTRES boutons du nav se decalent.
 4. Acceder a une page de niveau 2 (ex. « Double-pedalier »).
-5. Observer le fil d'Ariane, puis parcourir les liens du footer (solutions, assistance, reseaux sociaux, liens legaux).
+5. Parcourir les liens du footer (solutions, assistance, reseaux sociaux, liens legaux).
 
 **Resultats attendus** :
 - Le menu reflete l'arborescence du PRD ; les liens mènent aux bonnes pages.
 - Chaque flyout desktop couvre toute la largeur de la page (pas seulement la largeur du bandeau du header) ; son contenu reste aligne avec le logo.
 - Le dropdown Drive Matic affiche 3 colonnes de liens ; aucun bouton du nav ne bouge quand un autre dropdown s'ouvre ou se ferme.
-- Le fil d'Ariane est present sur la page de contenu **et absent sur la home**, en desktop (>= 992px).
-- En mobile (< 992px), le fil d'Ariane n'affiche **aucun lien** sur la page de contenu, mais l'ecart vertical vers le titre (ou le premier paragraphe sur un gabarit hero) reste identique a avant son masquage.
 - Le footer expose coordonnees, solutions auto-ecole/PMR, assistance (contact, FAQ), reseaux sociaux et liens legaux.
 
-**Mise en oeuvre (a rejouer) — fil d'Ariane stylise le 2026-08-21** ([ADR-023](../.claude/decisions/023-fil-ariane-style.md)) : liens gris, element courant en acier gras, separateur `»` gris metallise. Verifier sur une page **sans** bloc titre (ex. `/telecommande-vor-auto-ecole`, bundle `product`) que l'ecart sous le fil existe malgre tout (porte par le fil lui-meme, pas par le titre). En desktop, le bord gauche du fil doit tomber exactement sous le **D** du logo du header, a toutes les largeurs (verifie a 1440px et 1920px) — pas necessairement sous le titre de page, qui suit une autre colonne au-dela d'environ 980px de large.
-
-**Mise en oeuvre (a rejouer) — fil d'Ariane masque en mobile le 2026-08-31** (addendum [ADR-023](../.claude/decisions/023-fil-ariane-style.md)) : sous 992px, `.breadcrumb ol` passe a `display: none` (le conteneur `.breadcrumb` reste present et garde son `padding-block`). Verifier sur `/faq` (page sans hero) que la liste est bien absente du rendu mobile et que l'espace entre le menu et le titre n'a pas change de hauteur par rapport a la version desktop du meme ecart.
+**Mise en oeuvre (a rejouer) — fil d'Ariane retire le 2026-09-10** ([ADR-054](../.claude/decisions/054-suppression-fil-ariane.md), remplace ADR-023, demande explicite) : aucune page ne doit plus afficher de fil d'Ariane, mobile comme desktop (`system_breadcrumb_block` supprime). Verifier sur une page de contenu standard (titre texte, ex. `/qui-sommes-nous`) que le titre suit directement le filet du header a un ecart de 49px desktop / 13px mobile (`--dm-space-page`, le rythme de page standard — pas une valeur dediee a l'ancien fil). Verifier sur une page **sans** bloc titre (ex. `/transformer-un-vehicule-en-auto-ecole`, bundle `transform`, ou `/double-pedalier`, bundle `product`) que le premier paragraphe (banniere plein-cadre) touche directement le header, sans aucun ecart — design different et volontaire, pas un oubli.
 
 **Mise en oeuvre (a rejouer) — header sticky qui se masque au scroll le 2026-09-09** ([ADR-050](../.claude/decisions/050-header-sticky-masquage-scroll.md)) : sur une page longue, scroller vers le bas — le header doit se retracter (glissement vers le haut) une fois sa propre hauteur depassee, puis reapparaitre des le premier scroll vers le haut. A rejouer **connectee en admin/partenaire** (barre Toolbar visible) : le header doit se caler juste sous la Toolbar, jamais la chevaucher, y compris pendant le scroll.
 
@@ -774,7 +770,7 @@ pas seulement a l'oeil.
 - Apres connexion (etape 7), redirection vers « Mes informations personnelles » (`/user/mes-informations-personnelles`), pas la page de compte par defaut du cœur.
 - En mobile, les 3 cartes d'action font toutes la meme hauteur (verifier notamment que la carte « Vous êtes une auto-école », au texte plus court, n'est pas plus basse que les 2 autres).
 - Les 3 cartes d'action et le lien « FAITES UNE DEMANDE » resolvent vers les bonnes pages, sans lien mort (`#`).
-- Fil d'Ariane et titre d'onglet affichent « Me connecter » (pas le « Se connecter » par defaut du cœur — `easy_breadcrumb.replaced_titles` et `hook_preprocess_html()`).
+- Titre d'onglet affiche « Me connecter » (pas le « Se connecter » par defaut du cœur — `hook_preprocess_html()`). Plus de fil d'Ariane a verifier sur cette page depuis son retrait du site (2026-09-10, [ADR-054](../.claude/decisions/054-suppression-fil-ariane.md)).
 - Aucune boite d'onglets locaux ("Se connecter"/"Réinitialiser votre mot de passe", libelles core inchanges) ni double titre ne s'affiche sur `/user/login`.
 - Les 3 boutons des cartes d'action sont alignes sur une meme ligne basse, quelle que soit la longueur du texte au-dessus.
 - La bascule d'affichage du mot de passe reste inerte si le JS ne s'execute pas (repli sans JS : champ mot de passe standard).
@@ -913,6 +909,15 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-10 | **`rsync --delete` ne supprimait en realite jamais rien sur le serveur preprod**, quelle que soit l'option `--prune` — no-op silencieux du a un transfert par liste de fichiers individuels (`--files-from`), incompatible avec `--delete` (documente dans le manuel rsync). Corrige par un transfert d'arborescence complet filtre par `.gitignore`. Suppression distante desormais systematique (plus d'option). Decouvert en constatant qu'un bloc de config supprime cote git restait actif en preprod ; 31 fichiers perimes accumules depuis des mois purges au premier deploiement avec le correctif | Hors matrice (infrastructure) |
+| 2026-09-10 | **Le fil d'Ariane est retire du site** ([ADR-054](../.claude/decisions/054-suppression-fil-ariane.md), remplace ADR-023, demande explicite) : plus de bloc sur aucune page, mobile comme desktop. L'ecart qu'il portait vers le titre de page est retabli sur le bloc titre via `--dm-space-page` (rythme de page standard, pas une valeur dediee) ; les gabarits hero (`transform`/`product`) restent a ecart nul, design d'origine inchange | S1 |
+| 2026-09-10 | **Defilement bord a bord des slideshows `jumbo_home`/`news_home`/`product_features`/`history`** (demande explicite) : plus de points de pagination en desktop (fleches suffisent), et la piste occupe toute la largeur du viewport pendant le glissement — la gouttiere de bord n'apparait qu'aux deux extremites (1re/derniere diapositive), portee par `slidesOffsetBefore`/`slidesOffsetAfter` (Swiper) et non plus par un padding CSS fixe. Abandon du calc de bleed `margin-inline: calc(50% - 50vw)` pour ces 4 composants (cf. entree du 2026-08-20 ci-dessous, desormais obsolete pour eux) — cf. [ADR-008](../.claude/decisions/008-slideshow-swiper.md) addendum pour le garde-fou anti-piste-trop-etroite (peu de diapositives sur tres large ecran) | S2, S3, S4 |
+| 2026-09-10 | **Backup de la base preprod fonctionnel et verifie sur le serveur reel** : `mysqldump` direct (identifiants dedies du sysadmin) remplace `drush sql:dump`, casse depuis le 2026-09-03 sur cet hebergement. Un seul dump conserve a la fois (l'ancien est supprime avant d'en generer un nouveau), chemin hors de l'arborescence deployee | Hors matrice (infrastructure) |
+| 2026-09-10 | **Purge automatique des PDF de devis confirmes depuis plus de 2 ans** ([ADR-053](../.claude/decisions/053-purge-pdf-devis.md), `hook_cron`) : seul le fichier est supprime, jamais l'entite `Quote` ni son historique. Date de reference = `date_confirmation`, alignee sur le seuil d'archivage automatique existant (30 jours) | S18 |
+| 2026-09-10 | **Bandeaux de totaux du configurateur (etape 2) aeres** : « Tarif par vehicule »/« Tarif total vehicules » passent desormais sur leur propre ligne pleine largeur ; alignement vertical des libelles Total HT/Remise HT/Total remise HT/TVA/Total TTC etendu a « Total configuration(s) » (meme presentation partout) | S14 |
+| 2026-09-10 | **Zone cliquable des pastilles du fil d'etapes du configurateur etendue** : seul le texte de la pastille etait cliquable, desormais toute la pastille l'est (lien etire, `::before` sur le lien uniquement — pas de `position: relative` sur le lien lui-meme) | S14 |
+| 2026-09-10 | **Espacement des modales de confirmation resserre** (transverse) : ecart texte/croix de fermeture et texte/boutons reduit sur toutes les modales de confirmation du site (`form.confirmation`), sans toucher aux modales pleine-formulaire (ex. adresse de livraison) | Transverse (S9, S15, S18, S26) |
+| 2026-09-10 | **4 regressions visuelles du menu d'actions « Mes devis » corrigees** (menu 3 points, ADR-052) : points de menu verticalement centres dans la ligne, coins arrondis du menu deroulant qui redevenaient carres au survol, clignotement parasite avant l'ouverture de la modale Supprimer, modale de confirmation elargie (400→500px) pour tenir sur une ligne | S18 |
 | 2026-09-09 | **Menu d'actions « Mes devis à finaliser » : Modifier/Dupliquer/Supprimer** ([ADR-052](../.claude/decisions/052-menu-actions-devis-a-finaliser.md)) : menu 3 points par ligne, onglet « à finaliser » uniquement. Precise ADR-043 : un devis « à finaliser » n'est pas fige, Modifier/Dupliquer recalculent au tarif catalogue et à la remise partenaire du jour. Nouveau `QuoteAccessControlHandler` (1er controle d'acces par entite sur `quote`), nouveau champ `Quote::delivery_address_id` (preselection d'adresse a la reprise/duplication), `QuotePersister::update()` (resauvegarde en place) | S18 |
 | 2026-09-09 | **Page « Mes devis » livree** ([ADR-051](../.claude/decisions/051-page-mes-devis-listing.md)) : `/user/mes-devis`, 3 onglets, corrige le decoupage des statuts par onglet errone anticipe par ADR-046 (« Commande » regroupe avec « Archive », pas avec « Commande en cours ») | S13, S18 |
 | 2026-09-09 | **Distinction date d'edition / date comptable sur le devis** : nouveau champ `changed` (auto, dernier enregistrement) affiche/trie l'onglet « à finaliser » ; nouveau champ `date_comptable` (fige au passage a « Commande en cours », jamais remis a jour) affiche/trie les onglets « en cours »/« archivés » | S18 |
