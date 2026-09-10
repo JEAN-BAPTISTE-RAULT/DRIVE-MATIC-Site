@@ -4,6 +4,10 @@
   Slideshow si > 1 diapositive (init par `drive_matic/slideshow`), sinon
   bannière statique. Amélioration progressive : sans JS, la piste s'empile et
   reste lisible ; les flèches n'apparaissent que sous `html.js`.
+  `data-dm-slideshow-offset-after-min-width="992"` : la piste ne déborde à
+  droite qu'à partir de ce palier (`jumbo-home.scss`, `&__viewport.swiper`) —
+  sous ce palier, une seule diapositive plein cadre sans débordement, la
+  gouttière de fin n'a pas lieu d'être ajoutée.
 #}
 <section class="jumbo-home">
   <div
@@ -11,6 +15,8 @@
     data-dm-slideshow
     data-dm-slideshow-per-view="auto"
     data-dm-slideshow-space="20"
+    data-dm-slideshow-offset-after-gutter
+    data-dm-slideshow-offset-after-min-width="992"
   >
     <div class="swiper-wrapper">
       {{ block('slides') }}

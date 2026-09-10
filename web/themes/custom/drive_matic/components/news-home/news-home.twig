@@ -6,6 +6,9 @@
   Slideshow si > 1 diapositive, sinon liste statique. Les flèches vivent dans
   l'en-tête (maquette), hors de la piste : le behavior les résout dans le
   conteneur du composant.
+  `data-dm-slideshow-offset-after-gutter` : la piste déborde à droite à
+  TOUTE largeur ici (contrairement à `jumbo-home`, desktop uniquement),
+  donc pas de `-min-width` associé.
 #}
 <section class="news-home">
   <div class="news-home__head">
@@ -30,6 +33,7 @@
     data-dm-slideshow
     data-dm-slideshow-per-view="auto"
     data-dm-slideshow-space="20"
+    data-dm-slideshow-offset-after-gutter
   >
     <div class="swiper-wrapper">
       {{ block('slides') }}
