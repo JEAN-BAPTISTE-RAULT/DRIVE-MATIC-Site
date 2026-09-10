@@ -138,7 +138,14 @@ run_remote "cd '$PREPROD_PATH' && chmod +x vendor/bin/* vendor/drush/drush/drush
 
 if [ "$NO_BACKUP" -eq 0 ]; then
   echo "-- backup de la base preprod --"
-  run_remote "cd '$PREPROD_PATH' && mkdir -p backups && vendor/bin/drush sql:dump --gzip --result-file=backups/preprod-\$(date +%Y%m%d-%H%M%S).sql"
+  # Supprime le(s) dump(s) precedent(s) avant d'en generer un nouveau : sans
+  # ca, chaque deploiement ajoute un fichier de plus dans backups/ (nomme par
+  # horodatage, jamais ecrase) et le disque, deja limite sur cet hebergement,
+  # accumule indefiniment d'anciennes sauvegardes. `--gzip` fait produire par
+  # drush un fichier `<result-file>.gz` (suffixe ajoute, jamais le nom passe
+  # tel quel) : les deux motifs sont nettoyes par securite si jamais un essai
+  # precedent avait echoue avant compression.
+  run_remote "cd '$PREPROD_PATH' && mkdir -p backups && rm -f backups/preprod-*.sql backups/preprod-*.sql.gz && vendor/bin/drush sql:dump --gzip --result-file=backups/preprod-\$(date +%Y%m%d-%H%M%S).sql"
 fi
 
 echo "-- drush deploy (updb + config:import + cache-rebuild) --"
