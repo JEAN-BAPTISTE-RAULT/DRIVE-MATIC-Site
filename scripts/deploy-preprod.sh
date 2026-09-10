@@ -5,13 +5,15 @@
 # le contenu y evolue independamment du local. Voir
 # .claude/decisions/039-deploiement-preprod-rsync.md pour le contexte.
 #
-# Usage : scripts/deploy-preprod.sh [--dry-run] [--skip-checks] [--no-backup] [--prune]
+# Usage : scripts/deploy-preprod.sh [--dry-run] [--skip-checks] [--no-backup]
 #
 #   --dry-run      previsualise les fichiers transferes, ne touche a rien
 #   --skip-checks  saute npm run lint / format:check (urgence uniquement)
 #   --no-backup    saute le dump de la base preprod avant config:import
-#   --prune        supprime aussi, sur le serveur, les fichiers absents du
-#                  git local (rsync --delete) ; desactive par defaut
+#
+# Le serveur est toujours purge des fichiers versionnes retires du depot local
+# (rsync --delete, cf. plus bas) : un fichier de config supprime cote git ne
+# doit jamais rester actif sur le serveur apres un deploiement.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -35,21 +37,19 @@ done
 DRY_RUN=0
 SKIP_CHECKS=0
 NO_BACKUP=0
-PRUNE=0
 
 for arg in "$@"; do
   case "$arg" in
     --dry-run) DRY_RUN=1 ;;
     --skip-checks) SKIP_CHECKS=1 ;;
     --no-backup) NO_BACKUP=1 ;;
-    --prune) PRUNE=1 ;;
     -h|--help)
       grep '^#' "$0" | sed 's/^# \{0,1\}//'
       exit 0
       ;;
     *)
       echo "Option inconnue : $arg" >&2
-      echo "Usage : $0 [--dry-run] [--skip-checks] [--no-backup] [--prune]" >&2
+      echo "Usage : $0 [--dry-run] [--skip-checks] [--no-backup]" >&2
       exit 1
       ;;
   esac
@@ -94,11 +94,7 @@ if [ "$NO_BACKUP" -eq 1 ]; then
 else
   echo "Backup DB : oui, avant config:import"
 fi
-if [ "$PRUNE" -eq 1 ]; then
-  echo "Suppression distante des fichiers absents du local : oui (--prune)"
-else
-  echo "Suppression distante des fichiers absents du local : non"
-fi
+echo "Suppression distante des fichiers absents du local : oui"
 echo ""
 
 if [ "$DRY_RUN" -eq 0 ]; then
@@ -110,13 +106,33 @@ if [ "$DRY_RUN" -eq 0 ]; then
 fi
 
 echo ""
-echo "=== Transfert du code (rsync, uniquement les fichiers suivis par git) ==="
+echo "=== Transfert du code (rsync, arborescence complete filtree par .gitignore) ==="
 
-RSYNC_OPTS=(-av --files-from=- --from0 -e "$RSYNC_SSH")
+# ⚠️ Ne PAS repasser par `git ls-files --files-from=-` : rsync ne supprime
+# jamais un fichier distant absent du local dans ce mode (cf. son propre
+# manuel : « --delete » n'agit que sur les repertoires envoyes ENTIERS, or
+# `--files-from` transmet une liste de fichiers individuels, jamais un
+# repertoire entier — deja verifie empiriquement : un fichier canari pose a
+# la main dans `config/sync/` sur le serveur n'etait pas supprime meme avec
+# `--delete` actif). D'ou l'incident du 2026-09-10 : un bloc de config
+# supprime cote git restait actif en preprod apres deploiement, invisible a
+# `drush deploy` (rien a synchroniser puisque le fichier perime etait
+# toujours la, identique a la config active).
+#
+# A la place : on envoie l'arborescence reelle du depot (recursion normale
+# de rsync), filtree par les `.gitignore` (`--filter=':- .gitignore'` : merge
+# non ancre, lu dans CHAQUE repertoire traverse, memes regles d'exclusion —
+# et de reinclusion via `!` — que git lui-meme). Un fichier exclu du
+# transfert par ce filtre est AUSSI exclu de la suppression (comportement
+# documente de `--delete`, sans avoir besoin de `--delete-excluded`, qu'il ne
+# faut surtout pas ajouter : cela supprimerait les fichiers ignores
+# (uploads, `settings.php`, PDF prives...) au lieu de les preserver).
+# `.git/` est exclu a la main : ce dossier n'est jamais dans les
+# `.gitignore` du depot (il s'exclut lui-meme nativement pour git).
+RSYNC_OPTS=(-av --delete --exclude=.git --filter=':- .gitignore' -e "$RSYNC_SSH")
 [ "$DRY_RUN" -eq 1 ] && RSYNC_OPTS+=(--dry-run)
-[ "$PRUNE" -eq 1 ] && RSYNC_OPTS+=(--delete)
 
-git ls-files -z | rsync "${RSYNC_OPTS[@]}" ./ "$SSH_TARGET:$PREPROD_PATH/"
+rsync "${RSYNC_OPTS[@]}" ./ "$SSH_TARGET:$PREPROD_PATH/"
 
 if [ "$DRY_RUN" -eq 1 ]; then
   echo ""
@@ -151,7 +167,8 @@ if [ "$NO_BACKUP" -eq 0 ]; then
   # l'utilisateur sous lequel drush s'executait). `--defaults-extra-file`
   # pointe vers des identifiants dedies, poses par le sysadmin hors de ce
   # depot ; `$PREPROD_BACKUP_PATH` est aussi hors de l'arborescence Drupal
-  # ($PREPROD_PATH), pour ne jamais etre efface/deplace par un `--prune`.
+  # ($PREPROD_PATH), pour ne jamais etre efface par le `rsync --delete`
+  # (desormais systematique) qui synchronise cette arborescence.
   # Nettoyage prealable des dumps precedents (nommes par horodatage, jamais
   # ecrases) : sans ca, chaque deploiement en ajoute un de plus et le disque
   # accumule indefiniment d'anciennes sauvegardes.
