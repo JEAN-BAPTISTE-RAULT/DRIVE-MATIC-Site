@@ -34,6 +34,10 @@
     min-width: 127px;
     margin: 0;
     padding: 0;
+
+    // Sans lui, le fond de `&__item:hover` deborde des angles arrondis du
+    // panneau (rectangle visible par-dessus le rayon sur le 1er/dernier item).
+    overflow: hidden;
     border-radius: 8px;
     background-color: var(--dm-color-white);
     box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
@@ -85,5 +89,13 @@
 
   &__item--delete &__item-icon {
     mask-image: url('../../images/icons/trash.svg');
+  }
+
+  // Le lien Supprimer (`use-ajax`) insere un throbber juste APRES lui-meme
+  // (`Drupal.Ajax.prototype.setProgressIndicatorThrobber`, coeur) le temps de
+  // charger la modale : dans ce menu etroit, il s'affiche brievement comme un
+  // bloc sous le libelle avant de disparaitre a l'ouverture (clignotement).
+  &__item + .ajax-progress {
+    display: none;
   }
 }

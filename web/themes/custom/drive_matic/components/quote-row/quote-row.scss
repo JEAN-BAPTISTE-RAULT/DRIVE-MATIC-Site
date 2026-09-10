@@ -131,8 +131,14 @@
       text-align: right;
     }
 
+    // `display: flex` + `align-items: center` : sans eux, le menu (inline-flex,
+    // 24px) reste aligne sur la ligne de base du texte ambiant (`&__value`
+    // herite line-height: 1.75rem) au lieu du centre de la cellule — decale
+    // visuellement de quelques px vers le haut par rapport aux autres colonnes.
     &__cell--actions &__value {
+      display: flex;
       flex: 0 0 auto;
+      align-items: center;
     }
   }
 

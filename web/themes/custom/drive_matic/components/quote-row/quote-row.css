@@ -103,7 +103,9 @@
     text-align: right;
   }
   .quote-row__cell--actions .quote-row__value {
+    display: flex;
     flex: 0 0 auto;
+    align-items: center;
   }
 }
 .quote-row__badge {

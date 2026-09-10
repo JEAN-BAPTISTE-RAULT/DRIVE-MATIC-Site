@@ -30,6 +30,7 @@
   min-width: 127px;
   margin: 0;
   padding: 0;
+  overflow: hidden;
   border-radius: 8px;
   background-color: var(--dm-color-white);
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
@@ -81,4 +82,7 @@ li:last-child .quote-row-actions__item {
 .quote-row-actions__item--delete .quote-row-actions__item-icon {
   -webkit-mask-image: url("../../images/icons/trash.svg");
           mask-image: url("../../images/icons/trash.svg");
+}
+.quote-row-actions__item + .ajax-progress {
+  display: none;
 }
