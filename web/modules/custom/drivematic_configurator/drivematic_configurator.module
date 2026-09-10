@@ -42,6 +42,9 @@ function drivematic_configurator_theme(): array {
  * seul le partenaire peut desormais le faire manuellement, depuis son
  * tableau de bord — Drive Matic n'a plus cette possibilite depuis le
  * back-office.
+ *
+ * Purge egalement les PDF de devis confirmes depuis plus de 2 ans
+ * (ADR-053) : voir _drivematic_configurator_purge_old_quote_pdfs().
  */
 function drivematic_configurator_cron(): void {
   $threshold = \Drupal::time()->getRequestTime() - 30 * 24 * 60 * 60;
@@ -53,23 +56,69 @@ function drivematic_configurator_cron(): void {
     ->condition('date_confirmation', $threshold, '<=')
     ->execute();
 
+  if ($ids) {
+    $now = \Drupal::time()->getRequestTime();
+    $status_change_storage = \Drupal::entityTypeManager()->getStorage('quote_status_change');
+    foreach ($storage->loadMultiple($ids) as $quote) {
+      $quote->set('status', Quote::STATUS_ARCHIVE);
+      $quote->set('date_archivage', $now);
+      $quote->save();
+
+      // `uid` absent (pas un administrateur) : transition automatique, voir
+      // Entity/QuoteStatusChange.php.
+      $status_change_storage->create([
+        'quote_id' => $quote->id(),
+        'status' => Quote::STATUS_ARCHIVE,
+      ])->save();
+    }
+  }
+
+  _drivematic_configurator_purge_old_quote_pdfs();
+}
+
+/**
+ * Supprime les PDF des devis confirmes depuis plus de 2 ans (ADR-053).
+ *
+ * Meme date de reference que l'archivage automatique ci-dessus
+ * (`date_confirmation`) : par construction, un devis eligible ici est deja
+ * archive depuis longtemps (2 ans >> le delai de 30 jours ci-dessus), aucun
+ * filtre de statut n'est donc necessaire. Supprime uniquement le FICHIER
+ * (QuotePdfGenerator::delete()) — l'entite Quote et son historique restent
+ * intacts, seul le PDF telechargeable disparait. Un echec de suppression
+ * sur un devis (permissions disque...) ne doit jamais empecher de traiter
+ * les suivants.
+ */
+function _drivematic_configurator_purge_old_quote_pdfs(): void {
+  $threshold = \Drupal::time()->getRequestTime() - 2 * 365 * 24 * 60 * 60;
+
+  $storage = \Drupal::entityTypeManager()->getStorage('quote');
+  $ids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('date_confirmation', $threshold, '<=')
+    ->execute();
+
   if (!$ids) {
     return;
   }
 
-  $now = \Drupal::time()->getRequestTime();
-  $status_change_storage = \Drupal::entityTypeManager()->getStorage('quote_status_change');
+  $pdf_generator = \Drupal::service('drivematic_configurator.quote_pdf_generator');
+  $deleted = 0;
   foreach ($storage->loadMultiple($ids) as $quote) {
-    $quote->set('status', Quote::STATUS_ARCHIVE);
-    $quote->set('date_archivage', $now);
-    $quote->save();
+    try {
+      if ($pdf_generator->delete($quote)) {
+        $deleted++;
+      }
+    }
+    catch (\Throwable $e) {
+      \Drupal::logger('drivematic_configurator')->error('Échec de la purge du PDF pour le devis @reference : @message', [
+        '@reference' => $quote->get('reference')->value,
+        '@message' => $e->getMessage(),
+      ]);
+    }
+  }
 
-    // `uid` absent (pas un administrateur) : transition automatique, voir
-    // Entity/QuoteStatusChange.php.
-    $status_change_storage->create([
-      'quote_id' => $quote->id(),
-      'status' => Quote::STATUS_ARCHIVE,
-    ])->save();
+  if ($deleted) {
+    \Drupal::logger('drivematic_configurator')->info('@count PDF de devis purgés (confirmés depuis plus de 2 ans).', ['@count' => $deleted]);
   }
 }
 

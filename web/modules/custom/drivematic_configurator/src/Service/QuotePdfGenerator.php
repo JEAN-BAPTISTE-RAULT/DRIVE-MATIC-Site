@@ -103,6 +103,28 @@ final class QuotePdfGenerator {
   }
 
   /**
+   * Supprime le PDF d'un devis s'il existe (purge automatique, ADR-053).
+   *
+   * Ne touche jamais a l'entite Quote elle-meme ni a son historique — seul
+   * le fichier disparait. `QuoteDetailController::view()` n'affiche deja le
+   * lien « Voir le PDF du devis » que si le fichier existe encore
+   * (`file_exists()`), aucune autre adaptation necessaire cote affichage.
+   *
+   * @return bool
+   *   TRUE si un fichier a reellement ete supprime, FALSE s'il n'existait
+   *   deja plus (purge precedente, generation jamais reussie...).
+   */
+  public function delete(Quote $quote): bool {
+    $uri = $this->getUri($quote);
+    if (!file_exists($uri)) {
+      return FALSE;
+    }
+
+    $this->fileSystem->delete($uri);
+    return TRUE;
+  }
+
+  /**
    * Encode le logo en data URI (Dompdf ne charge aucune ressource distante).
    *
    * SVG (export Figma du logo, node 714:9297) plutot que le PNG des
