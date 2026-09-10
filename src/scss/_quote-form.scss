@@ -408,13 +408,34 @@
     white-space: nowrap;
   }
 
+  // Espace vers la ligne des prix reduit de moitie (retour utilisatrice,
+  // 2026-09-10) : 8px (base `&__equipment-table th, td` plus haut) + 8px
+  // (symetrique, &__totals-metrics-cell) -> 4px + 4px. Nichees sous
+  // &__equipment-table (2 classes) : la base cible `td` par TYPE (1 classe
+  // + 1 type, specificite (0,1,1)) — une regle a 1 seule classe
+  // (&__totals-label-cell seul, (0,1,0)) resterait battue malgre son ordre
+  // ulterieur dans la feuille compilee, piege deja documente CLAUDE.md.
+  &__equipment-table &__totals-label-cell {
+    padding-bottom: 4px;
+  }
+
+  &__equipment-table &__totals-metrics-cell {
+    // Symetrique du `padding-bottom` ci-dessus : les deux se cumulent pour
+    // former l'espace entre le libelle et sa propre ligne de prix (jamais
+    // entre 2 bandeaux, deja gere par le filet blanc ci-dessous).
+    padding-top: 4px;
+  }
+
   // Ligne de separation blanche entre « Tarif par véhicule » et « Tarif
   // total véhicules » quand les deux bandeaux sont affiches (maquette
-  // 508:13961, configuration a plusieurs véhicules) — portee par les
-  // cellules, pas le `<tr>` (rendu de bordure peu fiable sur `<tr>` avec
-  // `border-collapse: collapse`).
-  &__totals-tr + &__totals-tr &__totals-label-cell,
-  &__totals-tr + &__totals-tr &__totals-metrics-cell {
+  // 508:13961, configuration a plusieurs véhicules) — portee par la
+  // cellule, pas le `<tr>` (rendu de bordure peu fiable sur `<tr>` avec
+  // `border-collapse: collapse`). Cible uniquement la ligne LIBELLE qui
+  // suit une ligne METRIQUES : chaque bandeau etant desormais 2 lignes
+  // (libelle puis metriques, `buildTotalsFooterRowPair()`), cette sequence
+  // precise n'arrive qu'a la frontiere entre 2 bandeaux — jamais entre le
+  // libelle et ses propres metriques.
+  &__totals-tr--metrics + &__totals-tr--label &__totals-label-cell {
     border-block-start: 1px solid var(--dm-color-white);
   }
 
@@ -520,26 +541,18 @@
     }
 
     // Le bandeau general (&__grand-totals) n'est pas une ligne du tableau :
-    // son « Total HT » doit neanmoins demarrer au meme x que celui des
-    // bandeaux par configuration au-dessus (donc que « Équipement(s) »).
-    // Fiable ici (contrairement a la mise en garde generale sur les
-    // calc()/pourcentages partages entre elements independants) car
-    // &__totals-row et &__equipment-table rendent a EXACTEMENT la meme
-    // largeur (meme colonne de contenu, meme carte) — verifie au navigateur
-    // (getBoundingClientRect, 1130px les deux, meme bord gauche).
-    // `flex: 1` : sans lui, le conteneur des metriques se limite a sa
-    // largeur de contenu (somme des 5 metriques + gaps) et le
-    // `margin-inline-start: auto` de &__metric--ttc n'a plus d'espace a
-    // consommer pour atteindre le bord droit du bandeau.
-    // `padding-inline-start` : reproduit la largeur de la colonne vehicule
-    // du tableau (--quote-form-vehicle-fraction) + son padding de cellule
-    // (16px) — le `%` d'un padding se resout contre la largeur de CONTENU
-    // du conteneur (deja amputee de son propre padding de 16px de chaque
-    // cote, cf. memoire table-layout-auto-redistribution), d'ou le
-    // `+ 6.485px` (20.2655% x 32px de padding a compenser).
+    // `flex: 1` etire ses metriques a toute la largeur du bandeau (sans lui,
+    // le conteneur se limite a sa largeur de contenu — somme des 5
+    // metriques + gaps — et le `margin-inline-start: auto` de
+    // &__metric--ttc n'a plus d'espace a consommer pour atteindre le bord
+    // droit). Demarre desormais au bord gauche du bandeau (retire le
+    // 2026-09-10 : plus d'indentation reproduisant la colonne vehicule du
+    // tableau) — coherent avec les bandeaux par configuration au-dessus,
+    // dont les metriques occupent elles aussi toute la largeur depuis que
+    // le libelle (« Tarif par véhicule »...) tient sa propre ligne
+    // (`buildTotalsFooterRowPair()`).
     &__grand-totals &__totals-metrics {
       flex: 1;
-      padding-inline-start: calc(var(--quote-form-vehicle-fraction) + 6.485px);
     }
   }
 

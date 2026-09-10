@@ -380,12 +380,12 @@ final class QuoteForm extends FormBase {
    *
    * Les bandeaux de totaux (« Tarif par véhicule »/« Tarif total véhicules »)
    * sont construits comme de VRAIES lignes de CE tableau (`#footer`, rendu
-   * en `<tfoot>`) plutot que comme un bloc separe apres le tableau : ainsi
-   * « Total HT » demarre necessairement au meme x que « Équipement(s) »,
-   * les deux etant calcules par le MEME algorithme de mise en page du
-   * tableau — aucune valeur a garder synchronisee entre deux elements
-   * distincts (calc()/pourcentages partages, essaye avant, jamais fiable a
-   * 100% d'un moteur de rendu a l'autre).
+   * en `<tfoot>`) plutot que comme un bloc separe apres le tableau : chaque
+   * ligne (libelle, puis metriques — `buildTotalsFooterRowPair()`) recoit
+   * ainsi automatiquement la meme largeur que le tableau (100%, `colspan`
+   * sur les 7 colonnes), sans valeur a garder synchronisee entre deux
+   * elements distincts (calc()/pourcentages partages, essaye avant, jamais
+   * fiable a 100% d'un moteur de rendu a l'autre).
    *
    * @param array $configuration
    *   Resultat calcule (QuoteCalculator) pour cette configuration.
@@ -485,11 +485,9 @@ final class QuoteForm extends FormBase {
    *   Lignes de pied de tableau, format attendu par `#footer`.
    */
   private function buildTotalsFooterRows(array $configuration): array {
-    $rows = [
-      $this->buildTotalsFooterRow($configuration['totals_per_vehicle'], $this->t('Tarif par véhicule :')),
-    ];
+    $rows = $this->buildTotalsFooterRowPair($configuration['totals_per_vehicle'], $this->t('Tarif par véhicule :'));
     if ($configuration['vehicle_count'] > 1) {
-      $rows[] = $this->buildTotalsFooterRow($configuration['totals'], $this->t('Tarif total véhicules :'));
+      $rows = array_merge($rows, $this->buildTotalsFooterRowPair($configuration['totals'], $this->t('Tarif total véhicules :')));
     }
     return $rows;
   }
@@ -548,36 +546,48 @@ final class QuoteForm extends FormBase {
   }
 
   /**
-   * Construit une ligne de pied de tableau (libelle + 5 metriques).
+   * Construit une paire de lignes de pied de tableau (libelle, puis metriques).
    *
-   * 2 cellules seulement : le libelle occupe la colonne « Marque/ modèle/
-   * type » (1re colonne du tableau, meme largeur), les metriques occupent
-   * un `colspan` couvrant les 6 colonnes restantes — « Total HT » (1re
-   * metrique) demarre ainsi exactement ou demarre « Équipement(s) »
-   * (2e colonne), sans calcul a synchroniser avec le tableau : les deux
-   * proviennent de la meme mise en page de tableau.
+   * 2 lignes distinctes plutot que 2 cellules d'une meme ligne (jusqu'au
+   * 2026-09-10) : le libelle (« Tarif par véhicule : »...) tient seul sa
+   * ligne, les 5 metriques occupent ensuite toute la largeur du tableau sur
+   * la ligne suivante — retour utilisatrice, l'ancienne mise en page (les
+   * deux sur une meme ligne, metriques limitees a un colspan de 6) restait
+   * trop resserree. Chaque ligne a une seule cellule en `colspan` sur les 7
+   * colonnes du tableau : le fond gris (`&__totals-label-cell`/
+   * `&__totals-metrics-cell`, `_quote-form.scss`) couvre ainsi toute la
+   * largeur de la carte pour les deux lignes, meme si le libelle et les
+   * metriques restent chacun alignes a leur propre debut de ligne.
    *
    * @param array $totals
    *   Totaux calcules par QuoteCalculator (cles ht/discount/discounted_ht/
    *   vat/ttc).
    * @param \Drupal\Core\StringTranslation\TranslatableMarkup $row_label
-   *   Libelle affiche dans la 1re cellule (« Tarif par véhicule : »...).
+   *   Libelle de la 1re ligne (« Tarif par véhicule : »...).
    *
    * @return array
-   *   Ligne de tableau, format attendu par `#footer`/`#rows`.
+   *   2 lignes de tableau, format attendu par `#footer`/`#rows`.
    */
-  private function buildTotalsFooterRow(array $totals, TranslatableMarkup $row_label): array {
+  private function buildTotalsFooterRowPair(array $totals, TranslatableMarkup $row_label): array {
     return [
-      'class' => ['quote-form__totals-tr'],
-      'data' => [
-        [
-          'data' => $row_label,
-          'class' => ['quote-form__totals-label-cell'],
+      [
+        'class' => ['quote-form__totals-tr', 'quote-form__totals-tr--label'],
+        'data' => [
+          [
+            'data' => $row_label,
+            'colspan' => 7,
+            'class' => ['quote-form__totals-label-cell'],
+          ],
         ],
-        [
-          'data' => $this->buildTotalsMetrics($totals),
-          'colspan' => 6,
-          'class' => ['quote-form__totals-metrics-cell'],
+      ],
+      [
+        'class' => ['quote-form__totals-tr', 'quote-form__totals-tr--metrics'],
+        'data' => [
+          [
+            'data' => $this->buildTotalsMetrics($totals),
+            'colspan' => 7,
+            'class' => ['quote-form__totals-metrics-cell'],
+          ],
         ],
       ],
     ];
@@ -620,7 +630,7 @@ final class QuoteForm extends FormBase {
   /**
    * Construit le bandeau de total general (toutes configurations).
    *
-   * Contrairement aux bandeaux par configuration (`buildTotalsFooterRow()`,
+   * Contrairement aux bandeaux par configuration (`buildTotalsFooterRowPair()`,
    * de vraies lignes du tableau d'equipements), ce bandeau n'est rattache a
    * aucune configuration : il reste un bloc flex independant, sous un
    * titre.
@@ -653,7 +663,7 @@ final class QuoteForm extends FormBase {
    * Construit les 5 metriques d'un bandeau de totaux.
    *
    * Total HT/Remise HT/Total remisé HT/TVA/Total TTC. Reutilise a la fois
-   * dans une cellule de tableau (`buildTotalsFooterRow()`,
+   * dans une cellule de tableau (`buildTotalsFooterRowPair()`,
    * alignement garanti par le tableau lui-meme) et dans le bandeau de total
    * general (`buildGrandTotals()`, bloc flex independant).
    *

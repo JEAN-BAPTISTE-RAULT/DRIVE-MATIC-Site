@@ -1735,7 +1735,13 @@ textarea) {
   font-weight: 700;
   white-space: nowrap;
 }
-.quote-form__totals-tr + .quote-form__totals-tr .quote-form__totals-label-cell, .quote-form__totals-tr + .quote-form__totals-tr .quote-form__totals-metrics-cell {
+.quote-form__equipment-table .quote-form__totals-label-cell {
+  padding-bottom: 4px;
+}
+.quote-form__equipment-table .quote-form__totals-metrics-cell {
+  padding-top: 4px;
+}
+.quote-form__totals-tr--metrics + .quote-form__totals-tr--label .quote-form__totals-label-cell {
   -webkit-border-before: 1px solid var(--dm-color-white);
           border-block-start: 1px solid var(--dm-color-white);
 }
@@ -1793,8 +1799,6 @@ textarea) {
   }
   .quote-form__grand-totals .quote-form__totals-metrics {
     flex: 1;
-    -webkit-padding-start: calc(var(--quote-form-vehicle-fraction) + 6.485px);
-            padding-inline-start: calc(var(--quote-form-vehicle-fraction) + 6.485px);
   }
 }
 .quote-form__metric-label {
