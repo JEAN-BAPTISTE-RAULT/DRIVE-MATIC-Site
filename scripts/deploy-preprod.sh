@@ -137,15 +137,25 @@ run_remote "cd '$PREPROD_PATH' && composer install --no-dev --optimize-autoloade
 run_remote "cd '$PREPROD_PATH' && chmod +x vendor/bin/* vendor/drush/drush/drush 2>/dev/null || true"
 
 if [ "$NO_BACKUP" -eq 0 ]; then
-  echo "-- backup de la base preprod --"
-  # Supprime le(s) dump(s) precedent(s) avant d'en generer un nouveau : sans
-  # ca, chaque deploiement ajoute un fichier de plus dans backups/ (nomme par
-  # horodatage, jamais ecrase) et le disque, deja limite sur cet hebergement,
-  # accumule indefiniment d'anciennes sauvegardes. `--gzip` fait produire par
-  # drush un fichier `<result-file>.gz` (suffixe ajoute, jamais le nom passe
-  # tel quel) : les deux motifs sont nettoyes par securite si jamais un essai
-  # precedent avait echoue avant compression.
-  run_remote "cd '$PREPROD_PATH' && mkdir -p backups && rm -f backups/preprod-*.sql backups/preprod-*.sql.gz && vendor/bin/drush sql:dump --gzip --result-file=backups/preprod-\$(date +%Y%m%d-%H%M%S).sql"
+  for var in PREPROD_BACKUP_PATH PREPROD_DB_NAME; do
+    if [ -z "${!var:-}" ]; then
+      echo "Erreur : $var manquant ou vide dans $ENV_FILE (necessaire pour le backup, sinon relancer avec --no-backup)." >&2
+      exit 1
+    fi
+  done
+
+  echo "-- backup de la base preprod -> $PREPROD_BACKUP_PATH --"
+  # mysqldump direct (invocation fournie par le sysadmin, 2026-09-10), plus
+  # drush sql:dump : ce dernier resolvait les identifiants depuis
+  # settings.php et echouait sur cet hebergement (mysqldump introuvable pour
+  # l'utilisateur sous lequel drush s'executait). `--defaults-extra-file`
+  # pointe vers des identifiants dedies, poses par le sysadmin hors de ce
+  # depot ; `$PREPROD_BACKUP_PATH` est aussi hors de l'arborescence Drupal
+  # ($PREPROD_PATH), pour ne jamais etre efface/deplace par un `--prune`.
+  # Nettoyage prealable des dumps precedents (nommes par horodatage, jamais
+  # ecrases) : sans ca, chaque deploiement en ajoute un de plus et le disque
+  # accumule indefiniment d'anciennes sauvegardes.
+  run_remote "mkdir -p '$PREPROD_BACKUP_PATH' && rm -f '$PREPROD_BACKUP_PATH'/dump_*.sql.gz && mysqldump --defaults-extra-file='$PREPROD_BACKUP_PATH/.my.cnf' --single-transaction '$PREPROD_DB_NAME' | gzip > '$PREPROD_BACKUP_PATH'/dump_\$(date +%Y%m%d_%H%M%S).sql.gz"
 fi
 
 echo "-- drush deploy (updb + config:import + cache-rebuild) --"
