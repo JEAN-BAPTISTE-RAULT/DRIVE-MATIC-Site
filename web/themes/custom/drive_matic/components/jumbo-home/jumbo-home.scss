@@ -1,18 +1,23 @@
 // SDC « Bloc :: Jumbo Homepage » — bannière d'accueil en slideshow (Swiper).
 // Sans JS : la piste Swiper s'empile (tout visible) et les flèches sont masquées.
 .jumbo-home {
-  // Decolle du bord gauche a toute largeur (la piste deborde a droite) — au
-  // palier desktop uniquement, ou le carrousel montre un apercu de la diapo
-  // suivante. Mobile (maquette 526-20394) : gouttiere symetrique, une seule
-  // diapo plein cadre, sans debordement (navigation au doigt + pagination).
-  // `max-width` seule laissait la banniere toucher la fenetre sous 1360px.
-  max-width: calc(1360px + 2 * var(--dm-gutter));
-  margin-inline: auto;
+  // Bord a bord sur toute la largeur de la fenetre (retour utilisatrice,
+  // 2026-09-10) : plus de `max-width`/`margin-inline: auto`. Desktop : AUCUN
+  // padding sur la section (ci-dessous, `0`) — la gouttiere de bord ne doit
+  // apparaitre qu'aux deux extremites du defilement (1re diapositive a
+  // gauche, derniere a droite), jamais en permanence comme le ferait un
+  // padding CSS fixe. Portee par `slidesOffsetBefore`/`slidesOffsetAfter`
+  // (Swiper, cf. `drive_matic/slideshow` + jumbo-home.twig) : un offset de ce
+  // type ne se voit qu'a la position de repos correspondante, il glisse hors
+  // champ des qu'on defile au-dela.
+  // Mobile (maquette 526-20394) : gouttiere symetrique, une seule diapo
+  // plein cadre, sans debordement (navigation au doigt + pagination) — pas
+  // concernee par ce mecanisme, `padding-inline` fixe suffit.
   padding-block: var(--dm-space-block);
   padding-inline: var(--dm-gutter);
 
   @media (width >= 992px) {
-    padding-inline: var(--dm-gutter) 0;
+    padding-inline: 0;
   }
 
   // Diapositives : plein cadre sur mobile (une seule visible a la fois) ;
@@ -26,21 +31,14 @@
     }
   }
 
-  // La piste garde le calage gauche du conteneur mais déborde à droite
-  // jusqu'au bord de la fenêtre (la diapo suivante est coupée par le
-  // viewport) — desktop uniquement, cf. ci-dessus.
-  // La classe `.swiper` est répétée : le bundle pose `margin-right: auto` à la
-  // même spécificité que notre BEM et il est chargé après (sinon la piste
-  // s'arrête au bord du conteneur).
-  // ⚠️ Le `%` se résout contre le bloc de contenu de `.jumbo-home` (padding-left
-  // seul au palier desktop, pas de padding-right), plus étroit de `gutter` que
-  // sa largeur totale centrée — d'où la correction `+ gutter/2` (cf. history.scss).
+  // Le conteneur n'etant plus centre/plafonne (ci-dessus), le viewport
+  // atteint deja naturellement le bord droit de la fenetre — plus besoin de
+  // la correction `calc(50% - 50vw + gutter/2)` historique (nichee ici
+  // jusqu'au 2026-09-10, cf. `history.scss` pour le meme motif conserve la
+  // ou le conteneur reste plafonne). `position: relative` reste necessaire :
+  // ancre `&__nav` (position: absolute) sur ce viewport, pas sur la page.
   &__viewport.swiper {
     position: relative;
-
-    @media (width >= 992px) {
-      margin-right: calc(50% - 50vw + (var(--dm-gutter) / 2));
-    }
   }
 
   // Flèche de défilement : export du calque « Next » de la maquette (Figma Home,
@@ -109,6 +107,18 @@
     margin-top: var(--dm-space-element);
   }
 
+  // Retiree en desktop (retour utilisatrice, 2026-09-10) : les flèches
+  // suffisent a ce palier, la pagination reste le seul moyen de navigation
+  // visible en mobile (pas de flèches la-bas). Nichee ici (apres la regle de
+  // base juste au-dessus), pas dans le bloc media plus haut : sinon cette
+  // derniere l'emporte a specificite egale, piege deja rencontre sur ce
+  // meme motif (cf. `_quote-form.scss`).
+  @media (width >= 992px) {
+    &__pagination.swiper-pagination {
+      display: none;
+    }
+  }
+
   // 24px : taille minimale de cible tactile (WCAG 2.5.8) — la maquette prevoit
   // un point de 12px, mais la zone cliquable doit atteindre 24px.
   & .swiper-pagination-bullet {
@@ -126,7 +136,6 @@
   // Repli sans JS : neutralise le viewport Swiper (empilement vertical lisible).
   :where(html.no-js) &__viewport.swiper {
     overflow: visible;
-    margin-right: 0;
   }
 
   :where(html.no-js) & .swiper-wrapper {

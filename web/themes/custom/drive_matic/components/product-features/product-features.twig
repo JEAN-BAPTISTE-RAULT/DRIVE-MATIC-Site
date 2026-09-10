@@ -4,6 +4,9 @@
   Slideshow Swiper si > 1 (init par `drive_matic/slideshow`), sinon statique.
   Amélioration progressive : sans JS, la piste s'empile ; les flèches
   n'apparaissent que sous `html.js`.
+  `data-dm-slideshow-edge-gutter` : la piste déborde des deux côtés à TOUTE
+  largeur ici (comme `news-home`, contrairement à `jumbo-home`, desktop
+  uniquement), donc pas de `-min-width` associé.
 #}
 <section class="product-features">
   <div
@@ -11,6 +14,7 @@
     data-dm-slideshow
     data-dm-slideshow-per-view="auto"
     data-dm-slideshow-space="20"
+    data-dm-slideshow-edge-gutter
   >
     <div class="swiper-wrapper">
       {{ block('slides') }}

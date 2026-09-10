@@ -1,12 +1,10 @@
 .jumbo-home {
-  max-width: calc(1360px + 2 * var(--dm-gutter));
-  margin-inline: auto;
   padding-block: var(--dm-space-block);
   padding-inline: var(--dm-gutter);
 }
 @media (width >= 992px) {
   .jumbo-home {
-    padding-inline: var(--dm-gutter) 0;
+    padding-inline: 0;
   }
 }
 .jumbo-home .swiper-slide {
@@ -19,11 +17,6 @@
 }
 .jumbo-home__viewport.swiper {
   position: relative;
-}
-@media (width >= 992px) {
-  .jumbo-home__viewport.swiper {
-    margin-right: calc(50% - 50vw + var(--dm-gutter) / 2);
-  }
 }
 .jumbo-home__nav {
   display: none;
@@ -65,6 +58,11 @@
   justify-content: center;
   margin-top: var(--dm-space-element);
 }
+@media (width >= 992px) {
+  .jumbo-home__pagination.swiper-pagination {
+    display: none;
+  }
+}
 .jumbo-home .swiper-pagination-bullet {
   width: 24px;
   height: 24px;
@@ -77,7 +75,6 @@
 }
 :where(html.no-js) .jumbo-home__viewport.swiper {
   overflow: visible;
-  margin-right: 0;
 }
 :where(html.no-js) .jumbo-home .swiper-wrapper {
   display: block;

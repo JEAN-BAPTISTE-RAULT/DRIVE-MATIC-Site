@@ -7,14 +7,10 @@
   }
 }
 .product-features {
-  max-width: calc(1130px + 2 * var(--dm-gutter));
-  margin-inline: auto;
   padding-block: var(--dm-space-block);
-  padding-left: var(--dm-gutter);
 }
 .product-features__viewport.swiper {
   position: relative;
-  margin-right: calc(50% - 50vw + var(--dm-gutter) / 2);
 }
 .product-features .swiper-slide {
   width: var(--dm-features-slide);
@@ -53,7 +49,6 @@
 }
 :where(html.no-js) .product-features__viewport.swiper {
   overflow: visible;
-  margin-right: 0;
 }
 :where(html.no-js) .product-features .swiper-wrapper {
   display: block;

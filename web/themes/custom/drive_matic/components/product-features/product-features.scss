@@ -14,22 +14,23 @@
     --dm-features-slide: min(900px, 70vw);
   }
 
-  max-width: calc(1130px + 2 * var(--dm-gutter));
-  margin-inline: auto;
+  // Bord a bord sur toute la largeur de la fenetre (retour utilisatrice,
+  // 2026-09-10) : plus de `max-width`/`margin-inline: auto`, et AUCUN
+  // padding-inline sur la section (rien d'autre qu'`&__viewport` a l'interieur
+  // — pas de titre/pagination a caler comme sur `news-home`) — la gouttiere
+  // de bord ne doit apparaitre qu'aux deux extremites du defilement (1re
+  // diapositive a gauche, derniere a droite), jamais en permanence comme le
+  // ferait un padding CSS fixe. Portee par `slidesOffsetBefore`/
+  // `slidesOffsetAfter` (Swiper, cf. `drive_matic/slideshow` +
+  // product-features.twig) : un offset de ce type ne se voit qu'a la
+  // position de repos correspondante, il glisse hors champ des qu'on
+  // defile au-dela.
   padding-block: var(--dm-space-block);
-  padding-left: var(--dm-gutter);
 
-  // La piste garde le calage gauche du conteneur mais déborde à droite jusqu'au
-  // bord de la fenêtre. `.swiper` est répété : le bundle pose
-  // `margin-right: auto` à la même spécificité que notre BEM, et il est chargé
-  // après.
-  // ⚠️ Le `%` se résout contre le bloc de contenu de `.product-features`
-  // (padding-left seul plus haut, pas de padding-right), plus étroit de
-  // `gutter` que sa largeur totale centrée — d'où la correction `+ gutter/2`
-  // (cf. history.scss).
+  // `position: relative` necessaire : ancre `&__nav` (position: absolute)
+  // sur ce viewport, pas sur la page.
   &__viewport.swiper {
     position: relative;
-    margin-right: calc(50% - 50vw + (var(--dm-gutter) / 2));
   }
 
   & .swiper-slide {
@@ -94,7 +95,6 @@
   // et son débordement à droite, sinon les diapositives sortent de l'écran.
   :where(html.no-js) &__viewport.swiper {
     overflow: visible;
-    margin-right: 0;
   }
 
   :where(html.no-js) & .swiper-wrapper {

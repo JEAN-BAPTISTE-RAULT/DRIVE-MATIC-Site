@@ -17,21 +17,35 @@
  *     rapide et fluide (pas de saut brusque), rewind en douceur en fin de
  *     piste. Le defilement manuel (fleches, glisser) reste actif ; desactive
  *     sous `prefers-reduced-motion`.
- *   - data-dm-slideshow-offset-after-gutter : espace apres la derniere
- *     diapositive egal a la gouttiere de droite de la home pour un
- *     paragraphe qui NE deborde PAS (symetrise une piste qui deborde
- *     volontairement a droite, jumbo_home/news_home, ADR-008). Mesure sur
- *     l'ecran plutot que lu depuis `--dm-gutter` : au-dela du point ou le
- *     paragraphe atteint son `max-width` et se centre (`margin-inline:
- *     auto`), l'ecart reel au bord de fenetre depasse la seule gouttiere
- *     (ex. mesure sur `.grid`, un paragraphe non debordant : 40px a 1440px
- *     de large, 280px a 1920px — jamais une valeur fixe). La propre bordure
- *     GAUCHE de l'element `[data-dm-slideshow]` porte deja exactement cette
- *     distance (gouttiere + marge de centrage eventuelle) : recopiee telle
- *     quelle a droite, sans recalculer la formule de centrage separement.
- *     Recalcule au redimensionnement.
- *   - data-dm-slideshow-offset-after-min-width : restreint l'option
+ *   - data-dm-slideshow-edge-gutter : la piste occupe TOUTE la largeur du
+ *     viewport pendant le defilement — la gouttiere n'apparait qu'aux deux
+ *     extremites (retour utilisatrice, 2026-09-10) : a gauche uniquement
+ *     quand la 1re diapositive y est (repos `isBeginning`), a droite
+ *     uniquement quand la derniere y est (repos `isEnd`). Implemente via
+ *     `slidesOffsetBefore`/`slidesOffsetAfter` (Swiper) plutot qu'un padding
+ *     CSS sur le conteneur : un padding serait un cadre FIXE, visible a
+ *     chaque position de defilement, alors que l'offset Swiper ne se
+ *     retrouve visible qu'a la position de repos correspondante — au milieu
+ *     du defilement, il a deja glisse hors champ. Valeur lue depuis
+ *     `--dm-gutter` (plus de `max-width`/centrage a mesurer sur l'ecran
+ *     depuis le retrait du `max-width` de ces paragraphes, meme date : la
+ *     piste est nue, sans inset a compenser). Recalcule au
+ *     redimensionnement.
+ *   - data-dm-slideshow-edge-gutter-min-width : restreint l'option
  *     ci-dessus a un palier (px) — absent = s'applique a toute largeur.
+ *
+ * ⚠️ Piste plus etroite que son conteneur + les deux gouttieres (peu de
+ * diapositives sur un tres large ecran — ex. jumbo_home avec seulement 2 des
+ * 1 a 3 elements possibles, a partir de ~1920px) : ajouter les deux offsets
+ * dans ce cas cree un faux surplus a faire defiler pour Swiper (isEnd jamais
+ * atteint au repos), qui casse la navigation des le premier clic (translate
+ * partiel, activeIndex bloque, fleche « suivant » masquee sans avoir rien
+ * revele). `getEdgeOffsets()` ne decale donc les deux bords que si la piste
+ * deborde reellement son conteneur une fois les deux gouttieres ajoutees —
+ * sinon les deux valent 0 et Swiper se verrouille nativement
+ * (isBeginning/isEnd vrais, les deux fleches masquees via la regle
+ * `.swiper-button-disabled` deja en place), au prix d'une piste sans aucune
+ * gouttiere dans ce cas rare plutot qu'une gouttiere incorrecte.
  *
  * ⚠️ Ne pas combiner l'autoplay avec `freeMode`/`loop` pour un rendu
  * "continu" : ca laisse Swiper en etat `animating` permanent, ce qui lui
@@ -57,22 +71,38 @@
         const autoplayDelay = el.dataset.dmSlideshowAutoplay;
         const autoplaying = !!autoplayDelay && !reduce;
 
-        const offsetAfterGutter = 'dmSlideshowOffsetAfterGutter' in el.dataset;
-        const offsetAfterMinWidth = Number(
-          el.dataset.dmSlideshowOffsetAfterMinWidth || 0,
+        const spaceBetween = Number(el.dataset.dmSlideshowSpace || 24);
+        const edgeGutter = 'dmSlideshowEdgeGutter' in el.dataset;
+        const edgeGutterMinWidth = Number(
+          el.dataset.dmSlideshowEdgeGutterMinWidth || 0,
         );
-        const getOffsetAfter = () => {
-          if (!offsetAfterGutter || window.innerWidth < offsetAfterMinWidth) {
-            return 0;
+        const getEdgeOffsets = () => {
+          if (!edgeGutter || window.innerWidth < edgeGutterMinWidth) {
+            return { before: 0, after: 0 };
           }
-          return el.getBoundingClientRect().left;
+          const gutter =
+            parseFloat(getComputedStyle(el).getPropertyValue('--dm-gutter')) ||
+            0;
+          const slideEls = el.querySelectorAll('.swiper-slide');
+          const contentWidth =
+            Array.from(slideEls).reduce(
+              (sum, slide) => sum + slide.getBoundingClientRect().width,
+              0,
+            ) +
+            spaceBetween * Math.max(slideEls.length - 1, 0);
+          if (contentWidth + gutter * 2 <= el.getBoundingClientRect().width) {
+            return { before: 0, after: 0 };
+          }
+          return { before: gutter, after: gutter };
         };
+        const initialOffsets = getEdgeOffsets();
 
         new Swiper(el, {
           speed: reduce ? 0 : 500,
           slidesPerView: perView === 'auto' ? 'auto' : Number(perView),
-          spaceBetween: Number(el.dataset.dmSlideshowSpace || 24),
-          slidesOffsetAfter: getOffsetAfter(),
+          spaceBetween,
+          slidesOffsetBefore: initialOffsets.before,
+          slidesOffsetAfter: initialOffsets.after,
           rewind: autoplaying,
           navigation: {
             prevEl: scope.querySelector('[data-dm-slideshow-prev]'),
@@ -93,8 +123,10 @@
           },
           on: {
             resize(instance) {
-              if (offsetAfterGutter) {
-                instance.params.slidesOffsetAfter = getOffsetAfter();
+              if (edgeGutter) {
+                const offsets = getEdgeOffsets();
+                instance.params.slidesOffsetBefore = offsets.before;
+                instance.params.slidesOffsetAfter = offsets.after;
                 instance.update();
               }
             },

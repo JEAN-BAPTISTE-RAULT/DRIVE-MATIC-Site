@@ -6,29 +6,27 @@
 @use 'button-mixins' as btn;
 
 .news-home {
-  // Decolle du bord gauche a toute largeur (la piste, elle, deborde a droite).
-  // 1440 - 40 = calage de la maquette : cartes a partir de x=40.
-  max-width: calc(1360px + 2 * var(--dm-gutter));
-  margin-inline: auto;
+  // Bord a bord sur toute la largeur de la fenetre (retour utilisatrice,
+  // 2026-09-10) : plus de `max-width`/`margin-inline: auto`, et la section
+  // elle-meme ne pose plus AUCUN padding-inline (contrairement au premier
+  // jet de cette meme date) — la gouttiere de bord ne doit apparaitre
+  // qu'aux deux extremites du defilement (1re carte a gauche, derniere a
+  // droite), jamais en permanence comme le ferait un padding CSS fixe sur
+  // la section. Portee par `slidesOffsetBefore`/`slidesOffsetAfter` (Swiper,
+  // cf. `drive_matic/slideshow` + news-home.twig) sur `&__viewport`
+  // uniquement : les elements de chrome qui ne defilent pas (`&__head`,
+  // `&__pagination`, `&__more` ci-dessous) posent donc chacun leur PROPRE
+  // `padding-inline`, ne pouvant plus l'heriter de la section.
   padding-block: var(--dm-space-block);
-  padding-left: var(--dm-gutter);
 
   // Titre centré ET flèches à droite : la colonne vide de gauche équilibre le
   // titre, sans élément de remplissage dans le markup.
-  // ⚠️ `.news-home` n'a qu'un `padding-left` (le `padding-right` est laissé à
-  // 0 pour que `&__viewport` puisse déborder à droite) : sans correction, ce
-  // bloc hérite de cette boîte asymétrique et son centrage se cale sur un
-  // point décalé de gutter/2 vers la droite du vrai centre de page. La
-  // correction en `calc(50vw - 50%)` de `&__viewport`/`.history__header` ne
-  // marche pas ici : elle s'annule à zéro dès que `.news-home` atteint son
-  // `max-width` (le cas au palier 1440px, une largeur d'écran courante) —
-  // repose un `padding-right` fixe a la place, independant de la largeur.
   &__head {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 16px;
-    padding-right: var(--dm-gutter);
+    padding-inline: var(--dm-gutter);
     margin-bottom: var(--dm-space-element);
   }
 
@@ -86,16 +84,15 @@
     pointer-events: none;
   }
 
-  // La piste garde le calage gauche du conteneur mais déborde à droite jusqu'au
-  // bord de la fenêtre (la carte suivante est coupée par le viewport).
-  // `.swiper` est répété : le bundle pose `margin-right: auto` à la même
-  // spécificité que notre BEM et il est chargé après.
-  // ⚠️ Le `%` se résout contre le bloc de contenu de `.news-home` (padding-left
-  // seul plus haut, pas de padding-right), plus étroit de `gutter` que sa
-  // largeur totale centrée — d'où la correction `+ gutter/2` (cf. history.scss).
+  // Ni centre/plafonne ni pad de cote (ci-dessus) : le viewport atteint deja
+  // naturellement les deux bords de la fenetre, sans aucune correction —
+  // ses propres gouttieres de bord viennent de `slidesOffsetBefore`/
+  // `slidesOffsetAfter` (Swiper), pas d'un padding CSS ici. `position:
+  // relative` conservee malgre tout (aucun enfant `position: absolute`
+  // identifie ici qui en depende, contrairement a `jumbo-home`/
+  // `product-features` — laissee par prudence).
   &__viewport.swiper {
     position: relative;
-    margin-right: calc(50% - 50vw + (var(--dm-gutter) / 2));
   }
 
   // Cartes à largeur fixe (aperçu de la suivante) — slidesPerView: auto.
@@ -110,7 +107,8 @@
 
   // Pagination (points) sous la piste, centrée — maquette mobile (Group 3).
   // Meme motif que `jumbo-home` : point actif rouge, points inactifs gris.
-  // Meme correction de gutter asymetrique que `&__head` ci-dessus.
+  // Propre `padding-inline` (comme `&__head` ci-dessus) : la section ne le
+  // fournit plus.
   &__pagination.swiper-pagination {
     --swiper-pagination-bullet-horizontal-gap: 0;
 
@@ -119,7 +117,17 @@
     gap: 10px;
     justify-content: center;
     margin-top: var(--dm-space-element);
-    padding-right: var(--dm-gutter);
+    padding-inline: var(--dm-gutter);
+  }
+
+  // Retiree en desktop (retour utilisatrice, 2026-09-10) : les flèches de
+  // l'en-tête suffisent a ce palier. Nichee ici (apres la regle de base
+  // juste au-dessus), pas dans un bloc media plus haut : sinon la base
+  // l'emporterait a specificite egale (meme piege que `_quote-form.scss`).
+  @media (width >= 992px) {
+    &__pagination.swiper-pagination {
+      display: none;
+    }
   }
 
   // 24px : taille minimale de cible tactile (WCAG 2.5.8) — la maquette prevoit
@@ -138,12 +146,13 @@
 
   // « Voir toutes les actualités » : bouton gris de la maquette, centré sous la
   // piste. Le wrapper de champ Drupal est neutralisé pour centrer le lien.
-  // Meme correction de gutter asymetrique que `&__head` ci-dessus.
+  // Propre `padding-inline` (comme `&__head` ci-dessus) : la section ne le
+  // fournit plus.
   &__more {
     display: flex;
     justify-content: center;
     margin-top: var(--dm-space-element);
-    padding-right: var(--dm-gutter);
+    padding-inline: var(--dm-gutter);
 
     > * {
       display: contents;
@@ -179,7 +188,6 @@
   // et son débordement à droite, sinon les cartes empilées sortent de l'écran.
   :where(html.no-js) &__viewport.swiper {
     overflow: visible;
-    margin-right: 0;
   }
 
   :where(html.no-js) & .swiper-wrapper {
