@@ -259,4 +259,22 @@
     // 436px du sommet, modale haute de 530px).
     padding: 40px 50px 48px;
   }
+
+  // Modale de confirmation (`ConfirmFormBase` : Supprimer un devis, une
+  // configuration, une adresse) : le coeur pose la classe `confirmation` sur
+  // le <form> (ConfirmFormBase::buildForm()) — hook fiable pour toute modale
+  // de ce type, presente ou future. Les 41px/48px ci-dessus sont mesures
+  // pour la distance titre -> 1er CHAMP d'un formulaire complet (maquette
+  // 521:17375) ; une confirmation n'a ni titre visible (getQuestion() vide)
+  // ni champ, seulement une question sur 1 ligne suivie de 2 boutons — la
+  // meme valeur y laissait un vide disproportionne (retour utilisatrice,
+  // 2026-09-10). Resserre au rythme --dm-space-element (ADR-013, ecart
+  // entre elements d'un meme bloc).
+  .ui-dialog-content:has(form.confirmation) {
+    padding-top: var(--dm-space-element);
+  }
+
+  .ui-dialog:has(form.confirmation) .ui-dialog-buttonpane {
+    padding-top: var(--dm-space-element);
+  }
 }

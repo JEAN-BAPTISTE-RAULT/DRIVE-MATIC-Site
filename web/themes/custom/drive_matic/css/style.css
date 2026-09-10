@@ -2156,6 +2156,12 @@ textarea) {
   .ui-dialog .ui-dialog-buttonpane {
     padding: 40px 50px 48px;
   }
+  .ui-dialog-content:has(form.confirmation) {
+    padding-top: var(--dm-space-element);
+  }
+  .ui-dialog:has(form.confirmation) .ui-dialog-buttonpane {
+    padding-top: var(--dm-space-element);
+  }
 }
 .delivery-address-form {
   display: grid;
