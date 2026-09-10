@@ -2,7 +2,8 @@
 
 ## Statut
 
-Accepte
+Remplace par [ADR-054](054-suppression-fil-ariane.md) (2026-09-10, fil d'Ariane
+retire du site)
 
 ## Date
 
