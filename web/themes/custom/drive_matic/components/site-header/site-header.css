@@ -154,6 +154,9 @@
   margin-inline: auto;
   padding-inline: var(--site-header-gutter);
 }
+.site-header__panel-inner:not(:has(.site-header__cards)) {
+  justify-content: center;
+}
 .site-header__cards {
   display: flex;
   flex-wrap: wrap;

@@ -226,6 +226,17 @@
     padding-inline: var(--site-header-gutter);
   }
 
+  // « Drive Matic » (plusieurs colonnes de liens) et « Assistance » (une
+  // seule colonne) : centrer le contenu dans le panneau plutot que le
+  // laisser cale a la gouttiere gauche (retour utilisatrice) — a 1440px de
+  // large, le contenu de Drive Matic (~1048px) laissait 352px de vide a
+  // droite. Cible tout panneau SANS carte (`&__cards` absent) : les
+  // panneaux a cartes (Auto-ecole/PMR) restent cales a gauche, non
+  // signales, inchanges.
+  &__panel-inner:not(:has(&__cards)) {
+    justify-content: center;
+  }
+
   &__cards {
     display: flex;
     flex-wrap: wrap;
