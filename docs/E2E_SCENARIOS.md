@@ -637,6 +637,31 @@ partenaire) : toujours `[ ]` non implementees**, explicitement hors
 perimetre d'ADR-052 — ce scenario reste **partiellement a rejouer** pour ces
 2 etapes une fois leur menu construit.
 
+**Mise en oeuvre (a rejouer) — verification catalogue le 2026-09-11**
+([ADR-056](../.claude/decisions/056-verification-catalogue-devis.md),
+remplace le point « Modification » ci-dessus) :
+- Le lien « Modifier » est renomme **« Reprendre »** et ouvre desormais une
+  modale d'avertissement systematique (« Poursuivre »/« Annuler ») avant de
+  rediriger — vers **l'etape 1** du configurateur, pas l'ecran Livraison
+  comme avant. Un vehicule **depublie** depuis (Statut « Ne pas publier »,
+  ADR-055) n'est plus ecarte comme un vehicule supprime : la configuration
+  est conservee, mais son `<select>` modele/motorisation est vide a l'etape
+  1 (marque conservee) et l'ecran Devis affiche « indisponible » pour ses
+  lignes d'equipement.
+- « Enregistrer le devis » (etape 3) n'affiche plus de message et redirige
+  directement vers « Mes devis », onglet « a finaliser » (au lieu de
+  l'etape 1 avec message).
+- « Commander » (etape 3) effectue une verification finale du catalogue
+  (instantane pris en quittant l'ecran Devis, compare au recalcul du
+  moment) : **sans changement detecte**, la commande se finalise
+  normalement (aucune modale) ; **avec changement detecte**, rien n'est
+  persiste et une modale avertit (« Poursuivre la commande » finalise avec
+  les valeurs a jour, « Annuler » retourne a l'etape 1).
+- Verifie de bout en bout via curl authentifie (login `drush uli` cassé
+  cette session dans le Browser MCP) : les 2 chemins de « Commander »
+  (avec/sans changement reel simule sur le catalogue), le vehicule
+  depublie a la reprise, et l'absence de message a l'enregistrement.
+
 ---
 
 ## S19 — Mes informations, mot de passe perdu & suppression de compte
@@ -884,6 +909,26 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 
 ---
 
+## S27 — Back-office : import du combinatoire (catalogue de tarifs)
+
+**Objectif** : Verifier l'import du combinatoire Excel et les garde-fous de validation.
+
+**Etapes** :
+1. Depuis `/admin/content/catalogue-tarifs`, cliquer sur le bouton « Importer le combinatoire » (haut de page).
+2. Uploader un fichier dont un modele est marque « À publier sur le site » mais sans aucun tarif pédalier pour aucune motorisation.
+3. Corriger le fichier (tarif ajoute, ou statut passe a « Ne pas publier »), reessayer.
+4. Confirmer l'import ; verifier le catalogue (liste, colonne « Type de VOR ») et qu'un modele « Ne pas publier » n'apparait plus dans le configurateur.
+
+**Resultats attendus** :
+- Le bouton redirige vers `/admin/content/catalogue-tarifs/import` (action locale standard).
+- L'upload de l'etape 2 est **refuse** (message d'erreur listant tous les modeles concernes, aucune ecriture en base) — jamais une page d'erreur brute.
+- Apres correction, l'import atteint l'ecran de confirmation puis s'applique normalement.
+- Un modele « Ne pas publier » est bien cree/mis a jour en base (catalogue de tarifs, colonne « Type de VOR » incluse) mais **absent** des listes marque/modele du configurateur et du formulaire de contact.
+
+**Mise en oeuvre (a rejouer) — le 2026-09-11** ([ADR-055](../.claude/decisions/055-statut-publication-vehicule-type-vor.md)) : colonne Statut du combinatoire pilotant desormais la publication (`setPublished()`/`setUnpublished()`, jamais de suppression) ; Type de VOR stocke (`equipment_price.type_vor`) ; nouvelle regle bloquante « à publier sans tarif pédalier » ; bouton « Importer le combinatoire » (`drivematic_catalog.links.action.yml`). **2 bugs preexistants corriges en verifiant** (voir CLAUDE.md, section PHP/Drupal) : `setPublished()` ignorait silencieusement l'argument passe (tout restait publie quel que soit le Statut) ; `CatalogImportForm` plantait en 500 au lieu d'afficher une erreur de format (`setErrorByName()` appele depuis un `#submit`, jamais autorise hors `validateForm()`) — corrige, verifie via curl authentifie (fichier invalide → 200 avec message d'erreur ; fichier corrige → ecran de confirmation).
+
+---
+
 ## Matrice de couverture (scenario → feature)
 
 | Scenario | Features couvertes |
@@ -907,12 +952,18 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 | S24 | F9 (volet FAQ) |
 | S25 | F2, F11, F12 (page login, ADR-024) |
 | S26 | F14, F15 (back-office : devis + adresses de livraison) |
-| Transverse (S1-S26) | F1 (Paragraphes), decision #8 (RGAA/WCAG AA) |
+| S27 | F17 (import du combinatoire) |
+| Transverse (S1-S27) | F1 (Paragraphes), decision #8 (RGAA/WCAG AA) |
 
 ## Historique des modifications
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-11 | **Statut du combinatoire pilote la publication du vehicule, Type de VOR stocke** ([ADR-055](../.claude/decisions/055-statut-publication-vehicule-type-vor.md)) : un modele « Ne pas publier » est depublie (jamais supprime), invisible du configurateur/formulaire de contact mais toujours en base ; un modele « À publier » sans aucun tarif pédalier bloque desormais tout l'import (avant : exclu silencieusement). 2 bugs preexistants corriges en verifiant : `setPublished()` ignorait l'argument passe (core Drupal), et une cle de tableau flottante tronquait les tarifs rétrovision depuis le tout premier import | S27 |
+| 2026-09-11 | **`CatalogImportForm` plantait en 500 au lieu d'afficher une erreur de format** : `setErrorByName()` appele depuis un `#submit`, jamais autorise hors `validateForm()` — bug present depuis le premier commit du module (ADR-030), jamais remarque faute d'avoir teste un fichier invalide via le vrai formulaire. Logique de validation deplacee dans `validateForm()` | S27 |
+| 2026-09-11 | **Bouton « Importer le combinatoire » ajoute** en haut de `/admin/content/catalogue-tarifs` (action locale standard) | S27 |
+| 2026-09-11 | **Verification du catalogue a la reprise/commande d'un devis** ([ADR-056](../.claude/decisions/056-verification-catalogue-devis.md)) : « Modifier » renomme « Reprendre », ouvre une modale d'avertissement systematique puis redirige vers l'etape 1 (plus l'etape 3) ; « Enregistrer le devis » redirige directement vers « Mes devis » sans message ; « Commander » verifie le catalogue au clic et n'avertit que si un changement reel est detecte. Bug corrige au passage : `$form_state->getRedirect()` toujours FALSE sous AJAX reel, invisible sur les modales de confirmation preexistantes par coincidence de cible | S18 |
+| 2026-09-11 | **Ecart des titres de colonnes de « Mes devis » inverse** (demande explicite) : 32px au-dessus, 24px en dessous (etait l'inverse) | S18 |
 | 2026-09-10 | **Lien « Espace partenaire » souligne en anonyme, corrige** : ce declencheur est un `<button>` connecte mais un vrai `<a href="/user/login">` en anonyme — aucune regle ne posait `text-decoration`, le soulignage par defaut du navigateur s'appliquait donc uniquement sur cette 2e forme. Invisible en developpant/testant toujours connecte ; signale par une utilisatrice externe visitant le site deconnectee | S1 |
 | 2026-09-10 | **Panneaux de menu sans carte (Drive Matic, Assistance) centres** : restaient cales a la gouttiere gauche du panneau (352px de vide a droite pour Drive Matic a 1440px) ; centres via `justify-content: center`, les panneaux a cartes (Auto-ecole/Vehicule PMR) inchanges | S1 |
 | 2026-09-10 | **`rsync --delete` ne supprimait en realite jamais rien sur le serveur preprod**, quelle que soit l'option `--prune` — no-op silencieux du a un transfert par liste de fichiers individuels (`--files-from`), incompatible avec `--delete` (documente dans le manuel rsync). Corrige par un transfert d'arborescence complet filtre par `.gitignore`. Suppression distante desormais systematique (plus d'option). Decouvert en constatant qu'un bloc de config supprime cote git restait actif en preprod ; 31 fichiers perimes accumules depuis des mois purges au premier deploiement avec le correctif | Hors matrice (infrastructure) |

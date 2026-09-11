@@ -96,16 +96,28 @@ combinatoire Excel fait foi, importé via `/admin/content/catalogue-tarifs/impor
 `drivematic_catalog`, ADR-030) qui rapproche les termes par nom (upsert, pas de suppression
 totale — préserve les ID référencés par les soumissions webform existantes).
 
+**Publication de `vehicle_model` (ADR-055, 2026-09-11)** : le champ de base `status` (publié/
+dépublié) est piloté par la colonne Statut du combinatoire (« À publier sur le site » /
+« Ne pas publier ») — jamais par une saisie manuelle en back-office. Un modèle dépublié n'est
+proposé ni par le configurateur ni par le webform contact, mais reste en base (jamais
+supprimé pour cette seule raison). Un modèle marqué « À publier » sans aucun tarif pédalier
+pour aucune motorisation bloque tout l'import (erreur explicite), plutôt que d'être exclu
+silencieusement.
+
 ## Catalogue de tarifs (F17)
 
 Entité de contenu custom `equipment_price` (module `drivematic_catalog`, ADR-030) — une ligne
 par combinaison tarifée des 4 équipements du configurateur (télécommande VOR, pédalier,
 rétrovision extérieure, rétrovision intérieure). Champs : `type_equipement` (liste fermée),
 `vehicle_model` / `motorisation` (références, selon le type), `tarif_ht`, `reference`,
-`type_chassis`. Entièrement vidée et recréée à chaque import du combinatoire (pas de
-rapprochement — rien ne la référence ailleurs). Liste en lecture seule :
-`/admin/content/catalogue-tarifs` (pas d'écran d'édition ligne par ligne : corriger = corriger
-le fichier Excel et réimporter).
+`type_chassis`, `type_vor` (`string` libre, ADR-055, 2026-09-11 — instruction d'installation
+pour l'équipe DM, rempli uniquement pour `telecommande_vor`). Entièrement vidée et recréée à
+chaque import du combinatoire, **quel que soit le Statut du modèle** (une ligne de tarif
+existe même pour un `vehicle_model` dépublié — seule sa visibilité dans le configurateur en
+dépend, pas l'existence de son tarif) — pas de rapprochement, rien ne la référence ailleurs.
+Liste en lecture seule : `/admin/content/catalogue-tarifs` (bouton « Importer le combinatoire »
+en haut de page ; pas d'écran d'édition ligne par ligne : corriger = corriger le fichier Excel
+et réimporter).
 
 ## Conventions transverses
 

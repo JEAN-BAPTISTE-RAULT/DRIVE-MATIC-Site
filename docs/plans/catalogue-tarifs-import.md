@@ -28,10 +28,19 @@ Confirmé avec l'utilisatrice — toujours 4 équipements, pas plus :
 | Rétrovision extérieure (qté 1-2) | Rien (tarif unique) | Extérieure (€ HT), Référence extérieure |
 | Rétrovision intérieure | Rien (tarif unique) | Intérieure (€ HT), Référence intérieure |
 
-Une ligne du combinatoire sans tarif pour un équipement donné (ex. Statut "À publier" mais
-colonnes pédalier vides — Bigster, MG3, Auris, BZ4X, Dolphin G) ne crée **pas** de ligne de
-catalogue pour cet équipement : absence de tarif = rien à proposer, indépendamment du Statut
-(qui ne gouverne que la visibilité du véhicule lui-même).
+Une ligne du combinatoire sans tarif pour un équipement donné ne crée **pas** de ligne de
+catalogue pour cet équipement : absence de tarif = rien à proposer.
+
+> **Mise à jour du 2026-09-11** ([ADR-055](../../.claude/decisions/055-statut-publication-vehicule-type-vor.md)) :
+> ce paragraphe décrivait initialement un modèle sans AUCUN tarif pédalier (toutes
+> motorisations confondues) comme silencieusement exclu du catalogue, « indépendamment du
+> Statut ». Ce n'est plus le cas : si ce modèle est marqué Statut « À publier sur le site »,
+> l'import entier est désormais **bloqué** (erreur listant tous les modèles concernés) plutôt
+> que de l'exclure en silence — décision explicite de l'utilisatrice, le fichier corrigé doit
+> être réimporté. La colonne Statut pilote par ailleurs la **publication** du terme
+> `vehicle_model` (dépublié si « Ne pas publier », jamais supprimé) : elle n'est donc plus
+> seulement liée à « la visibilité du véhicule lui-même » au sens large, mais a un effet
+> concret et vérifiable sur l'import lui-même.
 
 ## 3. ⚠️ Le "vider et recréer" littéral casserait les données existantes
 
