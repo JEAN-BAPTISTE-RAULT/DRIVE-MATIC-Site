@@ -37,6 +37,11 @@ final class QuoteForm extends FormBase {
   private const TEMPSTORE_COLLECTION = 'drivematic_configurator';
   private const TEMPSTORE_KEY = 'draft';
 
+  // Lu et supprime par DeliveryForm (ADR-056) : meme cle, declaree dans les
+  // deux classes (meme convention que TEMPSTORE_COLLECTION/TEMPSTORE_KEY,
+  // jamais partagee via une interface commune sur ce projet).
+  private const TEMPSTORE_CATALOG_SNAPSHOT_KEY = 'catalog_snapshot';
+
   public function __construct(
     protected EntityTypeManagerInterface $entityTypeManager,
     protected PrivateTempStoreFactory $tempStoreFactory,
@@ -769,6 +774,16 @@ final class QuoteForm extends FormBase {
    * Callback #submit de « Choisir ma livraison ».
    */
   public function deliverySubmit(array &$form, FormStateInterface $form_state): void {
+    // Instantane comparable (ADR-056) : seul point de passage obligé vers
+    // Livraison (y compris depuis Modifier, qui redirige desormais vers
+    // l'etape 1) — sert de reference a DeliveryForm::orderSubmit() pour
+    // detecter un changement de catalogue survenu entre-temps.
+    $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
+    /** @var \Drupal\user\UserInterface $account */
+    $account = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+    $result = $this->quoteCalculator->calculate($draft, $account);
+    $this->tempStore()->set(self::TEMPSTORE_CATALOG_SNAPSHOT_KEY, $this->quoteCalculator->buildComparableSnapshot($result['configurations']));
+
     $form_state->setRedirect('drivematic_configurator.delivery');
   }
 

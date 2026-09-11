@@ -37,3 +37,12 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@drivematic_configurator.quote_vehicle_term_resolver'
+  drivematic_configurator.quote_finalizer:
+    class: Drupal\drivematic_configurator\Service\QuoteFinalizer
+    arguments:
+      - '@entity_type.manager'
+      - '@drivematic_configurator.quote_persister'
+      - '@drivematic_configurator.quote_pdf_generator'
+      - '@plugin.manager.mail'
+      - '@file_system'
+      - '@logger.factory'

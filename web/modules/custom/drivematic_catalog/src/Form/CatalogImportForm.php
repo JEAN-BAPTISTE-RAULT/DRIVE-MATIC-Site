@@ -105,6 +105,10 @@ final class CatalogImportForm extends FormBase {
           '@u' => $diff['modeles_mis_a_jour'],
           '@d' => $diff['modeles_supprimes'],
         ]),
+        $this->t('Modèles : @p publiés (sélectionnables sur le site), @m masqués (« Ne pas publier »)', [
+          '@p' => $diff['modeles_publies'],
+          '@m' => $diff['modeles_masques'],
+        ]),
         $this->t('Catalogue de tarifs : @old lignes actuelles supprimées, @new lignes créées', [
           '@old' => $diff['lignes_tarif_actuelles'],
           '@new' => $diff['lignes_tarif_a_creer'],
@@ -118,11 +122,19 @@ final class CatalogImportForm extends FormBase {
       ];
     }
 
+    if ($diff['modeles_nouvellement_masques_noms']) {
+      $form['warning_masques'] = [
+        '#markup' => '<p role="alert">' . $this->t('⚠️ Des modèles actuellement publiés vont être masqués (dépubliés, pas supprimés) suite à un changement de Statut.') . '</p>',
+      ];
+    }
+
     $details = [
       'marques_creees_noms' => $this->t('Marques créées'),
       'marques_supprimees_noms' => $this->t('Marques supprimées'),
       'modeles_crees_noms' => $this->t('Modèles créés'),
       'modeles_supprimes_noms' => $this->t('Modèles supprimés'),
+      'modeles_nouvellement_masques_noms' => $this->t('Modèles nouvellement masqués'),
+      'modeles_nouvellement_publies_noms' => $this->t('Modèles nouvellement republiés'),
     ];
     foreach ($details as $key => $title) {
       if ($diff[$key]) {

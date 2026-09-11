@@ -69,6 +69,14 @@ drivematic_configurator.delivery:
   requirements:
     _role: 'partenaire'
 
+drivematic_configurator.order_catalog_change_confirm:
+  path: '/configurer/livraison/confirmer-catalogue'
+  defaults:
+    _form: '\Drupal\drivematic_configurator\Form\OrderCatalogChangeConfirmForm'
+    _title: ''
+  requirements:
+    _role: 'partenaire'
+
 drivematic_configurator.delivery_address_add:
   path: '/configurer/livraison/adresse/ajouter'
   defaults:
@@ -137,7 +145,8 @@ drivematic_configurator.quote_duplicate:
 drivematic_configurator.quote_modify:
   path: '/user/mes-devis/{quote}/modifier'
   defaults:
-    _controller: '\Drupal\drivematic_configurator\Controller\QuoteModifyController::modify'
+    _form: '\Drupal\drivematic_configurator\Form\QuoteModifyConfirmForm'
+    _title: 'Modifier ce devis'
   requirements:
     _role: 'partenaire'
     _entity_access: 'quote.update'

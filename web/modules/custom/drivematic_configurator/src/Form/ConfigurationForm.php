@@ -295,6 +295,20 @@ final class ConfigurationForm extends FormBase {
       '#attributes' => ['class' => ['configurator-form__card']],
     ];
 
+    // Un modele depublie depuis l'enregistrement de ce brouillon (Statut
+    // "Ne pas publier" au dernier import du catalogue) a disparu de
+    // $model_options (cf. self::loadTermOptions()) : le proposer quand meme
+    // comme #default_value figerait un <select> sur une valeur absente de
+    // ses propres #options, ce que le navigateur resout en silence en
+    // affichant un AUTRE modele (le 1er de la liste) — jamais une erreur,
+    // jamais un select vide. On vide donc explicitement model/motorisation
+    // pour forcer un nouveau choix honnete (la marque, elle, reste valide :
+    // seul vehicle_model peut etre depublie). Pas de message ici — le
+    // partenaire a deja ete prevenu en amont (modale au clic sur
+    // « Modifier », cf. QuoteModifyConfirmForm).
+    $saved_model = $defaults['card']['vehicle']['model'] ?? NULL;
+    $model_unavailable = $saved_model !== NULL && $saved_model !== '' && !isset($model_options[$saved_model]);
+
     $element['card']['vehicle'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Sélectionner un véhicule'),
@@ -303,6 +317,7 @@ final class ConfigurationForm extends FormBase {
         'data-vehicle-cascade' => TRUE,
       ],
     ];
+
     $element['card']['vehicle']['brand'] = [
       '#type' => 'select',
       '#title' => $this->t('Marque'),
@@ -318,7 +333,7 @@ final class ConfigurationForm extends FormBase {
       '#required' => TRUE,
       '#empty_option' => $this->t('Sélectionnez'),
       '#options' => $model_options,
-      '#default_value' => $defaults['card']['vehicle']['model'] ?? NULL,
+      '#default_value' => $model_unavailable ? NULL : $saved_model,
       '#attributes' => ['data-vehicle-role' => 'model'],
     ];
     $element['card']['vehicle']['motorisation'] = [
@@ -327,7 +342,7 @@ final class ConfigurationForm extends FormBase {
       '#required' => TRUE,
       '#empty_option' => $this->t('Sélectionnez'),
       '#options' => $motorisation_options,
-      '#default_value' => $defaults['card']['vehicle']['motorisation'] ?? NULL,
+      '#default_value' => $model_unavailable ? NULL : ($defaults['card']['vehicle']['motorisation'] ?? NULL),
       '#attributes' => ['data-vehicle-role' => 'motorisation'],
     ];
 
@@ -454,9 +469,13 @@ final class ConfigurationForm extends FormBase {
   /**
    * Charge les options d'un select depuis un vocabulaire de taxonomie.
    *
-   * Liste complete (non filtree) : la cascade JS (drivematic_forms/js/
-   * vehicle-select.js) restreint modele/motorisation cote client, mais
-   * degrade sans JS en listes completes.
+   * Liste complete des termes PUBLIES (non filtree autrement) : la cascade JS
+   * (drivematic_forms/js/vehicle-select.js) restreint modele/motorisation
+   * cote client, mais degrade sans JS en listes completes. Un `vehicle_model`
+   * depublie (Statut "Ne pas publier" au dernier import du catalogue, cf.
+   * CatalogImporter::applyTaxonomy()) est exclu ; `vehicle_brand`/
+   * `motorisation` ne sont jamais depublies, le filtre ne les affecte donc
+   * pas.
    *
    * @param string $vocabulary
    *   Identifiant machine du vocabulaire.
@@ -466,7 +485,7 @@ final class ConfigurationForm extends FormBase {
    */
   private function loadTermOptions(string $vocabulary): array {
     $terms = $this->entityTypeManager->getStorage('taxonomy_term')
-      ->loadByProperties(['vid' => $vocabulary]);
+      ->loadByProperties(['vid' => $vocabulary, 'status' => 1]);
 
     $options = [];
     foreach ($terms as $term) {

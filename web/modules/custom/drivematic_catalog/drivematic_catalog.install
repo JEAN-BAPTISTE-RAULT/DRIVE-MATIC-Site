@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @file
+ * Fonctions de mise a jour du module DRIVE-MATIC Catalogue de tarifs.
+ */
+
+declare(strict_types=1);
+
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
+/**
+ * Installe le champ `type_vor` sur l'entite `equipment_price`.
+ *
+ * Colonne "Type de VOR" du combinatoire (PLUG & PLAY / COMMODO A ENVOYER /
+ * APPELER DML au moment de l'ecriture), jusqu'ici lue par CatalogImporter
+ * mais jamais persistee. Texte libre (pas de liste fermee) : ces valeurs
+ * sont une instruction d'installation pour l'equipe DM, pas une taxonomie du
+ * site, et peuvent evoluer sans necessiter de mise a jour du code.
+ *
+ * Idempotent : `installFieldStorageDefinition()` ne fait rien si le champ
+ * existe deja.
+ */
+function drivematic_catalog_update_11001(): string {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  if ($update_manager->getFieldStorageDefinition('type_vor', 'equipment_price')) {
+    return 'Champ "type_vor" deja installe sur "equipment_price" : mise a jour ignoree.';
+  }
+
+  $storage_definition = BaseFieldDefinition::create('string')
+    ->setLabel(new TranslatableMarkup('Type de VOR'))
+    ->setSetting('max_length', 64)
+    ->setName('type_vor')
+    ->setTargetEntityTypeId('equipment_price');
+
+  $update_manager->installFieldStorageDefinition('type_vor', 'equipment_price', 'drivematic_catalog', $storage_definition);
+
+  return 'Champ "type_vor" installe sur l\'entite "equipment_price".';
+}

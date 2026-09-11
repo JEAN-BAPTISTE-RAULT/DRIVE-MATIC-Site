@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Drupal\drivematic_configurator\Form;
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\OpenModalDialogCommand;
+use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\TempStore\PrivateTempStore;
@@ -17,8 +19,8 @@ use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\Core\Url;
 use Drupal\drivematic_configurator\Entity\DeliveryAddress;
 use Drupal\drivematic_configurator\Entity\Quote;
-use Drupal\drivematic_configurator\Service\QuotePdfGenerator;
-use Drupal\drivematic_configurator\Service\QuotePersister;
+use Drupal\drivematic_configurator\Service\QuoteCalculator;
+use Drupal\drivematic_configurator\Service\QuoteFinalizer;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -46,18 +48,27 @@ final class DeliveryForm extends FormBase {
   private const TEMPSTORE_COLLECTION = 'drivematic_configurator';
   private const TEMPSTORE_KEY = 'draft';
 
-  // Posee par QuoteModifyController (ADR-052) : identifie un devis « à
+  // Posee par QuoteModifyConfirmForm (ADR-052/056) : identifie un devis « à
   // finaliser » en cours de resauvegarde, plutot qu'une nouvelle creation.
   private const TEMPSTORE_EDITING_KEY = 'editing_quote_id';
+
+  // Posee par QuoteForm::deliverySubmit() (ADR-056) : instantane comparable
+  // du dernier calcul vu par le partenaire, pour detecter un changement de
+  // catalogue au clic « Commander ».
+  private const TEMPSTORE_CATALOG_SNAPSHOT_KEY = 'catalog_snapshot';
+
+  // Posee par self::validateForm() (ADR-056) : permet a
+  // OrderCatalogChangeConfirmForm (formulaire distinct, sans acces au
+  // $form_state de celui-ci) de retrouver l'adresse choisie.
+  private const TEMPSTORE_ADDRESS_ID_KEY = 'selected_delivery_address_id';
 
   public function __construct(
     protected EntityTypeManagerInterface $entityTypeManager,
     protected PrivateTempStoreFactory $tempStoreFactory,
     protected AccountProxyInterface $currentUser,
-    protected QuotePersister $quotePersister,
-    protected MailManagerInterface $mailManager,
-    protected QuotePdfGenerator $pdfGenerator,
-    protected FileSystemInterface $fileSystem,
+    protected QuoteCalculator $quoteCalculator,
+    protected QuoteFinalizer $quoteFinalizer,
+    protected FormBuilderInterface $formBuilder,
   ) {}
 
   /**
@@ -68,10 +79,9 @@ final class DeliveryForm extends FormBase {
       $container->get('entity_type.manager'),
       $container->get('tempstore.private'),
       $container->get('current_user'),
-      $container->get('drivematic_configurator.quote_persister'),
-      $container->get('plugin.manager.mail'),
-      $container->get('drivematic_configurator.quote_pdf_generator'),
-      $container->get('file_system'),
+      $container->get('drivematic_configurator.quote_calculator'),
+      $container->get('drivematic_configurator.quote_finalizer'),
+      $container->get('form_builder'),
     );
   }
 
@@ -161,6 +171,11 @@ final class DeliveryForm extends FormBase {
       '#type' => 'submit',
       '#value' => $this->t('Commander'),
       '#submit' => ['::orderSubmit'],
+      // Le #submit s'execute d'abord (persiste la commande si aucun
+      // changement de catalogue n'est detecte) ; le callback #ajax inspecte
+      // ensuite $form_state pour ouvrir la modale de confirmation ou
+      // rediriger (ADR-056) — jamais l'inverse.
+      '#ajax' => ['callback' => '::orderAjaxCallback'],
       '#attributes' => ['class' => ['delivery-form__order']],
     ];
 
@@ -539,6 +554,10 @@ final class DeliveryForm extends FormBase {
     }
 
     $form_state->set('selected_delivery_address', $address);
+    // Duree de vie plus longue que $form_state (ADR-056) : permet a
+    // OrderCatalogChangeConfirmForm, un formulaire distinct ouvert dans une
+    // modale, de retrouver la meme adresse.
+    $this->tempStore()->set(self::TEMPSTORE_ADDRESS_ID_KEY, $address->id());
   }
 
   /**
@@ -559,45 +578,73 @@ final class DeliveryForm extends FormBase {
 
   /**
    * Callback #submit de « Commander ».
+   *
+   * Verifie d'abord que le catalogue n'a pas change depuis le dernier
+   * passage par l'ecran « Devis » (ADR-056) : un import du catalogue a pu
+   * avoir lieu pendant que le partenaire configurait son devis. Si c'est le
+   * cas, RIEN n'est persiste ici — orderAjaxCallback() ouvre une modale de
+   * confirmation a la place ; sinon, la commande est finalisee normalement.
    */
   public function orderSubmit(array &$form, FormStateInterface $form_state): void {
-    $quote = $this->persistQuote($form_state, Quote::STATUS_A_COMMANDER);
-    $attachments = $this->generateQuotePdfAttachment($quote);
-    $this->sendOrderConfirmationEmail($quote, $attachments);
-    $this->sendInternalOrderNotification($quote, $attachments);
+    $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
+    $address = $form_state->get('selected_delivery_address');
+    if (!$draft || !$address) {
+      throw new AccessDeniedHttpException();
+    }
+
+    /** @var \Drupal\user\UserInterface $account */
+    $account = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+    $result = $this->quoteCalculator->calculate($draft, $account);
+
+    if ($this->catalogChanged($result['configurations'])) {
+      $form_state->set('catalog_changed', TRUE);
+      return;
+    }
+
+    $this->persistQuote($form_state, Quote::STATUS_A_COMMANDER);
   }
 
   /**
-   * Génère le PDF du devis et construit la pièce jointe pour hook_mail().
+   * Compare le calcul actuel a l'instantane pris en quittant « Devis ».
    *
-   * Un échec de génération ne doit jamais empêcher l'envoi des e-mails de
-   * confirmation ni faire échouer une commande déjà enregistrée en base —
-   * seuls les e-mails partent alors sans pièce jointe.
-   *
-   * @return array[]
-   *   Tableau `$message['params']['attachments']` (format attendu par
-   *   symfony_mailer/LegacyMailerHelper::emailFromArray()), vide en cas
-   *   d'échec.
+   * Aucun instantane trouve (acces direct a cette route sans etre passe par
+   * « Devis » — improbable en usage normal, la seule autre entree possible
+   * etant QuoteModifyConfirmForm qui redirige desormais vers l'etape 1) :
+   * rien a comparer, ne bloque pas la commande pour autant.
    */
-  private function generateQuotePdfAttachment(Quote $quote): array {
-    try {
-      $uri = $this->pdfGenerator->generate($quote);
+  private function catalogChanged(array $configurations): bool {
+    $snapshot = $this->tempStore()->get(self::TEMPSTORE_CATALOG_SNAPSHOT_KEY);
+    if ($snapshot === NULL) {
+      return FALSE;
     }
-    catch (\Throwable $e) {
-      $this->getLogger('drivematic_configurator')->error('Échec de la génération du PDF pour le devis @reference : @message', [
-        '@reference' => $quote->get('reference')->value,
-        '@message' => $e->getMessage(),
-      ]);
-      return [];
+    return $this->quoteCalculator->buildComparableSnapshot($configurations) !== $snapshot;
+  }
+
+  /**
+   * Callback #ajax de « Commander ».
+   *
+   * $form_state a deja ete traite par orderSubmit() (les #submit
+   * s'executent avant le callback #ajax) : soit un changement de catalogue
+   * a ete detecte (rien n'a ete persiste, on ouvre la modale de
+   * confirmation), soit orderSubmit() a deja tout persiste et il ne reste
+   * qu'a rediriger — un callback #ajax ne suit jamais
+   * $form_state->setRedirect() tout seul, contrairement a une soumission
+   * classique.
+   */
+  public function orderAjaxCallback(array &$form, FormStateInterface $form_state): AjaxResponse {
+    $response = new AjaxResponse();
+
+    if ($form_state->get('catalog_changed')) {
+      $modal_form = $this->formBuilder->getForm(OrderCatalogChangeConfirmForm::class);
+      $response->addCommand(new OpenModalDialogCommand('', $modal_form, ['width' => 500]));
+      return $response;
     }
 
-    $attachment = [
-      'filepath' => $this->fileSystem->realpath($uri),
-      'filename' => $quote->get('reference')->value . '.pdf',
-      'filemime' => 'application/pdf',
-    ];
-
-    return [$attachment];
+    $redirect = $form_state->getRedirect();
+    $response->addCommand(new RedirectCommand(
+      $redirect ? $redirect->toString() : Url::fromRoute('drivematic_configurator.configuration')->toString(),
+    ));
+    return $response;
   }
 
   /**
@@ -630,76 +677,17 @@ final class DeliveryForm extends FormBase {
       throw new AccessDeniedHttpException();
     }
 
-    $quote = $editing_quote
-      ? $this->quotePersister->update($editing_quote, $draft, $status, $account, $address)
-      : $this->quotePersister->persist($draft, $status, $account, $address);
+    $quote = $this->quoteFinalizer->finalize($draft, $status, $account, $address, $editing_quote);
 
     $this->tempStore()->delete(self::TEMPSTORE_KEY);
     $this->tempStore()->delete(self::TEMPSTORE_EDITING_KEY);
+    $this->tempStore()->delete(self::TEMPSTORE_CATALOG_SNAPSHOT_KEY);
+    $this->tempStore()->delete(self::TEMPSTORE_ADDRESS_ID_KEY);
 
     $this->messenger()->addStatus($this->buildConfirmationMessage($status));
     $form_state->setRedirect('drivematic_configurator.configuration');
 
     return $quote;
-  }
-
-  /**
-   * Envoie l'e-mail de confirmation (clic « Commander » uniquement).
-   *
-   * Un probleme d'envoi (SMTP, etc.) ne doit jamais faire echouer la
-   * confirmation d'une commande deja enregistree en base — l'erreur est
-   * seulement journalisee.
-   */
-  private function sendOrderConfirmationEmail(Quote $quote, array $attachments): void {
-    /** @var \Drupal\user\UserInterface $account */
-    $account = $this->entityTypeManager->getStorage('user')->load($quote->getOwnerId());
-
-    try {
-      $this->mailManager->mail(
-        'drivematic_configurator',
-        'quote_ordered',
-        $account->getEmail(),
-        $account->getPreferredLangcode(),
-        ['quote' => $quote, 'attachments' => $attachments],
-      );
-    }
-    catch (\Throwable $e) {
-      $this->getLogger('drivematic_configurator')->error('Échec de l’envoi de l’e-mail de confirmation de commande pour le devis @reference : @message', [
-        '@reference' => $quote->get('reference')->value,
-        '@message' => $e->getMessage(),
-      ]);
-    }
-  }
-
-  /**
-   * Notifie Drive Matic Legrand de la commande (clic « Commander » uniquement).
-   *
-   * Adresse temporaire (comme toutes les autres notifications internes du
-   * site, cf. mémoire mail-interne-audrey-temporaire) — à restaurer sur
-   * info@drivematiclegrand.com avant la mise en prod. Independant de
-   * sendOrderConfirmationEmail() : un echec ici ne doit ni empecher l'envoi
-   * au partenaire ni faire echouer la confirmation d'une commande deja
-   * enregistree en base.
-   */
-  private function sendInternalOrderNotification(Quote $quote, array $attachments): void {
-    /** @var \Drupal\user\UserInterface $account */
-    $account = $this->entityTypeManager->getStorage('user')->load($quote->getOwnerId());
-
-    try {
-      $this->mailManager->mail(
-        'drivematic_configurator',
-        'quote_ordered_internal',
-        'audrey@passerelle.com',
-        $account->getPreferredLangcode(),
-        ['quote' => $quote, 'attachments' => $attachments],
-      );
-    }
-    catch (\Throwable $e) {
-      $this->getLogger('drivematic_configurator')->error('Échec de l’envoi de la notification interne de commande pour le devis @reference : @message', [
-        '@reference' => $quote->get('reference')->value,
-        '@message' => $e->getMessage(),
-      ]);
-    }
   }
 
   /**

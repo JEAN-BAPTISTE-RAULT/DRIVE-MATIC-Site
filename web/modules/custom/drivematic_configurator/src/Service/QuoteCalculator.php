@@ -184,6 +184,41 @@ final class QuoteCalculator {
   }
 
   /**
+   * Reduit un resultat de calcul a ce qui identifie un changement de catalogue.
+   *
+   * ADR-056 : prix/reference/disponibilite de chaque ligne, jamais la
+   * remise partenaire (qui peut changer independamment du catalogue, sans
+   * que ce mecanisme doive s'en soucier).
+   *
+   * Sert a comparer « ce que le partenaire a vu en dernier a l'ecran Devis »
+   * a « ce que le catalogue donne reellement au moment de Commander » :
+   * QuoteForm::deliverySubmit() stocke ce resultat, DeliveryForm::
+   * orderSubmit() le recalcule et compare.
+   *
+   * @param array $configurations
+   *   Le tableau 'configurations' retourne par self::calculate().
+   *
+   * @return array
+   *   Cle de configuration => cle d'equipement => tarif/reference/
+   *   disponibilite comparables.
+   */
+  public function buildComparableSnapshot(array $configurations): array {
+    $snapshot = [];
+    foreach ($configurations as $key => $configuration) {
+      foreach ($configuration['lines'] as $line) {
+        $snapshot[$key][$line['equipment_type']] = $line['unavailable']
+          ? ['unavailable' => TRUE]
+          : [
+            'unavailable' => FALSE,
+            'unit_price' => $line['unit_price'],
+            'reference' => $line['reference'],
+          ];
+      }
+    }
+    return $snapshot;
+  }
+
+  /**
    * Construit une structure de totaux initialisee a zero.
    *
    * @return array{ht: float, discount: float, discounted_ht: float, vat: float, ttc: float}
@@ -200,6 +235,15 @@ final class QuoteCalculator {
    * reimporte entre temps) ne doit jamais faire echouer le calcul.
    */
   private function loadPrice(string $type, ?string $model_tid, ?string $motorisation_tid): ?object {
+    // Un vehicule retire de la vente (Statut "Ne pas publier" au dernier
+    // import du catalogue, ADR-055) n'a plus de tarif resolvable, meme si sa
+    // ligne `equipment_price` existe toujours en base (jamais supprimee,
+    // seul le terme est depublie) : un seul mecanisme d'indisponibilite pour
+    // « prix/produit supprime du catalogue » et « vehicule non publie ».
+    if ($model_tid !== NULL && !$this->isModelPublished($model_tid)) {
+      return NULL;
+    }
+
     $properties = ['type_equipement' => $type];
     if ($model_tid !== NULL) {
       $properties['vehicle_model'] = $model_tid;
@@ -209,6 +253,14 @@ final class QuoteCalculator {
     }
     $prices = $this->entityTypeManager->getStorage('equipment_price')->loadByProperties($properties);
     return $prices ? reset($prices) : NULL;
+  }
+
+  /**
+   * Vérifie qu'un `vehicle_model` est publié (ou qu'il existe encore).
+   */
+  private function isModelPublished(string $model_tid): bool {
+    $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($model_tid);
+    return $term ? $term->isPublished() : FALSE;
   }
 
 }

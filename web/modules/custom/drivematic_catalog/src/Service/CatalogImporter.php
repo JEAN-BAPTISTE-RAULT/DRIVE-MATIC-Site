@@ -26,6 +26,15 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
  * stockent un ID de terme (`webform_term_select`). Cf. §3 du plan pour le
  * raisonnement complet. `equipment_price`, lui, n'est reference nulle part
  * ailleurs : il est entierement vide puis recree a chaque import.
+ *
+ * La colonne "Statut" ("À publier sur le site" / "Ne pas publier") pilote la
+ * PUBLICATION du terme `vehicle_model` (champ de base `status`), jamais sa
+ * suppression : un modele qui devient "Ne pas publier" est depublie (masque
+ * de tous les selecteurs vehicule cote site — configurateur, cascade JS,
+ * formulaire de contact), pas supprime, pour la meme raison que ci-dessus
+ * (ne jamais casser une reference webform existante). Ses lignes de tarif
+ * restent creees normalement : la publication ne filtre que la visibilite du
+ * vehicule, jamais l'existence de son tarif catalogue.
  */
 final class CatalogImporter {
 
@@ -71,6 +80,15 @@ final class CatalogImporter {
   ];
 
   private const SHEET_NAME = 'Référentiel véhicules';
+
+  /**
+   * Seule valeur de la colonne Statut qui rend un modele selectionnable.
+   *
+   * Toute autre valeur (« Ne pas publier », vide, ou une valeur inattendue)
+   * masque le modele par defaut : choix delibere de repli du cote le plus
+   * sur (un modele ambigu reste cache plutot que publie par erreur).
+   */
+  private const PUBLISHED_STATUS_VALUE = 'À publier sur le site';
 
   /**
    * En-tetes attendues (ligne 2), verifiees avant toute lecture.
@@ -157,7 +175,11 @@ final class CatalogImporter {
         continue;
       }
 
-      $models[$modele] = ['brand' => $marque, 'motorisations' => $motorisations];
+      $models[$modele] = [
+        'brand' => $marque,
+        'motorisations' => $motorisations,
+        'published' => $this->text($data['statut']) === self::PUBLISHED_STATUS_VALUE,
+      ];
 
       $vor_tarif = $this->numeric($data['vor_tarif']);
       if ($vor_tarif !== NULL) {
@@ -168,6 +190,7 @@ final class CatalogImporter {
           'tarif' => $vor_tarif,
           'reference' => $this->text($data['vor_ref']),
           'chassis' => NULL,
+          'type_vor' => $this->text($data['vor_type']),
         ];
       }
 
@@ -184,13 +207,18 @@ final class CatalogImporter {
           'tarif' => $tarif,
           'reference' => $this->text($data[$ref_key]),
           'chassis' => $this->text($data[$chassis_key]),
+          'type_vor' => NULL,
         ];
       }
 
       foreach (['retrovision_ext' => 'retro_ext', 'retrovision_int' => 'retro_int'] as $type => $key) {
         $tarif = $this->numeric($data[$key]);
         if ($tarif !== NULL) {
-          $retrovision[$type][$tarif] = $this->text($data[$key . '_ref']);
+          // Cle normalisee en chaine a 2 decimales : une cle de tableau
+          // flottante brute (ex. 51.48) est tronquee en entier par PHP (51),
+          // perdant les centimes silencieusement - aucune erreur, aucun
+          // avertissement, juste un tarif fige different du fichier source.
+          $retrovision[$type][sprintf('%.2f', $tarif)] = $this->text($data[$key . '_ref']);
         }
       }
     }
@@ -211,6 +239,7 @@ final class CatalogImporter {
           'tarif' => (float) $tarif,
           'reference' => $values[$tarif],
           'chassis' => NULL,
+          'type_vor' => NULL,
         ];
       }
     }
@@ -237,12 +266,15 @@ final class CatalogImporter {
    *   Comptages pour l'ecran de confirmation :
    *   marques_creees/conservees/supprimees (+ marques_creees_noms/
    *   marques_supprimees_noms), modeles_crees/mis_a_jour/supprimes (+
-   *   modeles_crees_noms/modeles_supprimes_noms), lignes_tarif_a_creer,
-   *   lignes_tarif_actuelles.
+   *   modeles_crees_noms/modeles_supprimes_noms), modeles_publies/masques
+   *   (+ modeles_nouvellement_masques_noms/modeles_nouvellement_publies_noms
+   *   — uniquement les transitions, pas l'etat deja en place),
+   *   lignes_tarif_a_creer, lignes_tarif_actuelles.
    */
   public function diff(array $parsed): array {
     $existing_brands = $this->loadTermNames('vehicle_brand');
     $existing_models = $this->loadTermNames('vehicle_model');
+    $existing_model_publication = $this->loadModelPublicationState();
 
     $new_brand_names = $parsed['brands'];
     $new_model_names = array_keys($parsed['models']);
@@ -251,6 +283,18 @@ final class CatalogImporter {
     $brands_removed = array_diff(array_keys($existing_brands), $new_brand_names);
     $models_created = array_diff($new_model_names, array_keys($existing_models));
     $models_removed = array_diff(array_keys($existing_models), $new_model_names);
+
+    $newly_masked = [];
+    $newly_published = [];
+    foreach ($parsed['models'] as $name => $info) {
+      $was_published = $existing_model_publication[$name] ?? NULL;
+      if ($was_published === TRUE && !$info['published']) {
+        $newly_masked[] = $name;
+      }
+      elseif ($was_published === FALSE && $info['published']) {
+        $newly_published[] = $name;
+      }
+    }
 
     $existing_price_count = (int) $this->entityTypeManager
       ->getStorage('equipment_price')
@@ -270,6 +314,10 @@ final class CatalogImporter {
       'modeles_mis_a_jour' => count(array_intersect($new_model_names, array_keys($existing_models))),
       'modeles_supprimes' => count($models_removed),
       'modeles_supprimes_noms' => $this->sorted($models_removed),
+      'modeles_publies' => count(array_filter($parsed['models'], static fn (array $info) => $info['published'])),
+      'modeles_masques' => count(array_filter($parsed['models'], static fn (array $info) => !$info['published'])),
+      'modeles_nouvellement_masques_noms' => $this->sorted($newly_masked),
+      'modeles_nouvellement_publies_noms' => $this->sorted($newly_published),
       'lignes_tarif_a_creer' => count($parsed['prices']),
       'lignes_tarif_actuelles' => $existing_price_count,
     ];
@@ -343,6 +391,11 @@ final class CatalogImporter {
       }
       $term->set('field_brand', ['target_id' => $brand_ids[$info['brand']]]);
       $term->set('field_motorisations', $moto_values);
+      // setPublished()/setUnpublished() ne prennent PAS de booleen (l'API
+      // core n'a pas de parametre : setPublished() force toujours TRUE) —
+      // passer $info['published'] a setPublished() serait silencieusement
+      // ignore et publierait tout, quel que soit le Statut du fichier.
+      $info['published'] ? $term->setPublished() : $term->setUnpublished();
       $term->save();
     }
     $removed_models = array_diff(array_keys($existing_models), array_keys($parsed['models']));
@@ -400,6 +453,7 @@ final class CatalogImporter {
         'tarif_ht' => $price['tarif'],
         'reference' => $price['reference'],
         'type_chassis' => $price['chassis'],
+        'type_vor' => $price['type_vor'],
       ];
       if ($price['model'] !== NULL) {
         if (!isset($model_ids[$price['model']])) {
@@ -430,6 +484,27 @@ final class CatalogImporter {
       $names[$term->label()] = (int) $term->id();
     }
     return $names;
+  }
+
+  /**
+   * Etat de publication actuel des termes `vehicle_model`, indexe par libelle.
+   *
+   * Sert uniquement a detecter les transitions (publie <-> masque) pour
+   * l'ecran de confirmation (self::diff()) : un modele absent de ce tableau
+   * est nouveau, ni publie ni masque auparavant.
+   *
+   * @return array<string,bool>
+   *   Nom du terme => TRUE si publie, FALSE sinon.
+   */
+  private function loadModelPublicationState(): array {
+    $terms = $this->entityTypeManager->getStorage('taxonomy_term')
+      ->loadByProperties(['vid' => 'vehicle_model']);
+    $published = [];
+    foreach ($terms as $term) {
+      /** @var \Drupal\taxonomy\TermInterface $term */
+      $published[$term->label()] = $term->isPublished();
+    }
+    return $published;
   }
 
   /**

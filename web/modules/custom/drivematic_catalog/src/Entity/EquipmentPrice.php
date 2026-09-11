@@ -22,7 +22,10 @@ use Drupal\drivematic_catalog\EquipmentPriceListBuilder;
  *
  * `vehicle_model`/`motorisation` varient selon `type_equipement` :
  * - telecommande_vor : vehicle_model rempli, motorisation vide (le tarif VOR
- *   ne varie pas par motorisation dans le fichier source).
+ *   ne varie pas par motorisation dans le fichier source). `type_vor` rempli
+ *   (instruction d'installation pour l'equipe DM — PLUG & PLAY / COMMODO A
+ *   ENVOYER / APPELER DML au moment de l'ecriture, texte libre non contraint
+ *   car susceptible d'evoluer sans changement de code).
  * - pedalier : vehicle_model ET motorisation remplis.
  * - retrovision_ext / retrovision_int : les deux vides (tarif unique, une
  *   seule ligne en base par type, quel que soit le vehicule).
@@ -77,6 +80,10 @@ final class EquipmentPrice extends ContentEntityBase {
 
     $fields['reference'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup('Référence'))
+      ->setSetting('max_length', 64);
+
+    $fields['type_vor'] = BaseFieldDefinition::create('string')
+      ->setLabel(new TranslatableMarkup('Type de VOR'))
       ->setSetting('max_length', 64);
 
     $fields['type_chassis'] = BaseFieldDefinition::create('string')

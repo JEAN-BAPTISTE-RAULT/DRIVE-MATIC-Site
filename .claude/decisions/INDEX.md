@@ -59,6 +59,8 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-052](052-menu-actions-devis-a-finaliser.md) | Menu d'actions « Mes devis a finaliser » (Modifier/Dupliquer/Supprimer), precision de la regle de gel des prix (ADR-043) | Accepte | 2026-09-09 |
 | [ADR-053](053-purge-pdf-devis.md) | Purge automatique des PDF de devis confirmes depuis plus de 2 ans (hook_cron), date de reference alignee sur l'archivage existant | Accepte | 2026-09-10 |
 | [ADR-054](054-suppression-fil-ariane.md) | Suppression du fil d'Ariane (remplace ADR-023) : ecart du titre de page retabli via `--dm-space-page` (rythme standard), gabarits hero a ecart nul | Accepte | 2026-09-10 |
+| [ADR-055](055-statut-publication-vehicule-type-vor.md) | Statut du combinatoire depublie (jamais supprime) le `vehicle_model` ; Type de VOR stocke sur `equipment_price` ; corrige 2 bugs decouverts (`setPublished()` sans argument, cle de tableau flottante tronquee) | Accepte | 2026-09-11 |
+| [ADR-056](056-verification-catalogue-devis.md) | Modale systematique a la reprise d'un devis (Modifier), verification finale + modale conditionnelle au clic Commander ; remplace le message par configuration d'ADR-055 | Accepte | 2026-09-11 |
 
 ## Quand creer un ADR
 

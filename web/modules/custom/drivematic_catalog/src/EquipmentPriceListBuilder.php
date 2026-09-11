@@ -26,6 +26,7 @@ final class EquipmentPriceListBuilder extends EntityListBuilder {
     $header['tarif'] = $this->t('Tarif (€ HT)');
     $header['reference'] = $this->t('Référence');
     $header['chassis'] = $this->t('Type châssis');
+    $header['type_vor'] = $this->t('Type de VOR');
     return $header;
   }
 
@@ -42,6 +43,7 @@ final class EquipmentPriceListBuilder extends EntityListBuilder {
     $row['tarif'] = $entity->get('tarif_ht')->value;
     $row['reference'] = $entity->get('reference')->value ?: '—';
     $row['chassis'] = $entity->get('type_chassis')->value ?: '—';
+    $row['type_vor'] = $entity->get('type_vor')->value ?: '—';
     return $row;
   }
 

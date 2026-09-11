@@ -173,13 +173,20 @@ function _drivematic_forms_require_file_description(array $element, FormStateInt
  * API publique du module : consommee ici (webform contact) et par
  * `drivematic_configurator` (formulaire de configuration, F14).
  *
+ * Ne liste que les modeles PUBLIES (Statut "À publier sur le site" au
+ * dernier import du catalogue, cf. CatalogImporter::applyTaxonomy()) : un
+ * modele depublie ne doit plus etre proposable a un NOUVEAU choix. Une
+ * configuration existante qui referencait deja un modele depuis depublie est
+ * geree a part (ConfigurationForm::buildConfigurationElement() vide son
+ * #default_value plutot que de compter sur cette carte pour le reafficher).
+ *
  * @return array
  *   Deux maps indexees par identifiant de terme : 'modelsByBrand' (marque =>
  *   liste de modeles) et 'motosByModel' (modele => liste de motorisations).
  */
 function drivematic_forms_vehicle_map(): array {
   $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-  $models = $storage->loadByProperties(['vid' => 'vehicle_model']);
+  $models = $storage->loadByProperties(['vid' => 'vehicle_model', 'status' => 1]);
   $models_by_brand = [];
   $motos_by_model = [];
   foreach ($models as $model) {
