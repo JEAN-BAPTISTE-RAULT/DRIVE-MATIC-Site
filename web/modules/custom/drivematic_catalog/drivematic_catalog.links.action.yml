@@ -1,0 +1,5 @@
+drivematic_catalog.import_action:
+  route_name: drivematic_catalog.import
+  title: 'Importer le combinatoire'
+  appears_on:
+    - entity.equipment_price.collection

@@ -116,3 +116,36 @@ fichier reel :
 - Le catalogue de tarifs redevient fiable au centime pres pour la rétrovision : toute
   difference desormais constatee entre le fichier et la base est un vrai ecart de donnee, pas
   un artefact de troncature.
+
+## Addendum (2026-09-11) : modele "À publier" sans tarif pédalier = import bloqué
+
+Demande explicite de l'utilisatrice : un modele marque "À publier sur le site" mais sans
+aucun tarif pédalier pour aucune motorisation (jusqu'ici silencieusement exclu du catalogue,
+cf. commentaire "Bigster/MG3/Auris/BZ4X/Dolphin G" plus haut) est desormais une **erreur
+bloquante**, pas une exclusion silencieuse — coherent avec la philosophie deja assumee pour
+les autres incoherences de format (en-tete, retrovision) : "un fichier au mauvais format doit
+echouer tot et clairement, pas produire un import partiel silencieux".
+
+`CatalogImporter::parse()` collecte tous les modeles concernes pendant la lecture (meme
+patron que la verification retrovision : collecter, puis lever une seule fois toutes les
+lignes trouvees) et leve un `\RuntimeException` les enumerant, avant tout ecran de
+previsualisation. Seul `"À publier sur le site"` declenche ce blocage — un modele "Ne pas
+publier" (ou une autre valeur) sans tarif pédalier reste silencieusement ignore comme avant,
+puisque son absence du catalogue est deja l'effet voulu.
+
+⚠️ **Bug preexistant decouvert et corrige en verifiant cette nouvelle validation** :
+`CatalogImportForm::analyzeSubmit()` appelait `$form_state->setErrorByName('file', ...)`
+depuis un callback **`#submit`**, jamais depuis `validateForm()` — Drupal leve une
+`LogicException` ("Form errors cannot be set after form validation has finished") des qu'on
+appelle `setErrorByName()` en dehors de la phase de validation. Resultat concret : **toute**
+erreur de format deja geree ici (feuille absente, en-tete inattendue, retrovision incoherente,
+aucun modele exploitable) provoquait deja une page 500 au lieu du message d'erreur attendu —
+jamais remarque avant faute d'avoir jamais teste un fichier reellement invalide via le vrai
+formulaire (seulement via le service en isolation, `drush php:eval`, qui ne passe pas par le
+cycle de vie Form API et ne pouvait donc pas reveler ce probleme). Corrige en deplacant toute
+la logique de validation dans `validateForm()` (le seul endroit ou `setErrorByName()` est
+autorise) ; `analyzeSubmit()` ne fait plus que lire le resultat deja valide
+(`$form_state->get('validated_parsed')`/`'validated_file'`) et poursuivre vers l'ecran de
+confirmation. Verifie de bout en bout via curl authentifie : le nouveau message d'erreur
+s'affiche desormais correctement (200, pas 500) sur le fichier reel, et le chemin de succes
+(fichier corrige) atteint bien l'ecran de confirmation.

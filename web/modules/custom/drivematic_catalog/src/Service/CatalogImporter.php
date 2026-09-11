@@ -121,8 +121,10 @@ final class CatalogImporter {
    *
    * @throws \RuntimeException
    *   Si le fichier n'a pas le format attendu (feuille absente, en-tetes ne
-   *   correspondant pas) ou si les tarifs de rétrovision divergent d'une
-   *   ligne a l'autre (incoherence de donnees a corriger dans le fichier).
+   *   correspondant pas), si les tarifs de rétrovision divergent d'une ligne
+   *   a l'autre, ou si un modele marque "À publier sur le site" n'a aucun
+   *   tarif pédalier renseigné pour aucune motorisation (incoherence de
+   *   donnees a corriger dans le fichier dans les 3 cas).
    */
   public function parse(string $realPath): array {
     $spreadsheet = IOFactory::load($realPath);
@@ -145,6 +147,7 @@ final class CatalogImporter {
     $models = [];
     $prices = [];
     $retrovision = ['retrovision_ext' => [], 'retrovision_int' => []];
+    $unpriced_published_models = [];
 
     $last_row = $sheet->getHighestRow();
     for ($row = 3; $row <= $last_row; $row++) {
@@ -170,8 +173,16 @@ final class CatalogImporter {
       // Aucune motorisation deductible = aucun tarif pedalier nulle part :
       // rien a proposer pour ce modele, on ne cree ni terme ni tarif (meme
       // logique que celle appliquee a la main dans cette session pour
-      // Bigster/MG3/Auris/BZ4X/Dolphin G).
+      // Bigster/MG3/Auris/BZ4X/Dolphin G). Sauf si le modele est marque
+      // "À publier sur le site" : dans ce cas, l'absence totale de tarif
+      // pedalier est une incoherence de donnees a corriger dans le fichier,
+      // pas une exclusion silencieuse — memorisee ici, verifiee une fois la
+      // lecture terminee (cf. plus bas), pour lister TOUS les modeles
+      // concernes en une seule erreur plutot que de s'arreter au premier.
       if (!$motorisations) {
+        if ($this->text($data['statut']) === self::PUBLISHED_STATUS_VALUE) {
+          $unpriced_published_models[] = $marque . ' ' . $modele;
+        }
         continue;
       }
 
@@ -221,6 +232,13 @@ final class CatalogImporter {
           $retrovision[$type][sprintf('%.2f', $tarif)] = $this->text($data[$key . '_ref']);
         }
       }
+    }
+
+    if ($unpriced_published_models) {
+      throw new \RuntimeException(sprintf(
+        'Modèle(s) marqué(s) "À publier sur le site" mais sans aucun tarif pédalier renseigné (obligatoire pour être importé) : %s. Corriger le fichier avant de réimporter.',
+        implode(', ', $unpriced_published_models),
+      ));
     }
 
     foreach ($retrovision as $type => $values) {

@@ -164,17 +164,19 @@ final class CatalogImportForm extends FormBase {
 
   /**
    * {@inheritdoc}
+   *
+   * Toute la validation de l'etape 1 (fichier requis, format attendu,
+   * incoherences de donnees) vit ICI, pas dans analyzeSubmit() : Drupal
+   * refuse `setErrorByName()` une fois la validation terminee (leve une
+   * `LogicException`, jamais visible tant qu'aucun fichier reellement
+   * invalide n'avait ete teste — corrige au passage, bug preexistant).
    */
   public function validateForm(array &$form, FormStateInterface $form_state): void {
-    // Rien a valider a l'etape de confirmation (pas de champ de saisie).
-  }
+    if ($form_state->get('step') === 'confirm') {
+      // Rien a valider a l'etape de confirmation (pas de champ de saisie).
+      return;
+    }
 
-  /**
-   * Soumission de l'étape 1 : parse le fichier, calcule le diff.
-   *
-   * Passe à l'étape de confirmation. N'écrit rien en base.
-   */
-  public function analyzeSubmit(array &$form, FormStateInterface $form_state): void {
     $fids = $form_state->getValue('file');
     $file = $fids ? $this->entityTypeManager->getStorage('file')->load(reset($fids)) : NULL;
     if (!$file) {
@@ -197,6 +199,22 @@ final class CatalogImportForm extends FormBase {
       $file->delete();
       return;
     }
+
+    // Transmis a analyzeSubmit(), qui ne s'execute que si cette validation
+    // a reussi (comportement standard de la Form API).
+    $form_state->set('validated_parsed', $parsed);
+    $form_state->set('validated_file', $file);
+  }
+
+  /**
+   * Soumission de l'étape 1 : calcule le diff depuis le fichier déjà validé.
+   *
+   * Passe à l'étape de confirmation. N'écrit rien en base.
+   */
+  public function analyzeSubmit(array &$form, FormStateInterface $form_state): void {
+    $parsed = $form_state->get('validated_parsed');
+    /** @var \Drupal\file\FileInterface $file */
+    $file = $form_state->get('validated_file');
 
     $diff = $this->importer->diff($parsed);
     // Le fichier a livre tout ce dont l'etape de confirmation/le batch ont

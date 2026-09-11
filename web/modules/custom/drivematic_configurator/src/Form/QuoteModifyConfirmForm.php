@@ -104,8 +104,8 @@ final class QuoteModifyConfirmForm extends ConfirmFormBase {
     $contact_url = $contact_node ? $contact_node->toUrl() : NULL;
 
     return $contact_url
-      ? $this->t("Les équipements que vous aviez sélectionnés à l'enregistrement de ce devis ont pu être modifiés pour refléter le catalogue actuel (ajustement du prix ou suppression). En cas de question, n'hésitez pas à <a href=':url'>nous contacter</a>.", [':url' => $contact_url->toString()])
-      : $this->t("Les équipements que vous aviez sélectionnés à l'enregistrement de ce devis ont pu être modifiés pour refléter le catalogue actuel (ajustement du prix ou suppression). En cas de question, n'hésitez pas à nous contacter.");
+      ? $this->t("Les équipements que vous aviez sélectionnés à l'enregistrement de ce devis ont pu être modifiés pour refléter le catalogue actuel (ajustement de prix ou suppression). En cas de question, n'hésitez pas à <a href=':url'>nous contacter</a>.", [':url' => $contact_url->toString()])
+      : $this->t("Les équipements que vous aviez sélectionnés à l'enregistrement de ce devis ont pu être modifiés pour refléter le catalogue actuel (ajustement de prix ou suppression). En cas de question, n'hésitez pas à nous contacter.");
   }
 
   /**
