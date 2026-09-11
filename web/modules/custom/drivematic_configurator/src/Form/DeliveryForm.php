@@ -627,9 +627,16 @@ final class DeliveryForm extends FormBase {
    * s'executent avant le callback #ajax) : soit un changement de catalogue
    * a ete detecte (rien n'a ete persiste, on ouvre la modale de
    * confirmation), soit orderSubmit() a deja tout persiste et il ne reste
-   * qu'a rediriger — un callback #ajax ne suit jamais
-   * $form_state->setRedirect() tout seul, contrairement a une soumission
-   * classique.
+   * qu'a rediriger.
+   *
+   * ⚠️ Jamais $form_state->getRedirect() ici : toujours FALSE sous AJAX reel
+   * (`?ajax_form=1` desactive le redirect avant meme que les #submit ne
+   * s'executent, `FormState::getRedirect()`/`isRedirectDisabled()`), quel
+   * que soit ce que persistQuote() a pose via setRedirect(). D'ou la
+   * redirection en dur ci-dessous, jamais lue depuis $form_state — piege
+   * qui serait reste invisible ici (la cible aurait coincide avec le
+   * fallback precedent), mais decouvert et corrige sur QuoteModifyConfirmForm
+   * (cibles differentes selon le cas, ADR-056).
    */
   public function orderAjaxCallback(array &$form, FormStateInterface $form_state): AjaxResponse {
     $response = new AjaxResponse();
@@ -640,20 +647,18 @@ final class DeliveryForm extends FormBase {
       return $response;
     }
 
-    $redirect = $form_state->getRedirect();
-    $response->addCommand(new RedirectCommand(
-      $redirect ? $redirect->toString() : Url::fromRoute('drivematic_configurator.configuration')->toString(),
-    ));
+    $response->addCommand(new RedirectCommand(Url::fromRoute('drivematic_configurator.configuration')->toString()));
     return $response;
   }
 
   /**
    * Persiste le devis, affiche le message de confirmation et repart a zero.
    *
-   * Redirige vers l'etape 1 plutot qu'un « tableau de bord » : cette page
-   * n'existe pas encore (F13/F15, hors perimetre — confirme avec
-   * l'utilisatrice), seuls la persistance et les messages sont implementes
-   * ici.
+   * « Enregistrer le devis » (STATUS_A_FINALISER) redirige directement vers
+   * « Mes devis », onglet « à finaliser » — pas de message, le devis apparait
+   * de lui-meme dans la liste. « Commander » (STATUS_A_COMMANDER) redirige
+   * vers l'etape 1 avec un message de confirmation (aucun tableau de bord
+   * dedie a cette etape-la, PRD F13/F15).
    */
   private function persistQuote(FormStateInterface $form_state, string $status): Quote {
     $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
@@ -684,20 +689,25 @@ final class DeliveryForm extends FormBase {
     $this->tempStore()->delete(self::TEMPSTORE_CATALOG_SNAPSHOT_KEY);
     $this->tempStore()->delete(self::TEMPSTORE_ADDRESS_ID_KEY);
 
-    $this->messenger()->addStatus($this->buildConfirmationMessage($status));
+    if ($status === Quote::STATUS_A_FINALISER) {
+      $form_state->setRedirect('drivematic_partner.my_quotes', [], ['query' => ['onglet' => 'a-finaliser']]);
+      return $quote;
+    }
+
+    $this->messenger()->addStatus($this->buildOrderConfirmationMessage());
     $form_state->setRedirect('drivematic_configurator.configuration');
 
     return $quote;
   }
 
   /**
-   * Construit le message de confirmation (texte fourni par l'utilisatrice).
+   * Construit le message de confirmation d'une commande (STATUS_A_COMMANDER).
+   *
+   * « Enregistrer le devis » (STATUS_A_FINALISER) n'affiche aucun message :
+   * le partenaire est directement redirige vers « Mes devis », ou le devis
+   * apparait de lui-meme.
    */
-  private function buildConfirmationMessage(string $status): Markup {
-    if ($status !== Quote::STATUS_A_COMMANDER) {
-      return Markup::create((string) $this->t("Votre devis a bien été enregistré mais n'est pas finalisé. Vous pouvez le retrouver dès à présent dans votre tableau de bord afin de le reprendre."));
-    }
-
+  private function buildOrderConfirmationMessage(): Markup {
     $lines = [
       $this->t('Félicitations, votre commande a bien été enregistrée et transmise à notre équipe !'),
       $this->t('Vous allez recevoir par mail un bon de commande à signer et à nous retourner.'),

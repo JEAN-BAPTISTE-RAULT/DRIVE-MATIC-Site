@@ -53,7 +53,10 @@
       flex-direction: row;
       align-items: flex-end;
       justify-content: space-between;
-      margin-block-end: 24px;
+
+      // Ecart au-dessus des titres de colonnes plus important qu'en dessous
+      // (demande explicite) : cf. &__header ci-dessous pour l'ecart inverse.
+      margin-block-end: 32px;
 
       &::after {
         content: '';
@@ -170,7 +173,10 @@
       gap: 16px;
       padding-inline: 20px;
       padding-block-end: 12px;
-      margin-block-end: 20px;
+
+      // Ecart en dessous des titres de colonnes moins important qu'au-dessus
+      // (demande explicite) : voir &__toolbar ci-dessus pour l'ecart inverse.
+      margin-block-end: 12px;
     }
   }
 

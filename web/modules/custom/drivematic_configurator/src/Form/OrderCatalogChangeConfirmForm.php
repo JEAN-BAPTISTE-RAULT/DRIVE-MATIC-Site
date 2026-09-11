@@ -176,6 +176,13 @@ final class OrderCatalogChangeConfirmForm extends ConfirmFormBase {
 
     $this->messenger()->addStatus($this->t("Félicitations, votre commande a bien été enregistrée et transmise à notre équipe !"));
     $form_state->setRedirect('drivematic_configurator.configuration');
+    // $form_state->getRedirect() ne suffit PAS pour ajaxSubmit() : core
+    // desactive silencieusement le redirect sous AJAX reel (voir la meme
+    // note sur QuoteModifyConfirmForm). Ici la cible de succes est deja
+    // identique a getCancelUrl(), donc le symptome ne se serait jamais vu —
+    // pose quand meme explicitement pour ne pas dependre de cette
+    // coincidence si l'une des deux cibles change un jour.
+    $form_state->set('ajax_redirect_url', Url::fromRoute('drivematic_configurator.configuration'));
   }
 
   /**
@@ -187,8 +194,10 @@ final class OrderCatalogChangeConfirmForm extends ConfirmFormBase {
   public function ajaxSubmit(array &$form, FormStateInterface $form_state): AjaxResponse {
     $response = new AjaxResponse();
     $response->addCommand(new CloseModalDialogCommand());
-    $redirect = $form_state->getRedirect();
-    $response->addCommand(new RedirectCommand($redirect ? $redirect->toString() : $this->getCancelUrl()->toString()));
+    // Jamais $form_state->getRedirect() ici (voir QuoteModifyConfirmForm).
+    /** @var \Drupal\Core\Url $redirect */
+    $redirect = $form_state->get('ajax_redirect_url') ?? $this->getCancelUrl();
+    $response->addCommand(new RedirectCommand($redirect->toString()));
     return $response;
   }
 

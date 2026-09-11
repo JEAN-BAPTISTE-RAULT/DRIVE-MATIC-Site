@@ -32,6 +32,18 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * A la confirmation, redirige desormais vers l'ETAPE 1 (Configuration), pas
  * l'etape 3 (Livraison, comportement precedent) : le partenaire doit pouvoir
  * revoir sa configuration avant de commander.
+ *
+ * ⚠️ `$form_state->getRedirect()` renvoie TOUJOURS FALSE sous soumission AJAX
+ * reelle (`?ajax_form=1` ajoute par le JS core, `FormState::getRedirect()`
+ * verifie `isRedirectDisabled()` — desactive explicitement par
+ * `FormBuilder::buildForm()` des qu'il detecte ce parametre, AVANT meme que
+ * les handlers de soumission ne s'executent), quel que soit ce que
+ * `setRedirect()` a pose. `self::ajaxSubmit()` ne peut donc PAS s'appuyer
+ * dessus pour savoir ou rediriger — d'ou la cle `ajax_redirect_url` posee
+ * explicitement dans `self::submitForm()`, jamais affectee par ce mecanisme.
+ * Piege invisible sur QuoteConfigurationDeleteForm/DeliveryAddressDeleteForm
+ * (meme modele de modale) uniquement parce que leur cible de succes est
+ * IDENTIQUE a `getCancelUrl()` — ici les deux divergent, ce qui l'a revele.
  */
 final class QuoteModifyConfirmForm extends ConfirmFormBase {
 
@@ -92,8 +104,8 @@ final class QuoteModifyConfirmForm extends ConfirmFormBase {
     $contact_url = $contact_node ? $contact_node->toUrl() : NULL;
 
     return $contact_url
-      ? $this->t("Les équipements que vous aviez sélectionnés à la création de ce devis ont pu être modifiés pour refléter le catalogue actuel (ajustement du prix ou suppression). En cas de question, n'hésitez pas à <a href=':url'>nous contacter</a>.", [':url' => $contact_url->toString()])
-      : $this->t("Les équipements que vous aviez sélectionnés à la création de ce devis ont pu être modifiés pour refléter le catalogue actuel (ajustement du prix ou suppression). En cas de question, n'hésitez pas à nous contacter.");
+      ? $this->t("Les équipements que vous aviez sélectionnés à l'enregistrement de ce devis ont pu être modifiés pour refléter le catalogue actuel (ajustement du prix ou suppression). En cas de question, n'hésitez pas à <a href=':url'>nous contacter</a>.", [':url' => $contact_url->toString()])
+      : $this->t("Les équipements que vous aviez sélectionnés à l'enregistrement de ce devis ont pu être modifiés pour refléter le catalogue actuel (ajustement du prix ou suppression). En cas de question, n'hésitez pas à nous contacter.");
   }
 
   /**
@@ -165,6 +177,10 @@ final class QuoteModifyConfirmForm extends ConfirmFormBase {
     $temp_store->set(self::TEMPSTORE_EDITING_KEY, $this->quote->id());
 
     $form_state->setRedirect('drivematic_configurator.configuration');
+    // $form_state->getRedirect() ci-dessus ne suffit PAS pour ajaxSubmit() :
+    // voir la note de classe (core desactive silencieusement le redirect
+    // sous ?ajax_form=1). Cle dediee, jamais affectee par ce mecanisme.
+    $form_state->set('ajax_redirect_url', Url::fromRoute('drivematic_configurator.configuration'));
   }
 
   /**
@@ -197,8 +213,11 @@ final class QuoteModifyConfirmForm extends ConfirmFormBase {
   public function ajaxSubmit(array &$form, FormStateInterface $form_state): AjaxResponse {
     $response = new AjaxResponse();
     $response->addCommand(new CloseModalDialogCommand());
-    $redirect = $form_state->getRedirect();
-    $response->addCommand(new RedirectCommand($redirect ? $redirect->toString() : $this->getCancelUrl()->toString()));
+    // Jamais $form_state->getRedirect() ici (voir note de classe) : toujours
+    // FALSE sous AJAX reel, quel que soit ce que submitForm() a pose.
+    /** @var \Drupal\Core\Url $redirect */
+    $redirect = $form_state->get('ajax_redirect_url') ?? $this->getCancelUrl();
+    $response->addCommand(new RedirectCommand($redirect->toString()));
     return $response;
   }
 

@@ -94,3 +94,25 @@ explicitement (la marque, elle, reste valide).
   avec véhicule dépublié (modèle/motorisation vidés, marque conservée), commande sans
   changement (chemin direct inchangé), commande avec changement détecté (modale, prix
   recalculé au moment de « Poursuivre la commande », pas l'instantané périmé).
+
+## Addendum (2026-09-11) : `$form_state->getRedirect()` est désactivé sous AJAX réel
+
+Bug rapporté (« Reprendre » puis « Poursuivre » ne faisait rien) : `QuoteModifyConfirmForm::
+ajaxSubmit()` lisait `$form_state->getRedirect()` pour construire son `RedirectCommand` — cet
+appel renvoie **toujours `FALSE`** sous une vraie soumission AJAX (`FormBuilder::buildForm()`
+appelle `$form_state->disableRedirect()` dès qu'il détecte `?ajax_form=1`, **avant** que les
+handlers de soumission ne s'exécutent), quel que soit ce que `submitForm()` a posé via
+`setRedirect()`. Le code retombait donc systématiquement sur son fallback (`getCancelUrl()`,
+« Mes devis ») au lieu de l'étape 1.
+
+Resté invisible sur `QuoteConfigurationDeleteForm`/`DeliveryAddressDeleteForm` (même
+mécanisme de modale, ADR-034) uniquement parce que leur cible de succès **coïncide** avec
+`getCancelUrl()` — jamais testé en conditions réelles (AJAX vrai, pas une soumission POST
+classique qui contourne entièrement le problème). Voir mémoire
+`form-state-get-redirect-disabled-under-ajax` pour le détail complet.
+
+**Corrigé** dans les 3 endroits concernés (`QuoteModifyConfirmForm`,
+`OrderCatalogChangeConfirmForm`, `DeliveryForm::orderAjaxCallback()`) : plus aucun callback
+`#ajax` ne lit `$form_state->getRedirect()` — la destination est soit posée explicitement dans
+une clé `$form_state` dédiée (`ajax_redirect_url`) pendant `submitForm()`, soit codée en dur
+quand une seule destination est possible dans la branche concernée.

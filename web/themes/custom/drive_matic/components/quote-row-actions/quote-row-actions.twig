@@ -2,7 +2,7 @@
   SDC « Menu :: Actions devis » (page Mes devis, ADR-052) — menu 3 points
   par ligne. Chaque lien est optionnel : seules les actions disponibles pour
   le statut du devis sont rendues (onglet « à finaliser » uniquement à cette
-  étape). « Modifier » et « Supprimer » ouvrent chacun une modale Drupal core
+  étape). « Reprendre » et « Supprimer » ouvrent chacun une modale Drupal core
   (`use-ajax`) — le formulaire/la page qui inclut ce composant doit attacher
   `core/drupal.dialog.ajax`, sans quoi le lien dégraderait silencieusement
   en navigation page complète (piège documenté, ADR-034 addendum 2).
@@ -22,7 +22,7 @@
       <li>
         <a href="{{ edit_href }}" class="quote-row-actions__item quote-row-actions__item--edit use-ajax" data-dialog-type="modal" data-dialog-options='{"width":500}'>
           <span class="quote-row-actions__item-icon" aria-hidden="true"></span>
-          {{ 'Modifier'|t }}
+          {{ 'Reprendre'|t }}
         </a>
       </li>
     {% endif %}

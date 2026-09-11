@@ -28,8 +28,8 @@
     flex-direction: row;
     align-items: flex-end;
     justify-content: space-between;
-    -webkit-margin-after: 24px;
-            margin-block-end: 24px;
+    -webkit-margin-after: 32px;
+            margin-block-end: 32px;
   }
   .quote-list__toolbar::after {
     content: "";
@@ -127,8 +127,8 @@
     padding-inline: 20px;
     -webkit-padding-after: 12px;
             padding-block-end: 12px;
-    -webkit-margin-after: 20px;
-            margin-block-end: 20px;
+    -webkit-margin-after: 12px;
+            margin-block-end: 12px;
   }
 }
 .quote-list__header-cell {
