@@ -160,7 +160,7 @@ function drivematic_configurator_mail(string $key, array &$message, array $param
       '@siret' => (string) $quote->get('billing_siret')->value,
       '@tva' => (string) $quote->get('billing_vat')->value,
       '@raison_sociale' => (string) $quote->get('billing_raison_sociale')->value,
-      '@civilite' => (string) $account->get('field_civility')->value,
+      '@civilite' => _drivematic_configurator_civility_label($account),
       '@prenom' => (string) $account->get('field_first_name')->value,
       '@nom' => (string) $account->get('field_last_name')->value,
       '@adresse' => (string) $quote->get('billing_adresse')->value,
@@ -308,7 +308,7 @@ function drivematic_configurator_tokens(string $type, array $tokens, array $data
       case 'telephone':
         $account ??= \Drupal::entityTypeManager()->getStorage('user')->load($quote->getOwnerId());
         $replacements[$original] = (string) match ($name) {
-          'civilite' => $account->get('field_civility')->value,
+          'civilite' => _drivematic_configurator_civility_label($account),
           'prenom' => $account->get('field_first_name')->value,
           'nom' => $account->get('field_last_name')->value,
           'email' => $account->getEmail(),
@@ -319,6 +319,27 @@ function drivematic_configurator_tokens(string $type, array $tokens, array $data
   }
 
   return $replacements;
+}
+
+/**
+ * Libellé humain (« Madame »/« Monsieur ») de la civilité d'un compte.
+ *
+ * `field_civility`->value renvoie la valeur MACHINE du champ `list_string`
+ * (« madame »/« monsieur », toujours en minuscule par convention Drupal,
+ * jamais destinée à l'affichage) — les e-mails doivent afficher le libellé
+ * humain de `allowed_values` (« Madame »/« Monsieur »), jamais la valeur
+ * machine brute. Repli sur la valeur brute si elle ne correspond à aucun
+ * libellé connu (champ vide ou valeur inattendue) plutôt que de masquer une
+ * incohérence de données.
+ */
+function _drivematic_configurator_civility_label(UserInterface $account): string {
+  $value = (string) $account->get('field_civility')->value;
+  if ($value === '') {
+    return '';
+  }
+
+  $allowed_values = $account->get('field_civility')->getFieldDefinition()->getSetting('allowed_values');
+  return (string) ($allowed_values[$value] ?? $value);
 }
 
 /**
