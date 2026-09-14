@@ -581,6 +581,20 @@ final class ConfigurationForm extends FormBase {
     $vehicle_map = drivematic_forms_vehicle_map();
     $configurations = $form_state->getValue('configurations') ?? [];
 
+    // Défense en profondeur : `addConfigurationSubmit()` (bouton désactivé +
+    // re-vérification serveur) est aujourd'hui le seul moyen normal
+    // d'atteindre ce plafond, aucun chemin légitime ne permet de le
+    // dépasser — mais rien d'autre ne le re-vérifie ici. Un brouillon
+    // reconstruit par `QuoteDraftBuilder` (Modifier/Dupliquer, ADR-052)
+    // depuis un devis qui en compterait déjà plus (état inatteignable en
+    // usage normal aujourd'hui) ne serait sinon jamais bloqué à la
+    // soumission.
+    if (count($configurations) > self::MAX_CONFIGURATIONS) {
+      $form_state->setError($form, $this->t('Un devis ne peut pas comporter plus de @max configurations.', [
+        '@max' => self::MAX_CONFIGURATIONS,
+      ]));
+    }
+
     foreach ($configurations as $key => $configuration) {
       $brand = $configuration['card']['vehicle']['brand'] ?? '';
       $model = $configuration['card']['vehicle']['model'] ?? '';
