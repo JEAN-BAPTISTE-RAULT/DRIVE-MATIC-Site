@@ -10,7 +10,7 @@ Deux allers-retours avec l'utilisatrice après la livraison initiale :
    (`PartnerAccessRedirectSubscriber`, module `drivematic_partner`) qui
    redirige un anonyme vers `/user/login?destination=...` sur toute route
    `_role: partenaire`, au lieu d'un 403 brut. Détails :
-   addendum d'[ADR-028](../../../.claude/decisions/028-configurateur-formbase-vs-webform.md).
+   addendum d'[ADR-028](../../.claude/decisions/028-configurateur-formbase-vs-webform.md).
 2. **3 bugs visuels** (titre absent, fil d'étapes non centré, bouton
    « Ajouter » non différencié) — causes et correctifs détaillés dans la
    mémoire auto (`configurateur-de-devis.md`) : bloc titre de page
