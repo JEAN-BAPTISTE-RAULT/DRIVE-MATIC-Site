@@ -21,8 +21,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Une seule route, `?onglet=` sélectionne l'onglet actif (convention actée
  * par l'ADR-046). Menu déroulant par ligne (3 points verticaux) : Modifier/
  * Dupliquer/Supprimer sur « à finaliser » (ADR-052), Dupliquer/Télécharger/
- * Archiver sur « en cours » selon le statut (ADR-057) ; aucune action sur
- * « archivés ».
+ * Archiver sur « en cours » selon le statut (ADR-057), Télécharger seul sur
+ * « archivés » (ADR-057 addendum).
  */
 final class MyQuotesController extends ControllerBase {
 
@@ -63,12 +63,14 @@ final class MyQuotesController extends ControllerBase {
     }
     $show_reference = $active_tab === 'en-cours';
     $show_amount = $active_tab !== 'a-finaliser';
-    // Toutes les lignes de « à finaliser »/« en cours » portent un menu 3
-    // points (ADR-052/057) ; aucune sur « archivés ». L'en-tete doit reserver
-    // la meme colonne (vide) que ce menu occupe reellement sur chaque ligne,
-    // sans quoi l'en-tete et les lignes n'ont pas le meme nombre d'elements
-    // flex — decale Equipement(s)/Statut/Montant de plusieurs dizaines de px.
-    $show_actions = $active_tab !== 'archives';
+    // Les 3 onglets portent desormais un menu 3 points (ADR-052/057) — au
+    // moins potentiellement sur « archivés » (absent seulement si le PDF n'a
+    // jamais ete genere/a ete purge, ADR-053). L'en-tete doit reserver la
+    // meme colonne (vide) que ce menu occupe reellement sur les lignes qui
+    // l'ont, sans quoi l'en-tete et les lignes n'ont pas le meme nombre
+    // d'elements flex — decale Equipement(s)/Statut/Montant de plusieurs
+    // dizaines de px.
+    $show_actions = TRUE;
     // « à finaliser » : date de dernier enregistrement (`changed`, un devis
     // édité plusieurs fois doit remonter en tête). « en cours »/« archivés » :
     // date de passage au statut « à commander » (`date_comptable`, jamais
@@ -151,9 +153,6 @@ final class MyQuotesController extends ControllerBase {
 
   /**
    * Construit le menu 3 points d'une ligne, ou NULL si aucune action.
-   *
-   * Onglet « archivés » hors périmètre (ADR-057) : aucune action pour
-   * l'instant sur cet onglet.
    */
   private function buildActions(Quote $quote, string $active_tab, string $date_field): ?array {
     $menu_label = (string) $this->t('Actions pour le devis du @date', [
@@ -195,6 +194,35 @@ final class MyQuotesController extends ControllerBase {
           'archive_href' => $quote->get('status')->value === Quote::STATUS_COMMANDE
             ? Url::fromRoute('drivematic_configurator.quote_archive', ['quote' => $quote->id()])->toString()
             : NULL,
+        ],
+      ];
+    }
+
+    if ($active_tab === 'archives') {
+      // Seule action sur cet onglet (ADR-057 addendum, maquette 493-16109) :
+      // Télécharger le devis, sous la même condition que sur « en cours »
+      // (fichier réellement présent). Aucune ligne si le PDF est absent
+      // (jamais de menu vide sans rien à y proposer).
+      //
+      // Cas limite accepté : cette ligne n'aura alors AUCUNE cellule
+      // « actions » (quote-row.twig), contrairement aux autres lignes du
+      // même onglet — colonnes suivantes (Équipement(s)/Statut/Montant)
+      // décalées sur CETTE seule ligne, `show_actions` réservant la colonne
+      // d'en-tête pour l'onglet entier. Aucun devis réel dans ce cas
+      // aujourd'hui (PDF généré au clic « Commander », purgé seulement après
+      // 2 ans, ADR-053) : pas de plomberie supplémentaire pour ce scénario
+      // tant qu'il reste théorique.
+      $pdf_uri = $this->pdfGenerator->getUri($quote);
+      if (!file_exists($pdf_uri)) {
+        return NULL;
+      }
+
+      return [
+        '#type' => 'component',
+        '#component' => 'drive_matic:quote-row-actions',
+        '#props' => [
+          'menu_label' => $menu_label,
+          'download_href' => Url::fromRoute('drivematic_configurator.quote_pdf_download', ['quote' => $quote->id()])->toString(),
         ],
       ];
     }

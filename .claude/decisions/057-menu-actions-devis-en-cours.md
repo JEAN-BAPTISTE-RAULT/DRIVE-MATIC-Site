@@ -105,3 +105,28 @@ lieu de 20, même tracé), réutilisé tel quel.
 - Fichiers créés : `Controller/QuotePdfDownloadController.php`. Fichiers
   modifiés : `drivematic_configurator.routing.yml`, `MyQuotesController.php`,
   SDC `quote-row-actions` (component.yml/twig/scss).
+
+## Addendum (2026-09-14, suite) : menu de l'onglet « archivés »
+
+Dernier onglet sans menu (cf. « Hors périmètre » ci-dessus) : demande
+explicite de l'utilisatrice, une seule option, « Télécharger le devis »
+(même route/logique que l'addendum précédent — aucun nouveau code serveur,
+juste une 3e branche dans `MyQuotesController::buildActions()`).
+
+- `show_actions` (prop de `quote-list`, réservation de la colonne d'en-tête
+  pour le menu, cf. le fix d'alignement du même jour) passe désormais à `TRUE`
+  inconditionnellement : les 3 onglets peuvent potentiellement afficher des
+  actions, la colonne doit toujours être réservée.
+- **Cas limite accepté, documenté en commentaire** : si le PDF d'un devis
+  archivé est absent (jamais généré, ou légataire d'avant cette
+  fonctionnalité — la purge à 2 ans d'ADR-053 n'a physiquement pas encore pu
+  jouer), `buildActions()` renvoie `NULL` et la ligne n'a alors AUCUNE
+  cellule « actions » — contrairement aux autres lignes du même onglet, qui
+  en ont une. Cette ligne précise se désaligne (Équipement(s)/Statut/Montant)
+  puisque `show_actions` réserve la colonne pour l'onglet entier, pas ligne
+  par ligne. Aucun devis réel dans ce cas aujourd'hui : pas de plomberie
+  supplémentaire (un `show_actions` par ligne, pas seulement par onglet) tant
+  que ça reste théorique.
+- Fichier modifié : `MyQuotesController.php` uniquement (aucun nouveau
+  fichier, réutilise entièrement `QuotePdfDownloadController`/
+  `drivematic_configurator.quote_pdf_download` de l'addendum précédent).
