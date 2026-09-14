@@ -154,3 +154,16 @@ drivematic_configurator.quote_modify:
     parameters:
       quote:
         type: entity:quote
+
+drivematic_configurator.quote_archive:
+  path: '/user/mes-devis/{quote}/archiver'
+  defaults:
+    _form: '\Drupal\drivematic_configurator\Form\QuoteArchiveForm'
+    _title: 'Archiver un devis'
+  requirements:
+    _role: 'partenaire'
+    _entity_access: 'quote.update'
+  options:
+    parameters:
+      quote:
+        type: entity:quote

@@ -83,6 +83,10 @@ li:last-child .quote-row-actions__item {
   -webkit-mask-image: url("../../images/icons/trash.svg");
           mask-image: url("../../images/icons/trash.svg");
 }
+.quote-row-actions__item--archive .quote-row-actions__item-icon {
+  -webkit-mask-image: url("../../images/icons/archive.svg");
+          mask-image: url("../../images/icons/archive.svg");
+}
 .quote-row-actions__item + .ajax-progress {
   display: none;
 }

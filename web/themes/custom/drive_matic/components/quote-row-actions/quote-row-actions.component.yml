@@ -24,3 +24,8 @@ props:
         - string
         - 'null'
       title: 'Lien Supprimer, modale de confirmation (absent si non disponible pour ce devis)'
+    archive_href:
+      type:
+        - string
+        - 'null'
+      title: 'Lien Archiver, modale de confirmation (absent si non disponible pour ce devis)'

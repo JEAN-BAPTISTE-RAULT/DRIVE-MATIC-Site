@@ -18,8 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
  * Page « Mes devis » (F13, étape 2/2, ADR-051) : 3 onglets par statut.
  *
  * Une seule route, `?onglet=` sélectionne l'onglet actif (convention actée
- * par l'ADR-046). Menu déroulant par ligne (3 points verticaux) volontairement
- * hors périmètre à cette étape — voir ADR-051.
+ * par l'ADR-046). Menu déroulant par ligne (3 points verticaux) : Modifier/
+ * Dupliquer/Supprimer sur « à finaliser » (ADR-052), Dupliquer(/Archiver) sur
+ * « en cours » (ADR-057) ; aucune action sur « archivés ».
  */
 final class MyQuotesController extends ControllerBase {
 
@@ -102,7 +103,7 @@ final class MyQuotesController extends ControllerBase {
         ],
       ];
 
-      $actions = $this->buildActions($quote, $active_tab);
+      $actions = $this->buildActions($quote, $active_tab, $date_field);
       if ($actions) {
         $row['#slots'] = ['actions' => $actions];
       }
@@ -140,25 +141,46 @@ final class MyQuotesController extends ControllerBase {
   /**
    * Construit le menu 3 points d'une ligne, ou NULL si aucune action.
    *
-   * Onglet « à finaliser » uniquement à cette étape (ADR-052).
+   * Onglet « archivés » hors périmètre (ADR-057) : aucune action pour
+   * l'instant sur cet onglet.
    */
-  private function buildActions(Quote $quote, string $active_tab): ?array {
-    if ($active_tab !== 'a-finaliser') {
-      return NULL;
+  private function buildActions(Quote $quote, string $active_tab, string $date_field): ?array {
+    $menu_label = (string) $this->t('Actions pour le devis du @date', [
+      '@date' => $this->formatDate($quote->get($date_field)->value),
+    ]);
+
+    if ($active_tab === 'a-finaliser') {
+      return [
+        '#type' => 'component',
+        '#component' => 'drive_matic:quote-row-actions',
+        '#props' => [
+          'menu_label' => $menu_label,
+          'edit_href' => Url::fromRoute('drivematic_configurator.quote_modify', ['quote' => $quote->id()])->toString(),
+          'duplicate_href' => Url::fromRoute('drivematic_configurator.quote_duplicate', ['quote' => $quote->id()])->toString(),
+          'delete_href' => Url::fromRoute('drivematic_configurator.quote_delete', ['quote' => $quote->id()])->toString(),
+        ],
+      ];
     }
 
-    return [
-      '#type' => 'component',
-      '#component' => 'drive_matic:quote-row-actions',
-      '#props' => [
-        'menu_label' => (string) $this->t('Actions pour le devis du @date', [
-          '@date' => $this->formatDate($quote->get('changed')->value),
-        ]),
-        'edit_href' => Url::fromRoute('drivematic_configurator.quote_modify', ['quote' => $quote->id()])->toString(),
-        'duplicate_href' => Url::fromRoute('drivematic_configurator.quote_duplicate', ['quote' => $quote->id()])->toString(),
-        'delete_href' => Url::fromRoute('drivematic_configurator.quote_delete', ['quote' => $quote->id()])->toString(),
-      ],
-    ];
+    if ($active_tab === 'en-cours') {
+      // Écart assumé par rapport à la maquette 493-15278 (ADR-057) : un
+      // devis « Commande en cours » n'a QUE Dupliquer (pas Commander/
+      // Modifier/Supprimer, montrés à titre indicatif sur cette maquette) ;
+      // Archiver n'apparaît que pour un devis « Commandé ».
+      return [
+        '#type' => 'component',
+        '#component' => 'drive_matic:quote-row-actions',
+        '#props' => [
+          'menu_label' => $menu_label,
+          'duplicate_href' => Url::fromRoute('drivematic_configurator.quote_duplicate', ['quote' => $quote->id()])->toString(),
+          'archive_href' => $quote->get('status')->value === Quote::STATUS_COMMANDE
+            ? Url::fromRoute('drivematic_configurator.quote_archive', ['quote' => $quote->id()])->toString()
+            : NULL,
+        ],
+      ];
+    }
+
+    return NULL;
   }
 
   /**
