@@ -199,6 +199,16 @@
     // `_quote-form.scss`, l'ecart voulu est deja porte par le `gap` du
     // flex parent ci-dessus.
     margin-top: 0;
+
+    // « Commander » est un bouton #ajax (callback ::orderAjaxCallback) :
+    // Drupal core insere un `.ajax-progress` juste apres lui le temps de la
+    // requete, un enfant flex de plus dans ce conteneur `justify-content:
+    // flex-end` — decale visiblement « Enregistrer le devis » le temps du
+    // clignotement. Meme piege deja rencontre et corrige sur
+    // quote-row-actions.scss (ADR-052 addendum 2).
+    .ajax-progress {
+      display: none;
+    }
   }
 
   @media (width < 992px) {

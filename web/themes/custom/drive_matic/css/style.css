@@ -1991,6 +1991,9 @@ textarea) {
   gap: 16px;
   margin-top: 0;
 }
+.delivery-form .form-actions .ajax-progress {
+  display: none;
+}
 @media (width < 992px) {
   .delivery-form .form-actions > * {
     width: 100%;
