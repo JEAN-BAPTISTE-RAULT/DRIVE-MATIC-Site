@@ -52,7 +52,10 @@ final class QuotePersister {
     /** @var \Drupal\drivematic_configurator\Entity\Quote $quote */
     $quote = $quote_storage->create([
       'uid' => $account->id(),
-      'reference' => $this->referenceGenerator->generate(),
+      // Le numero "W..." est celui de la COMMANDE, pas du brouillon : absent
+      // tant que le devis reste STATUS_A_FINALISER (cf. note de classe
+      // Entity/Quote.php). Meme condition que `date_commande` ci-dessous.
+      'reference' => $status === Quote::STATUS_A_COMMANDER ? $this->referenceGenerator->generate() : NULL,
       'status' => $status,
       'date_commande' => $status === Quote::STATUS_A_COMMANDER ? $now : NULL,
       // Meme condition que `date_commande` : seul point de code qui fait
@@ -92,12 +95,14 @@ final class QuotePersister {
    * Met a jour en place un devis « à finaliser » (Modifier, ADR-052).
    *
    * A la difference de `persist()`, ne cree pas de nouveau devis : conserve
-   * `id`/`reference`/`created`, recalcule via `QuoteCalculator` avec les
-   * donnees courantes (compte/adresse/catalogue) et remplace integralement
-   * les anciennes `quote_configuration`/`quote_equipment_line` — un devis
+   * `id`/`created`, recalcule via `QuoteCalculator` avec les donnees
+   * courantes (compte/adresse/catalogue) et remplace integralement les
+   * anciennes `quote_configuration`/`quote_equipment_line` — un devis
    * « à finaliser » n'est pas encore fige (ADR-052 precise ADR-043), ses
    * champs geles billing_ et delivery_ sont donc rafraichis ici, comme au
-   * moment d'une creation.
+   * moment d'une creation. `reference` est posee ici a la toute premiere
+   * transition vers STATUS_A_COMMANDER (jamais avant, jamais regeneree
+   * ensuite) — voir la note de classe d'Entity/Quote.php.
    *
    * @param \Drupal\drivematic_configurator\Entity\Quote $quote
    *   Le devis a mettre a jour (deja charge, statut `a_finaliser`).
@@ -118,6 +123,14 @@ final class QuotePersister {
     $now = $this->time->getCurrentTime();
 
     $quote->set('status', $status);
+    // Premiere (et unique) fois que ce devis atteint STATUS_A_COMMANDER : la
+    // condition sur la valeur actuelle evite de regenerer une reference deja
+    // posee lors d'un aller-retour precedent Modifier -> Commander -> a
+    // nouveau STATUS_A_FINALISER (aujourd'hui impossible en usage normal,
+    // mais sans cout a garder idempotent).
+    if ($status === Quote::STATUS_A_COMMANDER && !$quote->get('reference')->value) {
+      $quote->set('reference', $this->referenceGenerator->generate());
+    }
     $quote->set('date_commande', $status === Quote::STATUS_A_COMMANDER ? $now : NULL);
     // Meme condition que `date_commande` : seul point de code qui fait
     // passer un devis a STATUS_A_COMMANDER aujourd'hui (ADR-051 addendum).

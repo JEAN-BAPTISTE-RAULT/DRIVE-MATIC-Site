@@ -75,9 +75,15 @@ final class Quote extends ContentEntityBase implements EntityOwnerInterface, Ent
     $fields += static::ownerBaseFieldDefinitions($entity_type);
     $fields['uid']->setLabel(new TranslatableMarkup('Partenaire'));
 
+    // Absente (NULL) tant que le devis reste STATUS_A_FINALISER : c'est le
+    // numero de COMMANDE, pas un identifiant de brouillon — posee une seule
+    // fois par QuotePersister au moment ou le devis atteint STATUS_A_COMMANDER
+    // pour la premiere fois (persist() directement, ou update() lors d'une
+    // reprise « Modifier »), jamais avant, jamais regeneree ensuite. Coherent
+    // avec l'interface, qui masque deja cette colonne sur l'onglet « à
+    // finaliser » (MyQuotesController).
     $fields['reference'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup('N° de devis'))
-      ->setRequired(TRUE)
       ->setSetting('max_length', 20);
 
     $fields['status'] = BaseFieldDefinition::create('list_string')
