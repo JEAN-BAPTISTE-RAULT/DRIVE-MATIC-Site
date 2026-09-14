@@ -8,6 +8,7 @@ props:
     - create_href
     - show_reference
     - show_amount
+    - show_actions
   properties:
     tabs:
       type: array
@@ -27,6 +28,13 @@ props:
     show_amount:
       type: boolean
       title: 'Afficher la colonne Montant €HT'
+    show_actions:
+      type: boolean
+      title: >-
+        Reserve une colonne d'en-tete vide pour le menu 3 points (present sur
+        chaque ligne des onglets « à finaliser »/« en cours », absent sur
+        « archivés ») : sans elle, l'en-tete et les lignes n'ont pas le meme
+        nombre d'elements flex, ce qui decale toutes les colonnes suivantes.
     create_href:
       type: string
       title: 'Lien du bouton « Créer un nouveau devis »'

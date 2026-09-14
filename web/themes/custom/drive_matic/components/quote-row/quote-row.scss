@@ -135,9 +135,13 @@
     // 24px) reste aligne sur la ligne de base du texte ambiant (`&__value`
     // herite line-height: 1.75rem) au lieu du centre de la cellule — decale
     // visuellement de quelques px vers le haut par rapport aux autres colonnes.
+    // `flex-basis` explicite (le meme token que l'en-tete, jamais `auto`) :
+    // les deux DOIVENT toujours matcher exactement, sans quoi les colonnes
+    // flexibles (vehicules/equipements) se calculent differemment entre
+    // l'en-tete et les lignes — cf. quote-list.scss `--quote-col-actions`.
     &__cell--actions &__value {
       display: flex;
-      flex: 0 0 auto;
+      flex: 0 0 var(--quote-col-actions);
       align-items: center;
     }
   }

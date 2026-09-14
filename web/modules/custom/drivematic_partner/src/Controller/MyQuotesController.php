@@ -63,6 +63,12 @@ final class MyQuotesController extends ControllerBase {
     }
     $show_reference = $active_tab === 'en-cours';
     $show_amount = $active_tab !== 'a-finaliser';
+    // Toutes les lignes de « à finaliser »/« en cours » portent un menu 3
+    // points (ADR-052/057) ; aucune sur « archivés ». L'en-tete doit reserver
+    // la meme colonne (vide) que ce menu occupe reellement sur chaque ligne,
+    // sans quoi l'en-tete et les lignes n'ont pas le meme nombre d'elements
+    // flex — decale Equipement(s)/Statut/Montant de plusieurs dizaines de px.
+    $show_actions = $active_tab !== 'archives';
     // « à finaliser » : date de dernier enregistrement (`changed`, un devis
     // édité plusieurs fois doit remonter en tête). « en cours »/« archivés » :
     // date de passage au statut « à commander » (`date_comptable`, jamais
@@ -130,6 +136,7 @@ final class MyQuotesController extends ControllerBase {
           'tabs' => $this->buildTabs($active_tab),
           'show_reference' => $show_reference,
           'show_amount' => $show_amount,
+          'show_actions' => $show_actions,
           'create_href' => Url::fromRoute('drivematic_configurator.configuration')->toString(),
           'empty_message' => $rows ? NULL : (string) $this->emptyMessage($active_tab),
         ],

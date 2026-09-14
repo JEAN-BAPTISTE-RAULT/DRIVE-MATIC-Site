@@ -31,10 +31,17 @@
         <span class="quote-list__header-cell quote-list__header-cell--reference">{{ 'N° devis'|t }}</span>
       {% endif %}
       <span class="quote-list__header-cell quote-list__header-cell--vehicles">{{ 'Marque / Modèle / Type'|t }}</span>
-      <span class="quote-list__header-cell quote-list__header-cell--equipment">{{ 'Equipement(s)'|t }}</span>
+      <span class="quote-list__header-cell quote-list__header-cell--equipment">{{ 'Équipement(s)'|t }}</span>
       <span class="quote-list__header-cell quote-list__header-cell--status">{{ 'Statut'|t }}</span>
       {% if show_amount %}
         <span class="quote-list__header-cell quote-list__header-cell--amount">{{ 'Montant €HT'|t }}</span>
+      {% endif %}
+      {% if show_actions %}
+        {# Colonne vide : reserve exactement l'espace du menu 3 points de chaque
+           ligne (aucun libelle dans la maquette), sans quoi l'en-tete et les
+           lignes n'ont pas le meme nombre d'elements flex — decale toutes les
+           colonnes suivantes (vu en prod, colonnes Equipement(s)/Statut). #}
+        <span class="quote-list__header-cell quote-list__header-cell--actions" aria-hidden="true"></span>
       {% endif %}
     </div>
     <div class="quote-list__rows">

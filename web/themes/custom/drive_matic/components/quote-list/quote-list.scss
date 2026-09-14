@@ -22,6 +22,15 @@
   --quote-col-status: 120px;
   --quote-col-amount: 100px;
 
+  // Largeur du declencheur du menu 3 points (quote-row-actions.scss,
+  // `&__toggle`) : sert uniquement a reserver la meme largeur d'en-tete que
+  // la colonne reellement occupee par ce menu sur chaque ligne (ADR-052/057),
+  // jamais affichee (pas de libelle dans la maquette). Sans ce token, l'en-
+  // tete et les lignes n'ont pas le meme nombre d'elements flex : le calcul
+  // de largeur des colonnes flexibles (vehicules/equipements) diverge entre
+  // les deux, decalant Equipement(s)/Statut/Montant de ~40px.
+  --quote-col-actions: 24px;
+
   // `margin`, pas `padding` : la racine porte une bordure visible a partir
   // de 992px (carte, cf. bloc @media plus bas) — un `padding-block` reste a
   // l'INTERIEUR de cette bordure (aucun ecart visible avec le titre
@@ -209,6 +218,10 @@
 
     &--amount {
       flex: 0 0 var(--quote-col-amount);
+    }
+
+    &--actions {
+      flex: 0 0 var(--quote-col-actions);
     }
   }
 

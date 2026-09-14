@@ -3,6 +3,7 @@
   --quote-col-reference: 110px;
   --quote-col-status: 120px;
   --quote-col-amount: 100px;
+  --quote-col-actions: 24px;
   margin-block: var(--dm-space-page);
   padding-inline: var(--dm-gutter);
 }
@@ -155,6 +156,9 @@
 }
 .quote-list__header-cell--amount {
   flex: 0 0 var(--quote-col-amount);
+}
+.quote-list__header-cell--actions {
+  flex: 0 0 var(--quote-col-actions);
 }
 .quote-list__rows {
   display: flex;
