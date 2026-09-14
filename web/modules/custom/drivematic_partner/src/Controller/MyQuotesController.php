@@ -296,7 +296,10 @@ final class MyQuotesController extends ControllerBase {
    * Lignes « Marque / Modèle / Type » et résumé des équipements d'un devis.
    *
    * Une ligne véhicule par `quote_configuration` ; équipements dédupliqués
-   * (libellé) sur toutes les configurations du devis, joints par virgule.
+   * par libellé sur toutes les configurations du devis, chacun suivi du
+   * nombre total (toutes configurations confondues) entre parenthèses,
+   * joints par virgule — ex. « Télécommande VOR (x 3), Rétrovision
+   * extérieure (x 5) ».
    *
    * @return array{0: string[], 1: string}
    *   Un tuple [lignes véhicule, résumé des équipements].
@@ -307,7 +310,7 @@ final class MyQuotesController extends ControllerBase {
     Quote $quote,
   ): array {
     $vehicles = [];
-    $equipment_labels = [];
+    $equipment_totals = [];
 
     /** @var \Drupal\drivematic_configurator\Entity\QuoteConfiguration $configuration */
     foreach ($configuration_storage->loadByProperties(['quote_id' => $quote->id()]) as $configuration) {
@@ -320,11 +323,17 @@ final class MyQuotesController extends ControllerBase {
 
       /** @var \Drupal\drivematic_configurator\Entity\QuoteEquipmentLine $line */
       foreach ($equipment_storage->loadByProperties(['configuration_id' => $configuration->id()]) as $line) {
-        $equipment_labels[(string) $line->get('label')->value] = TRUE;
+        $label = (string) $line->get('label')->value;
+        $equipment_totals[$label] = ($equipment_totals[$label] ?? 0) + (int) $line->get('quantity_total')->value;
       }
     }
 
-    return [$vehicles, implode(', ', array_keys($equipment_labels))];
+    $equipment_parts = [];
+    foreach ($equipment_totals as $label => $total) {
+      $equipment_parts[] = sprintf('%s (x %d)', $label, $total);
+    }
+
+    return [$vehicles, implode(', ', $equipment_parts)];
   }
 
   /**
