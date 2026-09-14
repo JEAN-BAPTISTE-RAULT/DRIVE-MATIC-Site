@@ -1185,6 +1185,9 @@ textarea) {
   justify-content: flex-end;
   gap: 16px;
 }
+.configurator-form .form-actions .ajax-progress {
+  display: none;
+}
 @media (width < 992px) {
   .form-actions .configurator-form__add, .form-actions .configurator-form__submit {
     width: 100%;

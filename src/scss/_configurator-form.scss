@@ -84,6 +84,17 @@
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: 16px;
+
+    // « Ajouter une configuration » est un bouton #ajax (callback
+    // ::configurationsAjaxCallback) : Drupal core insere un `.ajax-progress`
+    // juste apres lui le temps de la requete, un enfant flex de plus dans ce
+    // conteneur `justify-content: flex-end` — decale tout le groupe (donc ce
+    // bouton lui-meme) le temps du clignotement. Meme piege deja rencontre
+    // et corrige sur quote-row-actions.scss (ADR-034 addendum 2) et
+    // `_delivery-form.scss` (bouton « Commander »).
+    .ajax-progress {
+      display: none;
+    }
   }
 
   @media (width < 992px) {
