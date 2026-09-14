@@ -473,6 +473,7 @@ page elle-meme (voir S18).
 - Message « Felicitations, votre commande a bien ete enregistree... ».
 - Statut passe a « Commande le jj/mm/aaaa » ; le montant HT s'affiche.
 - E-mail de confirmation au partenaire + copie interne (`info@`) [x] — **avec PDF du devis en piece jointe** [x] (ADR-041, voir plus bas).
+- **Mise a jour du 2026-09-14** : redirige vers « Mes devis », onglet « Commande en cours » (`/user/mes-devis?onglet=en-cours`, ou le devis vient d'apparaitre) — avant : etape 1 du configurateur. Le message reste affiche apres redirection (messenger, pas lie a une route precise).
 
 **Mise en oeuvre partielle (a rejouer) — livre le 2026-09-01** (ADR-033) :
 sur `/configurer/livraison`, les boutons **« Enregistrer le devis »**
@@ -996,6 +997,7 @@ valide) ; sur un devis jamais commande, ce lien n'apparait pas.
 
 | Date | Modification | Scenarios impactes |
 |------|--------------|---------------------|
+| 2026-09-14 | **« Commander » redirige vers « Mes devis » (onglet « en cours ») au lieu de l'etape 1 du configurateur**, en gardant le meme message de felicitations : deux cibles a changer (`persistQuote()` pour le cas non-AJAX, `orderAjaxCallback()` pour le cas reel AJAX — celui-ci ignore `$form_state->setRedirect()`, piege deja documente dans ce fichier). Verifie via curl (AJAX reel, `?ajax_form=1`) : la reponse JSON contient bien `{"command":"redirect","url":"/user/mes-devis?onglet=en-cours"}`, le message et le devis apparaissent sur la page cible | S16 |
 | 2026-09-14 | **Pagination reelle + alignement de l'en-tete du PDF de devis** ([ADR-060](../.claude/decisions/060-pagination-pdf-devis.md)) : le pied de page affichait « Page 1/1 » sur chaque page (rendu Twig en une seule passe HTML, avant pagination Dompdf) — desormais dessine sur le canvas apres `render()`. « Adresse de facturation : » alignee avec « 18 rue WOLFENBRUTTEL » (padding egal a la hauteur du logo). Verifie sans creer de devis reel (render array fabrique), en local et en preprod | S16 |
 | 2026-09-14 | **Reference "W..." posee a la commande, pas au brouillon** ([ADR-059](../.claude/decisions/059-reference-devis-a-la-commande.md)) : un devis cree « a finaliser » puis commande plus tard gardait une reference datee de sa creation, incoherente avec la date affichee sur « Mes devis ». Prerequis : nouvelle commande generique `drush drivematic:quotes-purge` (purge complete devis+entites liees+PDF, executee sur local et preprod avant ce chantier) | S14, S16 |
 | 2026-09-14 | **Menu d'actions « Commande en cours »/« Archives », telechargement PDF, colonne N° devis** ([ADR-057](../.claude/decisions/057-menu-actions-devis-en-cours.md)) : Dupliquer seul pour un devis « Commande en cours », Dupliquer + Archiver pour un devis « Commande » (ecart assume vs maquette, qui montrait aussi Commander/Modifier/Supprimer) ; « Telecharger le devis » ajoute aux 2 statuts de « en cours » puis a l'onglet « archives » (1 seule option) ; colonne « N° devis » etendue a « archives » | S18 |

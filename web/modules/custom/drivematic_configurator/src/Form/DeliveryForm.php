@@ -647,7 +647,8 @@ final class DeliveryForm extends FormBase {
       return $response;
     }
 
-    $response->addCommand(new RedirectCommand(Url::fromRoute('drivematic_configurator.configuration')->toString()));
+    $url = Url::fromRoute('drivematic_partner.my_quotes', [], ['query' => ['onglet' => 'en-cours']]);
+    $response->addCommand(new RedirectCommand($url->toString()));
     return $response;
   }
 
@@ -657,8 +658,8 @@ final class DeliveryForm extends FormBase {
    * « Enregistrer le devis » (STATUS_A_FINALISER) redirige directement vers
    * « Mes devis », onglet « à finaliser » — pas de message, le devis apparait
    * de lui-meme dans la liste. « Commander » (STATUS_A_COMMANDER) redirige
-   * vers l'etape 1 avec un message de confirmation (aucun tableau de bord
-   * dedie a cette etape-la, PRD F13/F15).
+   * vers « Mes devis », onglet « en cours » (le devis vient d'y apparaitre),
+   * avec le message de confirmation.
    */
   private function persistQuote(FormStateInterface $form_state, string $status): Quote {
     $draft = $this->tempStore()->get(self::TEMPSTORE_KEY) ?? [];
@@ -695,7 +696,7 @@ final class DeliveryForm extends FormBase {
     }
 
     $this->messenger()->addStatus($this->buildOrderConfirmationMessage());
-    $form_state->setRedirect('drivematic_configurator.configuration');
+    $form_state->setRedirect('drivematic_partner.my_quotes', [], ['query' => ['onglet' => 'en-cours']]);
 
     return $quote;
   }
