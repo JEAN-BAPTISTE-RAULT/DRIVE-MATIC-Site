@@ -114,11 +114,19 @@ final class QuoteDetailController extends ControllerBase {
     }
 
     if (file_exists($this->pdfGenerator->getUri($quote))) {
+      // `#type: container` (comme `buildActions()` ci-dessous) : sans lui,
+      // ce lien reste un `<a>` inline qui colle a « Retour a la liste des
+      // devis » des que `$build['actions']` est absent (tout statut hors
+      // « Commande en cours ») — aucun element block entre les deux pour
+      // forcer un retour a la ligne.
       $build['pdf'] = [
-        '#type' => 'link',
-        '#title' => $this->t('Voir le PDF du devis'),
-        '#url' => Url::fromRoute('drivematic_configurator.quote_pdf', ['quote' => $quote->id()]),
-        '#attributes' => ['class' => ['button'], 'target' => '_blank'],
+        '#type' => 'container',
+        'link' => [
+          '#type' => 'link',
+          '#title' => $this->t('Voir le PDF du devis'),
+          '#url' => Url::fromRoute('drivematic_configurator.quote_pdf', ['quote' => $quote->id()]),
+          '#attributes' => ['class' => ['button'], 'target' => '_blank'],
+        ],
       ];
     }
 
