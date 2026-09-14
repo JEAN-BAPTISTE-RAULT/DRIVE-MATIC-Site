@@ -63,6 +63,9 @@
   }
   .pdf__header-right {
     text-align: left;
+    /* Aligne "Adresse de facturation :" avec "18 rue WOLFENBRUTTEL" a
+       gauche : meme hauteur que le logo + sa marge (.pdf__logo). */
+    padding-top: 46px;
   }
   .pdf__address-block {
     font-size: 11px;
@@ -163,12 +166,6 @@
   }
   .pdf__footer-legal span {
     display: table-cell;
-  }
-  .pdf__footer-legal span:last-child {
-    text-align: right;
-    font-weight: bold;
-    color: #1a1a1a;
-    white-space: nowrap;
   }
 </style>
 </head>
@@ -278,8 +275,14 @@
 
   <div class="pdf__footer">
     <div class="pdf__footer-legal">
+      {#
+        Pas de "Page X/Y" ici : au moment ou ce gabarit est rendu, Dompdf
+        n'a pas encore paginé (une seule passe HTML → un seul "1/1" pour
+        toutes les pages, quel que soit leur nombre reel). Le numero de
+        page est donc dessine directement sur le canvas, apres rendu,
+        par QuotePdfGenerator::addPageNumbers().
+      #}
       <span>RCS Nanterre : B 383 608 528 - N°Siret : 38360852800014 - N.A.F. : 4532Z - N° intracommunautaire : FR 39 383 808 528 - S.A.R.L au Capital de 52.5000 Euros - Banque BNP Paribas Sevres - IBAN : FR76 3000 4009 4800 0101 1975 582 - BIC : BNP AFRPPXXX</span>
-      <span>Page 1/1</span>
     </div>
   </div>
 </body>

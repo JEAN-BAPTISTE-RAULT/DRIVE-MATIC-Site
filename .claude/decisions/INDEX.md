@@ -64,6 +64,7 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-057](057-menu-actions-devis-en-cours.md) | Menu d'actions « Mes devis / commandes en cours » (Dupliquer, Archiver, Telecharger le devis) | Accepte | 2026-09-14 |
 | [ADR-058](058-marques-orphelines-configurateur.md) | Marque `vehicle_brand` sans aucun `vehicle_model` publie exclue du select Marque du configurateur | Accepte | 2026-09-14 |
 | [ADR-059](059-reference-devis-a-la-commande.md) | La reference "W..." d'un devis est posee a la commande (STATUS_A_COMMANDER), plus a sa creation en brouillon | Accepte | 2026-09-14 |
+| [ADR-060](060-pagination-pdf-devis.md) | Pagination reelle du PDF de devis (canvas Dompdf, page_script) et alignement du bloc adresses sur le logo | Accepte | 2026-09-14 |
 
 ## Quand creer un ADR
 

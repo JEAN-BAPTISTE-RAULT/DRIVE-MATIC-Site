@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\drivematic_configurator\Service;
 
+use Dompdf\Canvas;
 use Dompdf\Dompdf;
+use Dompdf\FontMetrics;
 use Dompdf\Options;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
@@ -45,6 +47,16 @@ final class QuotePdfGenerator {
   private const DIRECTORY = 'private://devis-pdf';
 
   private const VAT_RATE = 0.20;
+
+  /**
+   * Conversion millimetres -> points PDF (1pt = 1/72 pouce, 1 pouce = 25,4mm).
+   */
+  private const MM_TO_PT = 72 / 25.4;
+
+  /**
+   * Conversion pixels CSS -> points PDF (dpi Dompdf par defaut, 96).
+   */
+  private const PX_TO_PT = 72 / 96;
 
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
@@ -93,6 +105,7 @@ final class QuotePdfGenerator {
     $dompdf->setPaper('a4', 'portrait');
     $dompdf->loadHtml($html);
     $dompdf->render();
+    $this->addPageNumbers($dompdf);
 
     $directory = self::DIRECTORY;
     $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
@@ -100,6 +113,41 @@ final class QuotePdfGenerator {
     $this->fileSystem->saveData($dompdf->output(), $uri, FileExists::Replace);
 
     return $uri;
+  }
+
+  /**
+   * Dessine "Page X/Y" sur chaque page, apres la pagination reelle de Dompdf.
+   *
+   * Ne peut pas se faire dans le gabarit Twig : au moment ou celui-ci est
+   * rendu, Dompdf n'a pas encore paginé (une seule chaine HTML, un seul
+   * "1/1" recopié tel quel sur chaque page). Le nombre de pages n'existe
+   * qu'une fois `render()` termine — dessiné ici directement sur le canvas,
+   * via `page_script()` (rejoué page par page, apres coup).
+   *
+   * Position calculee a la main a partir des memes valeurs que le CSS du
+   * gabarit (`@page` et `.pdf__footer`) : le canvas Dompdf ne peut pas lire
+   * une position deja calculee en CSS.
+   */
+  private function addPageNumbers(Dompdf $dompdf): void {
+    $font = $dompdf->getFontMetrics()->get_font('DejaVu Sans', 'bold');
+    $size = 8 * self::PX_TO_PT;
+    $color = [0x1a / 0xff, 0x1a / 0xff, 0x1a / 0xff];
+
+    $margin_right_pt = 12 * self::MM_TO_PT;
+    // @page margin-bottom (24mm) + .pdf__footer { bottom: -16mm } : le
+    // footer deborde de 16mm dans cette marge, ne laissant que 8mm entre
+    // son bord bas et le bord physique de la page.
+    $footer_bottom_from_edge_pt = (24 - 16) * self::MM_TO_PT;
+    $footer_line_height_pt = 14 * self::PX_TO_PT;
+
+    $dompdf->getCanvas()->page_script(
+      function (int $pageNumber, int $pageCount, Canvas $canvas, FontMetrics $fontMetrics) use ($font, $size, $color, $margin_right_pt, $footer_bottom_from_edge_pt, $footer_line_height_pt): void {
+        $text = sprintf('Page %d/%d', $pageNumber, $pageCount);
+        $x = $canvas->get_width() - $margin_right_pt - $fontMetrics->getTextWidth($text, $font, $size);
+        $y = $canvas->get_height() - $footer_bottom_from_edge_pt - $footer_line_height_pt;
+        $canvas->text($x, $y, $text, $font, $size, $color);
+      },
+    );
   }
 
   /**
