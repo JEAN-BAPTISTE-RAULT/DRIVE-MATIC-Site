@@ -61,7 +61,7 @@ final class MyQuotesController extends ControllerBase {
     if (!isset(self::TAB_STATUSES[$active_tab])) {
       $active_tab = self::DEFAULT_TAB;
     }
-    $show_reference = $active_tab === 'en-cours';
+    $show_reference = $active_tab !== 'a-finaliser';
     $show_amount = $active_tab !== 'a-finaliser';
     // Les 3 onglets portent desormais un menu 3 points (ADR-052/057) — au
     // moins potentiellement sur « archivés » (absent seulement si le PDF n'a
