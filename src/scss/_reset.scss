@@ -10,6 +10,22 @@ body {
   margin: 0;
 }
 
+// Pied de page collé au bas du viewport (« sticky footer ») meme quand le
+// contenu de la page est trop court pour l'atteindre naturellement : sans
+// cela, un lisere blanc (fond de `<body>`) apparait sous le footer jusqu'au
+// bas de l'ecran des que (en-tete + contenu + footer) est plus bas que la
+// fenetre. `.layout-container`/`main` viennent de `page.html.twig` du cœur
+// (markup qu'on ne choisit pas) : fondation globale, pas un SDC.
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
 img,
 picture,
 video,
