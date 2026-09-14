@@ -59,8 +59,8 @@ uniquement pour un devis « Commandé » —
 
 ## Conséquences
 
-- Hors périmètre (inchangé) : le menu de l'onglet « archivés »
-  (« Télécharger le devis »).
+- Hors périmètre (inchangé, cf. addendum ci-dessous) : le menu de l'onglet
+  « archivés ».
 - Un devis `a_commander` reste sans action d'archivage manuel ou de
   finalisation depuis cette page (seul Drive Matic peut le faire passer à
   « Commandé », back-office) — conforme à ADR-045, qui a explicitement
@@ -68,3 +68,40 @@ uniquement pour un devis « Commandé » —
 - Fichiers créés : `Form/QuoteArchiveForm.php`. Fichiers modifiés :
   `drivematic_configurator.routing.yml`, `MyQuotesController.php`, SDC
   `quote-row-actions` (component.yml/twig/scss).
+
+## Addendum (2026-09-14) : « Télécharger le devis »
+
+Demande explicite de l'utilisatrice : ajouter « Télécharger le devis » aux
+deux statuts de l'onglet « en cours » (`a_commander` ET `commande`), pas
+seulement à « commandé ». Libellé/icône repris de la maquette 493-16109
+(onglet « archivés », composant `671:20787`, seule occurrence de cette
+action dans le fichier Figma) — glyphe `Download` identique à l'asset local
+`images/icons/download.svg` déjà présent (variante lucide, viewBox 16 au
+lieu de 20, même tracé), réutilisé tel quel.
+
+- Nouveau `QuotePdfDownloadController::download()` (`drivematic_configurator`,
+  même module que `QuoteDetailController`) : sert le même fichier que
+  `QuoteDetailController::pdf()` (back-office, `QuotePdfGenerator::getUri()`)
+  mais en `DISPOSITION_ATTACHMENT` au lieu d'`INLINE` — le libellé partenaire
+  appelle un enregistrement direct, pas une ouverture inline. Route dédiée
+  `drivematic_configurator.quote_pdf_download`
+  (`/user/mes-devis/{quote}/telecharger`, `_entity_access: 'quote.view'`,
+  espace URL partenaire plutôt que `/admin/...`) plutôt que de réutiliser la
+  route admin existante.
+- Pas de modale ni de `_csrf_token` : lecture seule, sans effet de bord,
+  contrairement à Dupliquer (écriture, protégé) ou Archiver (modale de
+  confirmation).
+- `MyQuotesController::buildActions()` : `download_href` fourni
+  inconditionnellement sur l'onglet « en cours » (les deux statuts), sauf si
+  `file_exists($pdfGenerator->getUri($quote))` est faux (même garde-fou que
+  `QuoteDetailController::view()` côté back-office) — cas résiduel pour un
+  devis antérieur à la génération du PDF ou une génération ayant échoué.
+- Ordre du menu (aucune maquette ne combine les 3 actions) : Dupliquer,
+  Télécharger le devis, Archiver — les deux actions communes aux deux
+  statuts groupées avant l'action conditionnelle.
+- Vérifié via curl (partenaire réel, 5 devis « Commande en cours ») : lien
+  présent sur les 5 lignes, téléchargement renvoie un PDF valide
+  (`Content-Disposition: attachment`, en-tête/xref/trailer PDF corrects).
+- Fichiers créés : `Controller/QuotePdfDownloadController.php`. Fichiers
+  modifiés : `drivematic_configurator.routing.yml`, `MyQuotesController.php`,
+  SDC `quote-row-actions` (component.yml/twig/scss).

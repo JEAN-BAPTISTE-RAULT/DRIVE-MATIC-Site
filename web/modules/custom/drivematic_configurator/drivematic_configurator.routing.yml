@@ -167,3 +167,15 @@ drivematic_configurator.quote_archive:
     parameters:
       quote:
         type: entity:quote
+
+drivematic_configurator.quote_pdf_download:
+  path: '/user/mes-devis/{quote}/telecharger'
+  defaults:
+    _controller: '\Drupal\drivematic_configurator\Controller\QuotePdfDownloadController::download'
+  requirements:
+    _role: 'partenaire'
+    _entity_access: 'quote.view'
+  options:
+    parameters:
+      quote:
+        type: entity:quote

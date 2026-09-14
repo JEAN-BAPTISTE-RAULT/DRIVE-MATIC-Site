@@ -95,6 +95,10 @@
     mask-image: url('../../images/icons/archive.svg');
   }
 
+  &__item--download &__item-icon {
+    mask-image: url('../../images/icons/download.svg');
+  }
+
   // Le lien Supprimer (`use-ajax`) insere un throbber juste APRES lui-meme
   // (`Drupal.Ajax.prototype.setProgressIndicatorThrobber`, coeur) le temps de
   // charger la modale : dans ce menu etroit, il s'affiche brievement comme un

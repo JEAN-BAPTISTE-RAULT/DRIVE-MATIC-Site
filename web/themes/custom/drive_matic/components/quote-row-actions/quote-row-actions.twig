@@ -6,6 +6,8 @@
   (`use-ajax`) — le formulaire/la page qui inclut ce composant doit attacher
   `core/drupal.dialog.ajax`, sans quoi le lien dégraderait silencieusement
   en navigation page complète (piège documenté, ADR-034 addendum 2).
+  « Télécharger le devis » est un lien de téléchargement direct (pas de
+  modale, action en lecture seule sans effet de bord).
 #}
 <div class="quote-row-actions">
   <button
@@ -31,6 +33,14 @@
         <a href="{{ duplicate_href }}" class="quote-row-actions__item quote-row-actions__item--duplicate">
           <span class="quote-row-actions__item-icon" aria-hidden="true"></span>
           {{ 'Dupliquer'|t }}
+        </a>
+      </li>
+    {% endif %}
+    {% if download_href %}
+      <li>
+        <a href="{{ download_href }}" class="quote-row-actions__item quote-row-actions__item--download">
+          <span class="quote-row-actions__item-icon" aria-hidden="true"></span>
+          {{ 'Télécharger le devis'|t }}
         </a>
       </li>
     {% endif %}

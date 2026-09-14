@@ -29,3 +29,8 @@ props:
         - string
         - 'null'
       title: 'Lien Archiver, modale de confirmation (absent si non disponible pour ce devis)'
+    download_href:
+      type:
+        - string
+        - 'null'
+      title: 'Lien Télécharger le devis (PDF), absent si aucun fichier généré pour ce devis'

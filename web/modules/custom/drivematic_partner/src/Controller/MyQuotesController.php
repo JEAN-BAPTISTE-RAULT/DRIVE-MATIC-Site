@@ -11,6 +11,7 @@ use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\drivematic_configurator\Entity\Quote;
+use Drupal\drivematic_configurator\Service\QuotePdfGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,8 +20,9 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * Une seule route, `?onglet=` sélectionne l'onglet actif (convention actée
  * par l'ADR-046). Menu déroulant par ligne (3 points verticaux) : Modifier/
- * Dupliquer/Supprimer sur « à finaliser » (ADR-052), Dupliquer(/Archiver) sur
- * « en cours » (ADR-057) ; aucune action sur « archivés ».
+ * Dupliquer/Supprimer sur « à finaliser » (ADR-052), Dupliquer/Télécharger/
+ * Archiver sur « en cours » selon le statut (ADR-057) ; aucune action sur
+ * « archivés ».
  */
 final class MyQuotesController extends ControllerBase {
 
@@ -37,6 +39,7 @@ final class MyQuotesController extends ControllerBase {
   public function __construct(
     private readonly DateFormatterInterface $dateFormatter,
     private readonly PagerManagerInterface $pagerManager,
+    private readonly QuotePdfGenerator $pdfGenerator,
   ) {}
 
   /**
@@ -46,6 +49,7 @@ final class MyQuotesController extends ControllerBase {
     return new static(
       $container->get('date.formatter'),
       $container->get('pager.manager'),
+      $container->get('drivematic_configurator.quote_pdf_generator'),
     );
   }
 
@@ -166,13 +170,21 @@ final class MyQuotesController extends ControllerBase {
       // Écart assumé par rapport à la maquette 493-15278 (ADR-057) : un
       // devis « Commande en cours » n'a QUE Dupliquer (pas Commander/
       // Modifier/Supprimer, montrés à titre indicatif sur cette maquette) ;
-      // Archiver n'apparaît que pour un devis « Commandé ».
+      // Archiver n'apparaît que pour un devis « Commandé ». Télécharger le
+      // devis (icône/libellé repris de la maquette 493-16109, onglet
+      // « archivés ») s'ajoute aux deux statuts, mais seulement si le PDF a
+      // bien été généré (`QuoteDetailController::pdf()` applique le même
+      // garde-fou côté back-office).
+      $pdf_uri = $this->pdfGenerator->getUri($quote);
       return [
         '#type' => 'component',
         '#component' => 'drive_matic:quote-row-actions',
         '#props' => [
           'menu_label' => $menu_label,
           'duplicate_href' => Url::fromRoute('drivematic_configurator.quote_duplicate', ['quote' => $quote->id()])->toString(),
+          'download_href' => file_exists($pdf_uri)
+            ? Url::fromRoute('drivematic_configurator.quote_pdf_download', ['quote' => $quote->id()])->toString()
+            : NULL,
           'archive_href' => $quote->get('status')->value === Quote::STATUS_COMMANDE
             ? Url::fromRoute('drivematic_configurator.quote_archive', ['quote' => $quote->id()])->toString()
             : NULL,
