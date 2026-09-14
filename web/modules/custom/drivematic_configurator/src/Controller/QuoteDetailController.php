@@ -173,11 +173,16 @@ final class QuoteDetailController extends ControllerBase {
 
   /**
    * Lien d'action (marquer commandé), statut « Commande en cours » seul.
+   *
+   * `margin-top` inline (page back-office sans feuille de style dediee,
+   * theme Gin) : ecarte ce bouton du lien « Retour à la liste des devis »
+   * qui le precede, tout en le laissant colle a « Voir le PDF du devis »
+   * qui le suit (celui-ci n'a lui-meme aucune marge, cf. self::view()).
    */
   private function buildActions(Quote $quote): array {
     return [
       '#type' => 'container',
-      '#attributes' => ['class' => ['quote-detail__actions']],
+      '#attributes' => ['class' => ['quote-detail__actions'], 'style' => 'margin-top: 16px;'],
       'mark_ordered' => [
         '#type' => 'link',
         '#title' => $this->t('Marquer comme commandé'),
