@@ -82,9 +82,21 @@ final class QuoteArchiveForm extends ConfirmFormBase {
 
   /**
    * {@inheritdoc}
+   *
+   * Onglet « en cours » : c'est d'où l'action a été lancée, aucun changement
+   * ne s'est produit (bouton « Non », ou devis plus au bon statut). La
+   * redirection après un archivage réussi utilise `getArchivedUrl()`, pas
+   * celle-ci.
    */
   public function getCancelUrl(): Url {
     return Url::fromRoute('drivematic_partner.my_quotes', [], ['query' => ['onglet' => 'en-cours']]);
+  }
+
+  /**
+   * Url de l'onglet « Archives », vers lequel le devis vient de basculer.
+   */
+  private function getArchivedUrl(): Url {
+    return Url::fromRoute('drivematic_partner.my_quotes', [], ['query' => ['onglet' => 'archives']]);
   }
 
   /**
@@ -164,19 +176,19 @@ final class QuoteArchiveForm extends ConfirmFormBase {
     ])->save();
 
     $this->messenger()->addStatus($this->t('Devis archivé.'));
-    $form_state->setRedirectUrl($this->getCancelUrl());
+    $form_state->setRedirectUrl($this->getArchivedUrl());
   }
 
   /**
    * Callback #ajax du bouton de confirmation — voir QuoteDeleteForm.
    *
    * @return \Drupal\Core\Ajax\AjaxResponse
-   *   Ferme la modale et redirige vers l'onglet « en cours ».
+   *   Ferme la modale et redirige vers l'onglet « archives ».
    */
   public function ajaxSubmit(array &$form, FormStateInterface $form_state): AjaxResponse {
     $response = new AjaxResponse();
     $response->addCommand(new CloseModalDialogCommand());
-    $response->addCommand(new RedirectCommand($this->getCancelUrl()->toString()));
+    $response->addCommand(new RedirectCommand($this->getArchivedUrl()->toString()));
     return $response;
   }
 

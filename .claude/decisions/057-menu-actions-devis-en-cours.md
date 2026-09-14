@@ -57,6 +57,25 @@ uniquement pour un devis « Commandé » —
   générique que les autres actions (aucun changement de structure/CSS de
   liste, juste un item de plus).
 
+## Addendum (2026-09-14, suite) : redirection après archivage
+
+Décision initiale reversée sur demande explicite de l'utilisatrice :
+`QuoteArchiveForm` redirigeait vers l'onglet « en cours » (d'où l'action
+avait été lancée). Redirige désormais vers l'onglet **« archives »**, où le
+devis vient de basculer — plus cohérent pour le partenaire, qui voit
+directement où son devis a atterri.
+
+- `getCancelUrl()` (onglet « en cours ») reste inchangée : toujours utilisée
+  pour le bouton « Non » et le lien de retour de l'état dégradé (devis plus
+  au statut « Commandé »), aucun des deux cas n'ayant réellement archivé
+  quoi que ce soit.
+- Nouvelle méthode privée `getArchivedUrl()` (onglet « archives »), utilisée
+  uniquement pour les 2 redirections de succès (`submitForm()` non-AJAX,
+  `ajaxSubmit()` — seul chemin réellement emprunté par le bouton).
+- Vérifié via curl (AJAX réel) : la réponse contient
+  `{"command":"redirect","url":"/user/mes-devis?onglet=archives"}`, le devis
+  apparaît bien sur cet onglet juste après.
+
 ## Conséquences
 
 - Hors périmètre (inchangé, cf. addendum ci-dessous) : le menu de l'onglet
