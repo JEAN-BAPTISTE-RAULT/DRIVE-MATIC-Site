@@ -61,6 +61,8 @@ Ce dossier documente les decisions **posterieures** au PRD initial.
 | [ADR-054](054-suppression-fil-ariane.md) | Suppression du fil d'Ariane (remplace ADR-023) : ecart du titre de page retabli via `--dm-space-page` (rythme standard), gabarits hero a ecart nul | Accepte | 2026-09-10 |
 | [ADR-055](055-statut-publication-vehicule-type-vor.md) | Statut du combinatoire depublie (jamais supprime) le `vehicle_model` ; Type de VOR stocke sur `equipment_price` ; corrige 2 bugs decouverts (`setPublished()` sans argument, cle de tableau flottante tronquee) | Accepte | 2026-09-11 |
 | [ADR-056](056-verification-catalogue-devis.md) | Modale systematique a la reprise d'un devis (Modifier), verification finale + modale conditionnelle au clic Commander ; remplace le message par configuration d'ADR-055 | Accepte | 2026-09-11 |
+| [ADR-057](057-menu-actions-devis-en-cours.md) | Menu d'actions « Mes devis / commandes en cours » (Dupliquer, Archiver, Telecharger le devis) | Accepte | 2026-09-14 |
+| [ADR-058](058-marques-orphelines-configurateur.md) | Marque `vehicle_brand` sans aucun `vehicle_model` publie exclue du select Marque du configurateur | Accepte | 2026-09-14 |
 
 ## Quand creer un ADR
 

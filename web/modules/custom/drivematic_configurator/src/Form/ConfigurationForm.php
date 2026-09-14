@@ -119,7 +119,8 @@ final class ConfigurationForm extends FormBase {
     $form['#attached']['library'][] = 'drivematic_forms/vehicle_select';
     $form['#attached']['library'][] = 'drivematic_configurator/quantity_stepper';
     $form['#attached']['library'][] = 'drivematic_configurator/configurator_reveal';
-    $form['#attached']['drupalSettings']['drivematicForms'] = drivematic_forms_vehicle_map();
+    $vehicle_map = drivematic_forms_vehicle_map();
+    $form['#attached']['drupalSettings']['drivematicForms'] = $vehicle_map;
 
     // Le brouillon tempstore n'est lu qu'au tout premier rendu (pas a chaque
     // reconstruction AJAX, qui a deja sa propre saisie en cours dans
@@ -136,7 +137,16 @@ final class ConfigurationForm extends FormBase {
       $form_state->set('configuration_defaults', $defaults);
     }
 
-    $brand_options = $this->loadTermOptions('vehicle_brand');
+    // Une marque `vehicle_brand` n'est jamais depubliee elle-meme (elle
+    // reste utilisee par le champ « Marque » du webform contact/SAV, meme
+    // pour un vehicule dont Drive Matic ne vend plus d'equipement) : on
+    // n'exclut donc pas les marques via leur propre statut, mais via
+    // `$vehicle_map['modelsByBrand']` (deja calcule ci-dessus), qui ne
+    // contient que les marques ayant au moins un `vehicle_model` publie.
+    // Sans ce filtre, une marque dont tous les modeles sont "Ne pas
+    // publier" restait selectionnable ici pour finir dans un select Modele
+    // vide, sans aucun message d'erreur.
+    $brand_options = array_intersect_key($this->loadTermOptions('vehicle_brand'), $vehicle_map['modelsByBrand']);
     $model_options = $this->loadTermOptions('vehicle_model');
     $motorisation_options = $this->loadTermOptions('motorisation');
 
@@ -302,10 +312,14 @@ final class ConfigurationForm extends FormBase {
     // ses propres #options, ce que le navigateur resout en silence en
     // affichant un AUTRE modele (le 1er de la liste) — jamais une erreur,
     // jamais un select vide. On vide donc explicitement model/motorisation
-    // pour forcer un nouveau choix honnete (la marque, elle, reste valide :
-    // seul vehicle_model peut etre depublie). Pas de message ici — le
-    // partenaire a deja ete prevenu en amont (modale au clic sur
-    // « Modifier », cf. QuoteModifyConfirmForm).
+    // pour forcer un nouveau choix honnete. Meme piege possible sur la
+    // marque desormais qu'elle est filtree par $vehicle_map['modelsByBrand']
+    // ci-dessus (tous ses modeles depublies depuis, ou la marque
+    // elle-meme supprimee par un reimport catalogue) : meme traitement. Pas
+    // de message ici — le partenaire a deja ete prevenu en amont (modale au
+    // clic sur « Modifier », cf. QuoteModifyConfirmForm).
+    $saved_brand = $defaults['card']['vehicle']['brand'] ?? NULL;
+    $brand_unavailable = $saved_brand !== NULL && $saved_brand !== '' && !isset($brand_options[$saved_brand]);
     $saved_model = $defaults['card']['vehicle']['model'] ?? NULL;
     $model_unavailable = $saved_model !== NULL && $saved_model !== '' && !isset($model_options[$saved_model]);
 
@@ -324,7 +338,7 @@ final class ConfigurationForm extends FormBase {
       '#required' => TRUE,
       '#empty_option' => $this->t('Sélectionnez'),
       '#options' => $brand_options,
-      '#default_value' => $defaults['card']['vehicle']['brand'] ?? NULL,
+      '#default_value' => $brand_unavailable ? NULL : $saved_brand,
       '#attributes' => ['data-vehicle-role' => 'brand'],
     ];
     $element['card']['vehicle']['model'] = [
@@ -469,13 +483,16 @@ final class ConfigurationForm extends FormBase {
   /**
    * Charge les options d'un select depuis un vocabulaire de taxonomie.
    *
-   * Liste complete des termes PUBLIES (non filtree autrement) : la cascade JS
+   * Liste complete des termes PUBLIES : la cascade JS
    * (drivematic_forms/js/vehicle-select.js) restreint modele/motorisation
    * cote client, mais degrade sans JS en listes completes. Un `vehicle_model`
    * depublie (Statut "Ne pas publier" au dernier import du catalogue, cf.
-   * CatalogImporter::applyTaxonomy()) est exclu ; `vehicle_brand`/
-   * `motorisation` ne sont jamais depublies, le filtre ne les affecte donc
-   * pas.
+   * CatalogImporter::applyTaxonomy()) est exclu ; `motorisation` n'est jamais
+   * depublie, le filtre ne l'affecte donc pas. `vehicle_brand` n'est lui non
+   * plus jamais depublie ICI (le terme reste utilise par le webform contact/
+   * SAV) — l'appelant (self::buildForm()) exclut a part les marques sans
+   * aucun modele publie, via `drivematic_forms_vehicle_map()['modelsByBrand']`,
+   * jamais via le statut du terme lui-meme.
    *
    * @param string $vocabulary
    *   Identifiant machine du vocabulaire.
