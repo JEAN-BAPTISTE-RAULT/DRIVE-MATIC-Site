@@ -152,11 +152,15 @@
   // badge inutilement haut. `padding-block: 6px` retrouve les ~28px de
   // hauteur mesures sur un badge a 1 seule ligne.
   &__badge {
-    // `justify-self: start` : sans lui, le badge (item de grille en mobile,
-    // colonne valeur en `1fr`) s'etire par defaut a toute la largeur de sa
-    // colonne (`justify-items: stretch`, comportement par defaut de Grid,
-    // ignore par Flexbox — sans effet cote desktop). Piege documente CLAUDE.md.
-    justify-self: start;
+    // Mobile : item de grille en colonne valeur (`1fr`) — `justify-self`
+    // reste au defaut `stretch` pour occuper toute la largeur disponible
+    // (sans effet cote desktop, ignore par Flexbox). `align-self: center`
+    // annule en revanche le `stretch` vertical par defaut : sans lui, le
+    // badge s'etire a la hauteur de la ligne complete (celle de l'etiquette
+    // en vis-a-vis, bordure comprise) et sa forme de pastille vient toucher
+    // le filet separateur du dessus/dessous — ici sa hauteur reste bornee a
+    // son propre contenu (padding + texte), centree dans la ligne.
+    align-self: center;
     display: inline-flex;
     flex-direction: column;
     align-items: center;
