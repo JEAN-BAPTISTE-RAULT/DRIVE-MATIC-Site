@@ -122,8 +122,13 @@
     // badge reste auto-dimensionne et desaligne les colonnes suivantes selon
     // la longueur de son texte, variable : « A finaliser » vs « Commande en
     // cours » vs « Commande le jj/mm/aaaa »).
+    // `margin-inline: 0` : annule l'inset mobile (voir plus bas) — a taille
+    // fixe (`flex-basis`), un margin desktop ferait deborder le badge au-dela
+    // de la largeur de colonne partagee avec l'en-tete et desalignerait les
+    // colonnes suivantes (meme piege que le commentaire ci-dessus).
     &__cell--status &__badge {
       flex: 0 0 var(--quote-col-status);
+      margin-inline: 0;
     }
 
     &__cell--amount &__value {
@@ -160,7 +165,13 @@
     // en vis-a-vis, bordure comprise) et sa forme de pastille vient toucher
     // le filet separateur du dessus/dessous — ici sa hauteur reste bornee a
     // son propre contenu (padding + texte), centree dans la ligne.
+    // `margin-inline: 16px` (meme inset que `&__label`/`&__value`, qui
+    // portent un `padding: 12px 16px`) : sans lui, le stretch ci-dessus
+    // colle le badge aux deux bords de sa colonne (celui qui jouxte
+    // l'etiquette ET le bord droit de la carte). Annule cote desktop
+    // (largeur fixe par colonne, voir plus haut).
     align-self: center;
+    margin-inline: 16px;
     display: inline-flex;
     flex-direction: column;
     align-items: center;

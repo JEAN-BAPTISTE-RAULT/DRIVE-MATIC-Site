@@ -97,6 +97,7 @@
   }
   .quote-row__cell--status .quote-row__badge {
     flex: 0 0 var(--quote-col-status);
+    margin-inline: 0;
   }
   .quote-row__cell--amount .quote-row__value {
     flex: 0 0 var(--quote-col-amount);
@@ -110,6 +111,7 @@
 }
 .quote-row__badge {
   align-self: center;
+  margin-inline: 16px;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
