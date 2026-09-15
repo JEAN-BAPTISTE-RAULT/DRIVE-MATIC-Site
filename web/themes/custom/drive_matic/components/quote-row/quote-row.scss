@@ -11,11 +11,6 @@
   border: 1px solid var(--dm-color-grey-light);
   border-radius: 8px;
 
-  // Uniquement mobile : clippe le `::before` (fond gris de la colonne
-  // etiquette) aux coins arrondis. A retirer au palier desktop, sans quoi ca
-  // rogne aussi le menu d'actions (ADR-052), qui doit deborder de la ligne.
-  overflow: hidden;
-
   &::before {
     content: '';
     position: absolute;
@@ -23,6 +18,14 @@
     inset-inline-start: 0;
     width: 142px;
     background-color: var(--dm-color-grey-lighter);
+
+    // Coins arrondis (7px = 8px du rayon de la ligne, moins le 1px de
+    // bordure) portes directement par le pseudo-element, plutot que par un
+    // `overflow: hidden` sur `.quote-row` : celui-ci rognait aussi le menu
+    // d'actions (ADR-052), qui doit deborder de la ligne en mobile comme en
+    // desktop pour rester cliquable (sans quoi il se retrouve recouvert par
+    // la carte du devis suivant, cf. `.quote-row-actions__menu`).
+    border-radius: 7px 0 0 7px;
   }
 
   @media (width >= 992px) {
@@ -32,7 +35,6 @@
     min-height: 55px;
     padding-inline: 20px;
     border-radius: 12px;
-    overflow: visible;
 
     &::before {
       content: none;

@@ -4,7 +4,6 @@
   grid-template-columns: 142px 1fr;
   border: 1px solid var(--dm-color-grey-light);
   border-radius: 8px;
-  overflow: hidden;
 }
 .quote-row::before {
   content: "";
@@ -13,6 +12,7 @@
   inset-inline-start: 0;
   width: 142px;
   background-color: var(--dm-color-grey-lighter);
+  border-radius: 7px 0 0 7px;
 }
 @media (width >= 992px) {
   .quote-row {
@@ -22,7 +22,6 @@
     min-height: 55px;
     padding-inline: 20px;
     border-radius: 12px;
-    overflow: visible;
   }
   .quote-row::before {
     content: none;
